@@ -1,0 +1,128 @@
+ ---
+ Introduction
+ ---
+ SZNAJDERMAN in Projet J4hr
+ <http://www.jroller.com/Fabszn/entry/tomcat_7_et_le_plugin>
+ ---
+ 2010-07-05
+ ---
+
+ ~~ Licensed to the Apache Software Foundation (ASF) under one
+ ~~ or more contributor license agreements.  See the NOTICE file
+ ~~ distributed with this work for additional information
+ ~~ regarding copyright ownership.  The ASF licenses this file
+ ~~ to you under the Apache License, Version 2.0 (the
+ ~~ "License"); you may not use this file except in compliance
+ ~~ with the License.  You may obtain a copy of the License at
+ ~~
+ ~~   http://www.apache.org/licenses/LICENSE-2.0
+ ~~
+ ~~ Unless required by applicable law or agreed to in writing,
+ ~~ software distributed under the License is distributed on an
+ ~~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ ~~ KIND, either express or implied.  See the License for the
+ ~~ specific language governing permissions and limitations
+ ~~ under the License.
+
+ ~~ NOTE: For help with the syntax of this file, see:
+ ~~ http://maven.apache.org/doxia/references/apt-format.html
+
+Tomcat 7 and Maven 2 plugin
+
+  {{{http://www.jroller.com/Fabszn/entry/tomcat_7_et_le_plugin}Original Post (French)}}
+
+  As part of my project J4hr, I set up for building the application, the tool Maven (v2). As an application server,
+  I use the latest version of tomcat server, ie version 7.
+
+  To facilitate deployment, I created the following Maven plugin: Plugin allowing integration of the two tools during the
+  build and deployment.
+
+  I met some problems for the integration of two tools using the plugin. Maven recommends: convention over configuration.
+  That is, take the default conventions that have been fixed and therefore limited aspects, often heavy, configuration.
+  This adage wrong between Maven 2 and Tomcat 7.
+
+  That is the technical background:
+
+  Maven 2
+  Tomcat 7 (installed from a tar.gz file in the directory USER_HOME
+  OpenJDK 1.6.0_18
+  Ubuntu 4.10
+
+  What happened??
+  I added to my pom.xml, the declaration of this new artifact as described below:
+
++----------------------------------------------+
+  <plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>tomcat-maven-plugin</artifactId>
+    <version>${project.version}</version>
+  </plugin>
++----------------------------------------------+
+
+
+  Launch the command:
+
+  mvn tomcat: deploy
+
+  and patatra! below the result in the console:
+
++----------------------------------------------+
+  [INFO] Deploying war to http://localhost:8080/j4hr
+  [INFO]
+  [ERROR] BUILD ERROR
+  [INFO]
+  [INFO] Can not invoke Tomcat manager
++----------------------------------------------+
+
+  Maven says it can not access the Tomcat manager, allowing it to deploy the war.
+
+  In reading the documentation of the plugin, it tells us that the default url used is the result:
+
+  http://localhost:8080/manager
+
+  I type in my favorite browser (I hesitate between Chrome and Firefox) This url and voila the answer made to me by the
+  server:
+
+
+  The page you Tried to access (/manager/) does not exist.
+
+  The Manager application has been "re-structured for Tomcat 7 onwards and sacrifice part of URLs Have Changed. All URLs
+  Used to Access the Application Manager "should now start With One Of The followings options:
+
+  * /Manager/html for the HTML GUI
+
+  * /Manager/text for The Text interface
+
+  * /Manager/jmxproxy pour la JMX Proxy
+
+  * /Manager/status pages for The Status
+  
+
+  Note thats the URL for The Text interface has changed from "/manager" to "/manager/text".
+
+  You Probably Need to adjust The URL you are using to access une application. However, There Is Always a chance Have
+  you found a bug in une application. "If you are sure You Have Found a bug, and thats the bug has not Already Been
+  Reported, Please report it to the Apache Tomcat team.
+
+  Interesting, I tell you! Grosso modo, Tomcat is telling us that the standard URL that was used to administer the
+  server for deployments has changed.
+  Therefore, we configure our plugin in this new url that goes beyond the established conventions. So here is what to
+  add to the pom.xml:
+
++----------------------------------------------+
+<plugin>
+  <groupId>org.codehaus.mojo</groupId>
+  <artifactId>tomcat-maven-plugin</artifactId>
+  <version>${project.version}</version>
+  <configuration>
+    <url>http://localhost:8080/manager/html</url>
+  </configuration>
+</plugin>
++----------------------------------------------+
+
+
+  Normally with this information, everything should return to normal except for one thing.
+  If the account administration server is not configured with the default values used when a new problem arises. It will
+  be necessary to overcome this problem information identifiers in the file server setting.xml Maven pom.xml and reference in the name of this server.
+
+  I hope it will help if you encounter this problem.

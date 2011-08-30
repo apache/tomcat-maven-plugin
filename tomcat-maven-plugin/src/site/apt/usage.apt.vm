@@ -1,0 +1,183 @@
+ ---
+ Usage
+ ---
+ Mark Hobson
+ <markhobson@gmail.com>
+ ---
+ 2010-03-09
+ ---
+
+ ~~ Licensed to the Apache Software Foundation (ASF) under one
+ ~~ or more contributor license agreements.  See the NOTICE file
+ ~~ distributed with this work for additional information
+ ~~ regarding copyright ownership.  The ASF licenses this file
+ ~~ to you under the Apache License, Version 2.0 (the
+ ~~ "License"); you may not use this file except in compliance
+ ~~ with the License.  You may obtain a copy of the License at
+ ~~
+ ~~   http://www.apache.org/licenses/LICENSE-2.0
+ ~~
+ ~~ Unless required by applicable law or agreed to in writing,
+ ~~ software distributed under the License is distributed on an
+ ~~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ ~~ KIND, either express or implied.  See the License for the
+ ~~ specific language governing permissions and limitations
+ ~~ under the License.
+
+ ~~ NOTE: For help with the syntax of this file, see:
+ ~~ http://maven.apache.org/doxia/references/apt-format.html
+
+Usage
+
+ If no explicit configuration is provided then the Tomcat Maven Plugin defaults to
+ the following:
+
+ * Tomcat manager URL of <<<http://localhost:8080/manager>>>
+
+ * Authentication details of username <<<admin>>> and no password
+
+ * Context path of <<</$\{project.artifactId\}>>>
+
+ []
+
+ These can be overridden as described below.
+
+* Using a different Tomcat manager URL
+
+ To configure the plugin for a different Tomcat instance, add a plugin
+ configuration block to your <<<pom.xml>>> as follows:
+
++--
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>tomcat-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <configuration>
+          <url>http://www.mydomain.com:1234/mymanager</url>
+        </configuration>
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
++--
+
+ The default Tomcat manager URL is <<<http://localhost:8080/manager>>>.
+
+* Using different Tomcat manager authentication details
+
+ To specify a different username and password to use when authenticating with
+ Tomcat manager:
+
+ [[1]] Add a plugin configuration block to your <<<pom.xml>>>:
+
++--
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>tomcat-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <configuration>
+          <server>myserver</server>
+        </configuration>
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
++--
+
+ [[2]] Add a corresponding <<<server>>> block to your <<<settings.xml>>>:
+
++--
+<settings>
+  ...
+  <servers>
+    ...
+    <server>
+      <id>myserver</id>
+      <username>myusername</username>
+      <password>mypassword</password>
+    </server>
+    ...
+  </servers>
+  ...
+</settings>
++--
+
+ []
+
+ The default authentication details are username <<<admin>>> and no password.
+
+* Using a different context path
+
+ The default context path is <<</$\{project.artifactId\}>>>.
+
+ To change the context path to <<</mycontext>>> configure the plugin like this:
+
++--
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>tomcat-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <configuration>
+          <path>/mycontext</path>
+        </configuration>
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
++--
+
+ If you are using <<<project.build.finalName>>> to change the name of your WAR
+ file, you can use that value when you configure the context path as well. To do
+ that add the following configuration block to your <<<pom.xml>>>:
+
++--
+<project>
+  ...
+  <build>
+    ...
+    <finalName>mycontext</finalName>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>tomcat-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <configuration>
+          <path>/\${project.build.finalName}</path>
+        </configuration>
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
++--
