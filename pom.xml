@@ -92,9 +92,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:svn:http://svn.codehaus.org/mojo/trunk/mojo/tomcat-maven-plugin</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/tomcat-maven-plugin</developerConnection>
-    <url>http://fisheye.codehaus.org/browse/mojo/trunk/mojo/tomcat-maven-plugin</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/tomcat/maven-plugin/trunk/</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/tomcat/maven-plugin/trunk/</developerConnection>
+    <url>http://svn.apache.org/viewvc/tomcat/maven-plugin/</url>
   </scm>
 
   <issueManagement>
@@ -316,6 +316,13 @@
       </plugins>
     </pluginManagement>
   </build>
+
+  <distributionManagement>
+    <site>
+      <id>apache.website</id>
+      <url>scp://people.apache.org/www/tomcat.apache.org/maven-plugin</url>
+    </site>
+  </distributionManagement>
 
   <profiles>
     <profile>
