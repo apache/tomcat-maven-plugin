@@ -17,11 +17,33 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-<project name="Tomcat Maven Plugin">
+<project name="Apache Tomcat Maven Plugin">
+  <bannerLeft>
+    <name>Tomcat</name>
+    <src>http://tomcat.apache.org/images/tomcat.gif</src>
+    <href>http://tomcat.apache.org/</href>
+  </bannerLeft>
+  <bannerRight>
+    <name>Apache Tomcat Maven Plugin</name>
+    <!--
+    <src none
+    -->
+    <href>http://tomcat.apache.org/maven-plugin/</href>
+  </bannerRight>
+  <skin>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-skin</artifactId>
+    <version>2</version>
+  </skin>
+  <publishDate format="dd MMMM yyyy" position="right" />
+  <version position="right" />
+
   <body>
     <breadcrumbs>
-      <item name="tomcat-maven-plugin" href="index.html" mce_href="index.html"/>
+      <item name="Apache Tomcat" href="http://tomcat.apache.org/" />
+      <item name="Apache Tomcat Maven plugin" href="index.html" />
     </breadcrumbs>
+
     <menu ref="modules"/>
     <menu ref="reports"/>
   </body>
