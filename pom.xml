@@ -99,7 +99,7 @@
 
   <issueManagement>
     <system>jira</system>
-    <url>http://jira.codehaus.org/browse/MTOMCAT</url>
+    <url>https://issues.apache.org/jira/browse/MTOMCAT</url>
   </issueManagement>
 
   <ciManagement>
