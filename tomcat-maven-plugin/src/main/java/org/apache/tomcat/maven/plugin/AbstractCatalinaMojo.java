@@ -45,7 +45,7 @@ public abstract class AbstractCatalinaMojo
     /**
      * The name of this Maven plugin. Used to produce the user agent when communicating with Tomcat manager.
      */
-    private String name = "Tomcat Maven Plugin";
+    private String name = "Apache Tomcat Maven Plugin";
 
     /**
      * The default username to use when authenticating with Tomcat manager.
