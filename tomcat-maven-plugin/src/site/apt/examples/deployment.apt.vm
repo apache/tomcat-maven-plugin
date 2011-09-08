@@ -71,7 +71,7 @@ mvn tomcat:deploy
     <plugins>
       ...
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
+        <groupId>org.apache.tomcat.maven</groupId>
         <artifactId>tomcat-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
@@ -125,7 +125,7 @@ mvn war:exploded tomcat:exploded
     <plugins>
       ...
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
+        <groupId>org.apache.tomcat.maven</groupId>
         <artifactId>tomcat-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
@@ -156,7 +156,7 @@ mvn war:exploded tomcat:exploded
     <plugins>
       ...
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
+        <groupId>org.apache.tomcat.maven</groupId>
         <artifactId>tomcat-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
@@ -187,7 +187,7 @@ mvn war:exploded tomcat:exploded
     <plugins>
       ...
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
+        <groupId>org.apache.tomcat.maven</groupId>
         <artifactId>tomcat-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
@@ -227,7 +227,7 @@ mvn war:inplace tomcat:inplace
     <plugins>
       ...
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
+        <groupId>org.apache.tomcat.maven</groupId>
         <artifactId>tomcat-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
@@ -255,7 +255,7 @@ mvn war:inplace tomcat:inplace
   <build>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
+        <groupId>org.apache.tomcat.maven</groupId>
         <artifactId>tomcat-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
@@ -284,7 +284,7 @@ mvn war:inplace tomcat:inplace
     <plugins>
       ...
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
+        <groupId>org.apache.tomcat.maven</groupId>
         <artifactId>tomcat-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
@@ -316,7 +316,7 @@ mvn war:inplace tomcat:inplace
     <plugins>
       ...
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
+        <groupId>org.apache.tomcat.maven</groupId>
         <artifactId>tomcat-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
@@ -355,7 +355,7 @@ mvn tomcat:deploy
     <plugins>
       ...
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
+        <groupId>org.apache.tomcat.maven</groupId>
         <artifactId>tomcat-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>

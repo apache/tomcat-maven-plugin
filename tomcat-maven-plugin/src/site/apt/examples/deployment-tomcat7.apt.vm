@@ -53,7 +53,7 @@ Tomcat 7 and Maven 2 plugin
 
 +----------------------------------------------+
   <plugin>
-    <groupId>org.codehaus.mojo</groupId>
+    <groupId>org.apache.tomcat.maven</groupId>
     <artifactId>tomcat-maven-plugin</artifactId>
     <version>${project.version}</version>
   </plugin>
@@ -111,7 +111,7 @@ Tomcat 7 and Maven 2 plugin
 
 +----------------------------------------------+
 <plugin>
-  <groupId>org.codehaus.mojo</groupId>
+  <groupId>org.apache.tomcat.maven</groupId>
   <artifactId>tomcat-maven-plugin</artifactId>
   <version>${project.version}</version>
   <configuration>

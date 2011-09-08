@@ -43,7 +43,7 @@ Adjust Tomcat Version
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.codehaus.mojo</groupId>
+          <groupId>org.apache.tomcat.maven</groupId>
           <artifactId>tomcat-maven-plugin</artifactId>
           <version>${project.version}</version>
           <dependencies>

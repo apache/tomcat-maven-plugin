@@ -39,7 +39,7 @@ Adding System Properties
     <plugins>
       ...
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
+        <groupId>org.apache.tomcat.maven</groupId>
         <artifactId>tomcat-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
