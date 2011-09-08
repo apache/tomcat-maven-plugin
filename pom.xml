@@ -320,7 +320,7 @@
   <distributionManagement>
     <site>
       <id>apache.website</id>
-      <url>scp://people.apache.org/www/tomcat.apache.org/maven-plugin</url>
+      <url>scp://people.apache.org/www/tomcat.apache.org/maven-plugin-${project.version}</url>
     </site>
   </distributionManagement>
 
