@@ -107,7 +107,7 @@ public abstract class AbstractRunMojo
      * The ajp connector will be started only for value > 0.
      *
      * @parameter expression="${maven.tomcat.ajp.port}" default-value="0"
-     * @since 1.2
+     * @since 2.0
      */
     private int ajpPort;
 
@@ -117,7 +117,7 @@ public abstract class AbstractRunMojo
      * NOTE The ajp connector will be started only if {@link #ajpPort} > 0.
      *
      * @parameter expression="${maven.tomcat.ajp.protocol}" default-value="ajp"
-     * @since 1.2
+     * @since 2.0
      */
     private String ajpProtocol;
 
@@ -271,7 +271,7 @@ public abstract class AbstractRunMojo
      * @todo adopt documentation once Tomcat 7 is supported (MTOMCAT-62)
      * @see <a href="http://tomcat.apache.org/tomcat-6.0-doc/api/org/apache/catalina/startup/Embedded.html">org.apache.catalina.startup.Embedded</a>
      * @see <a href="http://tomcat.apache.org/tomcat-7.0-doc/api/org/apache/catalina/startup/Tomcat.html">org.apache.catalina.startup.Tomcat</a>
-     * @since 1.2
+     * @since 2.0
      */
     private boolean useNaming;
 
@@ -281,7 +281,7 @@ public abstract class AbstractRunMojo
      * in your context file.
      *
      * @parameter expression="${maven.tomcat.contextReloadable}" default-value="false"
-     * @since 1.2
+     * @since 2.0
      */
     protected boolean contextReloadable;
 
@@ -298,7 +298,7 @@ public abstract class AbstractRunMojo
      * By default it's HTTP/1.1.
      *
      * @parameter expression="${maven.tomcat.protocol}" default-value="HTTP/1.1"
-     * @since 1.2
+     * @since 2.0
      */
     private String protocol;
 

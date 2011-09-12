@@ -34,7 +34,7 @@ import java.util.Map;
  * context reloads.
  *
  * @author Ryan Connolly
- * @since 1.2
+ * @since 2.0
  * @version $Id: ExternalRepositoriesReloadableWebappLoader.java 13551 2011-02-09 16:05:47Z olamy $
  */
 public class ExternalRepositoriesReloadableWebappLoader
