@@ -20,19 +20,6 @@ package org.apache.tomcat.maven.plugin;
  */
 
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.catalina.Context;
 import org.apache.catalina.Engine;
 import org.apache.catalina.Host;
@@ -56,7 +43,6 @@ import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.classworlds.realm.DuplicateRealmException;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -65,10 +51,22 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Abstract goal that provides common configuration for embedded Tomcat goals.
- * 
+ *
  * @author Jurgen Lust
  * @author Mark Hobson <markhobson@gmail.com>
  * @version $Id: AbstractRunMojo.java 14033 2011-05-04 17:51:15Z bimargulies $
@@ -82,7 +80,7 @@ public abstract class AbstractRunMojo
 
     /**
      * The packaging of the Maven project that this goal operates upon.
-     * 
+     *
      * @parameter expression = "${project.packaging}"
      * @required
      * @readonly
@@ -91,55 +89,59 @@ public abstract class AbstractRunMojo
 
     /**
      * The directory to create the Tomcat server configuration under.
-     * 
+     *
      * @parameter expression="${project.build.directory}/tomcat"
      */
     private File configurationDir;
 
     /**
      * The port to run the Tomcat server on.
-     * 
+     *
      * @parameter expression="${maven.tomcat.port}" default-value="8080"
      */
     private int port;
-    
+
     /**
      * The AJP port to run the Tomcat server on.
-     * By default it's 0 this means won't be started. 
-     * The ajp connector will be started only for value > 0. 
-     * @since 1.2
+     * By default it's 0 this means won't be started.
+     * The ajp connector will be started only for value > 0.
+     *
      * @parameter expression="${maven.tomcat.ajp.port}" default-value="0"
+     * @since 1.2
      */
     private int ajpPort;
-    
+
     /**
      * The AJP protocol to run the Tomcat server on.
-     * By default it's ajp. 
-     * NOTE The ajp connector will be started only if {@link #ajpPort} > 0. 
-     * @since 1.2
+     * By default it's ajp.
+     * NOTE The ajp connector will be started only if {@link #ajpPort} > 0.
+     *
      * @parameter expression="${maven.tomcat.ajp.protocol}" default-value="ajp"
-     */    
+     * @since 1.2
+     */
     private String ajpProtocol;
-    
+
     /**
      * The https port to run the Tomcat server on.
-     * By default it's 0 this means won't be started. 
-     * The https connector will be started only for value > 0. 
-     * @since 1.0
+     * By default it's 0 this means won't be started.
+     * The https connector will be started only for value > 0.
+     *
      * @parameter expression="${maven.tomcat.httpsPort}" default-value="0"
+     * @since 1.0
      */
     private int httpsPort;
 
     /**
      * The character encoding to use for decoding URIs.
-     * @since 1.0
+     *
      * @parameter expression="${maven.tomcat.uriEncoding}" default-value="ISO-8859-1"
+     * @since 1.0
      */
     private String uriEncoding;
 
     /**
      * List of System properties to pass to the Tomcat Server.
-     * 
+     *
      * @parameter
      * @since 1.0-alpha-2
      */
@@ -147,7 +149,7 @@ public abstract class AbstractRunMojo
 
     /**
      * The directory contains additional configuration Files that copied in the Tomcat conf Directory.
-     * 
+     *
      * @parameter expression = "${maven.tomcat.additionalConfigFilesDir}" default-value="${basedir}/src/main/tomcatconf"
      * @since 1.0-alpha-2
      */
@@ -155,7 +157,7 @@ public abstract class AbstractRunMojo
 
     /**
      * server.xml to use <b>Note if you use this you must configure in this file your webapp paths</b>.
-     * 
+     *
      * @parameter expression="${maven.tomcat.serverXml}"
      * @since 1.0-alpha-2
      */
@@ -163,21 +165,21 @@ public abstract class AbstractRunMojo
 
     /**
      * overriding the providing web.xml to run tomcat
-     * 
+     *
      * @parameter expression="${maven.tomcat.webXml}"
      * @since 1.0-alpha-2
      */
     private File tomcatWebXml;
-    
+
     /**
-     * Set this to true to allow Maven to continue to execute after invoking 
+     * Set this to true to allow Maven to continue to execute after invoking
      * the run goal.
-     * 
+     *
      * @parameter expression="${maven.tomcat.fork}" default-value="false"
      * @since 1.0
      */
     private boolean fork;
-    
+
     /**
      * Will create a tomcat context for each dependencies of war type with 'scope' set to 'tomcat'.
      * In other words, dependencies with:
@@ -186,61 +188,67 @@ public abstract class AbstractRunMojo
      *    &lt;scope&gt;tomcat&lt;/scope&gt;
      * </pre>
      * To preserve backward compatibility it's false by default.
+     *
      * @parameter expression="${maven.tomcat.addContextWarDependencies}" default-value="false"
      * @since 1.0
      */
     private boolean addContextWarDependencies;
-        
+
     /**
      * The maven project.
      *
      * @parameter expression="${project}"
-     * @since 1.0
      * @required
      * @readonly
+     * @since 1.0
      */
     protected MavenProject project;
 
     /**
      * The archive manager.
-     * @since 1.0
+     *
      * @component
+     * @since 1.0
      */
     private ArchiverManager archiverManager;
-    
+
     /**
      * if <code>true</code> a new classLoader separated from maven core will be created to start tomcat.
+     *
      * @parameter expression="${tomcat.useSeparateTomcatClassLoader}" default-value="false"
      * @since 1.0
      */
     protected boolean useSeparateTomcatClassLoader;
-        
+
     /**
      * @parameter expression="${plugin.artifacts}"
      * @required
      * @since 1.0
      */
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings( "rawtypes" )
     private List pluginArtifacts;
-   
+
     /**
      * If set to true ignore if packaging of project is not 'war'.
-     * @since 1.0
+     *
      * @parameter expression="${tomcat.ignorePackaging}" default-value="false"
+     * @since 1.0
      */
     private boolean ignorePackaging;
 
     /**
      * Override the default keystoreFile for the HTTPS connector (if enabled)
-     * @since 1.1
+     *
      * @parameter
+     * @since 1.1
      */
     private String keystoreFile;
 
     /**
      * Override the default keystorePass for the HTTPS connector (if enabled)
-     * @since 1.1
+     *
      * @parameter
+     * @since 1.1
      */
     private String keystorePass;
 
@@ -258,30 +266,41 @@ public abstract class AbstractRunMojo
      * <strong>Note:</strong> This setting is ignored if you provide a <code>server.xml</code> for your
      * Tomcat. Instead please configure naming in the <code>server.xml</code>.
      * </p>
+     *
+     * @parameter expression="${maven.tomcat.useNaming}" default-value="false"
+     * @todo adopt documentation once Tomcat 7 is supported (MTOMCAT-62)
      * @see <a href="http://tomcat.apache.org/tomcat-6.0-doc/api/org/apache/catalina/startup/Embedded.html">org.apache.catalina.startup.Embedded</a>
      * @see <a href="http://tomcat.apache.org/tomcat-7.0-doc/api/org/apache/catalina/startup/Tomcat.html">org.apache.catalina.startup.Tomcat</a>
-     * @parameter expression="${maven.tomcat.useNaming}" default-value="false"
      * @since 1.2
-     * @todo adopt documentation once Tomcat 7 is supported (MTOMCAT-62)
      */
     private boolean useNaming;
-    
+
     /**
      * Force context scanning if you don't use a context file with reloadable = "true".
      * The other way to use contextReloadable is to add attribute reloadable = "true"
      * in your context file.
+     *
      * @parameter expression="${maven.tomcat.contextReloadable}" default-value="false"
      * @since 1.2
      */
     protected boolean contextReloadable;
-    
+
 
     /**
      * The path of the Tomcat context XML file.
-     * 
+     *
      * @parameter expression = "src/main/webapp/META-INF/context.xml"
      */
-    protected File contextFile;    
+    protected File contextFile;
+
+    /**
+     * The protocol to run the Tomcat server on.
+     * By default it's HTTP/1.1.
+     *
+     * @parameter expression="${maven.tomcat.protocol}" default-value="HTTP/1.1"
+     * @since 1.2
+     */
+    private String protocol;
 
     // ----------------------------------------------------------------------
     // Fields
@@ -291,7 +310,7 @@ public abstract class AbstractRunMojo
      * @since 1.0
      */
     private ClassRealm tomcatRealm;
-    
+
     // ----------------------------------------------------------------------
     // Mojo Implementation
     // ----------------------------------------------------------------------
@@ -331,9 +350,10 @@ public abstract class AbstractRunMojo
         catch ( IOException exception )
         {
             throw new MojoExecutionException( getMessage( "AbstractRunMojo.cannotCreateConfiguration" ), exception );
-        } finally
+        }
+        finally
         {
-            if (useSeparateTomcatClassLoader)
+            if ( useSeparateTomcatClassLoader )
             {
                 Thread.currentThread().setContextClassLoader( originalClassLoaser );
             }
@@ -346,7 +366,7 @@ public abstract class AbstractRunMojo
 
     /**
      * Gets the webapp context path to use for the web application being run.
-     * 
+     *
      * @return the webapp context path
      */
     protected String getPath()
@@ -356,18 +376,18 @@ public abstract class AbstractRunMojo
 
     /**
      * Gets the context to run this web application under for the specified embedded Tomcat.
-     * 
+     *
      * @param container the embedded Tomcat container being used
      * @return the context to run this web application under
-     * @throws IOException if the context could not be created
+     * @throws IOException            if the context could not be created
      * @throws MojoExecutionException in case of an error creating the context
      */
     protected Context createContext( Embedded container )
         throws IOException, MojoExecutionException
     {
         String contextPath = getPath();
-        Context context = container.createContext( "/".equals( contextPath ) ? "" : contextPath, getDocBase()
-            .getAbsolutePath() );
+        Context context =
+            container.createContext( "/".equals( contextPath ) ? "" : contextPath, getDocBase().getAbsolutePath() );
 
         if ( useSeparateTomcatClassLoader )
         {
@@ -376,7 +396,7 @@ public abstract class AbstractRunMojo
 
         context.setLoader( createWebappLoader() );
         File contextFile = getContextFile();
-        if (contextFile != null)
+        if ( contextFile != null )
         {
             context.setConfigFile( getContextFile().getAbsolutePath() );
         }
@@ -385,9 +405,9 @@ public abstract class AbstractRunMojo
 
     /**
      * Gets the webapp loader to run this web application under.
-     * 
+     *
      * @return the webapp loader to use
-     * @throws IOException if the webapp loader could not be created
+     * @throws IOException            if the webapp loader could not be created
      * @throws MojoExecutionException in case of an error creating the webapp loader
      */
     protected WebappLoader createWebappLoader()
@@ -396,20 +416,22 @@ public abstract class AbstractRunMojo
         if ( useSeparateTomcatClassLoader )
         {
             return ( isContextReloadable() )
-                    ? new ExternalRepositoriesReloadableWebappLoader( getTomcatClassLoader(), getLog() )
-                    : new WebappLoader( getTomcatClassLoader() );
+                ? new ExternalRepositoriesReloadableWebappLoader( getTomcatClassLoader(), getLog() )
+                : new WebappLoader( getTomcatClassLoader() );
         }
 
         return ( isContextReloadable() )
-                ? new ExternalRepositoriesReloadableWebappLoader( Thread.currentThread().getContextClassLoader(), getLog()  )
-                : new WebappLoader( Thread.currentThread().getContextClassLoader() );
+            ? new ExternalRepositoriesReloadableWebappLoader( Thread.currentThread().getContextClassLoader(), getLog() )
+            : new WebappLoader( Thread.currentThread().getContextClassLoader() );
     }
 
     /**
      * Determine whether the passed context.xml file declares the context as reloadable or not.
+     *
      * @return false by default, true if  reloadable="true" in context.xml.
      */
-    protected boolean isContextReloadable() throws MojoExecutionException
+    protected boolean isContextReloadable()
+        throws MojoExecutionException
     {
         if ( contextReloadable )
         {
@@ -419,7 +441,7 @@ public abstract class AbstractRunMojo
         boolean reloadable = false;
         try
         {
-            if ( contextFile !=null && contextFile.exists() )
+            if ( contextFile != null && contextFile.exists() )
             {
                 DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
                 DocumentBuilder builder = builderFactory.newDocumentBuilder();
@@ -429,8 +451,8 @@ public abstract class AbstractRunMojo
                 NamedNodeMap nodeMap = contextDoc.getDocumentElement().getAttributes();
                 Node reloadableAttribute = nodeMap.getNamedItem( "reloadable" );
 
-                reloadable = ( reloadableAttribute != null ) ? Boolean.valueOf( reloadableAttribute.getNodeValue() )
-                                                            : false;
+                reloadable =
+                    ( reloadableAttribute != null ) ? Boolean.valueOf( reloadableAttribute.getNodeValue() ) : false;
             }
             getLog().debug( "context reloadable: " + reloadable );
         }
@@ -453,17 +475,18 @@ public abstract class AbstractRunMojo
 
     /**
      * Gets the webapp directory to run.
-     * 
+     *
      * @return the webapp directory
      */
     protected abstract File getDocBase();
 
     /**
      * Gets the Tomcat context XML file to use.
-     * 
+     *
      * @return the context XML file
      */
-    protected abstract File getContextFile() throws MojoExecutionException;
+    protected abstract File getContextFile()
+        throws MojoExecutionException;
 
     // ----------------------------------------------------------------------
     // Private Methods
@@ -471,7 +494,7 @@ public abstract class AbstractRunMojo
 
     /**
      * Gets whether this project uses WAR packaging.
-     * 
+     *
      * @return whether this project uses WAR packaging
      */
     protected boolean isWar()
@@ -481,7 +504,7 @@ public abstract class AbstractRunMojo
 
     /**
      * Gets the URL of the running webapp.
-     * 
+     *
      * @return the URL of the running webapp
      * @throws MalformedURLException if the running webapp URL is invalid
      */
@@ -493,8 +516,8 @@ public abstract class AbstractRunMojo
 
     /**
      * Creates the Tomcat configuration directory with the necessary resources.
-     * 
-     * @throws IOException if the Tomcat configuration could not be created
+     *
+     * @throws IOException            if the Tomcat configuration could not be created
      * @throws MojoExecutionException if the Tomcat configuration could not be created
      */
     private void initConfiguration()
@@ -510,10 +533,10 @@ public abstract class AbstractRunMojo
 
             configurationDir.mkdirs();
 
-            File confDir = new File( configurationDir, "conf");
+            File confDir = new File( configurationDir, "conf" );
             confDir.mkdir();
 
-            copyFile("/conf/tomcat-users.xml", new File( confDir, "tomcat-users.xml" ) );
+            copyFile( "/conf/tomcat-users.xml", new File( confDir, "tomcat-users.xml" ) );
             if ( tomcatWebXml != null )
             {
                 if ( !tomcatWebXml.exists() )
@@ -526,7 +549,7 @@ public abstract class AbstractRunMojo
             }
             else
             {
-                copyFile("/conf/web.xml", new File( confDir, "web.xml" ) );
+                copyFile( "/conf/web.xml", new File( confDir, "web.xml" ) );
             }
 
             File logDir = new File( configurationDir, "logs" );
@@ -563,9 +586,9 @@ public abstract class AbstractRunMojo
 
     /**
      * Copies the specified class resource to the specified file.
-     * 
+     *
      * @param fromPath the path of the class resource to copy
-     * @param toFile the file to copy to
+     * @param toFile   the file to copy to
      * @throws IOException if the file could not be copied
      */
     private void copyFile( String fromPath, File toFile )
@@ -583,15 +606,15 @@ public abstract class AbstractRunMojo
 
     /**
      * Starts the embedded Tomcat server.
-     * 
-     * @throws IOException if the server could not be configured
-     * @throws LifecycleException if the server could not be started
+     *
+     * @throws IOException            if the server could not be configured
+     * @throws LifecycleException     if the server could not be started
      * @throws MojoExecutionException if the server could not be configured
      */
     private void startContainer()
         throws IOException, LifecycleException, MojoExecutionException
     {
-        
+
         // Set the system properties
         setupSystemProperties();
         final Embedded container;
@@ -604,7 +627,7 @@ public abstract class AbstractRunMojo
 
             container = new Catalina();
             container.setCatalinaHome( configurationDir.getAbsolutePath() );
-            ( (Catalina) container).setConfigFile( serverXml.getPath() );
+            ( (Catalina) container ).setConfigFile( serverXml.getPath() );
             container.start();
         }
         else
@@ -618,18 +641,17 @@ public abstract class AbstractRunMojo
             //container.createLoader( getTomcatClassLoader() ).
 
             // create context
-            Context context = createContext(container);
-
+            Context context = createContext( container );
 
             // create host
             String appBase = new File( configurationDir, "webapps" ).getAbsolutePath();
             Host host = container.createHost( "localHost", appBase );
-            
+
             host.addChild( context );
-            
+
             if ( addContextWarDependencies )
             {
-                Collection<Context> dependecyContexts = createDependencyContexts(container);
+                Collection<Context> dependecyContexts = createDependencyContexts( container );
                 for ( Context extraContext : dependecyContexts )
                 {
                     host.addChild( extraContext );
@@ -647,7 +669,7 @@ public abstract class AbstractRunMojo
                 engine.setParentClassLoader( getTomcatClassLoader() );
             }
             // create http connector
-            Connector httpConnector = container.createConnector( (InetAddress) null, port, false );
+            Connector httpConnector = container.createConnector( (InetAddress) null, port, protocol );
             if ( httpsPort > 0 )
             {
                 httpConnector.setRedirectPort( httpsPort );
@@ -659,13 +681,13 @@ public abstract class AbstractRunMojo
             if ( httpsPort > 0 )
             {
                 Connector httpsConnector = container.createConnector( (InetAddress) null, httpsPort, true );
-                if ( keystoreFile!=null)
+                if ( keystoreFile != null )
                 {
-                    httpsConnector.setAttribute("keystoreFile", keystoreFile);
+                    httpsConnector.setAttribute( "keystoreFile", keystoreFile );
                 }
-                if ( keystorePass!=null)
+                if ( keystorePass != null )
                 {
-                    httpsConnector.setAttribute("keystorePass", keystorePass);
+                    httpsConnector.setAttribute( "keystorePass", keystorePass );
                 }
                 container.addConnector( httpsConnector );
 
@@ -680,8 +702,8 @@ public abstract class AbstractRunMojo
             }
         }
         container.start();
-        
-        EmbeddedRegistry.getInstance().register(container);
+
+        EmbeddedRegistry.getInstance().register( container );
     }
 
     protected ClassRealm getTomcatClassLoader()
@@ -696,8 +718,7 @@ public abstract class AbstractRunMojo
             ClassWorld world = new ClassWorld();
             ClassRealm root = world.newRealm( "tomcat", Thread.currentThread().getContextClassLoader() );
 
-            for ( @SuppressWarnings("rawtypes")
-            Iterator i = pluginArtifacts.iterator(); i.hasNext(); )
+            for ( @SuppressWarnings( "rawtypes" ) Iterator i = pluginArtifacts.iterator(); i.hasNext(); )
             {
                 Artifact pluginArtifact = (Artifact) i.next();
                 if ( "org.apache.tomcat".equals( pluginArtifact.getGroupId() ) )
@@ -720,12 +741,12 @@ public abstract class AbstractRunMojo
             throw new MojoExecutionException( e.getMessage(), e );
         }
     }
-        
+
     @SuppressWarnings( "unchecked" )
     public Set<Artifact> getProjectArtifacts()
     {
         return project.getArtifacts();
-    }    
+    }
 
     /**
      * Causes the current thread to wait indefinitely. This method does not return.
@@ -746,7 +767,7 @@ public abstract class AbstractRunMojo
             }
         }
     }
-    
+
 
     /**
      * Set the SystemProperties from the configuration.
@@ -773,24 +794,24 @@ public abstract class AbstractRunMojo
             }
         }
     }
-    
-        
+
+
     /**
      * Allows the startup of additional webapps in the tomcat container by declaration with scope
      * "tomcat".
-     * 
+     *
      * @param container tomcat
      * @return dependency tomcat contexts of warfiles in scope "tomcat"
      */
-    private Collection<Context> createDependencyContexts( Embedded container ) throws MojoExecutionException
+    private Collection<Context> createDependencyContexts( Embedded container )
+        throws MojoExecutionException
     {
         getLog().info( "Deploying dependency wars" );
         // Let's add other modules
         List<Context> contexts = new ArrayList<Context>();
 
         ScopeArtifactFilter filter = new ScopeArtifactFilter( "tomcat" );
-        @SuppressWarnings("unchecked")
-        Set<Artifact> artifacts = project.getArtifacts();
+        @SuppressWarnings( "unchecked" ) Set<Artifact> artifacts = project.getArtifacts();
         for ( Artifact artifact : artifacts )
         {
 
@@ -831,15 +852,16 @@ public abstract class AbstractRunMojo
                     }
                 }
                 WebappLoader webappLoader = new WebappLoader( Thread.currentThread().getContextClassLoader() );
-                Context context = container.createContext( "/" + artifact.getArtifactId(), artifactWarDir.getAbsolutePath() );
+                Context context =
+                    container.createContext( "/" + artifact.getArtifactId(), artifactWarDir.getAbsolutePath() );
                 context.setLoader( webappLoader );
                 File contextFile = getContextFile();
-                if (contextFile != null)
+                if ( contextFile != null )
                 {
                     context.setConfigFile( getContextFile().getAbsolutePath() );
                 }
                 contexts.add( context );
-                
+
             }
         }
         return contexts;
