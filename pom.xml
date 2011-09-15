@@ -107,7 +107,7 @@
   </ciManagement>
 
   <modules>
-    <module>tomcat-maven-plugin</module>
+    <module>tomcat6-maven-plugin</module>
     <!-- Module tomcat-maven-plugin-it is activated with the profile integration-test -->
   </modules>
 
