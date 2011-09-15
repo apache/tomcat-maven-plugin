@@ -40,7 +40,7 @@ Adding System Properties
       ...
       <plugin>
         <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat-maven-plugin</artifactId>
+        <artifactId>tomcat6-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
           <systemProperties>

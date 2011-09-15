@@ -72,7 +72,7 @@ mvn tomcat:deploy
       ...
       <plugin>
         <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat-maven-plugin</artifactId>
+        <artifactId>tomcat6-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
           <warFile>path/to/my/warFile.war</warFile>
@@ -126,7 +126,7 @@ mvn war:exploded tomcat:exploded
       ...
       <plugin>
         <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat-maven-plugin</artifactId>
+        <artifactId>tomcat6-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
           <warDirectory>path/to/my/warDir</warDirectory>
@@ -157,7 +157,7 @@ mvn war:exploded tomcat:exploded
       ...
       <plugin>
         <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat-maven-plugin</artifactId>
+        <artifactId>tomcat6-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
           <mode>both</mode>
@@ -188,7 +188,7 @@ mvn war:exploded tomcat:exploded
       ...
       <plugin>
         <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat-maven-plugin</artifactId>
+        <artifactId>tomcat6-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
           <contextFile>path/to/my/contextFile.xml</contextFile>
@@ -228,7 +228,7 @@ mvn war:inplace tomcat:inplace
       ...
       <plugin>
         <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat-maven-plugin</artifactId>
+        <artifactId>tomcat6-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
           <warSourceDirectory>path/to/my/warSourceDir</warSourceDirectory>
@@ -256,7 +256,7 @@ mvn war:inplace tomcat:inplace
     <plugins>
       <plugin>
         <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat-maven-plugin</artifactId>
+        <artifactId>tomcat6-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
           <mode>both</mode>
@@ -285,7 +285,7 @@ mvn war:inplace tomcat:inplace
       ...
       <plugin>
         <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat-maven-plugin</artifactId>
+        <artifactId>tomcat6-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
           <contextFile>path/to/my/contextFile.xml</contextFile>
@@ -317,7 +317,7 @@ mvn war:inplace tomcat:inplace
       ...
       <plugin>
         <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat-maven-plugin</artifactId>
+        <artifactId>tomcat6-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
           <mode>context</mode>
@@ -356,7 +356,7 @@ mvn tomcat:deploy
       ...
       <plugin>
         <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat-maven-plugin</artifactId>
+        <artifactId>tomcat6-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
           <contextFile>path/to/my/contextFile.xml</contextFile>

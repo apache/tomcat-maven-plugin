@@ -32,7 +32,7 @@
   <groupId>org.apache.tomcat.maven</groupId>
   <artifactId>tomcat-maven-plugin-parent</artifactId>
   <packaging>pom</packaging>
-  <name>Tomcat Maven Plugin Project</name>
+  <name>Tomcat Maven Plugin</name>
   <version>2.0-SNAPSHOT</version>
   <description>The Tomcat Maven Plugin provides goals to manipulate WAR projects within the Tomcat servlet
     container.

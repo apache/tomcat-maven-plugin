@@ -54,7 +54,7 @@ Tomcat 7 and Maven 2 plugin
 +----------------------------------------------+
   <plugin>
     <groupId>org.apache.tomcat.maven</groupId>
-    <artifactId>tomcat-maven-plugin</artifactId>
+    <artifactId>tomcat6-maven-plugin</artifactId>
     <version>${project.version}</version>
   </plugin>
 +----------------------------------------------+
@@ -112,7 +112,7 @@ Tomcat 7 and Maven 2 plugin
 +----------------------------------------------+
 <plugin>
   <groupId>org.apache.tomcat.maven</groupId>
-  <artifactId>tomcat-maven-plugin</artifactId>
+  <artifactId>tomcat6-maven-plugin</artifactId>
   <version>${project.version}</version>
   <configuration>
     <url>http://localhost:8080/manager/html</url>
