@@ -33,6 +33,9 @@
   <description>The Tomcat Maven Plugin provides goals to manipulate WAR projects within the Tomcat 6.x servlet container.
   </description>
 
+  <properties>
+    <tomcat.version>6.0.32</tomcat.version>
+  </properties>
   <prerequisites>
     <maven>${mavenVersion}</maven>
   </prerequisites>
@@ -77,58 +80,68 @@
     </dependency>
 
     <!-- tomcat dependencies -->
-
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>catalina</artifactId>
+      <version>${tomcat.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>catalina-ha</artifactId>
+      <version>${tomcat.version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tribes</artifactId>
+      <version>${tomcat.version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>el-api</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.tomcat</groupId>
-      <artifactId>jasper</artifactId>
+      <version>${tomcat.version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jdt.core.compiler</groupId>
       <artifactId>ecj</artifactId>
-    </dependency>    
+      <version>3.5.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>jasper</artifactId>
+      <version>${tomcat.version}</version>
+      <scope>runtime</scope>
+    </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>jasper-el</artifactId>
+      <version>${tomcat.version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>jsp-api</artifactId>
+      <version>${tomcat.version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>servlet-api</artifactId>
+      <version>${tomcat.version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>coyote</artifactId>
+      <version>${tomcat.version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>dbcp</artifactId>
+      <version>${tomcat.version}</version>
       <scope>runtime</scope>
     </dependency>
   </dependencies>

@@ -115,7 +115,7 @@
     <!-- No real dependency - just to ensure the correct build order by dependency resolution -->
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>tomcat-maven-plugin</artifactId>
+      <artifactId>tomcat6-maven-plugin</artifactId>
       <version>${project.version}</version>
       <type>maven-plugin</type>
       <scope>test</scope>
