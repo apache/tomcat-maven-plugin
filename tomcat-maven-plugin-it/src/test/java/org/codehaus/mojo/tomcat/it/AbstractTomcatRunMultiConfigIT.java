@@ -37,10 +37,10 @@ import static org.junit.Assert.assertTrue;
  *
  * @author Mark Michaelis
  */
-public final class TomcatRunMultiConfigIT
+public final class AbstractTomcatRunMultiConfigIT
     extends AbstractWarProjectIT
 {
-    private static final Logger LOG = LoggerFactory.getLogger( TomcatRunMultiConfigIT.class );
+    private static final Logger LOG = LoggerFactory.getLogger( AbstractTomcatRunMultiConfigIT.class );
 
     private static final String URL_QUERY = "\u3053\u3093\u306b\u3061\u306f";
 

@@ -90,6 +90,7 @@ public abstract class AbstractWarProjectIT
 
         webappHome = ResourceExtractor.simpleExtractResources( getClass(), "/" + getWarArtifactId() );
         verifier = new Verifier( webappHome.getAbsolutePath() );
+
         verifier.deleteArtifact( "org.codehaus.mojo.tomcat.it", getWarArtifactId(), "1.0-SNAPSHOT", "war" );
     }
 

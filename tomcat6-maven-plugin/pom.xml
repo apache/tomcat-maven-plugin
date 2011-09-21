@@ -144,6 +144,10 @@
       <version>${tomcat.version}</version>
       <scope>runtime</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.tomcat.maven</groupId>
+      <artifactId>tomcat-maven-plugin-it</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
@@ -160,29 +164,41 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/**IT*</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
-  <reporting>
-    <plugins>
-      <plugin>
-        <artifactId>maven-pmd-plugin</artifactId>
-        <version>2.4</version>
-        <configuration>
-          <targetJdk>${compileSource}</targetJdk>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-plugin-plugin</artifactId>
-        <version>2.5</version>
-        <configuration>
-          <requirements>
-            <jdk>${maven.compiler.target}</jdk>
-          </requirements>
-        </configuration>
-      </plugin>
-    </plugins>
-  </reporting>
 
+  <profiles>
+    <profile>
+      <id>run-its</id>
+
+      <build>
+        <plugins>
+          <plugin>
+            <!-- For integration tests the plugin needs to be installed before
+                 the integration tests are executed -->
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-install-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>install</goal>
+                </goals>
+                <phase>pre-integration-test</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+   </profiles>
 </project>

@@ -32,71 +32,12 @@
   <packaging>jar</packaging>
   <name>Tomcat Maven Plugin Integration Tests</name>
 
-  <description>
-    Integration Tests for the Tomcat-Maven-Plugin. To run the tests start this module with
-    profile "integration-test":
-
-    mvn clean verify -P integration-test
-
-    To ensure that every dependency is installed before to your local repository you might
-    call the parent POM with:
-
-    mvn clean verify -am -P integration-test -pl tomcat-maven-plugin-it
-  </description>
-
   <properties>
-    <!-- Nothing to deploy - just tests -->
-    <maven.deploy.skip>true</maven.deploy.skip>
     <!-- The time to wait between startup and shutdown of tomcat. Realized by a test which waits for the specified
          time. -->
     <it.sleep.time>2000</it.sleep.time>
     <maven.resources.escapeString>\</maven.resources.escapeString>
   </properties>
-
-  <build>
-    <defaultGoal>verify</defaultGoal>
-
-    <plugins>
-
-      <!-- Don't run "normal" tests -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <skipTests>true</skipTests>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>integration-test</id>
-            <goals>
-              <goal>integration-test</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>verify</id>
-            <goals>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-
-    <testResources>
-      <testResource>
-        <directory>src/test/project-resources</directory>
-        <filtering>true</filtering>
-      </testResource>
-      <testResource>
-        <directory>src/test/resources</directory>
-        <filtering>false</filtering>
-      </testResource>
-    </testResources>
-  </build>
 
   <dependencies>
     <!-- Test dependencies -->
@@ -111,14 +52,6 @@
     <dependency>
       <groupId>org.apache.maven.shared</groupId>
       <artifactId>maven-verifier</artifactId>
-    </dependency>
-    <!-- No real dependency - just to ensure the correct build order by dependency resolution -->
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>tomcat6-maven-plugin</artifactId>
-      <version>${project.version}</version>
-      <type>maven-plugin</type>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>

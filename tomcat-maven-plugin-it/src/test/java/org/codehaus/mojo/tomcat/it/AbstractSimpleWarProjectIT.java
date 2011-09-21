@@ -34,10 +34,10 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Mark Michaelis
  */
-public class SimpleWarProjectIT
+public abstract class AbstractSimpleWarProjectIT
     extends AbstractWarProjectIT
 {
-    private static final Logger LOG = LoggerFactory.getLogger( SimpleWarProjectIT.class );
+    private static final Logger LOG = LoggerFactory.getLogger( AbstractSimpleWarProjectIT.class );
 
     @Override
     protected String getWebappUrl()
