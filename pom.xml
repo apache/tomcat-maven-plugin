@@ -37,6 +37,8 @@
   <description>The Tomcat Maven Plugin provides goals to manipulate WAR projects within the Tomcat servlet
     container.
   </description>
+
+  <url>http://tomcat.apache.org/maven-plugin-${project.version}</url>
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
