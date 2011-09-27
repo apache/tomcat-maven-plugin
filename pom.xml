@@ -95,6 +95,95 @@
     </license>
   </licenses>
 
+  <mailingLists>
+    <mailingList>
+      <name>User List</name>
+      <subscribe>users-subscribe@tomcat.apache.org</subscribe>
+      <unsubscribe>users-unsubscribe@tomcat.apache.org</unsubscribe>
+      <post>users@tomcat.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/tomcat-users/</archive>
+      <otherArchives>
+        <otherArchive>http://marc.info/?l=tomcat-user</otherArchive>
+        <otherArchive>http://markmail.org/list/org.apache.tomcat.user/</otherArchive>
+        <otherArchive>http://old.nabble.com/Tomcat---User-f342.html</otherArchive>
+        <otherArchive>http://www.mail-archive.com/users@tomcat.apache.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+
+    <mailingList>
+      <name>Development List</name>
+      <subscribe>dev-subscribe@tomcat.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@tomcat.apache.org</unsubscribe>
+      <post>dev@tomcat.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/tomcat-dev/</archive>
+      <otherArchives>
+        <otherArchive>http://marc.info/?l=tomcat-dev</otherArchive>
+        <otherArchive>http://markmail.org/list/org.apache.tomcat.dev/</otherArchive>
+        <otherArchive>http://old.nabble.com/Tomcat---Dev-f341.html</otherArchive>
+        <otherArchive>http://www.mail-archive.com/dev@tomcat.apache.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+
+    <mailingList>
+      <name>Announcements List</name>
+      <subscribe>announce-subscribe@tomcat.apache.org</subscribe>
+      <unsubscribe>announce-unsubscribe@tomcat.apache.org</unsubscribe>
+      <post>N/A</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/tomcat-announce/</archive>
+      <otherArchives>
+        <otherArchive>http://marc.info/?l=tomcat-announce</otherArchive>
+        <otherArchive>http://markmail.org/list/org.apache.tomcat.announce/</otherArchive>
+        <otherArchive>http://www.mail-archive.com/announce@tomcat.apache.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+
+
+
+    <!-- old mailing lists from codehaus -->
+    <mailingList>
+      <name>Legacy Development List</name>
+      <subscribe>dev-subscribe@mojo.codehaus.org</subscribe>
+      <unsubscribe>dev-unsubscribe@mojo.codehaus.org</unsubscribe>
+      <post>dev@mojo.codehaus.org</post>
+      <archive>http://archive.codehaus.org/lists/org.codehaus.mojo.dev</archive>
+      <otherArchives>
+        <otherArchive>http://old.nabble.com/mojo---dev-f11981.html</otherArchive>
+        <otherArchive>http://markmail.org/list/org.codehaus.mojo.dev</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Legacy User List</name>
+      <subscribe>user-subscribe@mojo.codehaus.org</subscribe>
+      <unsubscribe>user-unsubscribe@mojo.codehaus.org</unsubscribe>
+      <post>user@mojo.codehaus.org</post>
+      <archive>http://archive.codehaus.org/lists/org.codehaus.mojo.user</archive>
+      <otherArchives>
+        <otherArchive>http://old.nabble.com/mojo---user-f11980.html</otherArchive>
+        <otherArchive>http://markmail.org/list/org.codehaus.mojo.user</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Legacy Commits List</name>
+      <subscribe>scm-subscribe@mojo.codehaus.org</subscribe>
+      <unsubscribe>scm-unsubscribe@mojo.codehaus.org</unsubscribe>
+      <archive>http://archive.codehaus.org/lists/org.codehaus.mojo.scm</archive>
+      <otherArchives>
+        <otherArchive>http://markmail.org/list/org.codehaus.mojo.scm</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Legacy Announcements List</name>
+      <subscribe>announce-subscribe@mojo.codehaus.org</subscribe>
+      <unsubscribe>announce-unsubscribe@mojo.codehaus.org</unsubscribe>
+      <post>announce@mojo.codehaus.org</post>
+      <archive>http://archive.codehaus.org/lists/org.codehaus.mojo.announce</archive>
+      <otherArchives>
+        <otherArchive>http://old.nabble.com/mojo---announce-f11982.html</otherArchive>
+        <otherArchive>http://markmail.org/list/org.codehaus.mojo.announce</otherArchive>
+      </otherArchives>
+    </mailingList>
+  </mailingLists>
+
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/tomcat/maven-plugin/trunk/</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/tomcat/maven-plugin/trunk/</developerConnection>
