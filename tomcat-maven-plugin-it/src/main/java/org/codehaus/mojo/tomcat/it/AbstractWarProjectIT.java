@@ -20,10 +20,6 @@ package org.codehaus.mojo.tomcat.it;
  */
 
 
-
-import java.io.File;
-import java.io.IOException;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
@@ -39,6 +35,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Base class for all tests which have a war-project using the tomcat-maven-plugin below project-resources.
@@ -105,12 +106,13 @@ public abstract class AbstractWarProjectIT
 
     /**
      * Executes mvn verify and retrieves the response from the web application.
+     *
      * @return the response given
      * @throws VerificationException if the verifier failed to execute the goal
-     * @throws InterruptedException if the execution got interrupted in some way
+     * @throws InterruptedException  if the execution got interrupted in some way
      */
     protected final String executeVerifyWithGet()
-        throws VerificationException, InterruptedException
+        throws VerificationException, InterruptedException, IOException
     {
         final String[] responseBodies = new String[]{ null };
 
@@ -126,6 +128,11 @@ public abstract class AbstractWarProjectIT
         thread.start();
 
         LOG.info( "Executing verify on " + webappHome.getAbsolutePath() );
+        Map<String, String> map = new HashMap<String, String>();
+        map.put( "@project.version@", System.getProperty( "mojoVersion" ) );
+        System.out.println( " webappHome: " + webappHome );
+        verifier.filterFile( "pom.xml", "pom.xml", "UTF-8", map );
+        verifier.displayStreamBuffers();
         verifier.executeGoal( "verify" );
 
         thread.join();

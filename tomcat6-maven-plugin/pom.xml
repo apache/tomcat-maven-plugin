@@ -41,6 +41,8 @@
   </prerequisites>
   <inceptionYear>2005</inceptionYear>
 
+
+
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -161,6 +163,12 @@
   </dependencies>
 
   <build>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>true</filtering>
+      </testResource>
+    </testResources>
     <plugins>
       <plugin>
         <groupId>org.codehaus.plexus</groupId>
@@ -204,6 +212,29 @@
                   <goal>install</goal>
                 </goals>
                 <phase>pre-integration-test</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>integration-test</id>
+                <goals>
+                  <goal>integration-test</goal>
+                </goals>
+                <configuration>
+                  <systemPropertyVariables>
+                    <mojoVersion>${project.version}</mojoVersion>
+                  </systemPropertyVariables>
+                </configuration>
+              </execution>
+              <execution>
+                <id>verify</id>
+                <goals>
+                  <goal>verify</goal>
+                </goals>
               </execution>
             </executions>
           </plugin>

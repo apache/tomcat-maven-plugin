@@ -32,7 +32,7 @@ import static org.junit.Assert.assertNotNull;
  *
  * @author Mark Michaelis
  */
-public final class AbstractUsageContextpathIT
+public class AbstractUsageContextpathIT
     extends AbstractWarProjectIT
 {
     private static final Logger LOG = LoggerFactory.getLogger( AbstractUsageContextpathIT.class );

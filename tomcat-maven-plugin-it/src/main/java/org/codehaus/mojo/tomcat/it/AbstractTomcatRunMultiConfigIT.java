@@ -37,7 +37,7 @@ import static org.junit.Assert.assertTrue;
  *
  * @author Mark Michaelis
  */
-public final class AbstractTomcatRunMultiConfigIT
+public class AbstractTomcatRunMultiConfigIT
     extends AbstractWarProjectIT
 {
     private static final Logger LOG = LoggerFactory.getLogger( AbstractTomcatRunMultiConfigIT.class );
@@ -81,8 +81,8 @@ public final class AbstractTomcatRunMultiConfigIT
         final File emptyLocation = new File( tomcatFolder, "conf/empty.txt" );
 
         assertTrue(
-            "Tomcat folder \"" + tomcatFolder.getAbsolutePath() + "\" should exist in target folder of project at " +
-                webappHome, tomcatFolder.exists() );
+            "Tomcat folder \"" + tomcatFolder.getAbsolutePath() + "\" should exist in target folder of project at "
+                + webappHome, tomcatFolder.exists() );
         assertTrue(
             "File \"" + emptyLocation.getAbsolutePath() + "\" should have been copied from tcconf to tomcat/conf",
             emptyLocation.exists() );

@@ -30,7 +30,7 @@
 
   <artifactId>tomcat-maven-plugin-it</artifactId>
   <packaging>jar</packaging>
-  <name>Tomcat Maven Plugin Integration Tests</name>
+  <name>Tomcat Maven Plugin :: Integration Tests</name>
 
   <properties>
     <!-- The time to wait between startup and shutdown of tomcat. Realized by a test which waits for the specified
