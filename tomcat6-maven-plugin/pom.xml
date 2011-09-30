@@ -227,6 +227,8 @@
                 <configuration>
                   <systemPropertyVariables>
                     <mojoVersion>${project.version}</mojoVersion>
+                    <verifier.debug>${verifier.debug}</verifier.debug>
+                    <verifier.debugJvm>${verifier.debugJvm}</verifier.debugJvm>
                   </systemPropertyVariables>
                 </configuration>
               </execution>

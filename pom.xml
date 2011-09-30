@@ -50,10 +50,13 @@
     <failsafe.version>2.9</failsafe.version>
     <junit.version>4.9</junit.version>
     <it.sleep.time>2000</it.sleep.time>
+    <verifier.debug>false</verifier.debug>
+    <verifier.debugJvm>false</verifier.debugJvm>
     <maven.resources.escapeString>\</maven.resources.escapeString>
     <distributionReleaseUrl>scp://people.apache.org/www/people.apache.org/repo/m2-ibiblio-rsync-repository</distributionReleaseUrl>
     <distributionSnapshotsUrl>scp://people.apache.org/www/people.apache.org/repo/m2-snapshot-repository</distributionSnapshotsUrl>
     <distributionSiteUrl>scp://people.apache.org/www/tomcat.apache.org/maven-plugin-${project.version}</distributionSiteUrl>
+
   </properties>
 
   <prerequisites>
