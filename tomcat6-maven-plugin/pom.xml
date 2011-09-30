@@ -41,8 +41,6 @@
   </prerequisites>
   <inceptionYear>2005</inceptionYear>
 
-
-
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>

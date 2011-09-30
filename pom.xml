@@ -56,7 +56,7 @@
     <distributionReleaseUrl>scp://people.apache.org/www/people.apache.org/repo/m2-ibiblio-rsync-repository</distributionReleaseUrl>
     <distributionSnapshotsUrl>scp://people.apache.org/www/people.apache.org/repo/m2-snapshot-repository</distributionSnapshotsUrl>
     <distributionSiteUrl>scp://people.apache.org/www/tomcat.apache.org/maven-plugin-${project.version}</distributionSiteUrl>
-
+    <distributionIdSnapshots>apache.snapshots</distributionIdSnapshots>
   </properties>
 
   <prerequisites>
@@ -386,7 +386,7 @@
       <url>${distributionReleaseUrl}</url>
     </repository>
     <snapshotRepository>
-      <id>apache.snapshots</id>
+      <id>${distributionIdSnapshots}</id>
       <name>Apache Development Snapshot Repository</name>
       <url>${distributionSnapshotsUrl}</url>
     </snapshotRepository>

@@ -94,7 +94,7 @@ public abstract class AbstractWarProjectIT
 
         verifier.setDebug( Boolean.getBoolean( "verifier.debug" ) );
         verifier.setDebugJvm( Boolean.getBoolean( "verifier.debugJvm" ) );
-        verifier.displayStreamBuffers();
+
 
         verifier.deleteArtifact( "org.codehaus.mojo.tomcat.it", getWarArtifactId(), "1.0-SNAPSHOT", "war" );
     }
@@ -132,12 +132,9 @@ public abstract class AbstractWarProjectIT
         thread.start();
 
         LOG.info( "Executing verify on " + webappHome.getAbsolutePath() );
-        /*
-        Map<String, String> map = new HashMap<String, String>();
-        map.put( "@project.version@", System.getProperty( "mojoVersion" ) );
-        System.out.println( " webappHome: " + webappHome );
-        verifier.filterFile( "pom.xml", "pom.xml", "UTF-8", map );*/
         verifier.executeGoal( "verify" );
+
+        verifier.displayStreamBuffers();
 
         thread.join();
 
