@@ -259,15 +259,11 @@ public abstract class AbstractRunMojo
      * naming disabled by default.
      * </p>
      * <p>
-     * With release 1.2 of this plugin useNaming defaults to false as it does for Tomcat 7. To enable it,
-     * set this parameter to true or set the property <code>maven.tomcat.useNaming</code>.
-     * </p>
-     * <p>
      * <strong>Note:</strong> This setting is ignored if you provide a <code>server.xml</code> for your
      * Tomcat. Instead please configure naming in the <code>server.xml</code>.
      * </p>
      *
-     * @parameter expression="${maven.tomcat.useNaming}" default-value="false"
+     * @parameter expression="${maven.tomcat.useNaming}" default-value="true"
      * @todo adopt documentation once Tomcat 7 is supported (MTOMCAT-62)
      * @see <a href="http://tomcat.apache.org/tomcat-6.0-doc/api/org/apache/catalina/startup/Embedded.html">org.apache.catalina.startup.Embedded</a>
      * @see <a href="http://tomcat.apache.org/tomcat-7.0-doc/api/org/apache/catalina/startup/Tomcat.html">org.apache.catalina.startup.Tomcat</a>
@@ -614,9 +610,9 @@ public abstract class AbstractRunMojo
     private void startContainer()
         throws IOException, LifecycleException, MojoExecutionException
     {
-
         // Set the system properties
         setupSystemProperties();
+
         final Embedded container;
         if ( serverXml != null )
         {
@@ -704,6 +700,7 @@ public abstract class AbstractRunMojo
         container.start();
 
         EmbeddedRegistry.getInstance().register( container );
+
     }
 
     protected ClassRealm getTomcatClassLoader()
