@@ -34,6 +34,7 @@ import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+import org.apache.tomcat.maven.common.AbstractI18NTomcatMojo;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
@@ -72,7 +73,7 @@ import java.util.Set;
  * @version $Id: AbstractRunMojo.java 14033 2011-05-04 17:51:15Z bimargulies $
  */
 public abstract class AbstractRunMojo
-    extends AbstractI18NMojo
+    extends AbstractI18NTomcat6Mojo
 {
     // ----------------------------------------------------------------------
     // Mojo Parameters

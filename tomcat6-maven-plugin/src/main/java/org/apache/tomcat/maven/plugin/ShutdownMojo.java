@@ -22,6 +22,7 @@ package org.apache.tomcat.maven.plugin;
 
 import org.apache.catalina.LifecycleException;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.tomcat.maven.common.AbstractI18NTomcatMojo;
 
 
 /**
@@ -39,7 +40,7 @@ import org.apache.maven.plugin.MojoExecutionException;
  * @since 1.1
  */
 public class ShutdownMojo
-    extends AbstractI18NMojo
+    extends AbstractI18NTomcat6Mojo
 {
     /**
      * Shuts down all embedded tomcats which got started up to now.

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -18,7 +17,6 @@
   specific language governing permissions and limitations
   under the License.
 -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <!-- for more information, see the documentation of this POM: http://maven.apache.org/pom/maven/ -->
@@ -205,12 +203,23 @@
   </ciManagement>
 
   <modules>
-    <module>tomcat6-maven-plugin</module>
+    <module>common-tomcat-maven-plugin</module>
     <module>tomcat-maven-plugin-it</module>
+    <module>tomcat6-maven-plugin</module>
   </modules>
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>common-tomcat-maven-plugin</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat-maven-plugin-it</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-plugin-api</artifactId>
@@ -294,12 +303,6 @@
         <artifactId>logback-classic</artifactId>
         <version>0.9.30</version>
       </dependency>
-      <dependency>
-        <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat-maven-plugin-it</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      
     </dependencies>
   </dependencyManagement>
 

@@ -1,4 +1,4 @@
-package org.apache.tomcat.maven.plugin;
+package org.apache.tomcat.maven.common;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,33 +19,21 @@ package org.apache.tomcat.maven.plugin;
  * under the License.
  */
 
+import org.apache.maven.plugin.AbstractMojo;
+
 import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.apache.maven.plugin.AbstractMojo;
-
 /**
  * Abstract goal that provides i18n support.
- * 
+ *
  * @author Mark Hobson <markhobson@gmail.com>
  * @version $Id: AbstractI18NMojo.java 12852 2010-10-12 22:04:32Z thragor $
  */
-public abstract class AbstractI18NMojo
+public abstract class AbstractI18NTomcatMojo
     extends AbstractMojo
 {
-    // ----------------------------------------------------------------------
-    // Mojo Parameters
-    // ----------------------------------------------------------------------
-
-    /**
-     * The webapp context path to use for the web application being run. This must always start with a forward-slash
-     * ('/').
-     * 
-     * @parameter expression="${maven.tomcat.path}" default-value="/${project.artifactId}"
-     * @required
-     */
-    protected String path;
 
     // ----------------------------------------------------------------------
     // Fields
@@ -63,9 +51,9 @@ public abstract class AbstractI18NMojo
     /**
      * Creates a new <code>AbstractI18NMojo</code>.
      */
-    public AbstractI18NMojo()
+    public AbstractI18NTomcatMojo( )
     {
-        String packageName = getClass().getPackage().getName();
+        String packageName = getClass( ).getPackage( ).getName( );
 
         messages = ResourceBundle.getBundle( packageName + ".messages" );
     }
@@ -76,7 +64,7 @@ public abstract class AbstractI18NMojo
 
     /**
      * Gets the message for the given key from this packages resource bundle.
-     * 
+     *
      * @param key the key for the required message
      * @return the message
      */
@@ -102,33 +90,33 @@ public abstract class AbstractI18NMojo
 
     /**
      * Gets the message for the given key from this packages resource bundle and formats it with the given parameter.
-     * 
-     * @param key the key for the required message
+     *
+     * @param key   the key for the required message
      * @param param the parameter to be used to format the message with
      * @return the formatted message
      */
     protected String getMessage( String key, Object param )
     {
-        return MessageFormat.format( getMessage( key ), new Object[] { param } );
+        return MessageFormat.format( getMessage( key ), new Object[]{ param } );
     }
 
     /**
      * Gets the message for the given key from this packages resource bundle and formats it with the given parameters.
-     * 
-     * @param key the key for the required message
+     *
+     * @param key    the key for the required message
      * @param param1 the first parameter to be used to format the message with
      * @param param2 the second parameter to be used to format the message with
      * @return the formatted message
      */
     protected String getMessage( String key, Object param1, Object param2 )
     {
-        return MessageFormat.format( getMessage( key ), new Object[] { param1, param2 } );
+        return MessageFormat.format( getMessage( key ), new Object[]{ param1, param2 } );
     }
 
     /**
      * Gets the message for the given key from this packages resource bundle and formats it with the given parameters.
-     * 
-     * @param key the key for the required message
+     *
+     * @param key    the key for the required message
      * @param params the parameters to be used to format the message with
      * @return the formatted message
      */
@@ -136,4 +124,6 @@ public abstract class AbstractI18NMojo
     {
         return MessageFormat.format( getMessage( key ), params );
     }
+
+    protected abstract String getPath();
 }

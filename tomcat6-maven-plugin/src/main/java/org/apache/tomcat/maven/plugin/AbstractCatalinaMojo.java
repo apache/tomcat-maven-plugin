@@ -27,6 +27,7 @@ import java.util.StringTokenizer;
 import org.apache.maven.artifact.manager.WagonManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
+import org.apache.tomcat.maven.common.AbstractI18NTomcatMojo;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
@@ -36,7 +37,7 @@ import org.codehaus.plexus.util.StringUtils;
  * @version $Id: AbstractCatalinaMojo.java 12852 2010-10-12 22:04:32Z thragor $
  */
 public abstract class AbstractCatalinaMojo
-    extends AbstractI18NMojo
+    extends AbstractI18NTomcat6Mojo
 {
     // ----------------------------------------------------------------------
     // Constants
