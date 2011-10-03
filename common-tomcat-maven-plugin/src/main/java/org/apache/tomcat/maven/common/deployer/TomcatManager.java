@@ -1,4 +1,4 @@
-package org.apache.tomcat.maven.plugin.tomcat6;
+package org.apache.tomcat.maven.common.deployer;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -31,6 +31,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 /**
+ * FIXME http connection tru a proxy
+ * FIXME preemptive support
+ * FIXME move to ASF httpclient ?
  * A Tomcat manager webapp invocation wrapper.
  * 
  * @author Mark Hobson <markhobson@gmail.com>

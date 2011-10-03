@@ -22,6 +22,8 @@ package org.apache.tomcat.maven.plugin.tomcat6;
 import org.apache.maven.artifact.manager.WagonManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
+import org.apache.tomcat.maven.common.deployer.TomcatManager;
+import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.io.IOException;

@@ -20,6 +20,7 @@ package org.apache.tomcat.maven.plugin.tomcat6;
  */
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
 
 import java.io.IOException;
 
