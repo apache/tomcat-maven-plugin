@@ -634,7 +634,7 @@ public class TomcatManager
     private String deployImpl( String path, URL config, URL war, InputStream data, boolean update, String tag )
         throws TomcatManagerException, IOException
     {
-        StringBuffer buffer = new StringBuffer( "/deploy" );
+        StringBuilder buffer = new StringBuilder( "/deploy" );
         buffer.append( "?path=" ).append( URLEncoder.encode( path, charset ) );
 
         if ( config != null )
@@ -645,11 +645,6 @@ public class TomcatManager
         if ( war != null )
         {
             buffer.append( "&war=" ).append( URLEncoder.encode( war.toString(), charset ) );
-        }
-        else
-        {
-            // for Tomcat 5.0.27
-            buffer.append( "&war=" );
         }
 
         if ( update )

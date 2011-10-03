@@ -34,10 +34,10 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Mark Michaelis
  */
-public abstract class AbstractSimpleWarProjectIT
+public abstract class AbstractDeployWarProjectIT
     extends AbstractWarProjectIT
 {
-    private static final Logger LOG = LoggerFactory.getLogger( AbstractSimpleWarProjectIT.class );
+    private static final Logger LOG = LoggerFactory.getLogger( AbstractDeployWarProjectIT.class );
 
     @Override
     protected String getWebappUrl()
@@ -48,7 +48,7 @@ public abstract class AbstractSimpleWarProjectIT
     @Override
     protected String getWarArtifactId()
     {
-        return "simple-war-project";
+        return "deploy-war-project";
     }
 
     @Test
@@ -61,7 +61,6 @@ public abstract class AbstractSimpleWarProjectIT
 
         assertTrue( "Tomcat folder should exist in target folder of project at " + webappHome,
                     new File( webappHome, "target/tomcat" ).exists() );
-
         LOG.info( "Error Free Log check" );
         verifier.verifyErrorFreeLog();
     }

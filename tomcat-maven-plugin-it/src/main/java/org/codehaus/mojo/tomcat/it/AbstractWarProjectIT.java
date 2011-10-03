@@ -92,9 +92,11 @@ public abstract class AbstractWarProjectIT
         webappHome = ResourceExtractor.simpleExtractResources( getClass(), "/" + getWarArtifactId() );
         verifier = new Verifier( webappHome.getAbsolutePath() );
 
-        verifier.setDebug( Boolean.getBoolean( "verifier.debug" ) );
-        verifier.setDebugJvm( Boolean.getBoolean( "verifier.debugJvm" ) );
+        boolean debugVerifier = Boolean.getBoolean( "verifier.maven.debug" );
 
+        verifier.setMavenDebug( debugVerifier );
+        verifier.setDebugJvm( Boolean.getBoolean( "verifier.debugJvm" ) );
+        verifier.displayStreamBuffers();
 
         verifier.deleteArtifact( "org.codehaus.mojo.tomcat.it", getWarArtifactId(), "1.0-SNAPSHOT", "war" );
     }

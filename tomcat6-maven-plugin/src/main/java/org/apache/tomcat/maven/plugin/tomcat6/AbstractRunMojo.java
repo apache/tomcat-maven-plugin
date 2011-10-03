@@ -298,6 +298,13 @@ public abstract class AbstractRunMojo
      */
     private String protocol;
 
+    /**
+     * The path of the Tomcat users XML file.
+     *
+     * @parameter expression = "${maven.tomcat.tomcatUsers.file}"
+     */
+    private File tomcatUsers;
+
     // ----------------------------------------------------------------------
     // Fields
     // ----------------------------------------------------------------------
@@ -612,97 +619,126 @@ public abstract class AbstractRunMojo
     private void startContainer( )
         throws IOException, LifecycleException, MojoExecutionException
     {
-        // Set the system properties
-        setupSystemProperties( );
+        String previousCatalinaBase = System.getProperty( "catalina.base" );
 
-        final Embedded container;
-        if ( serverXml != null )
+        try
         {
-            if ( !serverXml.exists( ) )
+
+            // Set the system properties
+            setupSystemProperties( );
+
+            System.setProperty( "catalina.base", configurationDir.getAbsolutePath( ) );
+
+            final Embedded container;
+            if ( serverXml != null )
             {
-                throw new MojoExecutionException( serverXml.getPath( ) + " not exists" );
+                if ( !serverXml.exists( ) )
+                {
+                    throw new MojoExecutionException( serverXml.getPath( ) + " not exists" );
+                }
+
+                container = new Catalina( );
+                container.setCatalinaHome( configurationDir.getAbsolutePath( ) );
+                ( (Catalina) container ).setConfigFile( serverXml.getPath( ) );
+                //( (Catalina) container ).setRedirectStreams( true );
+                ( (Catalina) container ).setUseNaming( this.useNaming );
+
+                container.start( );
+            }
+            else
+            {
+                // create server
+                container = new Embedded( );
+                container.setCatalinaHome( configurationDir.getAbsolutePath( ) );
+                MemoryRealm memoryRealm = new MemoryRealm( );
+
+                if ( tomcatUsers != null )
+                {
+                    if ( !tomcatUsers.exists( ) )
+                    {
+                        throw new MojoExecutionException( " tomcatUsers " + tomcatUsers.getPath( ) + " not exists" );
+                    }
+                    getLog( ).info( "use tomcat-users.xml from " + tomcatUsers.getAbsolutePath( ) );
+                    memoryRealm.setPathname( tomcatUsers.getAbsolutePath( ) );
+                }
+
+                container.setRealm( memoryRealm );
+                container.setUseNaming( useNaming );
+
+                //container.createLoader( getTomcatClassLoader() ).
+
+                // create context
+                Context context = createContext( container );
+
+                // create host
+                String appBase = new File( configurationDir, "webapps" ).getAbsolutePath( );
+                Host host = container.createHost( "localHost", appBase );
+
+                host.addChild( context );
+
+                if ( addContextWarDependencies )
+                {
+                    Collection<Context> dependecyContexts = createDependencyContexts( container );
+                    for ( Context extraContext : dependecyContexts )
+                    {
+                        host.addChild( extraContext );
+                    }
+                }
+
+                // create engine
+                Engine engine = container.createEngine( );
+                engine.setName( "localEngine" );
+                engine.addChild( host );
+                engine.setDefaultHost( host.getName( ) );
+                container.addEngine( engine );
+                if ( useSeparateTomcatClassLoader )
+                {
+                    engine.setParentClassLoader( getTomcatClassLoader( ) );
+                }
+                // create http connector
+                Connector httpConnector = container.createConnector( (InetAddress) null, port, protocol );
+                if ( httpsPort > 0 )
+                {
+                    httpConnector.setRedirectPort( httpsPort );
+                }
+                httpConnector.setURIEncoding( uriEncoding );
+                container.addConnector( httpConnector );
+
+                // create https connector
+                if ( httpsPort > 0 )
+                {
+                    Connector httpsConnector = container.createConnector( (InetAddress) null, httpsPort, true );
+                    if ( keystoreFile != null )
+                    {
+                        httpsConnector.setAttribute( "keystoreFile", keystoreFile );
+                    }
+                    if ( keystorePass != null )
+                    {
+                        httpsConnector.setAttribute( "keystorePass", keystorePass );
+                    }
+                    container.addConnector( httpsConnector );
+
+                }
+
+                // create ajp connector
+                if ( ajpPort > 0 )
+                {
+                    Connector ajpConnector = container.createConnector( (InetAddress) null, ajpPort, ajpProtocol );
+                    ajpConnector.setURIEncoding( uriEncoding );
+                    container.addConnector( ajpConnector );
+                }
+                container.start( );
             }
 
-            container = new Catalina( );
-            container.setCatalinaHome( configurationDir.getAbsolutePath( ) );
-            ( (Catalina) container ).setConfigFile( serverXml.getPath( ) );
-            container.start( );
+            EmbeddedRegistry.getInstance( ).register( container );
         }
-        else
+        finally
         {
-            // create server
-            container = new Embedded( );
-            container.setCatalinaHome( configurationDir.getAbsolutePath( ) );
-            container.setRealm( new MemoryRealm( ) );
-            container.setUseNaming( useNaming );
-
-            //container.createLoader( getTomcatClassLoader() ).
-
-            // create context
-            Context context = createContext( container );
-
-            // create host
-            String appBase = new File( configurationDir, "webapps" ).getAbsolutePath( );
-            Host host = container.createHost( "localHost", appBase );
-
-            host.addChild( context );
-
-            if ( addContextWarDependencies )
+            if ( previousCatalinaBase != null )
             {
-                Collection<Context> dependecyContexts = createDependencyContexts( container );
-                for ( Context extraContext : dependecyContexts )
-                {
-                    host.addChild( extraContext );
-                }
-            }
-
-            // create engine
-            Engine engine = container.createEngine( );
-            engine.setName( "localEngine" );
-            engine.addChild( host );
-            engine.setDefaultHost( host.getName( ) );
-            container.addEngine( engine );
-            if ( useSeparateTomcatClassLoader )
-            {
-                engine.setParentClassLoader( getTomcatClassLoader( ) );
-            }
-            // create http connector
-            Connector httpConnector = container.createConnector( (InetAddress) null, port, protocol );
-            if ( httpsPort > 0 )
-            {
-                httpConnector.setRedirectPort( httpsPort );
-            }
-            httpConnector.setURIEncoding( uriEncoding );
-            container.addConnector( httpConnector );
-
-            // create https connector
-            if ( httpsPort > 0 )
-            {
-                Connector httpsConnector = container.createConnector( (InetAddress) null, httpsPort, true );
-                if ( keystoreFile != null )
-                {
-                    httpsConnector.setAttribute( "keystoreFile", keystoreFile );
-                }
-                if ( keystorePass != null )
-                {
-                    httpsConnector.setAttribute( "keystorePass", keystorePass );
-                }
-                container.addConnector( httpsConnector );
-
-            }
-
-            // create ajp connector
-            if ( ajpPort > 0 )
-            {
-                Connector ajpConnector = container.createConnector( (InetAddress) null, ajpPort, ajpProtocol );
-                ajpConnector.setURIEncoding( uriEncoding );
-                container.addConnector( ajpConnector );
+                System.setProperty( "catalina.base", previousCatalinaBase );
             }
         }
-        container.start( );
-
-        EmbeddedRegistry.getInstance( ).register( container );
-
     }
 
     protected ClassRealm getTomcatClassLoader( )
