@@ -1,4 +1,4 @@
-package org.apache.tomcat.maven.plugin;
+package org.apache.tomcat.maven.plugin.tomcat6;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,30 +19,32 @@ package org.apache.tomcat.maven.plugin;
  * under the License.
  */
 
+import java.io.File;
+
 import org.apache.maven.plugin.MojoExecutionException;
 
-import java.io.IOException;
-
 /**
- * Lists JNDI resources in Tomcat.
+ * Deploy an exploded WAR to Tomcat.
  * 
- * @goal resources
+ * @goal exploded
  * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: ResourcesMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @version $Id: ExplodedMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @todo depend on war:exploded when MNG-1649 resolved
  */
-public class ResourcesMojo
-    extends AbstractCatalinaMojo
+public class ExplodedMojo
+    extends AbstractDeployMojo
 {
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
 
     /**
-     * The class name of the resources to list, or <code>null</code> for all.
+     * The path of the exploded WAR directory to deploy.
      * 
-     * @parameter expression = "${maven.tomcat.type}"
+     * @parameter expression = "${project.build.directory}/${project.build.finalName}"
+     * @required
      */
-    private String type;
+    private File warDirectory;
 
     // ----------------------------------------------------------------------
     // Protected Methods
@@ -52,18 +54,21 @@ public class ResourcesMojo
      * {@inheritDoc}
      */
     @Override
-    protected void invokeManager()
-        throws MojoExecutionException, TomcatManagerException, IOException
+    protected File getWarFile()
     {
-        if ( type == null )
-        {
-            getLog().info( messagesProvider.getMessage( "ResourcesMojo.listAllResources", getURL() ) );
-        }
-        else
-        {
-            getLog().info( messagesProvider.getMessage( "ResourcesMojo.listTypedResources", type, getURL() ) );
-        }
+        return warDirectory;
+    }
 
-        log( getManager().getResources( type ) );
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void validateWarFile()
+        throws MojoExecutionException
+    {
+        if ( !warDirectory.exists() || !warDirectory.isDirectory() )
+        {
+            throw new MojoExecutionException( messagesProvider.getMessage( "ExplodedMojo.missingWar", warDirectory.getPath() ) );
+        }
     }
 }

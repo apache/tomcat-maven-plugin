@@ -1,4 +1,4 @@
-package org.apache.tomcat.maven.plugin;
+package org.apache.tomcat.maven.plugin.tomcat6;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -24,14 +24,14 @@ import org.apache.maven.plugin.MojoExecutionException;
 import java.io.IOException;
 
 /**
- * Lists security roles in Tomcat.
+ * Lists session information for a WAR in Tomcat.
  * 
- * @goal roles
+ * @goal sessions
  * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: RolesMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @version $Id: SessionsMojo.java 12852 2010-10-12 22:04:32Z thragor $
  */
-public class RolesMojo
-    extends AbstractCatalinaMojo
+public class SessionsMojo
+    extends AbstractWarCatalinaMojo
 {
     // ----------------------------------------------------------------------
     // Protected Methods
@@ -44,8 +44,8 @@ public class RolesMojo
     protected void invokeManager()
         throws MojoExecutionException, TomcatManagerException, IOException
     {
-        getLog().info( messagesProvider.getMessage( "RolesMojo.listRoles", getURL() ) );
+        getLog().info( messagesProvider.getMessage( "SessionsMojo.listSessions", getDeployedURL() ) );
 
-        log( getManager().getRoles() );
+        log( getManager().getSessions( getPath() ) );
     }
 }

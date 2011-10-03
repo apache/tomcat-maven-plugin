@@ -1,4 +1,4 @@
-package org.apache.tomcat.maven.plugin;
+package org.apache.tomcat.maven.plugin.tomcat6;
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one

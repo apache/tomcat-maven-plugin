@@ -1,4 +1,5 @@
-package org.apache.tomcat.maven.plugin;
+package org.apache.tomcat.maven.plugin.tomcat6;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,40 +19,33 @@ package org.apache.tomcat.maven.plugin;
  * under the License.
  */
 
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.tomcat.maven.common.messages.MessagesProvider;
+import org.apache.maven.plugin.MojoExecutionException;
+
+import java.io.IOException;
 
 /**
- * olamy: as long as maven plugin descriptor metadata generation doesn't support annotations outside of the same
- * project, we must have those fields here
- *
- * @author Olivier Lamy
+ * Lists all the currently deployed web applications in Tomcat.
+ * 
+ * @goal list
+ * @author Mark Hobson <markhobson@gmail.com>
+ * @version $Id: ListMojo.java 12852 2010-10-12 22:04:32Z thragor $
  */
-public abstract class AbstractI18NTomcat6Mojo
-    extends AbstractMojo
+public class ListMojo
+    extends AbstractCatalinaMojo
 {
-
-    /**
-     * @component
-     */
-    protected MessagesProvider messagesProvider;
-
     // ----------------------------------------------------------------------
-    // Mojo Parameters
+    // Protected Methods
     // ----------------------------------------------------------------------
 
     /**
-     * The webapp context path to use for the web application being run. This must always start with a forward-slash
-     * ('/').
-     *
-     * @parameter expression="${maven.tomcat.path}" default-value="/${project.artifactId}"
-     * @required
+     * {@inheritDoc}
      */
-    protected String path;
-
-
-    protected String getPath( )
+    @Override
+    protected void invokeManager()
+        throws MojoExecutionException, TomcatManagerException, IOException
     {
-        return path;
+        getLog().info( messagesProvider.getMessage( "ListMojo.listApps", getURL() ) );
+
+        log( getManager().list() );
     }
 }

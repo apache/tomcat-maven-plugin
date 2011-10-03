@@ -1,4 +1,4 @@
-package org.apache.tomcat.maven.plugin;
+package org.apache.tomcat.maven.plugin.tomcat6;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,18 +19,19 @@ package org.apache.tomcat.maven.plugin;
  * under the License.
  */
 
+import java.io.File;
+
 import org.apache.maven.plugin.MojoExecutionException;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-
 /**
- * @author olamy
- * @version $Id: AbstractDeployWarMojo.java 12852 2010-10-12 22:04:32Z thragor $
- * @since 1.0-alpha-2
+ * Deploy a WAR in-place to Tomcat.
+ * 
+ * @goal inplace
+ * @author Mark Hobson <markhobson@gmail.com>
+ * @version $Id: InplaceMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @todo depend on war:inplace when MNG-1649 resolved
  */
-public class AbstractDeployWarMojo
+public class InplaceMojo
     extends AbstractDeployMojo
 {
     // ----------------------------------------------------------------------
@@ -38,12 +39,12 @@ public class AbstractDeployWarMojo
     // ----------------------------------------------------------------------
 
     /**
-     * The path of the WAR file to deploy.
-     *
-     * @parameter expression = "${project.build.directory}/${project.build.finalName}.war"
+     * The path of the inplace WAR directory to deploy.
+     * 
+     * @parameter expression = "${basedir}/src/main/webapp"
      * @required
      */
-    private File warFile;
+    private File warSourceDirectory;
 
     // ----------------------------------------------------------------------
     // Protected Methods
@@ -53,36 +54,21 @@ public class AbstractDeployWarMojo
      * {@inheritDoc}
      */
     @Override
-    protected File getWarFile( )
+    protected File getWarFile()
     {
-        return warFile;
+        return warSourceDirectory;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void validateWarFile( )
+    protected void validateWarFile()
         throws MojoExecutionException
     {
-        if ( !warFile.exists( ) || !warFile.isFile( ) )
+        if ( !warSourceDirectory.exists() || !warSourceDirectory.isDirectory() )
         {
-            throw new MojoExecutionException(
-                messagesProvider.getMessage( "DeployMojo.missingWar", warFile.getPath( ) ) );
+            throw new MojoExecutionException( messagesProvider.getMessage( "InplaceMojo.missingWar", warSourceDirectory.getPath() ) );
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void deployWar( )
-        throws MojoExecutionException, TomcatManagerException, IOException
-    {
-        validateWarFile( );
-
-        getLog( ).info( messagesProvider.getMessage( "AbstractDeployMojo.deployingWar", getDeployedURL( ) ) );
-
-        log( getManager( ).deploy( getPath( ), new FileInputStream( warFile ), isUpdate( ), getTag( ) ) );
     }
 }

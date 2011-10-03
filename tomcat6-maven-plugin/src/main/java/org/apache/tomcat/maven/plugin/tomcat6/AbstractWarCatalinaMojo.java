@@ -1,4 +1,4 @@
-package org.apache.tomcat.maven.plugin;
+package org.apache.tomcat.maven.plugin.tomcat6;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,56 +19,68 @@ package org.apache.tomcat.maven.plugin;
  * under the License.
  */
 
-import java.io.File;
-
 import org.apache.maven.plugin.MojoExecutionException;
 
 /**
- * Deploy an exploded WAR to Tomcat.
+ * Abstract goal that provides common configuration for Catalina-based goals.
  * 
- * @goal exploded
  * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: ExplodedMojo.java 12852 2010-10-12 22:04:32Z thragor $
- * @todo depend on war:exploded when MNG-1649 resolved
+ * @version $Id: AbstractWarCatalinaMojo.java 12852 2010-10-12 22:04:32Z thragor $
  */
-public class ExplodedMojo
-    extends AbstractDeployMojo
+public abstract class AbstractWarCatalinaMojo
+    extends AbstractCatalinaMojo
 {
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
 
     /**
-     * The path of the exploded WAR directory to deploy.
+     * The packaging of the Maven project that this goal operates upon.
      * 
-     * @parameter expression = "${project.build.directory}/${project.build.finalName}"
+     * @parameter expression = "${project.packaging}"
      * @required
+     * @readonly
      */
-    private File warDirectory;
+    private String packaging;
+
+    /**
+     * If set to true ignore if packaging of project is not 'war'.
+     * @since 1.1
+     * @parameter expression="${tomcat.ignorePackaging}" default-value="false"
+     */
+    private boolean ignorePackaging;
+    
+    // ----------------------------------------------------------------------
+    // Mojo Implementation
+    // ----------------------------------------------------------------------
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void execute()
+        throws MojoExecutionException
+    {
+        if ( !isWar() )
+        {
+            getLog().info( messagesProvider.getMessage( "AbstractWarCatalinaMojo.nonWar" ) );
+            return;
+        }
+
+        super.execute();
+    }
 
     // ----------------------------------------------------------------------
     // Protected Methods
     // ----------------------------------------------------------------------
 
     /**
-     * {@inheritDoc}
+     * Gets whether this project uses WAR packaging.
+     * 
+     * @return whether this project uses WAR packaging
      */
-    @Override
-    protected File getWarFile()
+    protected boolean isWar()
     {
-        return warDirectory;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void validateWarFile()
-        throws MojoExecutionException
-    {
-        if ( !warDirectory.exists() || !warDirectory.isDirectory() )
-        {
-            throw new MojoExecutionException( messagesProvider.getMessage( "ExplodedMojo.missingWar", warDirectory.getPath() ) );
-        }
+    	return "war".equals( packaging ) || ignorePackaging;
     }
 }

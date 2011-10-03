@@ -1,4 +1,4 @@
-package org.apache.tomcat.maven.plugin;
+package org.apache.tomcat.maven.plugin.tomcat6;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,19 +19,16 @@ package org.apache.tomcat.maven.plugin;
  * under the License.
  */
 
-import org.apache.maven.plugin.MojoExecutionException;
-
-import java.io.IOException;
-
 /**
- * Reload a WAR in Tomcat.
+ * Redeploy a WAR in Tomcat. Deploy with forcing update flag to true
  * 
- * @goal reload
- * @author olamy
- * @version $Id: ReloadMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @goal redeploy
+ * @author Mark Hobson <markhobson@gmail.com>
+ * @version $Id: RedeployMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @todo depend on war:war, war:exploded or war:inplace when MNG-1649 resolved
  */
-public class ReloadMojo
-    extends AbstractWarCatalinaMojo
+public class RedeployMojo
+    extends DeployMojo
 {
     // ----------------------------------------------------------------------
     // Protected Methods
@@ -41,11 +38,8 @@ public class ReloadMojo
      * {@inheritDoc}
      */
     @Override
-    protected void invokeManager()
-        throws MojoExecutionException, TomcatManagerException, IOException
+    protected boolean isUpdate()
     {
-        getLog().info( messagesProvider.getMessage( "RedeployMojo.redeployApp", getDeployedURL() ) );
-
-        log( getManager().reload( getPath() ) );
+        return true;
     }
 }

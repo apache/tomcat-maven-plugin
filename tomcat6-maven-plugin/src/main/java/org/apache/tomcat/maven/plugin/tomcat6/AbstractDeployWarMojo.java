@@ -1,4 +1,4 @@
-package org.apache.tomcat.maven.plugin;
+package org.apache.tomcat.maven.plugin.tomcat6;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -21,28 +21,29 @@ package org.apache.tomcat.maven.plugin;
 
 import org.apache.maven.plugin.MojoExecutionException;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
- * Undeploy a WAR from Tomcat.
- * 
- * @goal undeploy
- * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: UndeployMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @author olamy
+ * @version $Id: AbstractDeployWarMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @since 1.0-alpha-2
  */
-public class UndeployMojo
-    extends AbstractWarCatalinaMojo
+public class AbstractDeployWarMojo
+    extends AbstractDeployMojo
 {
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
 
     /**
-     * Whether to fail the build if the web application cannot be undeployed.
-     * 
-     * @parameter expression = "${maven.tomcat.failOnError}" default-value = "true"
+     * The path of the WAR file to deploy.
+     *
+     * @parameter expression = "${project.build.directory}/${project.build.finalName}.war"
+     * @required
      */
-    private boolean failOnError;
+    private File warFile;
 
     // ----------------------------------------------------------------------
     // Protected Methods
@@ -52,23 +53,36 @@ public class UndeployMojo
      * {@inheritDoc}
      */
     @Override
-    protected void invokeManager()
+    protected File getWarFile( )
+    {
+        return warFile;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void validateWarFile( )
+        throws MojoExecutionException
+    {
+        if ( !warFile.exists( ) || !warFile.isFile( ) )
+        {
+            throw new MojoExecutionException(
+                messagesProvider.getMessage( "DeployMojo.missingWar", warFile.getPath( ) ) );
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void deployWar( )
         throws MojoExecutionException, TomcatManagerException, IOException
     {
-        getLog().info( messagesProvider.getMessage( "UndeployMojo.undeployingApp", getDeployedURL() ) );
+        validateWarFile( );
 
-        try
-        {
-            log( getManager().undeploy( getPath() ) );
-        }
-        catch ( TomcatManagerException exception )
-        {
-            if ( failOnError )
-            {
-                throw exception;
-            }
+        getLog( ).info( messagesProvider.getMessage( "AbstractDeployMojo.deployingWar", getDeployedURL( ) ) );
 
-            getLog().warn( messagesProvider.getMessage( "UndeployMojo.undeployError", exception.getMessage() ) );
-        }
+        log( getManager( ).deploy( getPath( ), new FileInputStream( warFile ), isUpdate( ), getTag( ) ) );
     }
 }

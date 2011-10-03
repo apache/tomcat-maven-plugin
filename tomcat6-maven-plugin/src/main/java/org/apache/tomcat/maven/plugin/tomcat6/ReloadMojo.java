@@ -1,4 +1,4 @@
-package org.apache.tomcat.maven.plugin;
+package org.apache.tomcat.maven.plugin.tomcat6;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -24,13 +24,13 @@ import org.apache.maven.plugin.MojoExecutionException;
 import java.io.IOException;
 
 /**
- * Start a WAR in Tomcat.
+ * Reload a WAR in Tomcat.
  * 
- * @goal start
- * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: StartMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @goal reload
+ * @author olamy
+ * @version $Id: ReloadMojo.java 12852 2010-10-12 22:04:32Z thragor $
  */
-public class StartMojo
+public class ReloadMojo
     extends AbstractWarCatalinaMojo
 {
     // ----------------------------------------------------------------------
@@ -44,8 +44,8 @@ public class StartMojo
     protected void invokeManager()
         throws MojoExecutionException, TomcatManagerException, IOException
     {
-        getLog().info( messagesProvider.getMessage( "StartMojo.startingApp", getDeployedURL() ) );
+        getLog().info( messagesProvider.getMessage( "RedeployMojo.redeployApp", getDeployedURL() ) );
 
-        log( getManager().start( getPath() ) );
+        log( getManager().reload( getPath() ) );
     }
 }

@@ -1,4 +1,4 @@
-package org.apache.tomcat.maven.plugin;
+package org.apache.tomcat.maven.plugin.tomcat6;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,19 +19,33 @@ package org.apache.tomcat.maven.plugin;
  * under the License.
  */
 
+import org.apache.maven.plugin.MojoExecutionException;
+
+import java.io.IOException;
 
 /**
- * Runs the current project as a packaged web application using an embedded Tomcat server.
+ * Stop a WAR in Tomcat.
  * 
- * @goal run-war
- * @execute phase="package"
- * @requiresDependencyResolution runtime
+ * @goal stop
  * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: RunWarMojo.java 12852 2010-10-12 22:04:32Z thragor $
- * @todo depend on war:exploded when MNG-1649 resolved
+ * @version $Id: StopMojo.java 12852 2010-10-12 22:04:32Z thragor $
  */
-public class RunWarMojo
-    extends AbstractRunWarMojo
+public class StopMojo
+    extends AbstractWarCatalinaMojo
 {
- // no-op : only mojo metadata overriding
+    // ----------------------------------------------------------------------
+    // Protected Methods
+    // ----------------------------------------------------------------------
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void invokeManager()
+        throws MojoExecutionException, TomcatManagerException, IOException
+    {
+        getLog().info( messagesProvider.getMessage( "StopMojo.stoppingApp", getDeployedURL() ) );
+
+        log( getManager().stop( getPath() ) );
+    }
 }

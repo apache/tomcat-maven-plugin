@@ -1,4 +1,4 @@
-package org.apache.tomcat.maven.plugin;
+package org.apache.tomcat.maven.plugin.tomcat6;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,54 +19,51 @@ package org.apache.tomcat.maven.plugin;
  * under the License.
  */
 
+import org.apache.maven.plugin.MojoExecutionException;
+
+import java.io.IOException;
+
 /**
- * Indicates an error received from Tomcat manager.
+ * Lists JNDI resources in Tomcat.
  * 
+ * @goal resources
  * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: TomcatManagerException.java 12852 2010-10-12 22:04:32Z thragor $
+ * @version $Id: ResourcesMojo.java 12852 2010-10-12 22:04:32Z thragor $
  */
-public class TomcatManagerException
-    extends Exception
+public class ResourcesMojo
+    extends AbstractCatalinaMojo
 {
     // ----------------------------------------------------------------------
-    // Constants
+    // Mojo Parameters
     // ----------------------------------------------------------------------
 
     /**
-     * The Java serialization UID for this class.
-     */
-    private static final long serialVersionUID = 4167819069046408371L;
-
-    // ----------------------------------------------------------------------
-    // Constructors
-    // ----------------------------------------------------------------------
-
-    /**
-     * Creates a new <code>TomcatManagerException</code> with no message or cause.
-     */
-    public TomcatManagerException()
-    {
-        super();
-    }
-
-    /**
-     * Creates a new <code>TomcatManagerException</code> with the specified message and no cause.
+     * The class name of the resources to list, or <code>null</code> for all.
      * 
-     * @param message the message for this exception
+     * @parameter expression = "${maven.tomcat.type}"
      */
-    public TomcatManagerException( String message )
-    {
-        super( message );
-    }
+    private String type;
+
+    // ----------------------------------------------------------------------
+    // Protected Methods
+    // ----------------------------------------------------------------------
 
     /**
-     * Creates a new <code>TomcatManagerException</code> with the specified message and cause.
-     * 
-     * @param message the message for this exception
-     * @param cause the cause of this exception
+     * {@inheritDoc}
      */
-    public TomcatManagerException( String message, Throwable cause )
+    @Override
+    protected void invokeManager()
+        throws MojoExecutionException, TomcatManagerException, IOException
     {
-        super( message, cause );
+        if ( type == null )
+        {
+            getLog().info( messagesProvider.getMessage( "ResourcesMojo.listAllResources", getURL() ) );
+        }
+        else
+        {
+            getLog().info( messagesProvider.getMessage( "ResourcesMojo.listTypedResources", type, getURL() ) );
+        }
+
+        log( getManager().getResources( type ) );
     }
 }

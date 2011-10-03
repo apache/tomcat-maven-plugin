@@ -1,4 +1,4 @@
-package org.apache.tomcat.maven.plugin;
+package org.apache.tomcat.maven.plugin.tomcat6;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -21,16 +21,17 @@ package org.apache.tomcat.maven.plugin;
 
 
 /**
- * Runs the current project as a packaged web application using an embedded Tomcat server without forking the package cycle.
+ * Runs the current project as a packaged web application using an embedded Tomcat server.
  * 
- * 
- * @goal run-war-only
+ * @goal run-war
+ * @execute phase="package"
  * @requiresDependencyResolution runtime
- * @author vlatombe
- * @version 
+ * @author Mark Hobson <markhobson@gmail.com>
+ * @version $Id: RunWarMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @todo depend on war:exploded when MNG-1649 resolved
  */
-public class RunWarOnlyMojo
+public class RunWarMojo
     extends AbstractRunWarMojo
 {
-    // no-op : only mojo metadata overriding
+ // no-op : only mojo metadata overriding
 }

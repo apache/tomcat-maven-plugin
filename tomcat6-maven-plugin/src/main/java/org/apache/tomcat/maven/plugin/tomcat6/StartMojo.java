@@ -1,4 +1,4 @@
-package org.apache.tomcat.maven.plugin;
+package org.apache.tomcat.maven.plugin.tomcat6;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -24,13 +24,13 @@ import org.apache.maven.plugin.MojoExecutionException;
 import java.io.IOException;
 
 /**
- * Stop a WAR in Tomcat.
+ * Start a WAR in Tomcat.
  * 
- * @goal stop
+ * @goal start
  * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: StopMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @version $Id: StartMojo.java 12852 2010-10-12 22:04:32Z thragor $
  */
-public class StopMojo
+public class StartMojo
     extends AbstractWarCatalinaMojo
 {
     // ----------------------------------------------------------------------
@@ -44,8 +44,8 @@ public class StopMojo
     protected void invokeManager()
         throws MojoExecutionException, TomcatManagerException, IOException
     {
-        getLog().info( messagesProvider.getMessage( "StopMojo.stoppingApp", getDeployedURL() ) );
+        getLog().info( messagesProvider.getMessage( "StartMojo.startingApp", getDeployedURL() ) );
 
-        log( getManager().stop( getPath() ) );
+        log( getManager().start( getPath() ) );
     }
 }

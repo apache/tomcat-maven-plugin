@@ -1,4 +1,4 @@
-package org.apache.tomcat.maven.plugin;
+package org.apache.tomcat.maven.plugin.tomcat6;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,56 +19,54 @@ package org.apache.tomcat.maven.plugin;
  * under the License.
  */
 
-import java.io.File;
-
-import org.apache.maven.plugin.MojoExecutionException;
-
 /**
- * Deploy a WAR in-place to Tomcat.
+ * Indicates an error received from Tomcat manager.
  * 
- * @goal inplace
  * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: InplaceMojo.java 12852 2010-10-12 22:04:32Z thragor $
- * @todo depend on war:inplace when MNG-1649 resolved
+ * @version $Id: TomcatManagerException.java 12852 2010-10-12 22:04:32Z thragor $
  */
-public class InplaceMojo
-    extends AbstractDeployMojo
+public class TomcatManagerException
+    extends Exception
 {
     // ----------------------------------------------------------------------
-    // Mojo Parameters
+    // Constants
     // ----------------------------------------------------------------------
 
     /**
-     * The path of the inplace WAR directory to deploy.
-     * 
-     * @parameter expression = "${basedir}/src/main/webapp"
-     * @required
+     * The Java serialization UID for this class.
      */
-    private File warSourceDirectory;
+    private static final long serialVersionUID = 4167819069046408371L;
 
     // ----------------------------------------------------------------------
-    // Protected Methods
+    // Constructors
     // ----------------------------------------------------------------------
 
     /**
-     * {@inheritDoc}
+     * Creates a new <code>TomcatManagerException</code> with no message or cause.
      */
-    @Override
-    protected File getWarFile()
+    public TomcatManagerException()
     {
-        return warSourceDirectory;
+        super();
     }
 
     /**
-     * {@inheritDoc}
+     * Creates a new <code>TomcatManagerException</code> with the specified message and no cause.
+     * 
+     * @param message the message for this exception
      */
-    @Override
-    protected void validateWarFile()
-        throws MojoExecutionException
+    public TomcatManagerException( String message )
     {
-        if ( !warSourceDirectory.exists() || !warSourceDirectory.isDirectory() )
-        {
-            throw new MojoExecutionException( messagesProvider.getMessage( "InplaceMojo.missingWar", warSourceDirectory.getPath() ) );
-        }
+        super( message );
+    }
+
+    /**
+     * Creates a new <code>TomcatManagerException</code> with the specified message and cause.
+     * 
+     * @param message the message for this exception
+     * @param cause the cause of this exception
+     */
+    public TomcatManagerException( String message, Throwable cause )
+    {
+        super( message, cause );
     }
 }

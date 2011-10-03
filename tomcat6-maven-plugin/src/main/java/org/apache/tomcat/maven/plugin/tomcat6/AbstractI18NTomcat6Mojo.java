@@ -1,5 +1,4 @@
-package org.apache.tomcat.maven.plugin;
-
+package org.apache.tomcat.maven.plugin.tomcat6;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,27 +18,40 @@ package org.apache.tomcat.maven.plugin;
  * under the License.
  */
 
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.tomcat.maven.common.messages.MessagesProvider;
+
 /**
- * Redeploy a WAR in Tomcat. Deploy with forcing update flag to true
- * 
- * @goal redeploy
- * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: RedeployMojo.java 12852 2010-10-12 22:04:32Z thragor $
- * @todo depend on war:war, war:exploded or war:inplace when MNG-1649 resolved
+ * olamy: as long as maven plugin descriptor metadata generation doesn't support annotations outside of the same
+ * project, we must have those fields here
+ *
+ * @author Olivier Lamy
  */
-public class RedeployMojo
-    extends DeployMojo
+public abstract class AbstractI18NTomcat6Mojo
+    extends AbstractMojo
 {
+
+    /**
+     * @component
+     */
+    protected MessagesProvider messagesProvider;
+
     // ----------------------------------------------------------------------
-    // Protected Methods
+    // Mojo Parameters
     // ----------------------------------------------------------------------
 
     /**
-     * {@inheritDoc}
+     * The webapp context path to use for the web application being run. This must always start with a forward-slash
+     * ('/').
+     *
+     * @parameter expression="${maven.tomcat.path}" default-value="/${project.artifactId}"
+     * @required
      */
-    @Override
-    protected boolean isUpdate()
+    protected String path;
+
+
+    protected String getPath( )
     {
-        return true;
+        return path;
     }
 }

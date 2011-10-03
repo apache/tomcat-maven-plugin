@@ -1,4 +1,4 @@
-package org.apache.tomcat.maven.plugin;
+package org.apache.tomcat.maven.plugin.tomcat6;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -24,15 +24,26 @@ import org.apache.maven.plugin.MojoExecutionException;
 import java.io.IOException;
 
 /**
- * Lists information about the Tomcat version, OS, and JVM properties.
+ * Undeploy a WAR from Tomcat.
  * 
- * @goal info
+ * @goal undeploy
  * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: ServerInfoMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @version $Id: UndeployMojo.java 12852 2010-10-12 22:04:32Z thragor $
  */
-public class ServerInfoMojo
-    extends AbstractCatalinaMojo
+public class UndeployMojo
+    extends AbstractWarCatalinaMojo
 {
+    // ----------------------------------------------------------------------
+    // Mojo Parameters
+    // ----------------------------------------------------------------------
+
+    /**
+     * Whether to fail the build if the web application cannot be undeployed.
+     * 
+     * @parameter expression = "${maven.tomcat.failOnError}" default-value = "true"
+     */
+    private boolean failOnError;
+
     // ----------------------------------------------------------------------
     // Protected Methods
     // ----------------------------------------------------------------------
@@ -44,8 +55,20 @@ public class ServerInfoMojo
     protected void invokeManager()
         throws MojoExecutionException, TomcatManagerException, IOException
     {
-        getLog().info( messagesProvider.getMessage( "ServerInfoMojo.listInfo", getURL() ) );
+        getLog().info( messagesProvider.getMessage( "UndeployMojo.undeployingApp", getDeployedURL( ) ) );
 
-        log( getManager().getServerInfo() );
+        try
+        {
+            log( getManager().undeploy( getPath() ) );
+        }
+        catch ( TomcatManagerException exception )
+        {
+            if ( failOnError )
+            {
+                throw exception;
+            }
+
+            getLog().warn( messagesProvider.getMessage( "UndeployMojo.undeployError", exception.getMessage( ) ) );
+        }
     }
 }
