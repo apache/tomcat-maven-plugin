@@ -44,7 +44,7 @@ public class StartMojo
     protected void invokeManager()
         throws MojoExecutionException, TomcatManagerException, IOException
     {
-        getLog().info( getMessage( "StartMojo.startingApp", getDeployedURL() ) );
+        getLog().info( messagesProvider.getMessage( "StartMojo.startingApp", getDeployedURL() ) );
 
         log( getManager().start( getPath() ) );
     }

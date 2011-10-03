@@ -63,7 +63,7 @@ public abstract class AbstractWarCatalinaMojo
     {
         if ( !isWar() )
         {
-            getLog().info( getMessage( "AbstractWarCatalinaMojo.nonWar" ) );
+            getLog().info( messagesProvider.getMessage( "AbstractWarCatalinaMojo.nonWar" ) );
             return;
         }
 

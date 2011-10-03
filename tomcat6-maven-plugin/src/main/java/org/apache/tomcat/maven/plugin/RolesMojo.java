@@ -44,7 +44,7 @@ public class RolesMojo
     protected void invokeManager()
         throws MojoExecutionException, TomcatManagerException, IOException
     {
-        getLog().info( getMessage( "RolesMojo.listRoles", getURL() ) );
+        getLog().info( messagesProvider.getMessage( "RolesMojo.listRoles", getURL() ) );
 
         log( getManager().getRoles() );
     }

@@ -57,11 +57,11 @@ public class ResourcesMojo
     {
         if ( type == null )
         {
-            getLog().info( getMessage( "ResourcesMojo.listAllResources", getURL() ) );
+            getLog().info( messagesProvider.getMessage( "ResourcesMojo.listAllResources", getURL() ) );
         }
         else
         {
-            getLog().info( getMessage( "ResourcesMojo.listTypedResources", type, getURL() ) );
+            getLog().info( messagesProvider.getMessage( "ResourcesMojo.listTypedResources", type, getURL() ) );
         }
 
         log( getManager().getResources( type ) );

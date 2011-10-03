@@ -44,7 +44,7 @@ public class ListMojo
     protected void invokeManager()
         throws MojoExecutionException, TomcatManagerException, IOException
     {
-        getLog().info( getMessage( "ListMojo.listApps", getURL() ) );
+        getLog().info( messagesProvider.getMessage( "ListMojo.listApps", getURL() ) );
 
         log( getManager().list() );
     }

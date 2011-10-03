@@ -68,7 +68,7 @@ public class InplaceMojo
     {
         if ( !warSourceDirectory.exists() || !warSourceDirectory.isDirectory() )
         {
-            throw new MojoExecutionException( getMessage( "InplaceMojo.missingWar", warSourceDirectory.getPath() ) );
+            throw new MojoExecutionException( messagesProvider.getMessage( "InplaceMojo.missingWar", warSourceDirectory.getPath() ) );
         }
     }
 }

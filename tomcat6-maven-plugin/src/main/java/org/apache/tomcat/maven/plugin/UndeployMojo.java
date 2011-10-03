@@ -55,7 +55,7 @@ public class UndeployMojo
     protected void invokeManager()
         throws MojoExecutionException, TomcatManagerException, IOException
     {
-        getLog().info( getMessage( "UndeployMojo.undeployingApp", getDeployedURL() ) );
+        getLog().info( messagesProvider.getMessage( "UndeployMojo.undeployingApp", getDeployedURL() ) );
 
         try
         {
@@ -68,7 +68,7 @@ public class UndeployMojo
                 throw exception;
             }
 
-            getLog().warn( getMessage( "UndeployMojo.undeployError", exception.getMessage() ) );
+            getLog().warn( messagesProvider.getMessage( "UndeployMojo.undeployError", exception.getMessage() ) );
         }
     }
 }

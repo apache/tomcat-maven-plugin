@@ -68,7 +68,7 @@ public class ExplodedMojo
     {
         if ( !warDirectory.exists() || !warDirectory.isDirectory() )
         {
-            throw new MojoExecutionException( getMessage( "ExplodedMojo.missingWar", warDirectory.getPath() ) );
+            throw new MojoExecutionException( messagesProvider.getMessage( "ExplodedMojo.missingWar", warDirectory.getPath() ) );
         }
     }
 }

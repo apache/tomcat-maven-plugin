@@ -44,7 +44,7 @@ public class StopMojo
     protected void invokeManager()
         throws MojoExecutionException, TomcatManagerException, IOException
     {
-        getLog().info( getMessage( "StopMojo.stoppingApp", getDeployedURL() ) );
+        getLog().info( messagesProvider.getMessage( "StopMojo.stoppingApp", getDeployedURL() ) );
 
         log( getManager().stop( getPath() ) );
     }

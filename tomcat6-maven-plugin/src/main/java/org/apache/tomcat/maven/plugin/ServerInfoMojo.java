@@ -44,7 +44,7 @@ public class ServerInfoMojo
     protected void invokeManager()
         throws MojoExecutionException, TomcatManagerException, IOException
     {
-        getLog().info( getMessage( "ServerInfoMojo.listInfo", getURL() ) );
+        getLog().info( messagesProvider.getMessage( "ServerInfoMojo.listInfo", getURL() ) );
 
         log( getManager().getServerInfo() );
     }

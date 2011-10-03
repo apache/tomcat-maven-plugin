@@ -44,7 +44,7 @@ public class ReloadMojo
     protected void invokeManager()
         throws MojoExecutionException, TomcatManagerException, IOException
     {
-        getLog().info( getMessage( "RedeployMojo.redeployApp", getDeployedURL() ) );
+        getLog().info( messagesProvider.getMessage( "RedeployMojo.redeployApp", getDeployedURL() ) );
 
         log( getManager().reload( getPath() ) );
     }

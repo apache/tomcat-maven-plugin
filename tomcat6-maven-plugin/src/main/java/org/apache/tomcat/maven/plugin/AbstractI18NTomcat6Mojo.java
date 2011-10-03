@@ -18,16 +18,24 @@ package org.apache.tomcat.maven.plugin;
  * under the License.
  */
 
-import org.apache.tomcat.maven.common.AbstractI18NTomcatMojo;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.tomcat.maven.common.messages.MessagesProvider;
 
 /**
  * olamy: as long as maven plugin descriptor metadata generation doesn't support annotations outside of the same
  * project, we must have those fields here
+ *
  * @author Olivier Lamy
  */
 public abstract class AbstractI18NTomcat6Mojo
-    extends AbstractI18NTomcatMojo
+    extends AbstractMojo
 {
+
+    /**
+     * @component
+     */
+    protected MessagesProvider messagesProvider;
+
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
@@ -41,7 +49,7 @@ public abstract class AbstractI18NTomcat6Mojo
      */
     protected String path;
 
-    @Override
+
     protected String getPath( )
     {
         return path;

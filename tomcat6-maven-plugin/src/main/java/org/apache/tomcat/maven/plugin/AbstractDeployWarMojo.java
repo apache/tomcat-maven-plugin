@@ -19,11 +19,11 @@ package org.apache.tomcat.maven.plugin;
  * under the License.
  */
 
+import org.apache.maven.plugin.MojoExecutionException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-
-import org.apache.maven.plugin.MojoExecutionException;
 
 /**
  * @author olamy
@@ -39,7 +39,7 @@ public class AbstractDeployWarMojo
 
     /**
      * The path of the WAR file to deploy.
-     * 
+     *
      * @parameter expression = "${project.build.directory}/${project.build.finalName}.war"
      * @required
      */
@@ -53,7 +53,7 @@ public class AbstractDeployWarMojo
      * {@inheritDoc}
      */
     @Override
-    protected File getWarFile()
+    protected File getWarFile( )
     {
         return warFile;
     }
@@ -62,12 +62,13 @@ public class AbstractDeployWarMojo
      * {@inheritDoc}
      */
     @Override
-    protected void validateWarFile()
+    protected void validateWarFile( )
         throws MojoExecutionException
     {
-        if ( !warFile.exists() || !warFile.isFile() )
+        if ( !warFile.exists( ) || !warFile.isFile( ) )
         {
-            throw new MojoExecutionException( getMessage( "DeployMojo.missingWar", warFile.getPath() ) );
+            throw new MojoExecutionException(
+                messagesProvider.getMessage( "DeployMojo.missingWar", warFile.getPath( ) ) );
         }
     }
 
@@ -75,13 +76,13 @@ public class AbstractDeployWarMojo
      * {@inheritDoc}
      */
     @Override
-    protected void deployWar()
+    protected void deployWar( )
         throws MojoExecutionException, TomcatManagerException, IOException
     {
-        validateWarFile();
+        validateWarFile( );
 
-        getLog().info( getMessage( "AbstractDeployMojo.deployingWar", getDeployedURL() ) );
+        getLog( ).info( messagesProvider.getMessage( "AbstractDeployMojo.deployingWar", getDeployedURL( ) ) );
 
-        log( getManager().deploy( getPath(), new FileInputStream( warFile ), isUpdate(), getTag() ) );
+        log( getManager( ).deploy( getPath( ), new FileInputStream( warFile ), isUpdate( ), getTag( ) ) );
     }
 }

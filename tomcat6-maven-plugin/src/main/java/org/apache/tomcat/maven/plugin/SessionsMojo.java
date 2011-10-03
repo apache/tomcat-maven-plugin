@@ -44,7 +44,7 @@ public class SessionsMojo
     protected void invokeManager()
         throws MojoExecutionException, TomcatManagerException, IOException
     {
-        getLog().info( getMessage( "SessionsMojo.listSessions", getDeployedURL() ) );
+        getLog().info( messagesProvider.getMessage( "SessionsMojo.listSessions", getDeployedURL() ) );
 
         log( getManager().getSessions( getPath() ) );
     }

@@ -1,5 +1,4 @@
-package org.apache.tomcat.maven.common;
-
+package org.apache.tomcat.maven.common.messages;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,48 +18,39 @@ package org.apache.tomcat.maven.common;
  * under the License.
  */
 
-import org.apache.maven.plugin.AbstractMojo;
+import org.codehaus.plexus.component.annotations.Component;
 
 import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
- * Abstract goal that provides i18n support.
- *
- * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: AbstractI18NMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @author Olivier Lamy
+ * @component role="org.apache.tomcat.maven.common.messages.MessagesProvider" role-hint="default"
+ * @since 2.0
  */
-public abstract class AbstractI18NTomcatMojo
-    extends AbstractMojo
+@Component( role = MessagesProvider.class )
+public class DefaultMessagesProvider
+    implements MessagesProvider
 {
 
-    // ----------------------------------------------------------------------
-    // Fields
-    // ----------------------------------------------------------------------
-
     /**
-     * The plugin messages.
+     * plugin messages
      */
     private ResourceBundle messages;
 
-    // ----------------------------------------------------------------------
-    // Constructors
-    // ----------------------------------------------------------------------
 
-    /**
-     * Creates a new <code>AbstractI18NMojo</code>.
-     */
-    public AbstractI18NTomcatMojo( )
+    public DefaultMessagesProvider( )
     {
         String packageName = getClass( ).getPackage( ).getName( );
 
         messages = ResourceBundle.getBundle( packageName + ".messages" );
     }
 
-    // ----------------------------------------------------------------------
-    // Protected Methods
-    // ----------------------------------------------------------------------
+    public ResourceBundle getResourceBundle( )
+    {
+        return this.messages;
+    }
 
     /**
      * Gets the message for the given key from this packages resource bundle.
@@ -68,11 +58,11 @@ public abstract class AbstractI18NTomcatMojo
      * @param key the key for the required message
      * @return the message
      */
-    protected String getMessage( String key )
+    public String getMessage( String key )
     {
         try
         {
-            return messages.getString( key );
+            return getResourceBundle( ).getString( key );
         }
         catch ( NullPointerException exception )
         {
@@ -95,7 +85,7 @@ public abstract class AbstractI18NTomcatMojo
      * @param param the parameter to be used to format the message with
      * @return the formatted message
      */
-    protected String getMessage( String key, Object param )
+    public String getMessage( String key, Object param )
     {
         return MessageFormat.format( getMessage( key ), new Object[]{ param } );
     }
@@ -108,7 +98,7 @@ public abstract class AbstractI18NTomcatMojo
      * @param param2 the second parameter to be used to format the message with
      * @return the formatted message
      */
-    protected String getMessage( String key, Object param1, Object param2 )
+    public String getMessage( String key, Object param1, Object param2 )
     {
         return MessageFormat.format( getMessage( key ), new Object[]{ param1, param2 } );
     }
@@ -120,10 +110,8 @@ public abstract class AbstractI18NTomcatMojo
      * @param params the parameters to be used to format the message with
      * @return the formatted message
      */
-    protected String getMessage( String key, Object[] params )
+    public String getMessage( String key, Object[] params )
     {
         return MessageFormat.format( getMessage( key ), params );
     }
-
-    protected abstract String getPath();
 }

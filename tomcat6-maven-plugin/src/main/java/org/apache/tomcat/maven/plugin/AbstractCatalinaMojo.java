@@ -19,20 +19,19 @@ package org.apache.tomcat.maven.plugin;
  * under the License.
  */
 
+import org.apache.maven.artifact.manager.WagonManager;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.wagon.authentication.AuthenticationInfo;
+import org.codehaus.plexus.util.StringUtils;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.StringTokenizer;
 
-import org.apache.maven.artifact.manager.WagonManager;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.wagon.authentication.AuthenticationInfo;
-import org.apache.tomcat.maven.common.AbstractI18NTomcatMojo;
-import org.codehaus.plexus.util.StringUtils;
-
 /**
  * Abstract goal that provides common configuration for Catalina-based goals.
- * 
+ *
  * @author Mark Hobson <markhobson@gmail.com>
  * @version $Id: AbstractCatalinaMojo.java 12852 2010-10-12 22:04:32Z thragor $
  */
@@ -64,7 +63,7 @@ public abstract class AbstractCatalinaMojo
 
     /**
      * The Maven Wagon manager to use when obtaining server authentication details.
-     * 
+     *
      * @component role="org.apache.maven.artifact.manager.WagonManager"
      * @required
      * @readonly
@@ -73,7 +72,7 @@ public abstract class AbstractCatalinaMojo
 
     /**
      * The full URL of the Tomcat manager instance to use.
-     * 
+     *
      * @parameter expression="${maven.tomcat.url}" default-value="http://localhost:8080/manager"
      * @required
      */
@@ -82,14 +81,14 @@ public abstract class AbstractCatalinaMojo
     /**
      * The server id in settings.xml to use when authenticating with Tomcat manager, or <code>null</code> to use
      * defaults of username <code>admin</code> and no password.
-     * 
+     *
      * @parameter expression="${maven.tomcat.server}"
      */
     private String server;
 
     /**
      * The URL encoding charset to use when communicating with Tomcat manager.
-     * 
+     *
      * @parameter expression="${maven.tomcat.charset}" default-value="ISO-8859-1"
      * @required
      */
@@ -97,7 +96,7 @@ public abstract class AbstractCatalinaMojo
 
     /**
      * The tomcat username to use for deployment
-     * 
+     *
      * @parameter expression="${tomcat.username}"
      * @since 1.0-alpha-2
      */
@@ -105,7 +104,7 @@ public abstract class AbstractCatalinaMojo
 
     /**
      * The password to use for deployment
-     * 
+     *
      * @parameter expression="${tomcat.password}"
      * @since 1.0-alpha-2
      */
@@ -134,20 +133,22 @@ public abstract class AbstractCatalinaMojo
     /**
      * {@inheritDoc}
      */
-    public void execute()
+    public void execute( )
         throws MojoExecutionException
     {
         try
         {
-            invokeManager();
+            invokeManager( );
         }
         catch ( TomcatManagerException exception )
         {
-            throw new MojoExecutionException( getMessage( "AbstractCatalinaMojo.managerError", exception.getMessage() ) );
+            throw new MojoExecutionException(
+                messagesProvider.getMessage( "AbstractCatalinaMojo.managerError", exception.getMessage( ) ) );
         }
         catch ( IOException exception )
         {
-            throw new MojoExecutionException( getMessage( "AbstractCatalinaMojo.managerIOError" ), exception );
+            throw new MojoExecutionException( messagesProvider.getMessage( "AbstractCatalinaMojo.managerIOError" ),
+                                              exception );
         }
     }
 
@@ -157,21 +158,21 @@ public abstract class AbstractCatalinaMojo
 
     /**
      * Invokes Tomcat manager when this Mojo is executed.
-     * 
+     *
      * @throws MojoExecutionException if there was a problem executing this goal
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
-    protected abstract void invokeManager()
+    protected abstract void invokeManager( )
         throws MojoExecutionException, TomcatManagerException, IOException;
 
     /**
      * Gets the Tomcat manager wrapper object configured for this goal.
-     * 
+     *
      * @return the Tomcat manager wrapper object
      * @throws MojoExecutionException if there was a problem obtaining the authentication details
      */
-    protected TomcatManager getManager()
+    protected TomcatManager getManager( )
         throws MojoExecutionException
     {
         // lazily instantiate when config values have been injected
@@ -183,7 +184,7 @@ public abstract class AbstractCatalinaMojo
             if ( server == null )
             {
                 // no server set, use defaults
-                getLog().debug( getMessage( "AbstractCatalinaMojo.defaultAuth" ) );
+                getLog( ).debug( messagesProvider.getMessage( "AbstractCatalinaMojo.defaultAuth" ) );
                 userName = DEFAULT_USERNAME;
                 password = DEFAULT_PASSWORD;
             }
@@ -193,22 +194,23 @@ public abstract class AbstractCatalinaMojo
                 AuthenticationInfo info = wagonManager.getAuthenticationInfo( server );
                 if ( info == null )
                 {
-                    throw new MojoExecutionException( getMessage( "AbstractCatalinaMojo.unknownServer", server ) );
+                    throw new MojoExecutionException(
+                        messagesProvider.getMessage( "AbstractCatalinaMojo.unknownServer", server ) );
                 }
 
                 // derive username
-                userName = info.getUserName();
+                userName = info.getUserName( );
                 if ( userName == null )
                 {
-                    getLog().debug( getMessage( "AbstractCatalinaMojo.defaultUserName" ) );
+                    getLog( ).debug( messagesProvider.getMessage( "AbstractCatalinaMojo.defaultUserName" ) );
                     userName = DEFAULT_USERNAME;
                 }
 
                 // derive password
-                password = info.getPassword();
+                password = info.getPassword( );
                 if ( password == null )
                 {
-                    getLog().debug( getMessage( "AbstractCatalinaMojo.defaultPassword" ) );
+                    getLog( ).debug( messagesProvider.getMessage( "AbstractCatalinaMojo.defaultPassword" ) );
                     password = DEFAULT_PASSWORD;
                 }
             }
@@ -229,48 +231,48 @@ public abstract class AbstractCatalinaMojo
 
     /**
      * Gets the full URL of the Tomcat manager instance.
-     * 
+     *
      * @return the full URL of the Tomcat manager instance to use
      */
-    protected URL getURL()
+    protected URL getURL( )
     {
         return url;
     }
 
     /**
      * Gets the webapp context path to use when communicating with Tomcat manager.
-     * 
+     *
      * @return the webapp context path to use
      */
-    protected String getPath()
+    protected String getPath( )
     {
         return path;
     }
 
     /**
      * Gets the URL of the deployed webapp.
-     * 
+     *
      * @return the URL of the deployed webapp
      * @throws MalformedURLException if the deployed webapp URL is invalid
      */
-    protected URL getDeployedURL()
+    protected URL getDeployedURL( )
         throws MalformedURLException
     {
-        return new URL( getURL(), getPath() );
+        return new URL( getURL( ), getPath( ) );
     }
 
     /**
      * Splits the given string into lines and writes each one separately to the log at info level.
-     * 
+     *
      * @param string the string to write
      */
     protected void log( String string )
     {
         StringTokenizer tokenizer = new StringTokenizer( string, "\n\r" );
 
-        while ( tokenizer.hasMoreTokens() )
+        while ( tokenizer.hasMoreTokens( ) )
         {
-            getLog().info( tokenizer.nextToken() );
+            getLog( ).info( tokenizer.nextToken( ) );
         }
     }
 }
