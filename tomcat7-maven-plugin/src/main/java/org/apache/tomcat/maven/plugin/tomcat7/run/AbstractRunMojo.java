@@ -252,9 +252,7 @@ public abstract class AbstractRunMojo
 
     /**
      * <p>
-     * Enables or disables naming support for the embedded Tomcat server. By default the embedded Tomcat
-     * in Tomcat 6 comes with naming enabled. In contrast to this the embedded Tomcat 7 comes with
-     * naming disabled by default.
+     * Enables or disables naming support for the embedded Tomcat server.
      * </p>
      * <p>
      * <strong>Note:</strong> This setting is ignored if you provide a <code>server.xml</code> for your
@@ -262,7 +260,6 @@ public abstract class AbstractRunMojo
      * </p>
      *
      * @parameter expression="${maven.tomcat.useNaming}" default-value="true"
-     * @todo adopt documentation once Tomcat 7 is supported (MTOMCAT-62)
      * @see <a href="http://tomcat.apache.org/tomcat-6.0-doc/api/org/apache/catalina/startup/Embedded.html">org.apache.catalina.startup.Embedded</a>
      * @see <a href="http://tomcat.apache.org/tomcat-7.0-doc/api/org/apache/catalina/startup/Tomcat.html">org.apache.catalina.startup.Tomcat</a>
      * @since 2.0
