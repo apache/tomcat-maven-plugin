@@ -3,7 +3,7 @@
  ---
  Oliver Lamy
  ---
- 2011-09-01
+ 2011-10-08
  ---
 
  ~~ Licensed to the Apache Software Foundation (ASF) under one
@@ -27,4 +27,7 @@
  ~~ http://maven.apache.org/doxia/references/apt-format.html
 
   This is the new for the Tomcat Maven Plugin (previously hosted at Codehaus).
-  TODO : complete documentation
+  The version 2.0 which will support Tomcat7 is under developpement.
+
+  Prior to version 2.0, tomcat mojos has been renamed to tomcat6 and tomcat7 with the same goals.
+

@@ -44,6 +44,11 @@
       <item name="Apache Tomcat Maven plugin" href="index.html" />
     </breadcrumbs>
 
+    <menu name="Apache Tomcat Mojo">
+      <item name="About" href="index.html"/>
+      <item name="Developement Test" href="snapshot-test.html"/>
+    </menu>
+
     <menu ref="modules"/>
     <menu ref="reports"/>
 
