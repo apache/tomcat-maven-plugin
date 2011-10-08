@@ -34,6 +34,7 @@ import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+import org.apache.tomcat.maven.common.run.EmbeddedRegistry;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
@@ -730,7 +731,7 @@ public abstract class AbstractRunMojo
                 container.start( );
             }
 
-            EmbeddedRegistry.getInstance( ).register( container );
+            EmbeddedRegistry.getInstance().register( container );
         }
         finally
         {

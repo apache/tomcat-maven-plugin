@@ -21,6 +21,7 @@ package org.apache.tomcat.maven.plugin.tomcat6;
 
 import org.apache.catalina.LifecycleException;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.tomcat.maven.common.run.EmbeddedRegistry;
 
 
 /**
@@ -51,7 +52,7 @@ public class ShutdownMojo
     {
         try
         {
-            EmbeddedRegistry.getInstance( ).shutdownAll( getLog( ) );
+            EmbeddedRegistry.getInstance().shutdownAll( getLog( ) );
         }
         catch ( LifecycleException e )
         {

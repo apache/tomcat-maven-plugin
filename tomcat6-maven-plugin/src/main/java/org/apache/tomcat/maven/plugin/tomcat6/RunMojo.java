@@ -57,12 +57,6 @@ public class RunMojo
     // Mojo Parameters
     // ----------------------------------------------------------------------
 
-    /**
-     * The classes directory for the web application being run.
-     *
-     * @parameter expression = "${project.build.outputDirectory}"
-     */
-    private File classesDir;
 
     /**
      * The set of dependencies for the web application being run.
@@ -186,7 +180,7 @@ public class RunMojo
             return temporaryContextFile;
         }
         //----------------------------------------------------------------------------
-        // context attributes backgroundProcessorDelay reloadable cannot be modifiec at runtime.
+        // context attributes backgroundProcessorDelay reloadable cannot be modified at runtime.
         // It looks only values from the file ared used
         // so here we create a temporary file with values modified
         //----------------------------------------------------------------------------
