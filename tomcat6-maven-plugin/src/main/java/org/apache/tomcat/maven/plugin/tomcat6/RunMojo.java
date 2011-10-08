@@ -23,11 +23,10 @@ import org.apache.catalina.Context;
 import org.apache.catalina.loader.WebappLoader;
 import org.apache.catalina.startup.Embedded;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.project.MavenProject;
+import org.apache.tomcat.maven.common.run.ClassLoaderEntriesCalculator;
+import org.apache.tomcat.maven.common.run.TomcatRunException;
 import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.codehaus.plexus.util.xml.Xpp3DomWriter;
@@ -38,7 +37,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -100,6 +98,13 @@ public class RunMojo
      */
     protected int backgroundProcessorDelay = -1;
 
+    /**
+     * @readonly
+     * @component
+     * @since 2.0
+     */
+    private ClassLoaderEntriesCalculator classLoaderEntriesCalculator;
+
     private File temporaryContextFile = null;
 
     // ----------------------------------------------------------------------
@@ -112,12 +117,12 @@ public class RunMojo
      * @throws MojoExecutionException
      */
     @Override
-    protected Context createContext( Embedded container )
+    protected Context createContext(Embedded container)
         throws IOException, MojoExecutionException
     {
-        Context context = super.createContext( container );
+        Context context = super.createContext(container);
 
-        context.setReloadable( isContextReloadable( ) );
+        context.setReloadable(isContextReloadable());
 
         return context;
     }
@@ -128,92 +133,43 @@ public class RunMojo
      * @throws MojoExecutionException
      */
     @Override
-    protected WebappLoader createWebappLoader( )
+    protected WebappLoader createWebappLoader()
         throws IOException, MojoExecutionException
     {
-        WebappLoader loader = super.createWebappLoader( );
-        //super.project.
+        WebappLoader loader = super.createWebappLoader();
         if ( useSeparateTomcatClassLoader )
         {
-            loader.setDelegate( delegate );
+            loader.setDelegate(delegate);
         }
 
-        // add classes directories to loader
-        if ( classesDir != null )
+        try
         {
-            try
+
+            List<String> classLoaderEntries =
+                classLoaderEntriesCalculator.calculateClassPathEntries(project, dependencies, getLog());
+
+            if ( classLoaderEntries != null )
             {
-                @SuppressWarnings( "unchecked" ) List<String> classPathElements =
-                    project.getCompileClasspathElements( );
-                for ( String classPathElement : classPathElements )
+                for ( String classLoaderEntry : classLoaderEntries )
                 {
-                    File classPathElementFile = new File( classPathElement );
-                    if ( classPathElementFile.exists( ) && classPathElementFile.isDirectory( ) )
-                    {
-                        getLog( ).debug( "adding classPathElementFile " + classPathElementFile.toURI( ).toString( ) );
-                        loader.addRepository( classPathElementFile.toURI( ).toString( ) );
-                    }
+                    loader.addRepository(classLoaderEntry);
                 }
             }
-            catch ( DependencyResolutionRequiredException e )
-            {
-                throw new MojoExecutionException( e.getMessage( ), e );
-            }
-
-            //loader.addRepository( classesDir.toURI().toString() );
         }
-
-        // add artifacts to loader
-        if ( dependencies != null )
+        catch ( TomcatRunException e )
         {
-            for ( Artifact artifact : dependencies )
-            {
-                String scope = artifact.getScope( );
-
-                // skip provided and test scoped artifacts
-                if ( !Artifact.SCOPE_PROVIDED.equals( scope ) && !Artifact.SCOPE_TEST.equals( scope ) )
-                {
-                    getLog( ).debug(
-                        "add dependency to webapploader " + artifact.getGroupId( ) + ":" + artifact.getArtifactId( )
-                            + ":" + artifact.getVersion( ) + ":" + artifact.getScope( ) );
-                    if ( !isInProjectReferences( artifact ) )
-                    {
-                        loader.addRepository( artifact.getFile( ).toURI( ).toString( ) );
-                    }
-                    else
-                    {
-                        getLog( ).debug( "skip adding artifact " + artifact.getArtifactId( ) + " as it's in reactors" );
-                    }
-                }
-            }
+            throw new MojoExecutionException(e.getMessage(), e);
         }
 
         return loader;
     }
 
-    protected boolean isInProjectReferences( Artifact artifact )
-    {
-        if ( project.getProjectReferences( ) == null || project.getProjectReferences( ).isEmpty( ) )
-        {
-            return false;
-        }
-        @SuppressWarnings( "unchecked" ) Collection<MavenProject> mavenProjects =
-            project.getProjectReferences( ).values( );
-        for ( MavenProject mavenProject : mavenProjects )
-        {
-            if ( StringUtils.equals( mavenProject.getId( ), artifact.getId( ) ) )
-            {
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected File getDocBase( )
+    protected File getDocBase()
     {
         return warSourceDirectory;
     }
@@ -222,7 +178,7 @@ public class RunMojo
      * {@inheritDoc}
      */
     @Override
-    protected File getContextFile( )
+    protected File getContextFile()
         throws MojoExecutionException
     {
         if ( temporaryContextFile != null )
@@ -236,34 +192,34 @@ public class RunMojo
         //----------------------------------------------------------------------------
         FileReader fr = null;
         FileWriter fw = null;
-        StringWriter sw = new StringWriter( );
+        StringWriter sw = new StringWriter();
         try
         {
-            temporaryContextFile = File.createTempFile( "tomcat-maven-plugin", "temp-ctx-file" );
-            fw = new FileWriter( temporaryContextFile );
+            temporaryContextFile = File.createTempFile("tomcat-maven-plugin", "temp-ctx-file");
+            fw = new FileWriter(temporaryContextFile);
             // format to modify/create <Context backgroundProcessorDelay="5" reloadable="false">
-            if ( contextFile != null && contextFile.exists( ) )
+            if ( contextFile != null && contextFile.exists() )
             {
-                fr = new FileReader( contextFile );
-                Xpp3Dom xpp3Dom = Xpp3DomBuilder.build( fr );
-                xpp3Dom.setAttribute( "backgroundProcessorDelay", Integer.toString( backgroundProcessorDelay ) );
-                xpp3Dom.setAttribute( "reloadable", Boolean.toString( isContextReloadable( ) ) );
-                Xpp3DomWriter.write( fw, xpp3Dom );
-                Xpp3DomWriter.write( sw, xpp3Dom );
-                getLog( ).debug( " generated context file " + sw.toString( ) );
+                fr = new FileReader(contextFile);
+                Xpp3Dom xpp3Dom = Xpp3DomBuilder.build(fr);
+                xpp3Dom.setAttribute("backgroundProcessorDelay", Integer.toString(backgroundProcessorDelay));
+                xpp3Dom.setAttribute("reloadable", Boolean.toString(isContextReloadable()));
+                Xpp3DomWriter.write(fw, xpp3Dom);
+                Xpp3DomWriter.write(sw, xpp3Dom);
+                getLog().debug(" generated context file " + sw.toString());
             }
             else
             {
                 if ( contextReloadable )
                 {
                     // don't care about using a complicated xml api to create one xml line :-)
-                    StringBuilder sb = new StringBuilder( "<Context " ).append( "backgroundProcessorDelay=\"" ).append(
-                        Integer.toString( backgroundProcessorDelay ) ).append( "\"" ).append(
-                        " reloadable=\"" + Boolean.toString( isContextReloadable( ) ) + "\"/>" );
+                    StringBuilder sb = new StringBuilder("<Context ").append("backgroundProcessorDelay=\"").append(
+                        Integer.toString(backgroundProcessorDelay)).append("\"").append(
+                        " reloadable=\"" + Boolean.toString(isContextReloadable()) + "\"/>");
 
-                    getLog( ).debug( " generated context file " + sb.toString( ) );
+                    getLog().debug(" generated context file " + sb.toString());
 
-                    fw.write( sb.toString( ) );
+                    fw.write(sb.toString());
                 }
                 else
                 {
@@ -274,19 +230,19 @@ public class RunMojo
         }
         catch ( IOException e )
         {
-            getLog( ).error( "error creating fake context.xml : " + e.getMessage( ), e );
-            throw new MojoExecutionException( "error creating fake context.xml : " + e.getMessage( ), e );
+            getLog().error("error creating fake context.xml : " + e.getMessage(), e);
+            throw new MojoExecutionException("error creating fake context.xml : " + e.getMessage(), e);
         }
         catch ( XmlPullParserException e )
         {
-            getLog( ).error( "error creating fake context.xml : " + e.getMessage( ), e );
-            throw new MojoExecutionException( "error creating fake context.xml : " + e.getMessage( ), e );
+            getLog().error("error creating fake context.xml : " + e.getMessage(), e);
+            throw new MojoExecutionException("error creating fake context.xml : " + e.getMessage(), e);
         }
         finally
         {
-            IOUtil.close( fw );
-            IOUtil.close( fr );
-            IOUtil.close( sw );
+            IOUtil.close(fw);
+            IOUtil.close(fr);
+            IOUtil.close(sw);
         }
 
         return temporaryContextFile;
