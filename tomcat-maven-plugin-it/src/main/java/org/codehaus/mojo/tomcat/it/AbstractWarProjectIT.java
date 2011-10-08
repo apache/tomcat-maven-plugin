@@ -85,9 +85,11 @@ public abstract class AbstractWarProjectIT
     {
         httpClient = new DefaultHttpClient();
 
+
         final HttpParams params = httpClient.getParams();
-        HttpConnectionParams.setConnectionTimeout( params, 15000 );
-        HttpConnectionParams.setSoTimeout( params, 15000 );
+        HttpConnectionParams.setConnectionTimeout( params, getTimeout() );
+        HttpConnectionParams.setSoTimeout( params, getTimeout() );
+
 
         webappHome = ResourceExtractor.simpleExtractResources( getClass(), "/" + getWarArtifactId() );
         verifier = new Verifier( webappHome.getAbsolutePath() );
@@ -127,7 +129,7 @@ public abstract class AbstractWarProjectIT
             @Override
             public void run()
             {
-                responseBodies[0] = getResponseBody( 15000 );
+                responseBodies[0] = getResponseBody( getTimeout() );
             }
         };
 
@@ -199,6 +201,11 @@ public abstract class AbstractWarProjectIT
             LOG.debug( "Ignoring exception while pinging URL " + httpHead.getURI(), e );
             return -1;
         }
+    }
+    
+    protected int getTimeout()
+    {
+        return 15000;
     }
 
 }

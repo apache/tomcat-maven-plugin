@@ -1,4 +1,4 @@
-package org.apache.tomcat.maven.plugin.tomcat6;
+package org.apache.tomcat.maven.plugin.tomcat7.run;
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,9 +19,9 @@ package org.apache.tomcat.maven.plugin.tomcat6;
 * under the License.
 */
 
-import org.apache.catalina.LifecycleException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.tomcat.maven.common.run.EmbeddedRegistry;
+import org.apache.tomcat.maven.plugin.tomcat7.AbstractTomcat7Mojo;
 
 
 /**
@@ -37,15 +37,15 @@ import org.apache.tomcat.maven.common.run.EmbeddedRegistry;
  * @author Mark Michaelis
  * @goal shutdown
  * @requiresDependencyResolution runtime
- * @since 1.1
+ * @since 2.0
  */
 public class ShutdownMojo
-    extends AbstractI18NTomcat6Mojo
+    extends AbstractTomcat7Mojo
 {
     /**
      * Shuts down all embedded tomcats which got started up to now.
      *
-     * @throws MojoExecutionException if shutting down one or all servers failed
+     * @throws org.apache.maven.plugin.MojoExecutionException if shutting down one or all servers failed
      */
     public void execute( )
         throws MojoExecutionException

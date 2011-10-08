@@ -1,4 +1,5 @@
-package org.codehaus.mojo.tomcat.it;
+import org.junit.Test;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,17 +19,12 @@ package org.codehaus.mojo.tomcat.it;
  * under the License.
  */
 
-/**
- * @author Olivier Lamy
- */
-public class Tomcat6DeployWarProjectIT
-    extends AbstractDeployWarProjectIT
-{
-    // no op
 
-    public void testIt( )
-        throws Exception
-    {
-        //FIXME currently this it fail
-    }
+@SuppressWarnings({"WrongPackageStatement"})
+public final class WaitIT {
+  @Test
+  public void testWait() throws Exception {
+    System.out.println("Just wait a while...");
+    Thread.sleep(${it.sleep.time});
+  }
 }

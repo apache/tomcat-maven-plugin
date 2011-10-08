@@ -1,5 +1,4 @@
-package org.apache.tomcat.maven.plugin.tomcat6;
-
+package org.apache.tomcat.maven.plugin.tomcat7.run;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,25 +18,23 @@ package org.apache.tomcat.maven.plugin.tomcat6;
  * under the License.
  */
 
-
 import org.apache.catalina.Context;
-import org.apache.catalina.Engine;
-import org.apache.catalina.Host;
 import org.apache.catalina.LifecycleException;
-import org.apache.catalina.UserDatabase;
 import org.apache.catalina.connector.Connector;
-import org.apache.catalina.deploy.ContextResource;
 import org.apache.catalina.loader.WebappLoader;
 import org.apache.catalina.realm.MemoryRealm;
 import org.apache.catalina.startup.Catalina;
-import org.apache.catalina.startup.Embedded;
-import org.apache.catalina.users.MemoryUserDatabaseFactory;
+import org.apache.catalina.startup.CatalinaProperties;
+import org.apache.catalina.startup.Tomcat;
+import org.apache.catalina.valves.AccessLogValve;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.apache.tomcat.maven.common.run.EmbeddedRegistry;
+import org.apache.tomcat.maven.common.run.ExternalRepositoriesReloadableWebappLoader;
+import org.apache.tomcat.maven.plugin.tomcat7.AbstractTomcat7Mojo;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
@@ -52,16 +49,15 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import javax.servlet.ServletException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -70,16 +66,13 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Abstract goal that provides common configuration for embedded Tomcat goals.
- *
- * @author Jurgen Lust
- * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: AbstractRunMojo.java 14033 2011-05-04 17:51:15Z bimargulies $
+ * @author Olivier Lamy
+ * @since 2.0
  */
 public abstract class AbstractRunMojo
-    extends AbstractI18NTomcat6Mojo
+    extends AbstractTomcat7Mojo
 {
-    // ----------------------------------------------------------------------
+// ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
 
@@ -307,8 +300,17 @@ public abstract class AbstractRunMojo
      * The path of the Tomcat users XML file.
      *
      * @parameter expression = "${maven.tomcat.tomcatUsers.file}"
+     * @since 2.0
      */
     private File tomcatUsers;
+
+    /**
+     * The path of the Tomcat logging configuration.
+     *
+     * @parameter expression = "${maven.tomcat.tomcatLogging.file}"
+     * @since 2.0
+     */
+    private File tomcatLoggingFile;
 
     // ----------------------------------------------------------------------
     // Fields
@@ -326,45 +328,49 @@ public abstract class AbstractRunMojo
     /**
      * {@inheritDoc}
      */
-    public void execute( )
+    public void execute()
         throws MojoExecutionException, MojoFailureException
     {
         // ensure project is a web application
-        if ( !isWar( ) )
+        if ( !isWar() )
         {
-            getLog( ).info( messagesProvider.getMessage( "AbstractRunMojo.nonWar" ) );
+            getLog().info(messagesProvider.getMessage("AbstractRunMojo.nonWar"));
             return;
         }
-        ClassLoader originalClassLoaser = Thread.currentThread( ).getContextClassLoader( );
+        ClassLoader originalClassLoaser = Thread.currentThread().getContextClassLoader();
         try
         {
             if ( useSeparateTomcatClassLoader )
             {
-                Thread.currentThread( ).setContextClassLoader( getTomcatClassLoader( ) );
+                Thread.currentThread().setContextClassLoader(getTomcatClassLoader());
             }
-            getLog( ).info( messagesProvider.getMessage( "AbstractRunMojo.runningWar", getWebappUrl( ) ) );
+            getLog().info(messagesProvider.getMessage("AbstractRunMojo.runningWar", getWebappUrl()));
 
-            initConfiguration( );
-            startContainer( );
+            initConfiguration();
+            startContainer();
             if ( !fork )
             {
-                waitIndefinitely( );
+                waitIndefinitely();
             }
         }
         catch ( LifecycleException exception )
         {
-            throw new MojoExecutionException( messagesProvider.getMessage( "AbstractRunMojo.cannotStart" ), exception );
+            throw new MojoExecutionException(messagesProvider.getMessage("AbstractRunMojo.cannotStart"), exception);
         }
         catch ( IOException exception )
         {
-            throw new MojoExecutionException(
-                messagesProvider.getMessage( "AbstractRunMojo.cannotCreateConfiguration" ), exception );
+            throw new MojoExecutionException(messagesProvider.getMessage("AbstractRunMojo.cannotCreateConfiguration"),
+                                             exception);
+        }
+        catch ( ServletException e )
+        {
+            throw new MojoExecutionException(e.getMessage(), e);
         }
         finally
         {
             if ( useSeparateTomcatClassLoader )
             {
-                Thread.currentThread( ).setContextClassLoader( originalClassLoaser );
+                Thread.currentThread().setContextClassLoader(originalClassLoaser);
             }
         }
     }
@@ -378,7 +384,7 @@ public abstract class AbstractRunMojo
      *
      * @return the webapp context path
      */
-    protected String getPath( )
+    protected String getPath()
     {
         return path;
     }
@@ -391,25 +397,26 @@ public abstract class AbstractRunMojo
      * @throws IOException            if the context could not be created
      * @throws MojoExecutionException in case of an error creating the context
      */
-    protected Context createContext( Embedded container )
-        throws IOException, MojoExecutionException
+    protected Context createContext(Tomcat container)
+        throws IOException, MojoExecutionException, ServletException
     {
-        String contextPath = getPath( );
-        Context context =
-            container.createContext( "/".equals( contextPath ) ? "" : contextPath, getDocBase( ).getAbsolutePath( ) );
+        String contextPath = getPath();
+        Context context = container.addWebapp(contextPath, getDocBase().getAbsolutePath());
+        //Tomcat.initWebappDefaults( context );
 
         if ( useSeparateTomcatClassLoader )
         {
-            context.setParentClassLoader( getTomcatClassLoader( ) );
+            context.setParentClassLoader(getTomcatClassLoader());
         }
 
-        context.setLoader( createWebappLoader( ) );
-        File contextFile = getContextFile( );
+        context.setLoader(createWebappLoader());
+        File contextFile = getContextFile();
         if ( contextFile != null )
         {
-            context.setConfigFile( getContextFile( ).getAbsolutePath( ) );
+            context.setConfigFile(getContextFile().toURI().toURL());
         }
         return context;
+
     }
 
     /**
@@ -419,20 +426,19 @@ public abstract class AbstractRunMojo
      * @throws IOException            if the webapp loader could not be created
      * @throws MojoExecutionException in case of an error creating the webapp loader
      */
-    protected WebappLoader createWebappLoader( )
+    protected WebappLoader createWebappLoader()
         throws IOException, MojoExecutionException
     {
         if ( useSeparateTomcatClassLoader )
         {
-            return ( isContextReloadable( ) )
-                ? new ExternalRepositoriesReloadableWebappLoader( getTomcatClassLoader( ), getLog( ) )
-                : new WebappLoader( getTomcatClassLoader( ) );
+            return ( isContextReloadable() )
+                ? new ExternalRepositoriesReloadableWebappLoader(getTomcatClassLoader(), getLog())
+                : new WebappLoader(getTomcatClassLoader());
         }
 
-        return ( isContextReloadable( ) )
-            ? new ExternalRepositoriesReloadableWebappLoader( Thread.currentThread( ).getContextClassLoader( ),
-                                                              getLog( ) )
-            : new WebappLoader( Thread.currentThread( ).getContextClassLoader( ) );
+        return ( isContextReloadable() )
+            ? new ExternalRepositoriesReloadableWebappLoader(Thread.currentThread().getContextClassLoader(), getLog())
+            : new WebappLoader(Thread.currentThread().getContextClassLoader());
     }
 
     /**
@@ -440,7 +446,7 @@ public abstract class AbstractRunMojo
      *
      * @return false by default, true if  reloadable="true" in context.xml.
      */
-    protected boolean isContextReloadable( )
+    protected boolean isContextReloadable()
         throws MojoExecutionException
     {
         if ( contextReloadable )
@@ -451,32 +457,32 @@ public abstract class AbstractRunMojo
         boolean reloadable = false;
         try
         {
-            if ( contextFile != null && contextFile.exists( ) )
+            if ( contextFile != null && contextFile.exists() )
             {
-                DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance( );
-                DocumentBuilder builder = builderFactory.newDocumentBuilder( );
-                Document contextDoc = builder.parse( contextFile );
-                contextDoc.getDocumentElement( ).normalize( );
+                DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder builder = builderFactory.newDocumentBuilder();
+                Document contextDoc = builder.parse(contextFile);
+                contextDoc.getDocumentElement().normalize();
 
-                NamedNodeMap nodeMap = contextDoc.getDocumentElement( ).getAttributes( );
-                Node reloadableAttribute = nodeMap.getNamedItem( "reloadable" );
+                NamedNodeMap nodeMap = contextDoc.getDocumentElement().getAttributes();
+                Node reloadableAttribute = nodeMap.getNamedItem("reloadable");
 
                 reloadable =
-                    ( reloadableAttribute != null ) ? Boolean.valueOf( reloadableAttribute.getNodeValue( ) ) : false;
+                    ( reloadableAttribute != null ) ? Boolean.valueOf(reloadableAttribute.getNodeValue()) : false;
             }
-            getLog( ).debug( "context reloadable: " + reloadable );
+            getLog().debug("context reloadable: " + reloadable);
         }
         catch ( IOException ioe )
         {
-            getLog( ).error( "Could not parse file: [" + contextFile.getAbsolutePath( ) + "]", ioe );
+            getLog().error("Could not parse file: [" + contextFile.getAbsolutePath() + "]", ioe);
         }
         catch ( ParserConfigurationException pce )
         {
-            getLog( ).error( "Could not configure XML parser", pce );
+            getLog().error("Could not configure XML parser", pce);
         }
         catch ( SAXException se )
         {
-            getLog( ).error( "Could not parse file: [" + contextFile.getAbsolutePath( ) + "]", se );
+            getLog().error("Could not parse file: [" + contextFile.getAbsolutePath() + "]", se);
         }
 
         return reloadable;
@@ -488,14 +494,14 @@ public abstract class AbstractRunMojo
      *
      * @return the webapp directory
      */
-    protected abstract File getDocBase( );
+    protected abstract File getDocBase();
 
     /**
      * Gets the Tomcat context XML file to use.
      *
      * @return the context XML file
      */
-    protected abstract File getContextFile( )
+    protected abstract File getContextFile()
         throws MojoExecutionException;
 
     // ----------------------------------------------------------------------
@@ -507,87 +513,96 @@ public abstract class AbstractRunMojo
      *
      * @return whether this project uses WAR packaging
      */
-    protected boolean isWar( )
+    protected boolean isWar()
     {
-        return "war".equals( packaging ) || ignorePackaging;
+        return "war".equals(packaging) || ignorePackaging;
     }
 
     /**
      * Gets the URL of the running webapp.
      *
      * @return the URL of the running webapp
-     * @throws MalformedURLException if the running webapp URL is invalid
+     * @throws java.net.MalformedURLException if the running webapp URL is invalid
      */
-    private URL getWebappUrl( )
+    private URL getWebappUrl()
         throws MalformedURLException
     {
-        return new URL( "http", "localhost", port, getPath( ) );
+        return new URL("http", "localhost", port, getPath());
     }
 
     /**
+     * FIXME not sure we need all of those files with tomcat7
      * Creates the Tomcat configuration directory with the necessary resources.
      *
      * @throws IOException            if the Tomcat configuration could not be created
      * @throws MojoExecutionException if the Tomcat configuration could not be created
      */
-    private void initConfiguration( )
+    private void initConfiguration()
         throws IOException, MojoExecutionException
     {
-        if ( configurationDir.exists( ) )
+        if ( configurationDir.exists() )
         {
-            getLog( ).info( messagesProvider.getMessage( "AbstractRunMojo.usingConfiguration", configurationDir ) );
+            getLog().info(messagesProvider.getMessage("AbstractRunMojo.usingConfiguration", configurationDir));
         }
         else
         {
-            getLog( ).info( messagesProvider.getMessage( "AbstractRunMojo.creatingConfiguration", configurationDir ) );
+            getLog().info(messagesProvider.getMessage("AbstractRunMojo.creatingConfiguration", configurationDir));
 
-            configurationDir.mkdirs( );
+            configurationDir.mkdirs();
 
-            File confDir = new File( configurationDir, "conf" );
-            confDir.mkdir( );
+            File confDir = new File(configurationDir, "conf");
+            confDir.mkdir();
 
-            copyFile( "/conf/tomcat-users.xml", new File( confDir, "tomcat-users.xml" ) );
-            if ( tomcatWebXml != null )
+            if ( tomcatLoggingFile != null )
             {
-                if ( !tomcatWebXml.exists( ) )
-                {
-                    throw new MojoExecutionException( " tomcatWebXml " + tomcatWebXml.getPath( ) + " not exists" );
-                }
-                //MTOMCAT-42  here it's a real file resources not a one coming with the mojo 
-                FileUtils.copyFile( tomcatWebXml, new File( confDir, "web.xml" ) );
-                //copyFile( tomcatWebXml.getPath(), new File( confDir, "web.xml" ) );
+                FileUtils.copyFile(tomcatLoggingFile, new File(confDir, "logging.properties"));
             }
             else
             {
-                copyFile( "/conf/web.xml", new File( confDir, "web.xml" ) );
+                copyFile("/conf/logging.properties", new File(confDir, "logging.properties"));
             }
 
-            File logDir = new File( configurationDir, "logs" );
-            logDir.mkdir( );
-
-            File webappsDir = new File( configurationDir, "webapps" );
-            webappsDir.mkdir( );
-
-            if ( additionalConfigFilesDir != null && additionalConfigFilesDir.exists( ) )
+            copyFile("/conf/tomcat-users.xml", new File(confDir, "tomcat-users.xml"));
+            if ( tomcatWebXml != null )
             {
-                DirectoryScanner scanner = new DirectoryScanner( );
-                scanner.addDefaultExcludes( );
-                scanner.setBasedir( additionalConfigFilesDir.getPath( ) );
-                scanner.scan( );
+                if ( !tomcatWebXml.exists() )
+                {
+                    throw new MojoExecutionException(" tomcatWebXml " + tomcatWebXml.getPath() + " not exists");
+                }
+                //MTOMCAT-42  here it's a real file resources not a one coming with the mojo
+                FileUtils.copyFile(tomcatWebXml, new File(confDir, "web.xml"));
+            }
+            else
+            {
+                copyFile("/conf/web.xml", new File(confDir, "web.xml"));
+            }
 
-                String[] files = scanner.getIncludedFiles( );
+            File logDir = new File(configurationDir, "logs");
+            logDir.mkdir();
+
+            File webappsDir = new File(configurationDir, "webapps");
+            webappsDir.mkdir();
+
+            if ( additionalConfigFilesDir != null && additionalConfigFilesDir.exists() )
+            {
+                DirectoryScanner scanner = new DirectoryScanner();
+                scanner.addDefaultExcludes();
+                scanner.setBasedir(additionalConfigFilesDir.getPath());
+                scanner.scan();
+
+                String[] files = scanner.getIncludedFiles();
 
                 if ( files != null && files.length > 0 )
                 {
-                    getLog( ).info( "Coping additional tomcat config files" );
+                    getLog().info("Coping additional tomcat config files");
 
                     for ( int i = 0; i < files.length; i++ )
                     {
-                        File file = new File( additionalConfigFilesDir, files[i] );
+                        File file = new File(additionalConfigFilesDir, files[i]);
 
-                        getLog( ).info( " copy " + file.getName( ) );
+                        getLog().info(" copy " + file.getName());
 
-                        FileUtils.copyFileToDirectory( file, confDir );
+                        FileUtils.copyFileToDirectory(file, confDir);
                     }
                 }
             }
@@ -601,17 +616,17 @@ public abstract class AbstractRunMojo
      * @param toFile   the file to copy to
      * @throws IOException if the file could not be copied
      */
-    private void copyFile( String fromPath, File toFile )
+    private void copyFile(String fromPath, File toFile)
         throws IOException
     {
-        URL fromURL = getClass( ).getResource( fromPath );
+        URL fromURL = getClass().getResource(fromPath);
 
         if ( fromURL == null )
         {
-            throw new FileNotFoundException( fromPath );
+            throw new FileNotFoundException(fromPath);
         }
 
-        FileUtils.copyURLToFile( fromURL, toFile );
+        FileUtils.copyURLToFile(fromURL, toFile);
     }
 
     /**
@@ -621,140 +636,146 @@ public abstract class AbstractRunMojo
      * @throws LifecycleException     if the server could not be started
      * @throws MojoExecutionException if the server could not be configured
      */
-    private void startContainer( )
-        throws IOException, LifecycleException, MojoExecutionException
+    private void startContainer()
+        throws IOException, LifecycleException, MojoExecutionException, ServletException
     {
-        String previousCatalinaBase = System.getProperty( "catalina.base" );
+        String previousCatalinaBase = System.getProperty("catalina.base");
 
         try
         {
 
             // Set the system properties
-            setupSystemProperties( );
+            setupSystemProperties();
 
-            System.setProperty( "catalina.base", configurationDir.getAbsolutePath( ) );
+            System.setProperty("catalina.base", configurationDir.getAbsolutePath());
 
-            final Embedded container;
             if ( serverXml != null )
             {
-                if ( !serverXml.exists( ) )
+                if ( !serverXml.exists() )
                 {
-                    throw new MojoExecutionException( serverXml.getPath( ) + " not exists" );
+                    throw new MojoExecutionException(serverXml.getPath() + " not exists");
                 }
 
-                container = new Catalina( );
-                container.setCatalinaHome( configurationDir.getAbsolutePath( ) );
-                ( (Catalina) container ).setConfigFile( serverXml.getPath( ) );
-                //( (Catalina) container ).setRedirectStreams( true );
-                ( (Catalina) container ).setUseNaming( this.useNaming );
-
-                container.start( );
+                Catalina container = new Catalina();
+                container.setUseNaming(this.useNaming);
+                container.setConfig(serverXml.getAbsolutePath());
+                container.start();
+                EmbeddedRegistry.getInstance().register(container);
             }
             else
             {
-                // create server
-                container = new Embedded( );
-                container.setCatalinaHome( configurationDir.getAbsolutePath( ) );
-                MemoryRealm memoryRealm = new MemoryRealm( ){
-                    @Override
-                    public Principal authenticate(String username, String credentials)
-                    {
-                        return super.authenticate(username,
-                                                  credentials);    //To change body of overridden methods use File | Settings | File Templates.
-                    }
-                };
+
+                System.setProperty("java.util.logging.manager", "org.apache.juli.ClassLoaderLogManager");
+                System.setProperty("java.util.logging.config.file",
+                                   new File(configurationDir, "conf/logging.properties").toString());
+
+                // Trigger loading of catalina.properties
+                CatalinaProperties.getProperty("foo");
+
+                Tomcat embeddedTomcat = new Tomcat();
+                if (useNaming)
+                {
+                    embeddedTomcat.enableNaming();
+                }
+                embeddedTomcat.setBaseDir(configurationDir.getAbsolutePath());
+                MemoryRealm memoryRealm = new MemoryRealm();
 
                 if ( tomcatUsers != null )
                 {
-                    if ( !tomcatUsers.exists( ) )
+                    if ( !tomcatUsers.exists() )
                     {
-                        throw new MojoExecutionException( " tomcatUsers " + tomcatUsers.getPath( ) + " not exists" );
+                        throw new MojoExecutionException(" tomcatUsers " + tomcatUsers.getPath() + " not exists");
                     }
-                    getLog( ).info( "use tomcat-users.xml from " + tomcatUsers.getAbsolutePath( ) );
-                    memoryRealm.setPathname( tomcatUsers.getAbsolutePath( ) );
-
+                    getLog().info("use tomcat-users.xml from " + tomcatUsers.getAbsolutePath());
+                    memoryRealm.setPathname(tomcatUsers.getAbsolutePath());
                 }
 
-                container.setRealm( memoryRealm );
-                container.setUseNaming( useNaming );
+                embeddedTomcat.setDefaultRealm(memoryRealm);
 
-                //container.createLoader( getTomcatClassLoader() ).
+                embeddedTomcat.getHost().setAppBase(new File(configurationDir, "webapps").getAbsolutePath());
 
-                // create context
-                Context context = createContext( container );
+                Connector connector = new Connector(protocol);
+                connector.setPort(port);
 
-                // create host
-                String appBase = new File( configurationDir, "webapps" ).getAbsolutePath( );
-                Host host = container.createHost( "localHost", appBase );
-
-                host.addChild( context );
-
-                if ( addContextWarDependencies )
+                if ( httpsPort > 0 )
                 {
-                    Collection<Context> dependecyContexts = createDependencyContexts( container );
-                    for ( Context extraContext : dependecyContexts )
-                    {
-                        host.addChild( extraContext );
-                    }
+                    connector.setRedirectPort(httpsPort);
                 }
 
-                // create engine
-                Engine engine = container.createEngine( );
-                engine.setName( "localEngine" );
-                engine.addChild( host );
-                engine.setDefaultHost( host.getName( ) );
-                container.addEngine( engine );
+                connector.setURIEncoding(uriEncoding);
+
+                embeddedTomcat.getService().addConnector(connector);
+
+                embeddedTomcat.setConnector(connector);
+
                 if ( useSeparateTomcatClassLoader )
                 {
-                    engine.setParentClassLoader( getTomcatClassLoader( ) );
+                    embeddedTomcat.getEngine().setParentClassLoader(getTomcatClassLoader());
                 }
-                // create http connector
-                Connector httpConnector = container.createConnector( (InetAddress) null, port, protocol );
-                if ( httpsPort > 0 )
-                {
-                    httpConnector.setRedirectPort( httpsPort );
-                }
-                httpConnector.setURIEncoding( uriEncoding );
-                container.addConnector( httpConnector );
 
-                // create https connector
-                if ( httpsPort > 0 )
-                {
-                    Connector httpsConnector = container.createConnector( (InetAddress) null, httpsPort, true );
+                Context ctx = createContext(embeddedTomcat);
+
+
+                AccessLogValve alv = new AccessLogValve();
+                alv.setDirectory(new File(configurationDir, "logs").getAbsolutePath());
+                alv.setPattern("%h %l %u %t \"%r\" %s %b %I %D");
+                embeddedTomcat.getHost().getPipeline().addValve(alv);
+
+
+                 // create https connector
+                 if ( httpsPort > 0 )
+                 {
+                    Connector httpsConnector = new Connector(protocol);
+                    httpsConnector.setPort(httpsPort);
                     if ( keystoreFile != null )
                     {
-                        httpsConnector.setAttribute( "keystoreFile", keystoreFile );
+
+                        httpsConnector.setAttribute("keystoreFile", keystoreFile);
                     }
                     if ( keystorePass != null )
                     {
-                        httpsConnector.setAttribute( "keystorePass", keystorePass );
+                        httpsConnector.setAttribute("keystorePass", keystorePass);
                     }
-                    container.addConnector( httpsConnector );
+                    embeddedTomcat.getEngine().getService().addConnector(httpsConnector);
 
-                }
+                 }
 
-                // create ajp connector
-                if ( ajpPort > 0 )
+                 // create ajp connector
+                 if ( ajpPort > 0 )
+                 {
+                    Connector ajpConnector = new Connector(ajpProtocol);
+                    ajpConnector.setPort(ajpPort);
+                    ajpConnector.setURIEncoding(uriEncoding);
+                     embeddedTomcat.getEngine().getService().addConnector(ajpConnector);
+                 }
+
+                if ( useSeparateTomcatClassLoader )
                 {
-                    Connector ajpConnector = container.createConnector( (InetAddress) null, ajpPort, ajpProtocol );
-                    ajpConnector.setURIEncoding( uriEncoding );
-                    container.addConnector( ajpConnector );
+                    embeddedTomcat.getEngine().setParentClassLoader( getTomcatClassLoader() );
                 }
-                container.start( );
+
+                if ( addContextWarDependencies )
+                {
+                    createDependencyContexts(embeddedTomcat);
+                }
+
+                embeddedTomcat.start();
+                EmbeddedRegistry.getInstance().register(embeddedTomcat);
+
             }
 
-            EmbeddedRegistry.getInstance().register( container );
+
         }
         finally
         {
             if ( previousCatalinaBase != null )
             {
-                System.setProperty( "catalina.base", previousCatalinaBase );
+                System.setProperty("catalina.base", previousCatalinaBase);
             }
         }
     }
 
-    protected ClassRealm getTomcatClassLoader( )
+    protected ClassRealm getTomcatClassLoader()
         throws MojoExecutionException
     {
         if ( this.tomcatRealm != null )
@@ -763,17 +784,17 @@ public abstract class AbstractRunMojo
         }
         try
         {
-            ClassWorld world = new ClassWorld( );
-            ClassRealm root = world.newRealm( "tomcat", Thread.currentThread( ).getContextClassLoader( ) );
+            ClassWorld world = new ClassWorld();
+            ClassRealm root = world.newRealm("tomcat", Thread.currentThread().getContextClassLoader());
 
-            for ( @SuppressWarnings( "rawtypes" ) Iterator i = pluginArtifacts.iterator( ); i.hasNext( ); )
+            for ( @SuppressWarnings( "rawtypes" ) Iterator i = pluginArtifacts.iterator(); i.hasNext(); )
             {
-                Artifact pluginArtifact = (Artifact) i.next( );
-                if ( "org.apache.tomcat".equals( pluginArtifact.getGroupId( ) ) )
+                Artifact pluginArtifact = (Artifact) i.next();
+                if ( "org.apache.tomcat".equals(pluginArtifact.getGroupId()) )
                 {
-                    if ( pluginArtifact.getFile( ) != null )
+                    if ( pluginArtifact.getFile() != null )
                     {
-                        root.addURL( pluginArtifact.getFile( ).toURI( ).toURL( ) );
+                        root.addURL(pluginArtifact.getFile().toURI().toURL());
                     }
                 }
             }
@@ -782,36 +803,36 @@ public abstract class AbstractRunMojo
         }
         catch ( DuplicateRealmException e )
         {
-            throw new MojoExecutionException( e.getMessage( ), e );
+            throw new MojoExecutionException(e.getMessage(), e);
         }
         catch ( MalformedURLException e )
         {
-            throw new MojoExecutionException( e.getMessage( ), e );
+            throw new MojoExecutionException(e.getMessage(), e);
         }
     }
 
     @SuppressWarnings( "unchecked" )
-    public Set<Artifact> getProjectArtifacts( )
+    public Set<Artifact> getProjectArtifacts()
     {
-        return project.getArtifacts( );
+        return project.getArtifacts();
     }
 
     /**
      * Causes the current thread to wait indefinitely. This method does not return.
      */
-    private void waitIndefinitely( )
+    private void waitIndefinitely()
     {
-        Object lock = new Object( );
+        Object lock = new Object();
 
         synchronized ( lock )
         {
             try
             {
-                lock.wait( );
+                lock.wait();
             }
             catch ( InterruptedException exception )
             {
-                getLog( ).warn( messagesProvider.getMessage( "AbstractRunMojo.interrupted" ), exception );
+                getLog().warn(messagesProvider.getMessage("AbstractRunMojo.interrupted"), exception);
             }
         }
     }
@@ -820,24 +841,24 @@ public abstract class AbstractRunMojo
     /**
      * Set the SystemProperties from the configuration.
      */
-    private void setupSystemProperties( )
+    private void setupSystemProperties()
     {
-        if ( systemProperties != null && !systemProperties.isEmpty( ) )
+        if ( systemProperties != null && !systemProperties.isEmpty() )
         {
-            getLog( ).info( "setting SystemProperties:" );
+            getLog().info("setting SystemProperties:");
 
-            for ( String key : systemProperties.keySet( ) )
+            for ( String key : systemProperties.keySet() )
             {
-                String value = systemProperties.get( key );
+                String value = systemProperties.get(key);
 
                 if ( value != null )
                 {
-                    getLog( ).info( " " + key + "=" + value );
-                    System.setProperty( key, value );
+                    getLog().info(" " + key + "=" + value);
+                    System.setProperty(key, value);
                 }
                 else
                 {
-                    getLog( ).info( "skip sysProps " + key + " with empty value" );
+                    getLog().info("skip sysProps " + key + " with empty value");
                 }
             }
         }
@@ -851,64 +872,65 @@ public abstract class AbstractRunMojo
      * @param container tomcat
      * @return dependency tomcat contexts of warfiles in scope "tomcat"
      */
-    private Collection<Context> createDependencyContexts( Embedded container )
-        throws MojoExecutionException
+    private Collection<Context> createDependencyContexts(Tomcat container)
+        throws MojoExecutionException, MalformedURLException
     {
-        getLog( ).info( "Deploying dependency wars" );
+        getLog().info("Deploying dependency wars");
         // Let's add other modules
-        List<Context> contexts = new ArrayList<Context>( );
+        List<Context> contexts = new ArrayList<Context>();
 
-        ScopeArtifactFilter filter = new ScopeArtifactFilter( "tomcat" );
-        @SuppressWarnings( "unchecked" ) Set<Artifact> artifacts = project.getArtifacts( );
+        ScopeArtifactFilter filter = new ScopeArtifactFilter("tomcat");
+        @SuppressWarnings( "unchecked" ) Set<Artifact> artifacts = project.getArtifacts();
         for ( Artifact artifact : artifacts )
         {
 
             // Artifact is not yet registered and it has neither test, nor a
             // provided scope, not is it optional
-            if ( "war".equals( artifact.getType( ) ) && !artifact.isOptional( ) && filter.include( artifact ) )
+            if ( "war".equals(artifact.getType()) && !artifact.isOptional() && filter.include(artifact) )
             {
-                getLog( ).info( "Deploy warfile: " + String.valueOf( artifact.getFile( ) ) );
-                File webapps = new File( configurationDir, "webapps" );
-                File artifactWarDir = new File( webapps, artifact.getArtifactId( ) );
-                if ( !artifactWarDir.exists( ) )
+                getLog().info("Deploy warfile: " + String.valueOf(artifact.getFile()));
+                File webapps = new File(configurationDir, "webapps");
+                File artifactWarDir = new File(webapps, artifact.getArtifactId());
+                if ( !artifactWarDir.exists() )
                 {
                     //dont extract if exists
-                    artifactWarDir.mkdir( );
+                    artifactWarDir.mkdir();
                     try
                     {
-                        UnArchiver unArchiver = archiverManager.getUnArchiver( "zip" );
-                        unArchiver.setSourceFile( artifact.getFile( ) );
-                        unArchiver.setDestDirectory( artifactWarDir );
+                        UnArchiver unArchiver = archiverManager.getUnArchiver("zip");
+                        unArchiver.setSourceFile(artifact.getFile());
+                        unArchiver.setDestDirectory(artifactWarDir);
 
                         // Extract the module
-                        unArchiver.extract( );
+                        unArchiver.extract();
                     }
                     catch ( IOException e )
                     {
-                        getLog( ).error( e );
+                        getLog().error(e);
                         continue;
                     }
                     catch ( NoSuchArchiverException e )
                     {
-                        getLog( ).error( e );
+                        getLog().error(e);
                         continue;
                     }
                     catch ( ArchiverException e )
                     {
-                        getLog( ).error( e );
+                        getLog().error(e);
                         continue;
                     }
                 }
-                WebappLoader webappLoader = new WebappLoader( Thread.currentThread( ).getContextClassLoader( ) );
+                WebappLoader webappLoader = new WebappLoader(Thread.currentThread().getContextClassLoader());
                 Context context =
-                    container.createContext( "/" + artifact.getArtifactId( ), artifactWarDir.getAbsolutePath( ) );
-                context.setLoader( webappLoader );
-                File contextFile = getContextFile( );
+                    container.addContext("/" + artifact.getArtifactId(), artifactWarDir.getAbsolutePath());
+                context.setLoader(webappLoader);
+                context.setName(artifact.getArtifactId());
+                File contextFile = getContextFile();
                 if ( contextFile != null )
                 {
-                    context.setConfigFile( getContextFile( ).getAbsolutePath( ) );
+                    context.setConfigFile(getContextFile().toURI().toURL());
                 }
-                contexts.add( context );
+                contexts.add(context);
 
             }
         }

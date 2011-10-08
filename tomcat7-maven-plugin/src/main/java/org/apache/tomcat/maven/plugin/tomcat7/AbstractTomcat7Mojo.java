@@ -1,4 +1,4 @@
-package org.codehaus.mojo.tomcat.it;
+package org.apache.tomcat.maven.plugin.tomcat7;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,17 +18,37 @@ package org.codehaus.mojo.tomcat.it;
  * under the License.
  */
 
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.tomcat.maven.common.messages.MessagesProvider;
+
 /**
  * @author Olivier Lamy
+ * @since 2.0
  */
-public class Tomcat6DeployWarProjectIT
-    extends AbstractDeployWarProjectIT
+public abstract class AbstractTomcat7Mojo
+    extends AbstractMojo
 {
-    // no op
+    /**
+     * @component
+     */
+    protected MessagesProvider messagesProvider;
 
-    public void testIt( )
-        throws Exception
+    // ----------------------------------------------------------------------
+    // Mojo Parameters
+    // ----------------------------------------------------------------------
+
+    /**
+     * The webapp context path to use for the web application being run. This must always start with a forward-slash
+     * ('/').
+     *
+     * @parameter expression="${maven.tomcat.path}" default-value="/${project.artifactId}"
+     * @required
+     */
+    protected String path;
+
+
+    protected String getPath()
     {
-        //FIXME currently this it fail
+        return path;
     }
 }

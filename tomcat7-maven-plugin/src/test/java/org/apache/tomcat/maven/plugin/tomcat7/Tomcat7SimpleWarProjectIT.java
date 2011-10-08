@@ -1,4 +1,4 @@
-package org.codehaus.mojo.tomcat.it;
+package org.apache.tomcat.maven.plugin.tomcat7;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,17 +18,16 @@ package org.codehaus.mojo.tomcat.it;
  * under the License.
  */
 
+import org.codehaus.mojo.tomcat.it.AbstractSimpleWarProjectIT;
+
 /**
  * @author Olivier Lamy
  */
-public class Tomcat6DeployWarProjectIT
-    extends AbstractDeployWarProjectIT
+public class Tomcat7SimpleWarProjectIT
+    extends AbstractSimpleWarProjectIT
 {
-    // no op
-
-    public void testIt( )
-        throws Exception
+    protected int getTimeout()
     {
-        //FIXME currently this it fail
+        return 20000;
     }
 }

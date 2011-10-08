@@ -87,7 +87,7 @@ public final class EmbeddedRegistry
      * @param container the container to register
      * @return true if it got added; false if not
      */
-    public synchronized boolean register(final Embedded container)
+    public synchronized boolean register(final Object container)
     {
         return containers.add(container);
     }
