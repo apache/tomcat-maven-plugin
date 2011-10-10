@@ -67,6 +67,7 @@
             <configuration>
               <fork>true</fork>
               <port>${its.http.port}</port>
+              <ajpPort>${its.ajp.port}</ajpPort>
               <path>/</path>
               <systemProperties>
                 <com.sun.management.jmxremote.ssl>false</com.sun.management.jmxremote.ssl>

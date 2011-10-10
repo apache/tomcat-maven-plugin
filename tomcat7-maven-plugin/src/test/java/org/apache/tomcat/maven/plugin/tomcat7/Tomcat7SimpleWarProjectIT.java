@@ -18,6 +18,7 @@ package org.apache.tomcat.maven.plugin.tomcat7;
  * under the License.
  */
 
+import org.apache.maven.it.VerificationException;
 import org.codehaus.mojo.tomcat.it.AbstractSimpleWarProjectIT;
 
 /**
@@ -29,5 +30,14 @@ public class Tomcat7SimpleWarProjectIT
     protected int getTimeout()
     {
         return 20000;
+    }
+
+    @Override
+    protected void verifyConnectorsStarted()
+        throws VerificationException
+    {
+        verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"http-bio-" + getHttpItPort() + "\"]");
+
+        verifier.verifyTextInLog( "INFO: Starting ProtocolHandler [\"ajp-bio-"+ getAjpItPort() +"\"]" );
     }
 }

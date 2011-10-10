@@ -221,6 +221,7 @@
                     <verifier.maven.debug>${verifier.maven.debug}</verifier.maven.debug>
                     <verifier.debugJvm>${verifier.debugJvm}</verifier.debugJvm>
                     <its.http.port>${its.http.port}</its.http.port>
+                    <its.ajp.port>${its.ajp.port}</its.ajp.port>
                   </systemPropertyVariables>
                 </configuration>
               </execution>

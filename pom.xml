@@ -57,6 +57,8 @@
     <distributionIdSnapshots>apache.snapshots</distributionIdSnapshots>
     <!-- http port used to run it test -->
     <its.http.port>1973</its.http.port>
+    <!-- ajp port used to run it test -->
+    <its.ajp.port>2001</its.ajp.port>
   </properties>
 
   <prerequisites>

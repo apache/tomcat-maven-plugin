@@ -21,6 +21,7 @@ package org.codehaus.mojo.tomcat.it;
 
 
 
+import org.apache.maven.it.VerificationException;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +65,12 @@ public abstract class AbstractSimpleWarProjectIT
 
         LOG.info( "Error Free Log check" );
         verifier.verifyErrorFreeLog();
+        verifyConnectorsStarted();
     }
 
+    /**
+     * impls check the logs if http/https/apr has been started
+     */
+    protected abstract void verifyConnectorsStarted()
+        throws VerificationException;
 }

@@ -66,6 +66,7 @@
             <phase>pre-integration-test</phase>
             <configuration>
               <port>${its.http.port}</port>
+              <ajpPort>${its.ajp.port}</ajpPort>
               <fork>true</fork>
               <path>/</path>
               <systemProperties>

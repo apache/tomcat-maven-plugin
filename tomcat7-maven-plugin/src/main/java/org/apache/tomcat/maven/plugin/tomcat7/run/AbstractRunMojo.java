@@ -114,7 +114,7 @@ public abstract class AbstractRunMojo
      * By default it's ajp.
      * NOTE The ajp connector will be started only if {@link #ajpPort} > 0.
      *
-     * @parameter expression="${maven.tomcat.ajp.protocol}" default-value="ajp"
+     * @parameter expression="${maven.tomcat.ajp.protocol}" default-value="org.apache.coyote.ajp.AjpProtocol"
      * @since 2.0
      */
     private String ajpProtocol;

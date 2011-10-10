@@ -18,11 +18,19 @@ package org.codehaus.mojo.tomcat.it;
  * under the License.
  */
 
+import org.apache.maven.it.VerificationException;
+
 /**
  * @author Olivier Lamy
  */
 public class Tomcat6SimpleWarProjectIT
     extends AbstractSimpleWarProjectIT
 {
-    // no op
+    @Override
+    protected void verifyConnectorsStarted()
+        throws VerificationException
+    {
+        verifier.verifyTextInLog("INFO: Starting Coyote HTTP/1.1 on http-" + getHttpItPort());
+        verifier.verifyTextInLog("INFO: JK: ajp13 listening on /0.0.0.0:" + getAjpItPort());
+    }
 }
