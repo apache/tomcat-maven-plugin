@@ -113,7 +113,11 @@ public abstract class AbstractRunMojo
      * The AJP protocol to run the Tomcat server on.
      * By default it's ajp.
      * NOTE The ajp connector will be started only if {@link #ajpPort} > 0.
-     *
+     * possible values are:
+     * <ul>
+     *   <li>org.apache.coyote.ajp.AjpProtocol - new blocking Java connector that supports an executor</li>
+     *   <li>org.apache.coyote.ajp.AjpAprProtocol - the APR/native connector.</li>
+     * </ul>
      * @parameter expression="${maven.tomcat.ajp.protocol}" default-value="org.apache.coyote.ajp.AjpProtocol"
      * @since 2.0
      */
