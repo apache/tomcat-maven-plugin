@@ -386,13 +386,13 @@
               <exclude>DEPENDENCIES</exclude>
               <exclude>README.txt</exclude>
               <exclude>*.sh</exclude>
+              <exclude>.git/**</exclude>
             </excludes>
           </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
-      <!--
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
@@ -406,7 +406,6 @@
           </execution>
         </executions>
       </plugin>
-      -->
     </plugins>
   </build>
 
