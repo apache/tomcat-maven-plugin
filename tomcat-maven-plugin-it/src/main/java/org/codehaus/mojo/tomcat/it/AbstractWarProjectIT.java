@@ -207,5 +207,10 @@ public abstract class AbstractWarProjectIT
     {
         return 15000;
     }
+    
+    protected static String getHttpItPort()
+    {
+        return System.getProperty( "its.http.port" );
+    }
 
 }

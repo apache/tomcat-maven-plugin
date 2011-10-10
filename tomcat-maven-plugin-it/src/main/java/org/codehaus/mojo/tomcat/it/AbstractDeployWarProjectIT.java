@@ -42,7 +42,7 @@ public abstract class AbstractDeployWarProjectIT
     @Override
     protected String getWebappUrl()
     {
-        return "http://localhost:8080/";
+        return "http://localhost:" + getHttpItPort() + "/";
     }
 
     @Override

@@ -18,11 +18,18 @@ package org.codehaus.mojo.tomcat.it;
  * under the License.
  */
 
+import org.apache.maven.it.VerificationException;
+
 /**
  * @author Olivier Lamy
  */
 public class Tomcat6RunMultiConfigIT
     extends AbstractTomcatRunMultiConfigIT
 {
-    // no op
+    @Override
+    protected void verifyConnectorsStarted()
+        throws VerificationException
+    {
+        verifier.verifyTextInLog("INFO: Starting Coyote HTTP/1.1 on http-" + getHttpItPort());
+    }
 }

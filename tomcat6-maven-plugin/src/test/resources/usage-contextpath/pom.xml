@@ -55,6 +55,7 @@
             </goals>
             <phase>pre-integration-test</phase>
             <configuration>
+              <port>${its.http.port}</port>
               <fork>true</fork>
               <path>/lorem</path>
             </configuration>

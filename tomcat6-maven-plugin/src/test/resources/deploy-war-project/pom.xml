@@ -65,6 +65,7 @@
             </goals>
             <phase>test</phase>
             <configuration>
+              <port>${its.http.port}</port>
               <fork>true</fork>
               <path>/</path>
               <tomcatUsers>src/main/tomcatconf/tomcat-users.xml</tomcatUsers>
@@ -77,6 +78,7 @@
               <goal>deploy-only</goal>
             </goals>
             <configuration>
+              <port>${its.http.port}</port>
               <warFile>./simple-war-project-1.0-SNAPSHOT.war</warFile>
               <username>tomcat</username>
               <password>tomcat</password>

@@ -230,6 +230,7 @@
                     <mojoVersion>${project.version}</mojoVersion>
                     <verifier.maven.debug>${verifier.maven.debug}</verifier.maven.debug>
                     <verifier.debugJvm>${verifier.debugJvm}</verifier.debugJvm>
+                    <its.http.port>${its.http.port}</its.http.port>
                   </systemPropertyVariables>
                   <redirectTestOutputToFile>false</redirectTestOutputToFile>
                   <useFile>false</useFile>

@@ -66,6 +66,7 @@
             <phase>pre-integration-test</phase>
             <configuration>
               <fork>true</fork>
+              <port>${its.http.port}</port>
               <path>/</path>
               <systemProperties>
                 <com.sun.management.jmxremote.ssl>false</com.sun.management.jmxremote.ssl>

@@ -67,7 +67,12 @@
               <additionalConfigFilesDir>\${basedir}/src/main/tcconf</additionalConfigFilesDir>
               <configurationDir>\${project.build.directory}/tc</configurationDir>
               <path>/multi-config</path>
-              <port>8001</port>
+              <port>${its.http.port}</port>
+              <!--
+              <httpsPort>8002</httpsPort>
+              <keystoreFile>\${basedir}/src/keystore</keystoreFile>
+              <ajpPort>8003</ajpPort>
+              -->
               <uriEncoding>UTF-8</uriEncoding>
               <systemProperties>
                 <com.sun.management.jmxremote.ssl>false</com.sun.management.jmxremote.ssl>

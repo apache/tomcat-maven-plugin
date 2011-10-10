@@ -1,6 +1,6 @@
 to build this project you must Apache Maven at least 2.2.1 .
-mvn clean install will install the mojos without running integration tests (as there are some hardcoded integration tests with port 8080, you could have some port allocation issues).
-mvn clean install -Prun-its will run integration tests too.
+mvn clean install will install the mojos without running integration tests (as there are some hardcoded integration tests with port 1973, you could have some port allocation issues).
+mvn clean install -Prun-its will run integration tests too: to override the default used htpp port you can use -Dits.http.port=
 To deploy a snaphot version to http://people.apache.org/repo/m2-snapshot-repository/ (which is proxying by https://repository.apache.org/content/groups/snapshots-group/) you must run : mvn clean deploy .
 Note you need some configuration in ~/.m2/settings.xml:
     <server>
