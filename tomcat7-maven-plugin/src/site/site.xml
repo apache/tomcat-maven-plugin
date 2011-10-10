@@ -22,18 +22,7 @@
   <body>
     <menu name="Overview">
       <item name="Introduction" href="index.html"/>
-      <item name="Goals" href="plugin-info.html"/>
-      <item name="Context Goals" href="context-goals.html"/>
-      <item name="Container Goals" href="container-goals.html"/>
-      <item name="Usage" href="usage.html"/>
-      <item name="FAQ" href="faq.html"/>
       <item name="Javadoc" href="apidocs/index.html"/>
-    </menu>
-    <menu name="Examples">
-      <item name="Adding System Properties" href="examples/add-system-properties.html"/>
-      <item name="Adjust Tomcat Version" href="examples/adjust-embedded-tomcat-version.html"/>
-      <item name="Deployment" href="examples/deployment.html"/>
-      <item name="Deployment to Tomcat 7" href="examples/deployment-tomcat7.html"/>
     </menu>
 
     <menu ref="modules"/>
