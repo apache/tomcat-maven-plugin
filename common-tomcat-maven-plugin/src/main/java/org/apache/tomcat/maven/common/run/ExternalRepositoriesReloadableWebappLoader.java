@@ -57,7 +57,7 @@ public class ExternalRepositoriesReloadableWebappLoader
      * Convenience Constructor allows setting of a parent ClassLoader.
      * @param parent the ClassLoader instance to set as this Loader's parent ClassLoader.
      */
-    public ExternalRepositoriesReloadableWebappLoader(ClassLoader parent, Log log)
+    public ExternalRepositoriesReloadableWebappLoader( ClassLoader parent, Log log )
     {
         super( parent );
         this.log = log;
@@ -127,7 +127,7 @@ public class ExternalRepositoriesReloadableWebappLoader
         boolean modified = super.modified();
         if ( !modified )
         {
-            if (log != null )
+            if ( log != null )
             {
                 log.debug( "classPath scanning started at " + new Date().toString() );
             }            
@@ -154,7 +154,7 @@ public class ExternalRepositoriesReloadableWebappLoader
                 }
             }
         }
-        if (log != null )
+        if ( log != null )
         {
             log.debug( "context " + modified + " at " + new Date().toString() );
         }

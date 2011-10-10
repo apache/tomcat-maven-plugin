@@ -19,8 +19,6 @@ package org.apache.tomcat.maven.common.run;
  * under the License.
  */
 
-import org.apache.catalina.LifecycleException;
-import org.apache.catalina.startup.Embedded;
 import org.apache.maven.plugin.logging.Log;
 
 import java.lang.reflect.InvocationTargetException;
@@ -41,7 +39,7 @@ public final class EmbeddedRegistry
 {
     private static EmbeddedRegistry instance;
 
-    private Set<Object> containers = new HashSet<Object>(1);
+    private Set<Object> containers = new HashSet<Object>( 1 );
 
     /**
      * Don't instantiate - use the instance through {@link #getInstance()}.
@@ -61,14 +59,14 @@ public final class EmbeddedRegistry
         if ( instance == null )
         {
             instance = new EmbeddedRegistry();
-            Runtime.getRuntime().addShutdownHook(new Thread()
+            Runtime.getRuntime().addShutdownHook( new Thread()
             {
                 @Override
                 public void run()
                 {
                     try
                     {
-                        getInstance().shutdownAll(null);
+                        getInstance().shutdownAll( null );
                     }
                     catch ( Exception e )
                     {
@@ -87,9 +85,9 @@ public final class EmbeddedRegistry
      * @param container the container to register
      * @return true if it got added; false if not
      */
-    public synchronized boolean register(final Object container)
+    public synchronized boolean register( final Object container )
     {
-        return containers.add(container);
+        return containers.add( container );
     }
 
     /**
@@ -100,7 +98,7 @@ public final class EmbeddedRegistry
      * @throws org.apache.catalina.LifecycleException
      *          the first exception which occurred will be rethrown
      */
-    public synchronized void shutdownAll(final Log log)
+    public synchronized void shutdownAll( final Log log )
         throws Exception
     {
         Exception firstException = null;
@@ -109,8 +107,8 @@ public final class EmbeddedRegistry
             Object embedded = iterator.next();
             try
             {
-                Method method = embedded.getClass().getMethod("stop", null);
-                method.invoke(embedded, null);
+                Method method = embedded.getClass().getMethod( "stop", null );
+                method.invoke( embedded, null );
                 iterator.remove();
             }
             catch ( NoSuchMethodException e )
@@ -118,11 +116,11 @@ public final class EmbeddedRegistry
                 if ( firstException == null )
                 {
                     firstException = e;
-                    error(log, e, "no stop method in class " + embedded.getClass().getName());
+                    error( log, e, "no stop method in class " + embedded.getClass().getName() );
                 }
                 else
                 {
-                    error(log, e, "Error while shutting down embedded Tomcat.");
+                    error( log, e, "Error while shutting down embedded Tomcat." );
                 }
             }
             catch ( IllegalAccessException e )
@@ -130,11 +128,11 @@ public final class EmbeddedRegistry
                 if ( firstException == null )
                 {
                     firstException = e;
-                    error(log, e, "IllegalAccessException for stop method in class " + embedded.getClass().getName());
+                    error( log, e, "IllegalAccessException for stop method in class " + embedded.getClass().getName() );
                 }
                 else
                 {
-                    error(log, e, "Error while shutting down embedded Tomcat.");
+                    error( log, e, "Error while shutting down embedded Tomcat." );
                 }
             }
             catch ( InvocationTargetException e )
@@ -143,11 +141,11 @@ public final class EmbeddedRegistry
                 if ( firstException == null )
                 {
                     firstException = e;
-                    error(log, e, "IllegalAccessException for stop method in class " + embedded.getClass().getName());
+                    error( log, e, "IllegalAccessException for stop method in class " + embedded.getClass().getName() );
                 }
                 else
                 {
-                    error(log, e, "Error while shutting down embedded Tomcat.");
+                    error( log, e, "Error while shutting down embedded Tomcat." );
                 }
             }
         }
@@ -165,16 +163,16 @@ public final class EmbeddedRegistry
      * @param e       exception which shall be reported
      * @param message message which shall be reported
      */
-    private void error(final Log log, final Exception e, final String message)
+    private void error( final Log log, final Exception e, final String message )
     {
         if ( log == null )
         {
-            System.err.println("ERROR: " + message);
+            System.err.println( "ERROR: " + message );
             e.printStackTrace();
         }
         else
         {
-            log.error(message, e);
+            log.error( message, e );
         }
     }
 

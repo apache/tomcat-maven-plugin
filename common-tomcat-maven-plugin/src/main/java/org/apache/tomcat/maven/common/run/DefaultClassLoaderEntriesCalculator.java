@@ -1,4 +1,5 @@
 package org.apache.tomcat.maven.common.run;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -39,7 +40,7 @@ import java.util.Set;
 public class DefaultClassLoaderEntriesCalculator
     implements ClassLoaderEntriesCalculator
 {
-    public List<String> calculateClassPathEntries(MavenProject project, Set<Artifact> dependencies, Log log)
+    public List<String> calculateClassPathEntries( MavenProject project, Set<Artifact> dependencies, Log log )
         throws TomcatRunException
     {
         List<String> classLoaderEntries = new ArrayList<String>();
@@ -52,18 +53,18 @@ public class DefaultClassLoaderEntriesCalculator
             {
                 for ( String classPathElement : classPathElements )
                 {
-                    File classPathElementFile = new File(classPathElement);
+                    File classPathElementFile = new File( classPathElement );
                     if ( classPathElementFile.exists() && classPathElementFile.isDirectory() )
                     {
-                        log.debug("adding classPathElementFile " + classPathElementFile.toURI().toString());
-                        classLoaderEntries.add(classPathElementFile.toURI().toString());
+                        log.debug( "adding classPathElementFile " + classPathElementFile.toURI().toString() );
+                        classLoaderEntries.add( classPathElementFile.toURI().toString() );
                     }
                 }
             }
         }
         catch ( DependencyResolutionRequiredException e )
         {
-            throw new TomcatRunException(e.getMessage(), e);
+            throw new TomcatRunException( e.getMessage(), e );
         }
 
         // add artifacts to loader
@@ -74,18 +75,18 @@ public class DefaultClassLoaderEntriesCalculator
                 String scope = artifact.getScope();
 
                 // skip provided and test scoped artifacts
-                if ( !Artifact.SCOPE_PROVIDED.equals(scope) && !Artifact.SCOPE_TEST.equals(scope) )
+                if ( !Artifact.SCOPE_PROVIDED.equals( scope ) && !Artifact.SCOPE_TEST.equals( scope ) )
                 {
                     log.debug(
                         "add dependency to webapploader " + artifact.getGroupId() + ":" + artifact.getArtifactId() + ":"
-                            + artifact.getVersion() + ":" + artifact.getScope());
-                    if ( !isInProjectReferences(artifact, project) )
+                            + artifact.getVersion() + ":" + artifact.getScope() );
+                    if ( !isInProjectReferences( artifact, project ) )
                     {
-                        classLoaderEntries.add(artifact.getFile().toURI().toString());
+                        classLoaderEntries.add( artifact.getFile().toURI().toString() );
                     }
                     else
                     {
-                        log.debug("skip adding artifact " + artifact.getArtifactId() + " as it's in reactors");
+                        log.debug( "skip adding artifact " + artifact.getArtifactId() + " as it's in reactors" );
                     }
                 }
             }
@@ -93,7 +94,7 @@ public class DefaultClassLoaderEntriesCalculator
         return classLoaderEntries;
     }
 
-    protected boolean isInProjectReferences(Artifact artifact, MavenProject project)
+    protected boolean isInProjectReferences( Artifact artifact, MavenProject project )
     {
         if ( project.getProjectReferences() == null || project.getProjectReferences().isEmpty() )
         {
@@ -103,7 +104,7 @@ public class DefaultClassLoaderEntriesCalculator
             project.getProjectReferences().values();
         for ( MavenProject mavenProject : mavenProjects )
         {
-            if ( StringUtils.equals(mavenProject.getId(), artifact.getId()) )
+            if ( StringUtils.equals( mavenProject.getId(), artifact.getId() ) )
             {
                 return true;
             }

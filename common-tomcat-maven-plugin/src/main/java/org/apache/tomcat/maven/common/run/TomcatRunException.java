@@ -1,4 +1,5 @@
 package org.apache.tomcat.maven.common.run;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -27,6 +28,6 @@ public class TomcatRunException
 {
     public TomcatRunException( String s, Throwable throwable )
     {
-        super(s, throwable);
+        super( s, throwable );
     }
 }

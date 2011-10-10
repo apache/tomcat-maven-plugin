@@ -15,3 +15,5 @@ Note you need some configuration in ~/.m2/settings.xml:
     </server
 
 If you have a nice ssh key in ~/.ssh/ no need of configuring password, privateKey, passphrase.
+
+Checkstyle: this project use the Apache Maven checkstyle configuration for ide codestyle files see http://maven.apache.org/developers/committer-environment.html .
