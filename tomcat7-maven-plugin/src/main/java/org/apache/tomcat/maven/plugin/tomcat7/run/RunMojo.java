@@ -99,7 +99,7 @@ public class RunMojo
     private ClassLoaderEntriesCalculator classLoaderEntriesCalculator;
 
     /**
-     * FIXME javadoc
+     * will add /WEB-INF/lib/*.jar and /WEB-INF/classes from war dependencies in the webappclassloader
      *
      * @parameter expression="${maven.tomcat.addWarDependenciesInClassloader}" default-value="false"
      * @since 2.0

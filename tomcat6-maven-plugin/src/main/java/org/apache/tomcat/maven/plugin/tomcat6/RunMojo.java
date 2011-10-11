@@ -100,6 +100,14 @@ public class RunMojo
      */
     private ClassLoaderEntriesCalculator classLoaderEntriesCalculator;
 
+    /**
+     * will add /WEB-INF/lib/*.jar and /WEB-INF/classes from war dependencies in the webappclassloader
+     *
+     * @parameter expression="${maven.tomcat.addWarDependenciesInClassloader}" default-value="false"
+     * @since 2.0
+     */
+    private boolean addWarDependenciesInClassloader;
+
     private File temporaryContextFile = null;
 
     // ----------------------------------------------------------------------
@@ -140,7 +148,9 @@ public class RunMojo
         try
         {
             ClassLoaderEntriesCalculatorRequest request =
-                new ClassLoaderEntriesCalculatorRequest().setDependencies( dependencies ).setLog( getLog() ).setMavenProject( project );
+                new ClassLoaderEntriesCalculatorRequest().setDependencies( dependencies )
+                    .setLog( getLog() ).setMavenProject( project )
+                    .setAddWarDependenciesInClassloader( addWarDependenciesInClassloader );
             List<String> classLoaderEntries =
                 classLoaderEntriesCalculator.calculateClassPathEntries(request);
 
