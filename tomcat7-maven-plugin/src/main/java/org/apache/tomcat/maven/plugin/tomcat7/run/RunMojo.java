@@ -101,7 +101,7 @@ public class RunMojo
     /**
      * will add /WEB-INF/lib/*.jar and /WEB-INF/classes from war dependencies in the webappclassloader
      *
-     * @parameter expression="${maven.tomcat.addWarDependenciesInClassloader}" default-value="false"
+     * @parameter expression="${maven.tomcat.addWarDependenciesInClassloader}" default-value="true"
      * @since 2.0
      */
     private boolean addWarDependenciesInClassloader;
