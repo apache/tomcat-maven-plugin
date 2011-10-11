@@ -32,6 +32,6 @@ import java.util.Set;
  */
 public interface ClassLoaderEntriesCalculator
 {
-    List<String> calculateClassPathEntries( MavenProject mavenProject, Set<Artifact> dependencies, Log log )
+    List<String> calculateClassPathEntries( ClassLoaderEntriesCalculatorRequest classLoaderEntriesCalculatorRequest )
         throws TomcatRunException;
 }

@@ -883,11 +883,6 @@ public abstract class AbstractRunMojo
                         // Extract the module
                         unArchiver.extract( );
                     }
-                    catch ( IOException e )
-                    {
-                        getLog( ).error( e );
-                        continue;
-                    }
                     catch ( NoSuchArchiverException e )
                     {
                         getLog( ).error( e );

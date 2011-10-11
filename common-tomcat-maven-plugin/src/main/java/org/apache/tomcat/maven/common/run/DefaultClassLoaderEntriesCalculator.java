@@ -19,14 +19,25 @@ package org.apache.tomcat.maven.common.run;
  * under the License.
  */
 
+import com.google.common.io.Files;
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.UnArchiver;
+import org.codehaus.plexus.archiver.manager.ArchiverManager;
+import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
 import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.components.io.fileselectors.FileInfo;
+import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -40,7 +51,12 @@ import java.util.Set;
 public class DefaultClassLoaderEntriesCalculator
     implements ClassLoaderEntriesCalculator
 {
-    public List<String> calculateClassPathEntries( MavenProject project, Set<Artifact> dependencies, Log log )
+
+    @Requirement
+    private ArchiverManager archiverManager;
+
+
+    public List<String> calculateClassPathEntries( ClassLoaderEntriesCalculatorRequest request )
         throws TomcatRunException
     {
         List<String> classLoaderEntries = new ArrayList<String>();
@@ -48,7 +64,8 @@ public class DefaultClassLoaderEntriesCalculator
 
         try
         {
-            @SuppressWarnings( "unchecked" ) List<String> classPathElements = project.getCompileClasspathElements();
+            @SuppressWarnings( "unchecked" ) List<String> classPathElements =
+                request.getMavenProject().getCompileClasspathElements();
             if ( classPathElements != null )
             {
                 for ( String classPathElement : classPathElements )
@@ -56,7 +73,7 @@ public class DefaultClassLoaderEntriesCalculator
                     File classPathElementFile = new File( classPathElement );
                     if ( classPathElementFile.exists() && classPathElementFile.isDirectory() )
                     {
-                        log.debug( "adding classPathElementFile " + classPathElementFile.toURI().toString() );
+                        request.getLog().debug("adding classPathElementFile " + classPathElementFile.toURI().toString());
                         classLoaderEntries.add( classPathElementFile.toURI().toString() );
                     }
                 }
@@ -68,30 +85,85 @@ public class DefaultClassLoaderEntriesCalculator
         }
 
         // add artifacts to loader
-        if ( dependencies != null )
+        if ( request.getDependencies() != null )
         {
-            for ( Artifact artifact : dependencies )
+            for ( Artifact artifact : request.getDependencies() )
             {
                 String scope = artifact.getScope();
 
                 // skip provided and test scoped artifacts
                 if ( !Artifact.SCOPE_PROVIDED.equals( scope ) && !Artifact.SCOPE_TEST.equals( scope ) )
                 {
-                    log.debug(
+                    request.getLog().debug(
                         "add dependency to webapploader " + artifact.getGroupId() + ":" + artifact.getArtifactId() + ":"
-                            + artifact.getVersion() + ":" + artifact.getScope() );
-                    if ( !isInProjectReferences( artifact, project ) )
+                            + artifact.getVersion() + ":" + artifact.getScope());
+                    if ( !isInProjectReferences( artifact, request.getMavenProject() ) )
                     {
                         classLoaderEntries.add( artifact.getFile().toURI().toString() );
                     }
                     else
                     {
-                        log.debug( "skip adding artifact " + artifact.getArtifactId() + " as it's in reactors" );
+                        request.getLog().debug(
+                            "skip adding artifact " + artifact.getArtifactId() + " as it's in reactors");
+                    }
+                }
+                // in case of war dependency we must add /WEB-INF/lib/*.jar in entries and WEB-INF/classes
+                if ("war".equals(artifact.getType())  && request.isAddWarDependenciesInClassloader() )
+                {
+                    File tmpDir = null;
+                    try
+                    {
+                        tmpDir = Files.createTempDir();
+                        File warFile = artifact.getFile();
+                        UnArchiver unArchiver = archiverManager.getUnArchiver( "jar" );
+                        unArchiver.setSourceFile( warFile );
+                        unArchiver.setDestDirectory(tmpDir);
+                        unArchiver.extract();
+                        File libsDirectory = new File( tmpDir, "WEB-INF/lib" );
+                        if (libsDirectory.exists())
+                        {
+                            String[] jars = libsDirectory.list( new FilenameFilter()
+                            {
+                                public boolean accept(File file, String s)
+                                {
+                                    return  s.endsWith( ".jar" );
+                                }
+                            } );
+                            for (String jar : jars)
+                            {
+                                classLoaderEntries.add( new File( jar ).toURI().toString() );
+                            }
+                        }
+                        File classesDirectory = new File( tmpDir, "WEB-INF/classes" );
+                        if (classesDirectory.exists())
+                        {
+                            classLoaderEntries.add( classesDirectory.toURI().toString() );
+                        }
+                    } catch ( NoSuchArchiverException e)
+                    {
+                        throw new TomcatRunException(e.getMessage(), e);
+                    } catch ( ArchiverException e) {
+                        request.getLog().error(
+                            "fail to extract war file " + artifact.getFile() + ", reason:" + e.getMessage(), e);
+                        throw new TomcatRunException(e.getMessage(), e);
+                    } finally {
+                        deleteDirectory( tmpDir, request.getLog() );
                     }
                 }
             }
         }
         return classLoaderEntries;
+    }
+    
+    private void deleteDirectory(File directory, Log log) throws TomcatRunException
+    {
+        try
+        {        
+            FileUtils.deleteDirectory(directory);
+        } catch ( IOException e) {
+            log.error( "fail to delete directory file " + directory + ", reason:" + e.getMessage(), e );
+            throw new TomcatRunException(e.getMessage(), e);
+        }            
     }
 
     protected boolean isInProjectReferences( Artifact artifact, MavenProject project )

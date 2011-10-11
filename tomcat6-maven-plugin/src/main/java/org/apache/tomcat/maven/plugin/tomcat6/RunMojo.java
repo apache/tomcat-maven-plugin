@@ -25,6 +25,7 @@ import org.apache.catalina.startup.Embedded;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.tomcat.maven.common.run.ClassLoaderEntriesCalculator;
+import org.apache.tomcat.maven.common.run.ClassLoaderEntriesCalculatorRequest;
 import org.apache.tomcat.maven.common.run.TomcatRunException;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
@@ -138,9 +139,10 @@ public class RunMojo
 
         try
         {
-
+            ClassLoaderEntriesCalculatorRequest request =
+                new ClassLoaderEntriesCalculatorRequest().setDependencies( dependencies ).setLog( getLog() ).setMavenProject( project );
             List<String> classLoaderEntries =
-                classLoaderEntriesCalculator.calculateClassPathEntries(project, dependencies, getLog());
+                classLoaderEntriesCalculator.calculateClassPathEntries(request);
 
             if ( classLoaderEntries != null )
             {
