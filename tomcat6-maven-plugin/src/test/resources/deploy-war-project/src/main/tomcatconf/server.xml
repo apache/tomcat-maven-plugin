@@ -36,7 +36,7 @@
       <Realm className="org.apache.catalina.realm.UserDatabaseRealm"
              resourceName="UserDatabase" />
       <Host name="localhost" appBase="${project.build.directory}/test-classes/deploy-war-project/target/tomcat/webapps">
-        <Context path="/manager" privileged="true" docBase="${project.build.directory}/test-classes/deploy-war-project/src/manager"/>
+        <Context path="/manager" privileged="true" docBase="${managerWebAppPath}/manager"/>
       </Host>
     </Engine>
     
