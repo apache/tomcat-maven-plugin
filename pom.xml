@@ -59,6 +59,8 @@
     <its.http.port>1973</its.http.port>
     <!-- ajp port used to run it test -->
     <its.ajp.port>2001</its.ajp.port>
+    <!-- server port for it tests -->
+    <its.server.port>2008</its.server.port>
   </properties>
 
   <prerequisites>

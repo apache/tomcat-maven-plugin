@@ -310,6 +310,13 @@ public abstract class AbstractRunMojo
      */
     private File tomcatUsers;
 
+    /**
+     * to install a manager in your embeded tomcat
+     * @parameter
+     * @since 2.0
+     */
+    private File managerWarPath;
+
     // ----------------------------------------------------------------------
     // Fields
     // ----------------------------------------------------------------------
@@ -547,6 +554,7 @@ public abstract class AbstractRunMojo
             confDir.mkdir( );
 
             copyFile( "/conf/tomcat-users.xml", new File( confDir, "tomcat-users.xml" ) );
+
             if ( tomcatWebXml != null )
             {
                 if ( !tomcatWebXml.exists( ) )
@@ -567,6 +575,10 @@ public abstract class AbstractRunMojo
 
             File webappsDir = new File( configurationDir, "webapps" );
             webappsDir.mkdir( );
+            if ( managerWarPath != null && managerWarPath.exists() )
+            {
+                FileUtils.copyFileToDirectory( managerWarPath, webappsDir );
+            }
 
             if ( additionalConfigFilesDir != null && additionalConfigFilesDir.exists( ) )
             {
@@ -633,6 +645,15 @@ public abstract class AbstractRunMojo
             setupSystemProperties( );
 
             System.setProperty( "catalina.base", configurationDir.getAbsolutePath( ) );
+            System.setProperty( "catalina.home", configurationDir.getAbsolutePath( ) );
+            
+            File catalinaPolicy = new File( configurationDir, "conf/catalina.policy" );
+            
+            if (catalinaPolicy.exists())
+            {
+                // FIXME restore previous value ?
+                System.setProperty( "java.security.policy", catalinaPolicy.getAbsolutePath() ) ;
+            }
 
             final Embedded container;
             if ( serverXml != null )
@@ -644,8 +665,9 @@ public abstract class AbstractRunMojo
 
                 container = new Catalina( );
                 container.setCatalinaHome( configurationDir.getAbsolutePath( ) );
+                container.setCatalinaBase( configurationDir.getAbsolutePath() );
                 ( (Catalina) container ).setConfigFile( serverXml.getPath( ) );
-                //( (Catalina) container ).setRedirectStreams( true );
+                ( (Catalina) container ).setRedirectStreams( true );
                 ( (Catalina) container ).setUseNaming( this.useNaming );
 
                 container.start( );

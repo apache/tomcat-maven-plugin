@@ -26,9 +26,4 @@ public class Tomcat6DeployWarProjectIT
 {
     // no op
 
-    public void testIt( )
-        throws Exception
-    {
-        //FIXME currently this it fail
-    }
 }

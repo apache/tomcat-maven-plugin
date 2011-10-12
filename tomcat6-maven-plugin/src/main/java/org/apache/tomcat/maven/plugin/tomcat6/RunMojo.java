@@ -202,6 +202,7 @@ public class RunMojo
         try
         {
             temporaryContextFile = File.createTempFile("tomcat-maven-plugin", "temp-ctx-file");
+            temporaryContextFile.deleteOnExit();
             fw = new FileWriter(temporaryContextFile);
             // format to modify/create <Context backgroundProcessorDelay="5" reloadable="false">
             if ( contextFile != null && contextFile.exists() )

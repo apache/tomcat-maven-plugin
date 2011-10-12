@@ -61,25 +61,24 @@
           <execution>
             <id>tomcat-run</id>
             <goals>
-              <goal>run</goal>
+              <goal>run-war-only</goal>
             </goals>
-            <phase>test</phase>
+            <phase>pre-integration-test</phase>
             <configuration>
-              <port>${its.http.port}</port>
               <fork>true</fork>
-              <path>/</path>
+              <path>/foo</path>
+              <serverXml>src/main/tomcatconf/server.xml</serverXml>
               <tomcatUsers>src/main/tomcatconf/tomcat-users.xml</tomcatUsers>
             </configuration>
           </execution>
           <execution>
             <id>tomcat-deploy</id>
-            <phase>package</phase>
+            <phase>integration-test</phase>
             <goals>
-              <goal>deploy-only</goal>
+              <goal>deploy</goal>
             </goals>
             <configuration>
-              <port>${its.http.port}</port>
-              <warFile>./simple-war-project-1.0-SNAPSHOT.war</warFile>
+              <url>http://localhost:${its.http.port}/manager</url>
               <username>tomcat</username>
               <password>tomcat</password>
               <path>/foo</path>

@@ -114,6 +114,7 @@ public class DefaultClassLoaderEntriesCalculator
                     try
                     {
                         tmpDir = Files.createTempDir();
+                        tmpDir.deleteOnExit();
                         File warFile = artifact.getFile();
                         UnArchiver unArchiver = archiverManager.getUnArchiver( "jar" );
                         unArchiver.setSourceFile( warFile );

@@ -17,7 +17,7 @@
   under the License.
 -->
 
-<Server port="8010" shutdown="SHUTDOWN">
+<Server port="${its.server.port}" shutdown="SHUTDOWN">
 
   <GlobalNamingResources>
     <!-- Used by Manager webapp -->
@@ -29,14 +29,15 @@
   </GlobalNamingResources>
 
   <Service name="Catalina">
-    <Connector port="8080" keepAliveTimeout="1800000" maxKeepAliveRequests="30000" maxThreads="300" />
-    <Connector port="8088" keepAliveTimeout="1800000" maxKeepAliveRequests="30000" maxThreads="300" />
+    <Connector port="${its.http.port}" keepAliveTimeout="1800000" maxKeepAliveRequests="30000" maxThreads="300" />
     <Engine name="Catalina" defaultHost="localhost">
-      <Valve className="org.apache.catalina.valves.AccessLogValve" 
-             resolveHosts="false" pattern="%t-ip:%a-protocol:%H-localPort:%p-path:%U-time:%D ms"/> 
+      <Valve className="org.apache.catalina.valves.AccessLogValve"
+             resolveHosts="false" pattern="%t-ip:%a-protocol::%H-status:%s-localPort:%p-path:%U-time:%D ms" buffered="false"/>
       <Realm className="org.apache.catalina.realm.UserDatabaseRealm"
              resourceName="UserDatabase" />
-      <Host name="localhost" appBase="webapps" />
+      <Host name="localhost" appBase="${project.build.directory}/test-classes/deploy-war-project/target/tomcat/webapps">
+        <Context path="/manager" privileged="true" docBase="${project.build.directory}/test-classes/deploy-war-project/src/manager"/>
+      </Host>
     </Engine>
     
   </Service>

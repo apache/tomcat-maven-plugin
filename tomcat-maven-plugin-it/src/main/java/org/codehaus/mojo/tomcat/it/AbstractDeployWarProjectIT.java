@@ -42,7 +42,7 @@ public abstract class AbstractDeployWarProjectIT
     @Override
     protected String getWebappUrl()
     {
-        return "http://localhost:" + getHttpItPort() + "/";
+        return "http://localhost:" + getHttpItPort() + "/foo/";
     }
 
     @Override
@@ -56,7 +56,7 @@ public abstract class AbstractDeployWarProjectIT
         throws Exception
     {
         final String responseBody = executeVerifyWithGet();
-        assertNotNull( "Received message body must not be null.", responseBody );
+        assertNotNull("Received message body must not be null.", responseBody);
         assertContains( "Response must match expected content.", "It works !!", responseBody );
 
         assertTrue( "Tomcat folder should exist in target folder of project at " + webappHome,
@@ -65,4 +65,9 @@ public abstract class AbstractDeployWarProjectIT
         verifier.verifyErrorFreeLog();
     }
 
+    @Override
+    protected int getTimeout()
+    {
+        return 40000;
+    }
 }

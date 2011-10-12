@@ -42,6 +42,15 @@ import org.apache.tomcat.maven.common.run.EmbeddedRegistry;
 public class ShutdownMojo
     extends AbstractI18NTomcat6Mojo
 {
+
+    /**
+     * Ignore error when shutdown
+     *
+     * @parameter expression="${maven.tomcat.skipErrorOnShutdown}" default-value="false"
+     * @since 2.0
+     */
+    protected boolean skipErrorOnShutdown;
+
     /**
      * Shuts down all embedded tomcats which got started up to now.
      *
@@ -56,7 +65,10 @@ public class ShutdownMojo
         }
         catch ( Exception e )
         {
-            throw new MojoExecutionException( messagesProvider.getMessage( "ShutdownMojo.shutdownError" ), e );
+            if (!skipErrorOnShutdown)
+            {
+                throw new MojoExecutionException( messagesProvider.getMessage( "ShutdownMojo.shutdownError" ), e );
+            }
         }
     }
 }
