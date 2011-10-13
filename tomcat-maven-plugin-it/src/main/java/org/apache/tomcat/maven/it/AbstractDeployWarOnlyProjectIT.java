@@ -1,4 +1,4 @@
-package org.codehaus.mojo.tomcat.it;
+package org.apache.tomcat.maven.it;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -20,40 +20,35 @@ package org.codehaus.mojo.tomcat.it;
  */
 
 
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+
 import static junitx.framework.StringAssert.assertContains;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
- * Tests the example "Using a different context path" as the WAR gets deployed below the contextpath /lorem.
- *
  * @author Mark Michaelis
  */
-public class AbstractUsageContextpathIT
+public abstract class AbstractDeployWarOnlyProjectIT
     extends AbstractWarProjectIT
 {
-    private static final Logger LOG = LoggerFactory.getLogger( AbstractUsageContextpathIT.class );
-
-    private static final String WEBAPP_URL = "http://localhost:" + getHttpItPort() +  "/lorem/index.html";
-
-    /**
-     * ArtifactId of the sample WAR project.
-     */
-    private static final String WAR_ARTIFACT_ID = "usage-contextpath";
+    private static final Logger LOG = LoggerFactory.getLogger( AbstractDeployWarOnlyProjectIT.class );
 
     @Override
     protected String getWebappUrl()
     {
-        return WEBAPP_URL;
+        return "http://localhost:" + getHttpItPort() + "/bar/";
     }
 
     @Override
     protected String getWarArtifactId()
     {
-        return WAR_ARTIFACT_ID;
+        return "deploy-only-war-project";
     }
 
     @Test
@@ -61,11 +56,18 @@ public class AbstractUsageContextpathIT
         throws Exception
     {
         final String responseBody = executeVerifyWithGet();
-        assertNotNull( "Received message body must not be null.", responseBody );
-        assertContains( "Response must match expected content.", "Success!", responseBody );
+        assertNotNull("Received message body must not be null.", responseBody);
+        assertContains( "Response must match expected content.", "It works !!", responseBody );
 
+        assertTrue( "Tomcat folder should exist in target folder of project at " + webappHome,
+                    new File( webappHome, "target/tomcat" ).exists() );
         LOG.info( "Error Free Log check" );
         verifier.verifyErrorFreeLog();
     }
 
+    @Override
+    protected int getTimeout()
+    {
+        return 40000;
+    }
 }

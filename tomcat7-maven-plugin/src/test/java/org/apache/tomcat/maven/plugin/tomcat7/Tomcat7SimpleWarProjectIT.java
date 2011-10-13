@@ -19,7 +19,7 @@ package org.apache.tomcat.maven.plugin.tomcat7;
  */
 
 import org.apache.maven.it.VerificationException;
-import org.codehaus.mojo.tomcat.it.AbstractSimpleWarProjectIT;
+import org.apache.tomcat.maven.it.AbstractSimpleWarProjectIT;
 
 /**
  * @author Olivier Lamy

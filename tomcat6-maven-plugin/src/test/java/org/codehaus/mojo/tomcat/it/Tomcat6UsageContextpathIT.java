@@ -18,6 +18,8 @@ package org.codehaus.mojo.tomcat.it;
  * under the License.
  */
 
+import org.apache.tomcat.maven.it.AbstractUsageContextpathIT;
+
 /**
  * @author Olivier Lamy
  */

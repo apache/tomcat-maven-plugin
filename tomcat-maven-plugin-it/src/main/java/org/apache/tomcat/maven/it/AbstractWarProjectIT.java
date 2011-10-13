@@ -1,4 +1,4 @@
-package org.codehaus.mojo.tomcat.it;
+package org.apache.tomcat.maven.it;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -38,8 +38,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Base class for all tests which have a war-project using the tomcat-maven-plugin below project-resources.

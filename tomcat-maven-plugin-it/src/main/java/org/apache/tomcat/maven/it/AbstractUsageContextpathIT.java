@@ -1,4 +1,4 @@
-package org.codehaus.mojo.tomcat.it;
+package org.apache.tomcat.maven.it;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -20,36 +20,40 @@ package org.codehaus.mojo.tomcat.it;
  */
 
 
-
-import org.apache.maven.it.VerificationException;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-
 import static junitx.framework.StringAssert.assertContains;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
+ * Tests the example "Using a different context path" as the WAR gets deployed below the contextpath /lorem.
+ *
  * @author Mark Michaelis
  */
-public abstract class AbstractSimpleWarProjectIT
+public class AbstractUsageContextpathIT
     extends AbstractWarProjectIT
 {
-    private static final Logger LOG = LoggerFactory.getLogger( AbstractSimpleWarProjectIT.class );
+    private static final Logger LOG = LoggerFactory.getLogger( AbstractUsageContextpathIT.class );
+
+    private static final String WEBAPP_URL = "http://localhost:" + getHttpItPort() +  "/lorem/index.html";
+
+    /**
+     * ArtifactId of the sample WAR project.
+     */
+    private static final String WAR_ARTIFACT_ID = "usage-contextpath";
 
     @Override
     protected String getWebappUrl()
     {
-        return "http://localhost:" + getHttpItPort() + "/";
+        return WEBAPP_URL;
     }
 
     @Override
     protected String getWarArtifactId()
     {
-        return "simple-war-project";
+        return WAR_ARTIFACT_ID;
     }
 
     @Test
@@ -58,19 +62,10 @@ public abstract class AbstractSimpleWarProjectIT
     {
         final String responseBody = executeVerifyWithGet();
         assertNotNull( "Received message body must not be null.", responseBody );
-        assertContains( "Response must match expected content.", "It works !!", responseBody );
-
-        assertTrue( "Tomcat folder should exist in target folder of project at " + webappHome,
-                    new File( webappHome, "target/tomcat" ).exists() );
+        assertContains( "Response must match expected content.", "Success!", responseBody );
 
         LOG.info( "Error Free Log check" );
         verifier.verifyErrorFreeLog();
-        verifyConnectorsStarted();
     }
 
-    /**
-     * impls check the logs if http/https/apr has been started
-     */
-    protected abstract void verifyConnectorsStarted()
-        throws VerificationException;
 }

@@ -1,4 +1,4 @@
-package org.codehaus.mojo.tomcat.it;
+package org.apache.tomcat.maven.it;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -21,6 +21,7 @@ package org.codehaus.mojo.tomcat.it;
 
 
 
+import org.apache.maven.it.VerificationException;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,21 +35,21 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Mark Michaelis
  */
-public abstract class AbstractDeployWarOnlyProjectIT
+public abstract class AbstractSimpleWarProjectIT
     extends AbstractWarProjectIT
 {
-    private static final Logger LOG = LoggerFactory.getLogger( AbstractDeployWarOnlyProjectIT.class );
+    private static final Logger LOG = LoggerFactory.getLogger( AbstractSimpleWarProjectIT.class );
 
     @Override
     protected String getWebappUrl()
     {
-        return "http://localhost:" + getHttpItPort() + "/bar/";
+        return "http://localhost:" + getHttpItPort() + "/";
     }
 
     @Override
     protected String getWarArtifactId()
     {
-        return "deploy-only-war-project";
+        return "simple-war-project";
     }
 
     @Test
@@ -56,18 +57,20 @@ public abstract class AbstractDeployWarOnlyProjectIT
         throws Exception
     {
         final String responseBody = executeVerifyWithGet();
-        assertNotNull("Received message body must not be null.", responseBody);
+        assertNotNull( "Received message body must not be null.", responseBody );
         assertContains( "Response must match expected content.", "It works !!", responseBody );
 
         assertTrue( "Tomcat folder should exist in target folder of project at " + webappHome,
                     new File( webappHome, "target/tomcat" ).exists() );
+
         LOG.info( "Error Free Log check" );
         verifier.verifyErrorFreeLog();
+        verifyConnectorsStarted();
     }
 
-    @Override
-    protected int getTimeout()
-    {
-        return 40000;
-    }
+    /**
+     * impls check the logs if http/https/apr has been started
+     */
+    protected abstract void verifyConnectorsStarted()
+        throws VerificationException;
 }

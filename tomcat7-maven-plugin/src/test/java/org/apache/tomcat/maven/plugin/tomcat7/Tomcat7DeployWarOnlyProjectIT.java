@@ -18,7 +18,7 @@ package org.apache.tomcat.maven.plugin.tomcat7;
  * under the License.
  */
 
-import org.codehaus.mojo.tomcat.it.AbstractDeployWarOnlyProjectIT;
+import org.apache.tomcat.maven.it.AbstractDeployWarOnlyProjectIT;
 
 /**
  * @author Olivier Lamy
