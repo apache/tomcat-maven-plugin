@@ -35,6 +35,7 @@
   <properties>
     <tomcat.version>7.0.22</tomcat.version>
     <managerWebAppPath>${basedir}/target/</managerWebAppPath>
+    <warTestPath>${basedir}/src/test/simple-war-project-1.0-SNAPSHOT.war</warTestPath>
   </properties>
 
   <dependencies>
