@@ -1,4 +1,4 @@
-package org.codehaus.mojo.tomcat.it;
+package org.apache.tomcat.maven.it;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,13 +18,19 @@ package org.codehaus.mojo.tomcat.it;
  * under the License.
  */
 
-import org.apache.tomcat.maven.it.AbstractUsageContextpathIT;
+import org.apache.maven.it.VerificationException;
+import org.apache.tomcat.maven.it.AbstractTomcatRunMultiConfigIT;
 
 /**
  * @author Olivier Lamy
  */
-public class Tomcat6UsageContextpathIT
-    extends AbstractUsageContextpathIT
+public class Tomcat6RunMultiConfigIT
+    extends AbstractTomcatRunMultiConfigIT
 {
-    // no op
+    @Override
+    protected void verifyConnectorsStarted()
+        throws VerificationException
+    {
+        verifier.verifyTextInLog("INFO: Starting Coyote HTTP/1.1 on http-" + getHttpItPort());
+    }
 }

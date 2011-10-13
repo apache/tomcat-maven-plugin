@@ -1,4 +1,4 @@
-package org.apache.tomcat.maven.plugin.tomcat7;
+package org.apache.tomcat.maven.it;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,13 +18,13 @@ package org.apache.tomcat.maven.plugin.tomcat7;
  * under the License.
  */
 
-import org.apache.tomcat.maven.it.AbstractDeployWarProjectIT;
+import org.apache.tomcat.maven.it.AbstractUsageContextpathIT;
 
 /**
  * @author Olivier Lamy
  */
-public class Tomcat7DeployWarProjectIT
-    extends AbstractDeployWarProjectIT
+public class Tomcat6UsageContextpathIT
+    extends AbstractUsageContextpathIT
 {
     // no op
 }

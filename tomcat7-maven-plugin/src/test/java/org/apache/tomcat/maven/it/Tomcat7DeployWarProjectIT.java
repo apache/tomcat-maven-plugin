@@ -1,4 +1,4 @@
-package org.apache.tomcat.maven.plugin.tomcat7;
+package org.apache.tomcat.maven.it;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,19 +18,13 @@ package org.apache.tomcat.maven.plugin.tomcat7;
  * under the License.
  */
 
-import org.apache.maven.it.VerificationException;
-import org.apache.tomcat.maven.it.AbstractTomcatRunMultiConfigIT;
+import org.apache.tomcat.maven.it.AbstractDeployWarProjectIT;
 
 /**
  * @author Olivier Lamy
  */
-public class Tomcat7RunMultiConfigIT
-    extends AbstractTomcatRunMultiConfigIT
+public class Tomcat7DeployWarProjectIT
+    extends AbstractDeployWarProjectIT
 {
-    @Override
-    protected void verifyConnectorsStarted()
-        throws VerificationException
-    {
-        verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"http-bio-" + getHttpItPort() + "\"]");
-    }
+    // no op
 }

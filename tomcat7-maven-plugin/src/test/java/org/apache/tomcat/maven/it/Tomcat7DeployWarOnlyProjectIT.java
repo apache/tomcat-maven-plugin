@@ -1,4 +1,4 @@
-package org.codehaus.mojo.tomcat.it;
+package org.apache.tomcat.maven.it;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,20 +18,14 @@ package org.codehaus.mojo.tomcat.it;
  * under the License.
  */
 
-import org.apache.maven.it.VerificationException;
-import org.apache.tomcat.maven.it.AbstractSimpleWarProjectIT;
+import org.apache.tomcat.maven.it.AbstractDeployWarOnlyProjectIT;
 
 /**
  * @author Olivier Lamy
  */
-public class Tomcat6SimpleWarProjectIT
-    extends AbstractSimpleWarProjectIT
+public class Tomcat7DeployWarOnlyProjectIT
+    extends AbstractDeployWarOnlyProjectIT
 {
-    @Override
-    protected void verifyConnectorsStarted()
-        throws VerificationException
-    {
-        verifier.verifyTextInLog("INFO: Starting Coyote HTTP/1.1 on http-" + getHttpItPort());
-        verifier.verifyTextInLog("INFO: JK: ajp13 listening on /0.0.0.0:" + getAjpItPort());
-    }
+    // no op
+
 }
