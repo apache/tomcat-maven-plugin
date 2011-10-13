@@ -28,7 +28,7 @@
   </parent>
   <artifactId>tomcat7-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <name>Tomcat Maven Plugin :: Tomcat 7.x</name>
+  <name>Apache Tomcat Maven Plugin :: Tomcat 7.x</name>
   <description>The Tomcat Maven Plugin provides goals to manipulate WAR projects within the Tomcat 7.x servlet container.
   </description>
 
