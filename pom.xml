@@ -409,6 +409,7 @@
               <exclude>README.txt</exclude>
               <exclude>*.sh</exclude>
               <exclude>.git/**</exclude>
+              <exclude>.idea/**</exclude>
             </excludes>
           </configuration>
         </plugin>
