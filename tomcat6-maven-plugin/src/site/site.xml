@@ -23,8 +23,6 @@
     <menu name="Overview">
       <item name="Introduction" href="index.html"/>
       <item name="Goals" href="plugin-info.html"/>
-      <item name="Context Goals" href="context-goals.html"/>
-      <item name="Container Goals" href="container-goals.html"/>
       <item name="Usage" href="usage.html"/>
       <item name="FAQ" href="faq.html"/>
       <item name="Javadoc" href="apidocs/index.html"/>

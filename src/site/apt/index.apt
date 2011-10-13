@@ -26,8 +26,21 @@
  ~~ NOTE: For help with the syntax of this file, see:
  ~~ http://maven.apache.org/doxia/references/apt-format.html
 
-  This is the new for the Tomcat Maven Plugin (previously hosted at Codehaus).
+Apache Tomcat Maven Plugin
+
+  This is the new home for the Tomcat Maven Plugin (previously hosted at Codehaus).
   The version 2.0 which will support Tomcat7 is under developpement.
 
   Prior to version 2.0, tomcat mojos has been renamed to tomcat6 and tomcat7 with the same goals.
+
+ The Tomcat Maven Plugin provides goals to manipulate WAR projects within the {{{http://tomcat.apache.org/}Tomcat}} servlet container.
+
+* Goals Overview
+
+  The goals for this plugin come in two categories:
+
+  * {{{./context-goals.html}Goals to manipulate deployed projects within Tomcat}}
+
+  * {{{./container-goals.html}Goals to obtain information from Tomcat}}
+
 

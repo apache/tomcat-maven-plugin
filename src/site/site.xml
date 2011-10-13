@@ -46,6 +46,8 @@
 
     <menu name="Apache Tomcat Mojo">
       <item name="About" href="index.html"/>
+      <item name="Context Goals" href="context-goals.html"/>
+      <item name="Container Goals" href="container-goals.html"/>
       <item name="Developement Test" href="snapshot-test.html"/>
     </menu>
 
