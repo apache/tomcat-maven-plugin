@@ -98,7 +98,7 @@ public abstract class AbstractWarProjectIT
         verifier.setDebugJvm( Boolean.getBoolean( "verifier.debugJvm" ) );
         verifier.displayStreamBuffers();
 
-        verifier.deleteArtifact( "org.codehaus.mojo.tomcat.it", getWarArtifactId(), "1.0-SNAPSHOT", "war" );
+        verifier.deleteArtifact( "org.apache.tomcat.maven.it", getWarArtifactId(), "1.0-SNAPSHOT", "war" );
     }
 
     @After
@@ -107,7 +107,7 @@ public abstract class AbstractWarProjectIT
     {
         httpClient.getConnectionManager().shutdown();
         verifier.resetStreams();
-        verifier.deleteArtifact( "org.codehaus.mojo.tomcat.it", getWarArtifactId(), "1.0-SNAPSHOT", "war" );
+        verifier.deleteArtifact( "org.apache.tomcat.maven.it", getWarArtifactId(), "1.0-SNAPSHOT", "war" );
     }
 
     /**
