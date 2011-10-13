@@ -132,7 +132,7 @@ public class DefaultClassLoaderEntriesCalculator
                             } );
                             for (String jar : jars)
                             {
-                                classLoaderEntries.add( new File( jar ).toURI().toString() );
+                                classLoaderEntries.add( new File(libsDirectory, jar ).toURI().toString() );
                             }
                         }
                         File classesDirectory = new File( tmpDir, "WEB-INF/classes" );
