@@ -51,8 +51,8 @@
       <item name="Developement Test" href="snapshot-test.html"/>
     </menu>
 
-    <menu ref="modules"/>
-    <menu ref="reports"/>
+    <menu ref="modules" inherit="bottom"/>
+    <menu ref="reports" inherit="bottom"/>
 
     <menu name="ASF">
       <item name="How Apache Works" href="http://www.apache.org/foundation/how-it-works.html"/>
