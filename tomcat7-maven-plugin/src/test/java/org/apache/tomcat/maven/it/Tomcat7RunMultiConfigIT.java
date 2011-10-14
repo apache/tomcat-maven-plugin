@@ -32,5 +32,7 @@ public class Tomcat7RunMultiConfigIT
         throws VerificationException
     {
         verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"http-bio-" + getHttpItPort() + "\"]");
+        verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"http-bio-" + getHttpsItPort() + "\"]");
+        verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"ajp-bio-" + getAjpItPort() + "\"]");
     }
 }

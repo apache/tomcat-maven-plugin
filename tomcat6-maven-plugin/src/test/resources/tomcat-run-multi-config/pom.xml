@@ -68,7 +68,6 @@
               <configurationDir>\${project.build.directory}/tc</configurationDir>
               <path>/multi-config</path>
               <port>${its.http.port}</port>
-
               <httpsPort>${its.https.port}</httpsPort>
               <keystoreFile>${keystoreTestPath}</keystoreFile>
               <ajpPort>${its.ajp.port}</ajpPort>
