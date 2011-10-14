@@ -211,6 +211,11 @@ public abstract class AbstractWarProjectIT
         return System.getProperty( "its.http.port" );
     }
 
+    protected static String getHttpsItPort()
+    {
+        return System.getProperty( "its.https.port" );
+    }
+
     protected static String getAjpItPort()
     {
         return System.getProperty( "its.ajp.port" );

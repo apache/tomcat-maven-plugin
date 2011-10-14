@@ -37,6 +37,7 @@
     <tomcat.version>6.0.33</tomcat.version>
     <managerWebAppPath>${basedir}/target/</managerWebAppPath>
     <warTestPath>${basedir}/src/test/simple-war-project-1.0-SNAPSHOT.war</warTestPath>
+    <keystoreTestPath>${basedir}/src/test/keystore</keystoreTestPath>
   </properties>
   <prerequisites>
     <maven>${mavenVersion}</maven>
@@ -256,6 +257,7 @@
                     <verifier.maven.debug>${verifier.maven.debug}</verifier.maven.debug>
                     <verifier.debugJvm>${verifier.debugJvm}</verifier.debugJvm>
                     <its.http.port>${its.http.port}</its.http.port>
+                    <its.https.port>${its.https.port}</its.https.port>
                     <its.ajp.port>${its.ajp.port}</its.ajp.port>
                   </systemPropertyVariables>
                 </configuration>

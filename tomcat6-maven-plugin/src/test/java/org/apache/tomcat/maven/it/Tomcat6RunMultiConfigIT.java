@@ -32,5 +32,7 @@ public class Tomcat6RunMultiConfigIT
         throws VerificationException
     {
         verifier.verifyTextInLog("INFO: Starting Coyote HTTP/1.1 on http-" + getHttpItPort());
+        verifier.verifyTextInLog("INFO: Starting Coyote HTTP/1.1 on http-" + getHttpsItPort());
+        verifier.verifyTextInLog("INFO: JK: ajp13 listening on /0.0.0.0:" + getAjpItPort());
     }
 }
