@@ -61,4 +61,13 @@
       <item name="Thanks" href="http://www.apache.org/foundation/thanks.html"/>
     </menu>
   </body>
+
+  <custom>
+    <footer>
+      <div>
+      Apache Tomcat, Apache, the Apache feather logo, and the Apache Tomcat project logo are trademarks of The Apache Software Foundation.
+      All other marks mentioned may be trademarks or registered trademarks of their respective owners.</div>
+    </footer>
+  </custom>
+
 </project>
