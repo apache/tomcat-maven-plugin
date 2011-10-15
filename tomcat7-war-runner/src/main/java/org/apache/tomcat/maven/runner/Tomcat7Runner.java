@@ -95,7 +95,7 @@ public class Tomcat7Runner
             {
                 container.setConfig( new File( extractDirectory, "conf/server.xml" ).getAbsolutePath() );
             }
-            container.start();                        
+            container.start();
         } else {
             tomcat = new Tomcat();
             tomcat.getHost().setAppBase(new File(extractDirectory, "webapps").getAbsolutePath());
@@ -149,10 +149,30 @@ public class Tomcat7Runner
                 //ajpConnector.setURIEncoding(uriEncoding);
                 tomcat.getService().addConnector( ajpConnector );
              }
+
              tomcat.start();
         }
 
 
+        waitIndefinitely();
+
+    }
+
+    private void waitIndefinitely()
+    {
+        Object lock = new Object();
+
+        synchronized ( lock )
+        {
+            try
+            {
+                lock.wait();
+            }
+            catch ( InterruptedException exception )
+            {
+                System.exit( 1 );
+            }
+        }
     }
     
     public void stop()
