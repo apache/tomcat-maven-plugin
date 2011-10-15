@@ -104,12 +104,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.eclipse.jdt.core.compiler</groupId>
-      <artifactId>ecj</artifactId>
-      <version>3.7</version>
-    </dependency>
-
-    <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-catalina</artifactId>
       <version>${tomcat.version}</version>
@@ -153,7 +147,10 @@
       <version>${tomcat.version}</version>
     </dependency>
 
-
+    <dependency>
+      <groupId>org.eclipse.jdt.core.compiler</groupId>
+      <artifactId>ecj</artifactId>
+    </dependency>
 
     <!-- end tomcat dependencies -->
 
