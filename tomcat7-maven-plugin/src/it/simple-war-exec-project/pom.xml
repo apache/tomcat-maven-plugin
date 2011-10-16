@@ -65,6 +65,7 @@
             </goals>
             <phase>package</phase>
             <configuration>
+              <path>foo</path>
               <serverXml>src/main/tomcatconf/server.xml</serverXml>
             </configuration>
           </execution>

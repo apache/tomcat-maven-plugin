@@ -109,6 +109,15 @@ public abstract class AbstractExecWarMojo
      */
     private String finalName;
 
+    /**
+     * The webapp context path to use for the web application being run.
+     * The name to store webapp in exec jar. Do not use /
+     *
+     * @parameter expression="${maven.tomcat.path}" default-value="${project.artifactId}"
+     * @required
+     */
+    protected String path;
+
     
     public void execute()
         throws MojoExecutionException, MojoFailureException
@@ -156,9 +165,8 @@ public abstract class AbstractExecWarMojo
             os =
                 new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.JAR, execWarJarOutputStream);
 
-
             // TODO control project packaging is war
-            os.putArchiveEntry( new JarArchiveEntry( project.getBuild().getFinalName() + ".war" ) );
+            os.putArchiveEntry( new JarArchiveEntry( path + ".war" ) );
             IOUtils.copy( new FileInputStream(artifact.getFile()), os );
             os.closeArchiveEntry();
 
@@ -176,7 +184,7 @@ public abstract class AbstractExecWarMojo
                 properties.put(Tomcat7Runner.USE_SERVER_XML_KEY, Boolean.FALSE.toString() );
             }
 
-            properties.put( Tomcat7Runner.WARS_KEY , project.getBuild().getFinalName() + ".war" );
+            properties.put( Tomcat7Runner.WARS_KEY , path + ".war" );
             properties.store( tmpPropertiesFileOutputStream, "created by Apache Tomcat Maven plugin" );
 
             tmpPropertiesFileOutputStream.flush();
