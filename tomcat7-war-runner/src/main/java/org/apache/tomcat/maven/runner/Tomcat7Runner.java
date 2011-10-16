@@ -192,17 +192,17 @@ public class Tomcat7Runner
         throws Exception
     {
 
-        if (extractDirectory.exists())
+        if ( extractDirectory.exists() )
         {
-            FileUtils.deleteDirectory(extractDirectory);
+            FileUtils.deleteDirectory( extractDirectory );
         }
         extractDirectory.mkdirs();
 
         // create tomcat various paths
-        new File(extractDirectory, "conf").mkdirs();
-        new File(extractDirectory, "logs").mkdirs();
-        new File(extractDirectory, "webapps").mkdirs();
-        new File(extractDirectory, "work").mkdirs();
+        new File( extractDirectory, "conf" ).mkdirs();
+        new File( extractDirectory, "logs" ).mkdirs();
+        new File( extractDirectory, "webapps" ).mkdirs();
+        new File( extractDirectory, "work") .mkdirs();
 
         String wars = runtimeProperties.getProperty( WARS_KEY );
         StringTokenizer st = new StringTokenizer( wars,";" );

@@ -60,11 +60,23 @@ public class Tomcat7RunnerCli
                                     .withDescription("server.xml to use, optionnal")
                                     .create("serverXmlPath");
 
+    static Option resetExtract = OptionBuilder.withArgName("resetExtract")
+                                    .hasArg()
+                                    .withDescription("clean previous extract directory")
+                                    .create("resetExtract");
+
+    static Option help = OptionBuilder
+                                    .withLongOpt( "help" )
+                                    .hasArg()
+                                    .withDescription("help")
+                                    .create("h");
+
     static Options options = new Options();
 
     static
     {
-        options.addOption( httpPort ).addOption( httpsPort ).addOption( ajpPort ).addOption( serverXmlPath );
+        options.addOption( httpPort ).addOption( httpsPort ).addOption( ajpPort ).addOption( serverXmlPath )
+                .addOption( resetExtract ).addOption( help );
     }
 
 
@@ -80,9 +92,17 @@ public class Tomcat7RunnerCli
         {
             System.err.println( "Parsing failed.  Reason: " + e.getMessage() );
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("java -jar ", Tomcat7RunnerCli.options);
+            formatter.printHelp( getCmdLineSyntax(), Tomcat7RunnerCli.options);
             System.exit( 1 );
         }
+
+        if ( line.hasOption( help.getOpt() ))
+        {
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp( getCmdLineSyntax(), Tomcat7RunnerCli.options);
+            System.exit( 0 );
+        }
+
 
         Tomcat7Runner tomcat7Runner = new Tomcat7Runner();
 
@@ -105,6 +125,10 @@ public class Tomcat7RunnerCli
         {
             tomcat7Runner.ajpPort = Integer.parseInt( line.getOptionValue( ajpPort.getOpt() ) );
         }
+        if ( line.hasOption( resetExtract.getOpt() ))
+        {
+            tomcat7Runner.resetExtract = true;
+        }
         // here we go
         tomcat7Runner.run();
     }
@@ -117,5 +141,10 @@ public class Tomcat7RunnerCli
         Properties properties = new Properties( );
         properties.load( is );
         return properties;
+    }
+    
+    public static String getCmdLineSyntax()
+    {
+        return "java -jar [path to your exec war jar]";
     }
 }

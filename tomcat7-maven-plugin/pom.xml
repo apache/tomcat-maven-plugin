@@ -264,6 +264,7 @@
                 <goals>
                   <goal>install</goal>
                 </goals>
+                <id>instral-plugin</id>
                 <phase>pre-integration-test</phase>
               </execution>
             </executions>
