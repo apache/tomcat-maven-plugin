@@ -47,6 +47,9 @@ public class Tomcat7Runner
 
     // contains war name wars=foo.war,bar.war
     public static final String WARS_KEY = "wars";
+
+    public static final String ENABLE_NAMING_KEY = "enableNaming";
+
     
     public int httpPort;
 
@@ -95,8 +98,7 @@ public class Tomcat7Runner
         if ( serverXmlPath != null || useServerXml() )
         {
             container = new Catalina();
-            // FIXME get this from runtimeProperties ?
-            //container.setUseNaming(this.useNaming);
+            container.setUseNaming( this.enableNaming() );
             if ( serverXmlPath != null && new File( serverXmlPath ).exists() )
             {
                 container.setConfig( serverXmlPath );
@@ -107,6 +109,12 @@ public class Tomcat7Runner
             container.start();
         } else {
             tomcat = new Tomcat();
+
+            if ( this.enableNaming() )
+            {
+                tomcat.enableNaming( );
+            }
+
             tomcat.getHost().setAppBase(new File(extractDirectory, "webapps").getAbsolutePath());
 
             Connector connector = new Connector( "HTTP/1.1" );
@@ -354,7 +362,7 @@ public class Tomcat7Runner
 
     public boolean useServerXml()
     {
-       return Boolean.parseBoolean( runtimeProperties.getProperty( USE_SERVER_XML_KEY ));
+       return Boolean.parseBoolean( runtimeProperties.getProperty( USE_SERVER_XML_KEY, Boolean.FALSE.toString() ));
     }
 
     
@@ -364,5 +372,10 @@ public class Tomcat7Runner
         {
             System.out.println(message);
         }
+    }
+
+    public boolean enableNaming()
+    {
+        return Boolean.parseBoolean( runtimeProperties.getProperty( ENABLE_NAMING_KEY, Boolean.FALSE.toString() ));
     }
 }

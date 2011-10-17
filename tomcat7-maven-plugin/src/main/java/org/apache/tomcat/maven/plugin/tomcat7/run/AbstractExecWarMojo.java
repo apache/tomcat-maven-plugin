@@ -192,6 +192,14 @@ public abstract class AbstractExecWarMojo
      * @required
      */
     private String attachArtifactClassifierType;
+
+    /**
+     * to enable naming when starting tomcat
+     *
+     * @parameter expression="${maven.tomcat.exec.war.enableNaming}" default-value="false"
+     * @required
+     */
+    private boolean enableNaming;
     
     public void execute()
         throws MojoExecutionException, MojoFailureException
@@ -241,6 +249,7 @@ public abstract class AbstractExecWarMojo
             //* tomcat jars
             //* file tomcat.standalone.properties with possible values :
             //   * useServerXml=true/false to use directly the one provided
+            //   * enableNaming=true/false
             //   * wars=foo.war|contextpath;bar.war  ( |contextpath is optionnal if empty use the war name )
             //* optionnal: conf/ with usual tomcat configuration files
             //* MANIFEST with Main-Class
@@ -257,6 +266,8 @@ public abstract class AbstractExecWarMojo
                 os.closeArchiveEntry();
                 properties.put( Tomcat7Runner.WARS_KEY , path + ".war|" + path );
             }
+
+            properties.put( Tomcat7Runner.ENABLE_NAMING_KEY, Boolean.toString( enableNaming ) );
 
             if ( "pom".equals( project.getPackaging() ) && ( warRunDependencies != null && !warRunDependencies.isEmpty() ) )
             {
@@ -308,7 +319,7 @@ public abstract class AbstractExecWarMojo
             tmpPropertiesFileOutputStream.close();
 
             os.putArchiveEntry( new JarArchiveEntry( Tomcat7RunnerCli.STAND_ALONE_PROPERTIES_FILENAME ) );
-            IOUtils.copy( new FileInputStream(tmpPropertiesFile), os );
+            IOUtils.copy( new FileInputStream( tmpPropertiesFile ), os );
             os.closeArchiveEntry();
             
 
