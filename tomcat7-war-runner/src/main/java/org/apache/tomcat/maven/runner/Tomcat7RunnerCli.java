@@ -72,7 +72,7 @@ public class Tomcat7RunnerCli
     static Option debug = OptionBuilder
                                     .withLongOpt( "debug" )
                                     .withDescription("debug")
-                                    .create("x");
+                                    .create("X");
 
     static Options options = new Options();
 

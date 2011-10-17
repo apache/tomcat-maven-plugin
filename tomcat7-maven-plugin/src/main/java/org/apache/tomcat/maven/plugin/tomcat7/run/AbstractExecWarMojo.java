@@ -168,13 +168,30 @@ public abstract class AbstractExecWarMojo
     private MavenProjectHelper projectHelper;
 
     /**
-     * The webapp context path to use for the web application being run.
-     * The name to store webapp in exec jar. Do not use /
+     * Attach or not the generated artifact to the build (use true if you want to install or deploy it)
      *
      * @parameter expression="${maven.tomcat.exec.war.attachArtifact}" default-value="true"
      * @required
      */
     private boolean attachArtifact;
+
+
+    /**
+     * the classifier to use for the attached/generated artifact
+     *
+     * @parameter expression="${maven.tomcat.exec.war.attachArtifactClassifier}" default-value="exec-war"
+     * @required
+     */
+    private String attachArtifactClassifier;
+
+
+    /**
+     * the type to use for the attached/generated artifact
+     *
+     * @parameter expression="${maven.tomcat.exec.war.attachArtifactType}" default-value="jar"
+     * @required
+     */
+    private String attachArtifactClassifierType;
     
     public void execute()
         throws MojoExecutionException, MojoFailureException
@@ -334,9 +351,8 @@ public abstract class AbstractExecWarMojo
 
             if ( attachArtifact )
             {
-                // MavenProject project, File artifactFile, String artifactClassifier
-                // classifier configurable ?
-                projectHelper.attachArtifact( project, execWarJar, "exec-war" );
+                //MavenProject project, String artifactType, String artifactClassifier, File artifactFile
+                projectHelper.attachArtifact( project, attachArtifactClassifierType, attachArtifactClassifier, execWarJar );
             }
         } catch ( ManifestException e )
         {
