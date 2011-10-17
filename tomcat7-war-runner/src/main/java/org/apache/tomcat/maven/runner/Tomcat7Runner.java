@@ -99,6 +99,16 @@ public class Tomcat7Runner
             populateWebAppWarPerContext( wars );
         }
 
+        // create tomcat various paths
+        new File( extractDirectory, "conf" ).mkdirs();
+        new File( extractDirectory, "logs" ).mkdirs();
+        new File( extractDirectory, "webapps" ).mkdirs();
+        new File( extractDirectory, "work" ).mkdirs();
+        File tmpDir = new File( extractDirectory, "temp" );
+        tmpDir.mkdirs();
+
+        System.setProperty( "java.io.tmpdir", tmpDir.getAbsolutePath() );
+
         System.setProperty( "catalina.base", extractDirectory.getAbsolutePath() );
         System.setProperty( "catalina.home", extractDirectory.getAbsolutePath() );
 
@@ -240,11 +250,9 @@ public class Tomcat7Runner
         }
         extractDirectory.mkdirs();
 
-        // create tomcat various paths
-        new File( extractDirectory, "conf" ).mkdirs();
-        new File( extractDirectory, "logs" ).mkdirs();
+
+        // ensure webapp dir is here
         new File( extractDirectory, "webapps" ).mkdirs();
-        new File( extractDirectory, "work" ).mkdirs();
 
         String wars = runtimeProperties.getProperty( WARS_KEY );
         populateWebAppWarPerContext( wars );

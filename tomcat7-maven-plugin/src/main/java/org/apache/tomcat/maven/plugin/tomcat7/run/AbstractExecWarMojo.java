@@ -318,13 +318,13 @@ public abstract class AbstractExecWarMojo
                         if ( propertyWarValue != null )
                         {
                             properties.put( Tomcat7Runner.WARS_KEY,
-                                            propertyWarValue + ";" + artifact.getFile().getName() + "|"
+                                            propertyWarValue + ";" + warFileName + "|"
                                                 + warRunDependency.contextPath );
                         }
                         else
                         {
                             properties.put( Tomcat7Runner.WARS_KEY,
-                                            artifact.getFile().getName() + "|" + warRunDependency.contextPath );
+                                            warFileName + "|" + warRunDependency.contextPath );
                         }
                     }
                 }
