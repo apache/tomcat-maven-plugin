@@ -88,11 +88,6 @@ public abstract class AbstractExecWarMojo
     private List<Artifact> pluginArtifacts;
 
     /**
-     * @parameter
-     */    
-    private List<Dependency> extraDependencies;
-
-    /**
      * @parameter default-value="${project.build.directory}"
      */
     private File buildDirectory;
@@ -208,6 +203,13 @@ public abstract class AbstractExecWarMojo
      * @required
      */
     private String accessLogValveFormat;
+
+    /**
+     * list of extra dependencies to add in the standalone tomcat jar: your jdbc driver, mail.jar etc..
+     * <b>Those dependencies will be in root classloader.</b>
+     * @parameter
+     */
+    private List<Dependency> extraDependencies;
     
     public void execute()
         throws MojoExecutionException, MojoFailureException
@@ -357,6 +359,31 @@ public abstract class AbstractExecWarMojo
                     }
                 }
             }
+
+            // add extra dependencies
+            if ( extraDependencies != null && !extraDependencies.isEmpty() )
+            {
+                for ( Dependency dependency : extraDependencies )
+                {
+                    // String groupId, String artifactId, String version, String scope, String type
+                    Artifact artifact =
+                        artifactFactory.createArtifact( dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion(), dependency.getScope(), dependency.getType()  );
+
+                    artifactResolver.resolve( artifact, this.remoteRepos , this.local );
+                    JarFile jarFile = new JarFile( artifact.getFile() );
+                    Enumeration<JarEntry> jarEntries = jarFile.entries();
+                    while ( jarEntries.hasMoreElements() )
+                    {
+                        JarEntry jarEntry = jarEntries.nextElement();
+                        InputStream jarEntryIs = jarFile.getInputStream(jarEntry);
+
+                        os.putArchiveEntry( new JarArchiveEntry( jarEntry.getName() ) );
+                        IOUtils.copy( jarEntryIs, os );
+                        os.closeArchiveEntry();
+                    }
+                }
+            }
+
             Manifest manifest = new Manifest( );
 
             Manifest.Attribute mainClassAtt = new Manifest.Attribute( );
