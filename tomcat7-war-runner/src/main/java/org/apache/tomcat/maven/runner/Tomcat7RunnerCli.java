@@ -61,22 +61,25 @@ public class Tomcat7RunnerCli
                                     .create("serverXmlPath");
 
     static Option resetExtract = OptionBuilder.withArgName("resetExtract")
-                                    .hasArg()
                                     .withDescription("clean previous extract directory")
                                     .create("resetExtract");
 
     static Option help = OptionBuilder
                                     .withLongOpt( "help" )
-                                    .hasArg()
                                     .withDescription("help")
                                     .create("h");
+
+    static Option debug = OptionBuilder
+                                    .withLongOpt( "debug" )
+                                    .withDescription("debug")
+                                    .create("x");
 
     static Options options = new Options();
 
     static
     {
         options.addOption( httpPort ).addOption( httpsPort ).addOption( ajpPort ).addOption( serverXmlPath )
-                .addOption( resetExtract ).addOption( help );
+                .addOption( resetExtract ).addOption( help ).addOption( debug );
     }
 
 
@@ -128,6 +131,10 @@ public class Tomcat7RunnerCli
         if ( line.hasOption( resetExtract.getOpt() ))
         {
             tomcat7Runner.resetExtract = true;
+        }
+        if ( line.hasOption( debug.getOpt() ) )
+        {
+            tomcat7Runner.debug = true;
         }
         // here we go
         tomcat7Runner.run();

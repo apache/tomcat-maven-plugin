@@ -29,6 +29,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -58,11 +60,18 @@ public class Tomcat7Runner
 
     public boolean resetExtract;
 
+    public boolean debug = false;
+
     public File extractDirectory = new File( ".extract" );
 
     Catalina container;
 
     Tomcat tomcat;
+
+    /**
+     * key = context of the webapp, value = war path on file system
+     */
+    Map<String, String> webappWarPerContext = new HashMap<String,String>();
 
     public Tomcat7Runner()
     {
@@ -83,7 +92,7 @@ public class Tomcat7Runner
 
 
         // start with a server.xml
-        if ( serverXmlPath != null || Boolean.parseBoolean( runtimeProperties.getProperty( USE_SERVER_XML_KEY )) )
+        if ( serverXmlPath != null || useServerXml() )
         {
             container = new Catalina();
             // FIXME get this from runtimeProperties ?
@@ -150,6 +159,19 @@ public class Tomcat7Runner
                 tomcat.getService().addConnector( ajpConnector );
              }
 
+             // add webapps
+             for ( Map.Entry< String, String> entry : this.webappWarPerContext.entrySet() )
+             {
+                 if ( entry.getKey().equals( "/" ))
+                 {
+                     tomcat.addWebapp( entry.getKey(), new File( extractDirectory, "webapps/ROOT.war" ).getAbsolutePath() );
+                 } else
+                 {
+                     tomcat.addWebapp( entry.getKey(), new File( extractDirectory, "webapps/" + entry.getValue() ).getAbsolutePath() );
+                 }
+
+             }
+
              tomcat.start();
         }
 
@@ -205,16 +227,29 @@ public class Tomcat7Runner
         new File( extractDirectory, "work") .mkdirs();
 
         String wars = runtimeProperties.getProperty( WARS_KEY );
-        StringTokenizer st = new StringTokenizer( wars,";" );
-        while (st.hasMoreTokens())
+        populateWebAppWarPerContext( wars );
+
+        
+        for ( Map.Entry<String,String> entry : webappWarPerContext.entrySet() )
         {
+            debugMessage( "webappWarPerContext entry key/value: " + entry.getKey() + "/" + entry.getValue() );
             InputStream inputStream = null;
             try
             {
-                String war = st.nextToken();
                 inputStream =
-                    Thread.currentThread().getContextClassLoader().getResourceAsStream( war );
-                expand( inputStream, new File( extractDirectory, "webapps/" + war ) );
+                    Thread.currentThread().getContextClassLoader().getResourceAsStream( entry.getValue() );
+                if ( !useServerXml() )
+                {
+                    if ( entry.getKey().equals( "/" ))
+                    {
+                        expand( inputStream, new File( extractDirectory, "webapps/ROOT.war" ) );
+                    } else
+                    {
+                        expand( inputStream, new File( extractDirectory, "webapps/" + entry.getValue() ) );
+                    }
+                } else {
+                    expand( inputStream, new File( extractDirectory, "webapps/" + entry.getValue() ) );
+                }
             } finally {
                 if ( inputStream != null )
                 {
@@ -256,6 +291,35 @@ public class Tomcat7Runner
     }
 
     /**
+     * @param warsValue we can value in format: wars=foo.war|contextpath;bar.war  ( |contextpath is optionnal if empty use the war name)
+     * so here we return war file name and populate webappWarPerContext
+     */
+    private void populateWebAppWarPerContext( String warsValue )
+    {
+        StringTokenizer st = new StringTokenizer( warsValue,";" );
+        while ( st.hasMoreTokens() )
+        {
+            String warValue = st.nextToken();
+            debugMessage( "populateWebAppWarPerContext warValue:" + warValue );
+            String warFileName = "";
+            String contextValue = "";
+            int separatorIndex = warValue.indexOf( "|" );
+            if ( separatorIndex >= 0 )
+            {
+                warFileName = warValue.substring( 0, separatorIndex );
+                contextValue = warValue.substring( separatorIndex + 1, warValue.length() );
+
+            } else
+            {
+                warFileName = contextValue;
+            }
+            debugMessage( "populateWebAppWarPerContext contextValue/warFileName:" + contextValue + "/" + warFileName );
+            this.webappWarPerContext.put( contextValue, warFileName );
+        }        
+    }
+
+
+    /**
      * Expand the specified input stream into the specified file.
      *
      * @param input InputStream to be copied
@@ -288,4 +352,17 @@ public class Tomcat7Runner
         }
     }
 
+    public boolean useServerXml()
+    {
+       return Boolean.parseBoolean( runtimeProperties.getProperty( USE_SERVER_XML_KEY ));
+    }
+
+    
+    public void debugMessage( String message )
+    {
+        if ( debug )
+        {
+            System.out.println(message);
+        }
+    }
 }

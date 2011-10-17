@@ -26,10 +26,16 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.factory.ArtifactFactory;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.settings.MavenSettingsBuilder;
 import org.apache.tomcat.maven.plugin.tomcat7.AbstractTomcat7Mojo;
 import org.apache.tomcat.maven.runner.Tomcat7Runner;
 import org.apache.tomcat.maven.runner.Tomcat7RunnerCli;
@@ -63,7 +69,7 @@ public abstract class AbstractExecWarMojo
      * @required
      * @readonly
      */
-    private Artifact artifact;
+    private Artifact projectArtifact;
     
     /**
      * The maven project.
@@ -118,6 +124,40 @@ public abstract class AbstractExecWarMojo
      */
     protected String path;
 
+    /**
+     *  @parameter
+     */
+    protected List<WarRunDependency> warRunDependencies;
+
+    /**
+     * @component
+     */
+    protected ArtifactResolver artifactResolver;
+
+    /**
+     * Maven Artifact Factory component.
+     *
+     * @component
+     */
+    private ArtifactFactory artifactFactory;
+    
+    /**
+     * Location of the local repository.
+     *
+     * @parameter expression="${localRepository}"
+     * @readonly
+     * @required
+     */
+    private ArtifactRepository local;
+
+    /**
+     * List of Remote Repositories used by the resolver
+     *
+     * @parameter expression="${project.remoteArtifactRepositories}"
+     * @readonly
+     * @required
+     */
+    protected List<ArtifactRepository> remoteRepos;    
     
     public void execute()
         throws MojoExecutionException, MojoFailureException
@@ -142,11 +182,20 @@ public abstract class AbstractExecWarMojo
         try
         {
 
-            tmpPropertiesFile = File.createTempFile( "war-exec", "properties" );
-            tmpPropertiesFile.deleteOnExit();
-            tmpManifestFile = File.createTempFile( "war-exec", "manifest" );
-            tmpManifestFile.deleteOnExit();
+            tmpPropertiesFile = new File( buildDirectory, "war-exec.properties" );
+            if ( tmpPropertiesFile.exists() )
+            {
+                tmpPropertiesFile.delete();
+            }
+            tmpPropertiesFile.getParentFile().mkdirs();
+
+            tmpManifestFile = new File( buildDirectory, "war-exec.manifest" );
+            if ( tmpManifestFile.exists() )
+            {
+                tmpManifestFile.delete();
+            }
             tmpPropertiesFileOutputStream = new FileOutputStream( tmpPropertiesFile );
+            execWarJar.getParentFile().mkdirs();
             execWarJar.createNewFile();
             execWarJarOutputStream =  new FileOutputStream( execWarJar );
 
@@ -158,19 +207,53 @@ public abstract class AbstractExecWarMojo
             //* tomcat jars
             //* file tomcat.standalone.properties with possible values :
             //   * useServerXml=true/false to use directly the one provided
-            //   * wars=foo.war;bar.war
+            //   * wars=foo.war|contextpath;bar.war  ( |contextpath is optionnal if empty use the war name )
             //* optionnal: conf/ with usual tomcat configuration files
             //* MANIFEST with Main-Class
+
+            Properties properties = new Properties(  );
 
             os =
                 new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.JAR, execWarJarOutputStream);
 
-            // TODO control project packaging is war
-            os.putArchiveEntry( new JarArchiveEntry( path + ".war" ) );
-            IOUtils.copy( new FileInputStream(artifact.getFile()), os );
-            os.closeArchiveEntry();
+            if ( "war".equals( project.getPackaging() ) )
+            {
+                os.putArchiveEntry( new JarArchiveEntry( path + ".war" ) );
+                IOUtils.copy( new FileInputStream(projectArtifact.getFile()), os );
+                os.closeArchiveEntry();
+                properties.put( Tomcat7Runner.WARS_KEY , path + ".war|" + path );
+            }
 
-            Properties properties = new Properties(  );
+            if ( "pom".equals( project.getPackaging() ) && ( warRunDependencies != null && !warRunDependencies.isEmpty() ) )
+            {
+                for (WarRunDependency warRunDependency : warRunDependencies )
+                {
+                    if ( warRunDependency.dependency != null )
+                    {
+                        Dependency dependency = warRunDependency.dependency;
+                        // String groupId, String artifactId, String version, String scope, String type
+                        Artifact artifact =
+                            artifactFactory.createArtifact( dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion(), dependency.getScope(), dependency.getType()  );
+                        
+                        artifactResolver.resolve( artifact, this.remoteRepos , this.local );
+                        os.putArchiveEntry( new JarArchiveEntry( artifact.getFile().getName() ) );
+                        IOUtils.copy( new FileInputStream(artifact.getFile()), os );
+                        os.closeArchiveEntry();
+                        String propertyWarValue = properties.getProperty( Tomcat7Runner.WARS_KEY );
+                        // FIXME check contextPath is not empty or at least only / for root app
+                        if (propertyWarValue != null )
+                        {
+                            properties.put( Tomcat7Runner.WARS_KEY , propertyWarValue + ";" + artifact.getFile().getName() + "|" + warRunDependency.contextPath );
+                        }
+                        else
+                        {
+                            properties.put( Tomcat7Runner.WARS_KEY , artifact.getFile().getName() + "|" + warRunDependency.contextPath );
+                        }
+                    }
+                }
+            }
+
+            // FIXME if no war has been added here we must stop with a human readable and user friendly error message
 
 
             if (serverXml != null && serverXml.exists() )
@@ -184,7 +267,7 @@ public abstract class AbstractExecWarMojo
                 properties.put(Tomcat7Runner.USE_SERVER_XML_KEY, Boolean.FALSE.toString() );
             }
 
-            properties.put( Tomcat7Runner.WARS_KEY , path + ".war" );
+
             properties.store( tmpPropertiesFileOutputStream, "created by Apache Tomcat Maven plugin" );
 
             tmpPropertiesFileOutputStream.flush();
@@ -240,13 +323,18 @@ public abstract class AbstractExecWarMojo
         } catch ( ArchiveException e )
         {
             throw new MojoExecutionException( e.getMessage(), e );
+        } catch ( ArtifactNotFoundException e )
+        {
+            throw new MojoExecutionException( e.getMessage(), e );
+        } catch ( ArtifactResolutionException e )
+                {
+                    throw new MojoExecutionException( e.getMessage(), e );
+            
         } finally {
             IOUtils.closeQuietly( os );
             IOUtils.closeQuietly( tmpManifestWriter );
             IOUtils.closeQuietly( execWarJarOutputStream );
             IOUtils.closeQuietly(tmpPropertiesFileOutputStream);
-            FileUtils.deleteQuietly(tmpPropertiesFile);
-            FileUtils.deleteQuietly( tmpManifestFile );
         }
     }
 }

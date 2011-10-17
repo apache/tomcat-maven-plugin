@@ -21,7 +21,7 @@ The generated standalone jar will contains:
 * file tomcat.standalone.properties with possible values :
    * useServerXml=true/false to use directly the one provided
      in the maven plugin configuration
-   * wars=foo.war;bar.war
+   * wars=foo.war|contextpath;bar.war  ( |contextpath is optionnal if empty use the war name)
 
 * optionnal: conf/ with usual tomcat configuration files
 
