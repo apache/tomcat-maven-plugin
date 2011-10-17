@@ -304,12 +304,13 @@ public abstract class AbstractExecWarMojo
 
                         artifactResolver.resolve( artifact, this.remoteRepos, this.local );
                         File warFile = new File( buildDirectory, artifact.getFile().getName() );
+                        String warFileName = artifact.getFile().getName();
                         FileUtils.copyFile( artifact.getFile(), warFile );
                         if ( warRunDependency.contextXml != null )
                         {
-                            addContextXmlToWar( warRunDependency.contextXml, warFile );
+                            warFile = addContextXmlToWar( warRunDependency.contextXml, warFile );
                         }
-                        os.putArchiveEntry( new JarArchiveEntry( warFile.getName() ) );
+                        os.putArchiveEntry( new JarArchiveEntry( warFileName ) );
                         IOUtils.copy( new FileInputStream( warFile ), os );
                         os.closeArchiveEntry();
                         String propertyWarValue = properties.getProperty( Tomcat7Runner.WARS_KEY );
@@ -453,23 +454,41 @@ public abstract class AbstractExecWarMojo
     }
 
 
-    private void addContextXmlToWar( File contextXmlFile, File warFile )
+    /**
+     * return file can be deleted
+     */
+    private File addContextXmlToWar( File contextXmlFile, File warFile )
         throws IOException, ArchiveException
     {
         ArchiveOutputStream os = null;
         OutputStream warOutputStream = null;
+        File tmpWar = File.createTempFile( "tomcat", "war-exec" );
+        tmpWar.deleteOnExit();
+
         try
         {
-            warOutputStream = new FileOutputStream( warFile );
+            warOutputStream = new FileOutputStream( tmpWar );
             os = new ArchiveStreamFactory().createArchiveOutputStream( ArchiveStreamFactory.JAR, warOutputStream );
             os.putArchiveEntry( new JarArchiveEntry( "META-INF/context.xml" ) );
             IOUtils.copy( new FileInputStream( contextXmlFile ), os );
             os.closeArchiveEntry();
+
+            JarFile jarFile = new JarFile( warFile );
+            Enumeration<JarEntry> jarEntries = jarFile.entries();
+            while ( jarEntries.hasMoreElements() )
+            {
+                JarEntry jarEntry = jarEntries.nextElement();
+                os.putArchiveEntry( new JarArchiveEntry( jarEntry.getName() ) );
+                IOUtils.copy( jarFile.getInputStream( jarEntry ), os );
+                os.closeArchiveEntry();
+            }
+            os.flush();
         }
         finally
         {
             IOUtils.closeQuietly( os );
             IOUtils.closeQuietly( warOutputStream );
         }
+        return tmpWar;
     }
 }
