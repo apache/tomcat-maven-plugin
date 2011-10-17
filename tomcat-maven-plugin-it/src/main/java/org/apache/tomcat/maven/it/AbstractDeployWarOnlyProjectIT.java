@@ -20,7 +20,6 @@ package org.apache.tomcat.maven.it;
  */
 
 
-
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +55,7 @@ public abstract class AbstractDeployWarOnlyProjectIT
         throws Exception
     {
         final String responseBody = executeVerifyWithGet();
-        assertNotNull("Received message body must not be null.", responseBody);
+        assertNotNull( "Received message body must not be null.", responseBody );
         assertContains( "Response must match expected content.", "It works !!", responseBody );
 
         assertTrue( "Tomcat folder should exist in target folder of project at " + webappHome,

@@ -20,7 +20,6 @@ package org.apache.tomcat.maven.it;
  */
 
 
-
 import org.apache.maven.it.VerificationException;
 import org.junit.Test;
 import org.slf4j.Logger;

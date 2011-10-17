@@ -19,9 +19,9 @@ package org.apache.tomcat.maven.plugin.tomcat7.run;
  */
 
 /**
+ * @author Olivier Lamy
  * @goal exec-war
  * @execute phase="package"
- * @author Olivier Lamy
  * @since 2.0
  */
 public class ExecWarMojo

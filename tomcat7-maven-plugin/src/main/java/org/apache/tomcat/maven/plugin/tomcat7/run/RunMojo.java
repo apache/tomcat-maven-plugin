@@ -42,12 +42,10 @@ import java.util.Set;
  * Runs the current project as a dynamic web application using an embedded Tomcat server.
  *
  * @author Olivier Lamy
- * @since 2.0
- *
  * @goal run
  * @execute phase="compile"
  * @requiresDependencyResolution runtime
- *
+ * @since 2.0
  */
 public class RunMojo
     extends AbstractRunMojo
@@ -138,32 +136,32 @@ public class RunMojo
         StringWriter sw = new StringWriter();
         try
         {
-            temporaryContextFile = File.createTempFile("tomcat-maven-plugin", "temp-ctx-file");
+            temporaryContextFile = File.createTempFile( "tomcat-maven-plugin", "temp-ctx-file" );
             temporaryContextFile.deleteOnExit();
-            fw = new FileWriter(temporaryContextFile);
+            fw = new FileWriter( temporaryContextFile );
             // format to modify/create <Context backgroundProcessorDelay="5" reloadable="false">
             if ( contextFile != null && contextFile.exists() )
             {
-                fr = new FileReader(contextFile);
-                Xpp3Dom xpp3Dom = Xpp3DomBuilder.build(fr);
-                xpp3Dom.setAttribute("backgroundProcessorDelay", Integer.toString(backgroundProcessorDelay));
-                xpp3Dom.setAttribute("reloadable", Boolean.toString(isContextReloadable()));
-                Xpp3DomWriter.write(fw, xpp3Dom);
-                Xpp3DomWriter.write(sw, xpp3Dom);
-                getLog().debug(" generated context file " + sw.toString());
+                fr = new FileReader( contextFile );
+                Xpp3Dom xpp3Dom = Xpp3DomBuilder.build( fr );
+                xpp3Dom.setAttribute( "backgroundProcessorDelay", Integer.toString( backgroundProcessorDelay ) );
+                xpp3Dom.setAttribute( "reloadable", Boolean.toString( isContextReloadable() ) );
+                Xpp3DomWriter.write( fw, xpp3Dom );
+                Xpp3DomWriter.write( sw, xpp3Dom );
+                getLog().debug( " generated context file " + sw.toString() );
             }
             else
             {
                 if ( contextReloadable )
                 {
                     // don't care about using a complicated xml api to create one xml line :-)
-                    StringBuilder sb = new StringBuilder("<Context ").append("backgroundProcessorDelay=\"").append(
-                        Integer.toString(backgroundProcessorDelay)).append("\"").append(
-                        " reloadable=\"" + Boolean.toString(isContextReloadable()) + "\"/>");
+                    StringBuilder sb = new StringBuilder( "<Context " ).append( "backgroundProcessorDelay=\"" ).append(
+                        Integer.toString( backgroundProcessorDelay ) ).append( "\"" ).append(
+                        " reloadable=\"" + Boolean.toString( isContextReloadable() ) + "\"/>" );
 
-                    getLog().debug(" generated context file " + sb.toString());
+                    getLog().debug( " generated context file " + sb.toString() );
 
-                    fw.write(sb.toString());
+                    fw.write( sb.toString() );
                 }
                 else
                 {
@@ -174,25 +172,25 @@ public class RunMojo
         }
         catch ( IOException e )
         {
-            getLog().error("error creating fake context.xml : " + e.getMessage(), e);
-            throw new MojoExecutionException("error creating fake context.xml : " + e.getMessage(), e);
+            getLog().error( "error creating fake context.xml : " + e.getMessage(), e );
+            throw new MojoExecutionException( "error creating fake context.xml : " + e.getMessage(), e );
         }
         catch ( XmlPullParserException e )
         {
-            getLog().error("error creating fake context.xml : " + e.getMessage(), e);
-            throw new MojoExecutionException("error creating fake context.xml : " + e.getMessage(), e);
+            getLog().error( "error creating fake context.xml : " + e.getMessage(), e );
+            throw new MojoExecutionException( "error creating fake context.xml : " + e.getMessage(), e );
         }
         finally
         {
-            IOUtil.close(fw);
-            IOUtil.close(fr);
-            IOUtil.close(sw);
+            IOUtil.close( fw );
+            IOUtil.close( fr );
+            IOUtil.close( sw );
         }
 
         return temporaryContextFile;
     }
 
-/**
+    /**
      * {@inheritDoc}
      *
      * @throws MojoExecutionException
@@ -204,29 +202,28 @@ public class RunMojo
         WebappLoader loader = super.createWebappLoader();
         if ( useSeparateTomcatClassLoader )
         {
-            loader.setDelegate(delegate);
+            loader.setDelegate( delegate );
         }
 
         try
         {
             ClassLoaderEntriesCalculatorRequest request =
-                new ClassLoaderEntriesCalculatorRequest().setDependencies( dependencies )
-                    .setLog( getLog() ).setMavenProject( project )
-                    .setAddWarDependenciesInClassloader( addWarDependenciesInClassloader );
-            List<String> classLoaderEntries =
-                classLoaderEntriesCalculator.calculateClassPathEntries(request);
+                new ClassLoaderEntriesCalculatorRequest().setDependencies( dependencies ).setLog(
+                    getLog() ).setMavenProject( project ).setAddWarDependenciesInClassloader(
+                    addWarDependenciesInClassloader );
+            List<String> classLoaderEntries = classLoaderEntriesCalculator.calculateClassPathEntries( request );
 
             if ( classLoaderEntries != null )
             {
                 for ( String classLoaderEntry : classLoaderEntries )
                 {
-                    loader.addRepository(classLoaderEntry);
+                    loader.addRepository( classLoaderEntry );
                 }
             }
         }
         catch ( TomcatRunException e )
         {
-            throw new MojoExecutionException(e.getMessage(), e);
+            throw new MojoExecutionException( e.getMessage(), e );
         }
 
         return loader;

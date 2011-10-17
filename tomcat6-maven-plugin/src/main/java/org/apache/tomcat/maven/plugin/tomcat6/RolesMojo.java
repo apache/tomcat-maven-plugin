@@ -26,10 +26,10 @@ import java.io.IOException;
 
 /**
  * Lists security roles in Tomcat.
- * 
- * @goal roles
+ *
  * @author Mark Hobson <markhobson@gmail.com>
  * @version $Id: RolesMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @goal roles
  */
 public class RolesMojo
     extends AbstractCatalinaMojo

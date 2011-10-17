@@ -34,27 +34,32 @@ import java.util.Map;
  * context reloads.
  *
  * @author Ryan Connolly
- * @since 2.0
  * @version $Id: ExternalRepositoriesReloadableWebappLoader.java 13551 2011-02-09 16:05:47Z olamy $
+ * @since 2.0
  */
 public class ExternalRepositoriesReloadableWebappLoader
     extends WebappLoader
 {
 
-    /** Last modification times of all jar and class files. */
+    /**
+     * Last modification times of all jar and class files.
+     */
     private Map<String, Long> modificationTimeMap = new HashMap<String, Long>();
 
     private Log log;
-    
-    /** Default Constructor. */
+
+    /**
+     * Default Constructor.
+     */
     public ExternalRepositoriesReloadableWebappLoader()
     {
         super();
     }
-   
-    
+
+
     /**
      * Convenience Constructor allows setting of a parent ClassLoader.
+     *
      * @param parent the ClassLoader instance to set as this Loader's parent ClassLoader.
      */
     public ExternalRepositoriesReloadableWebappLoader( ClassLoader parent, Log log )
@@ -90,6 +95,7 @@ public class ExternalRepositoriesReloadableWebappLoader
 
     /**
      * Tracks modification times of files in the given class directory.
+     *
      * @param directory the File directory to track modification times for.
      */
     private void addClassDirectory( File directory )
@@ -111,6 +117,7 @@ public class ExternalRepositoriesReloadableWebappLoader
 
     /**
      * Tracks last modification time of the given File.
+     *
      * @param file the File for which to track last modification time.
      */
     private void addFile( File file )
@@ -130,7 +137,7 @@ public class ExternalRepositoriesReloadableWebappLoader
             if ( log != null )
             {
                 log.debug( "classPath scanning started at " + new Date().toString() );
-            }            
+            }
             for ( Map.Entry<String, Long> entry : modificationTimeMap.entrySet() )
             {
                 String key = entry.getKey();
@@ -143,7 +150,7 @@ public class ExternalRepositoriesReloadableWebappLoader
                     {
                         modified = true;
                         modificationTimeMap.put( key, file.lastModified() );
-                        
+
                         // directory last modification time can change when some class,
                         // jar or subdirectory was added or deleted.
                         if ( file.isDirectory() )

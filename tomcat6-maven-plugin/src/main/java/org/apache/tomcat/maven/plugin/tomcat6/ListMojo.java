@@ -26,10 +26,10 @@ import java.io.IOException;
 
 /**
  * Lists all the currently deployed web applications in Tomcat.
- * 
- * @goal list
+ *
  * @author Mark Hobson <markhobson@gmail.com>
  * @version $Id: ListMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @goal list
  */
 public class ListMojo
     extends AbstractCatalinaMojo

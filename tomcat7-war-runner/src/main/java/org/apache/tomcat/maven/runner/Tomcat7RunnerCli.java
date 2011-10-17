@@ -40,53 +40,37 @@ public class Tomcat7RunnerCli
 {
 
     public static final String STAND_ALONE_PROPERTIES_FILENAME = "tomcat.standalone.properties";
-    
-    static Option httpPort = OptionBuilder.withArgName("httpPort")
-                                    .hasArg()
-                                    .withDescription("http port to use")
-                                    .create("httpPort");
 
-    static Option httpsPort = OptionBuilder.withArgName("httpsPort")
-                                    .hasArg()
-                                    .withDescription("https port to use")
-                                    .create("httpsPort");
+    static Option httpPort =
+        OptionBuilder.withArgName( "httpPort" ).hasArg().withDescription( "http port to use" ).create( "httpPort" );
 
-    static Option ajpPort = OptionBuilder.withArgName("ajpPort")
-                                    .hasArg()
-                                    .withDescription("ajp port to use")
-                                    .create("ajpPort");
+    static Option httpsPort =
+        OptionBuilder.withArgName( "httpsPort" ).hasArg().withDescription( "https port to use" ).create( "httpsPort" );
 
-    static Option serverXmlPath = OptionBuilder.withArgName("serverXmlPath")
-                                    .hasArg()
-                                    .withDescription("server.xml to use, optionnal")
-                                    .create("serverXmlPath");
+    static Option ajpPort =
+        OptionBuilder.withArgName( "ajpPort" ).hasArg().withDescription( "ajp port to use" ).create( "ajpPort" );
 
-    static Option resetExtract = OptionBuilder.withArgName("resetExtract")
-                                    .withDescription("clean previous extract directory")
-                                    .create("resetExtract");
+    static Option serverXmlPath =
+        OptionBuilder.withArgName( "serverXmlPath" ).hasArg().withDescription( "server.xml to use, optionnal" ).create(
+            "serverXmlPath" );
 
-    static Option help = OptionBuilder
-                                    .withLongOpt( "help" )
-                                    .withDescription("help")
-                                    .create('h');
+    static Option resetExtract =
+        OptionBuilder.withArgName( "resetExtract" ).withDescription( "clean previous extract directory" ).create(
+            "resetExtract" );
 
-    static Option debug = OptionBuilder
-                                    .withLongOpt( "debug" )
-                                    .withDescription("debug")
-                                    .create('X');
+    static Option help = OptionBuilder.withLongOpt( "help" ).withDescription( "help" ).create( 'h' );
 
-    static Option sysProps = OptionBuilder.withDescription( "use value for given property" )
-                                            .hasArgs()
-                                            .withDescription("key=value")
-                                            .withValueSeparator()
-                                            .create( 'D' );
+    static Option debug = OptionBuilder.withLongOpt( "debug" ).withDescription( "debug" ).create( 'X' );
+
+    static Option sysProps = OptionBuilder.withDescription( "use value for given property" ).hasArgs().withDescription(
+        "key=value" ).withValueSeparator().create( 'D' );
 
     static Options options = new Options();
 
     static
     {
-        options.addOption( httpPort ).addOption( httpsPort ).addOption( ajpPort ).addOption( serverXmlPath )
-                .addOption( resetExtract ).addOption( help ).addOption( debug ).addOption( sysProps );
+        options.addOption( httpPort ).addOption( httpsPort ).addOption( ajpPort ).addOption( serverXmlPath ).addOption(
+            resetExtract ).addOption( help ).addOption( debug ).addOption( sysProps );
     }
 
 
@@ -97,45 +81,45 @@ public class Tomcat7RunnerCli
         CommandLine line = null;
         try
         {
-            line = parser.parse(Tomcat7RunnerCli.options, args);
-        } catch ( ParseException e )
+            line = parser.parse( Tomcat7RunnerCli.options, args );
+        }
+        catch ( ParseException e )
         {
             System.err.println( "Parsing failed.  Reason: " + e.getMessage() );
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp( getCmdLineSyntax(), Tomcat7RunnerCli.options);
+            formatter.printHelp( getCmdLineSyntax(), Tomcat7RunnerCli.options );
             System.exit( 1 );
         }
 
-        if ( line.hasOption( help.getOpt() ))
+        if ( line.hasOption( help.getOpt() ) )
         {
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp( getCmdLineSyntax(), Tomcat7RunnerCli.options);
+            formatter.printHelp( getCmdLineSyntax(), Tomcat7RunnerCli.options );
             System.exit( 0 );
         }
-
 
         Tomcat7Runner tomcat7Runner = new Tomcat7Runner();
 
         tomcat7Runner.runtimeProperties = buildStandaloneProperties();
 
-        if (line.hasOption( serverXmlPath.getOpt() ))
+        if ( line.hasOption( serverXmlPath.getOpt() ) )
         {
-            tomcat7Runner.serverXmlPath = line.getOptionValue( serverXmlPath.getOpt() ) ;
+            tomcat7Runner.serverXmlPath = line.getOptionValue( serverXmlPath.getOpt() );
         }
-        if (line.hasOption( httpPort.getOpt() ))
+        if ( line.hasOption( httpPort.getOpt() ) )
         {
             tomcat7Runner.httpPort = Integer.parseInt( line.getOptionValue( httpPort.getOpt() ) );
         }
 
-        if (line.hasOption( httpsPort.getOpt() ))
+        if ( line.hasOption( httpsPort.getOpt() ) )
         {
             tomcat7Runner.httpsPort = Integer.parseInt( line.getOptionValue( httpsPort.getOpt() ) );
         }
-        if (line.hasOption( ajpPort.getOpt() ))
+        if ( line.hasOption( ajpPort.getOpt() ) )
         {
             tomcat7Runner.ajpPort = Integer.parseInt( line.getOptionValue( ajpPort.getOpt() ) );
         }
-        if ( line.hasOption( resetExtract.getOpt() ))
+        if ( line.hasOption( resetExtract.getOpt() ) )
         {
             tomcat7Runner.resetExtract = true;
         }
@@ -159,17 +143,17 @@ public class Tomcat7RunnerCli
         // here we go
         tomcat7Runner.run();
     }
-    
+
     private static Properties buildStandaloneProperties()
         throws IOException
     {
         InputStream is =
             Thread.currentThread().getContextClassLoader().getResourceAsStream( STAND_ALONE_PROPERTIES_FILENAME );
-        Properties properties = new Properties( );
+        Properties properties = new Properties();
         properties.load( is );
         return properties;
     }
-    
+
     public static String getCmdLineSyntax()
     {
         return "java -jar [path to your exec war jar]";

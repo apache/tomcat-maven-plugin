@@ -28,9 +28,9 @@ import java.io.File;
  */
 public class WarRunDependency
 {
-    
+
     public Dependency dependency;
-    
+
     public String contextPath;
 
     public File contextXml;
@@ -39,5 +39,5 @@ public class WarRunDependency
     {
         // no op
     }
-    
+
 }

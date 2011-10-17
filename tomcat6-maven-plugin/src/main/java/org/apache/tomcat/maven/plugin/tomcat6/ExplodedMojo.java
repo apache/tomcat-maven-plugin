@@ -19,16 +19,16 @@ package org.apache.tomcat.maven.plugin.tomcat6;
  * under the License.
  */
 
-import java.io.File;
-
 import org.apache.maven.plugin.MojoExecutionException;
+
+import java.io.File;
 
 /**
  * Deploy an exploded WAR to Tomcat.
- * 
- * @goal exploded
+ *
  * @author Mark Hobson <markhobson@gmail.com>
  * @version $Id: ExplodedMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @goal exploded
  * @todo depend on war:exploded when MNG-1649 resolved
  */
 public class ExplodedMojo
@@ -40,7 +40,7 @@ public class ExplodedMojo
 
     /**
      * The path of the exploded WAR directory to deploy.
-     * 
+     *
      * @parameter expression = "${project.build.directory}/${project.build.finalName}"
      * @required
      */
@@ -68,7 +68,8 @@ public class ExplodedMojo
     {
         if ( !warDirectory.exists() || !warDirectory.isDirectory() )
         {
-            throw new MojoExecutionException( messagesProvider.getMessage( "ExplodedMojo.missingWar", warDirectory.getPath() ) );
+            throw new MojoExecutionException(
+                messagesProvider.getMessage( "ExplodedMojo.missingWar", warDirectory.getPath() ) );
         }
     }
 }

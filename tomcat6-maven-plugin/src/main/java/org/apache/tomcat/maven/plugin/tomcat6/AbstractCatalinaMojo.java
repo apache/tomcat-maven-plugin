@@ -135,17 +135,17 @@ public abstract class AbstractCatalinaMojo
     /**
      * {@inheritDoc}
      */
-    public void execute( )
+    public void execute()
         throws MojoExecutionException
     {
         try
         {
-            invokeManager( );
+            invokeManager();
         }
         catch ( TomcatManagerException exception )
         {
             throw new MojoExecutionException(
-                messagesProvider.getMessage( "AbstractCatalinaMojo.managerError", exception.getMessage( ) ) );
+                messagesProvider.getMessage( "AbstractCatalinaMojo.managerError", exception.getMessage() ) );
         }
         catch ( IOException exception )
         {
@@ -165,7 +165,7 @@ public abstract class AbstractCatalinaMojo
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    protected abstract void invokeManager( )
+    protected abstract void invokeManager()
         throws MojoExecutionException, TomcatManagerException, IOException;
 
     /**
@@ -174,7 +174,7 @@ public abstract class AbstractCatalinaMojo
      * @return the Tomcat manager wrapper object
      * @throws MojoExecutionException if there was a problem obtaining the authentication details
      */
-    protected TomcatManager getManager( )
+    protected TomcatManager getManager()
         throws MojoExecutionException
     {
         // lazily instantiate when config values have been injected
@@ -186,7 +186,7 @@ public abstract class AbstractCatalinaMojo
             if ( server == null )
             {
                 // no server set, use defaults
-                getLog( ).debug( messagesProvider.getMessage( "AbstractCatalinaMojo.defaultAuth" ) );
+                getLog().debug( messagesProvider.getMessage( "AbstractCatalinaMojo.defaultAuth" ) );
                 userName = DEFAULT_USERNAME;
                 password = DEFAULT_PASSWORD;
             }
@@ -201,18 +201,18 @@ public abstract class AbstractCatalinaMojo
                 }
 
                 // derive username
-                userName = info.getUserName( );
+                userName = info.getUserName();
                 if ( userName == null )
                 {
-                    getLog( ).debug( messagesProvider.getMessage( "AbstractCatalinaMojo.defaultUserName" ) );
+                    getLog().debug( messagesProvider.getMessage( "AbstractCatalinaMojo.defaultUserName" ) );
                     userName = DEFAULT_USERNAME;
                 }
 
                 // derive password
-                password = info.getPassword( );
+                password = info.getPassword();
                 if ( password == null )
                 {
-                    getLog( ).debug( messagesProvider.getMessage( "AbstractCatalinaMojo.defaultPassword" ) );
+                    getLog().debug( messagesProvider.getMessage( "AbstractCatalinaMojo.defaultPassword" ) );
                     password = DEFAULT_PASSWORD;
                 }
             }
@@ -237,7 +237,7 @@ public abstract class AbstractCatalinaMojo
      *
      * @return the full URL of the Tomcat manager instance to use
      */
-    protected URL getURL( )
+    protected URL getURL()
     {
         return url;
     }
@@ -247,7 +247,7 @@ public abstract class AbstractCatalinaMojo
      *
      * @return the webapp context path to use
      */
-    protected String getPath( )
+    protected String getPath()
     {
         return path;
     }
@@ -258,10 +258,10 @@ public abstract class AbstractCatalinaMojo
      * @return the URL of the deployed webapp
      * @throws MalformedURLException if the deployed webapp URL is invalid
      */
-    protected URL getDeployedURL( )
+    protected URL getDeployedURL()
         throws MalformedURLException
     {
-        return new URL( getURL( ), getPath( ) );
+        return new URL( getURL(), getPath() );
     }
 
     /**
@@ -273,9 +273,9 @@ public abstract class AbstractCatalinaMojo
     {
         StringTokenizer tokenizer = new StringTokenizer( string, "\n\r" );
 
-        while ( tokenizer.hasMoreTokens( ) )
+        while ( tokenizer.hasMoreTokens() )
         {
-            getLog( ).info( tokenizer.nextToken( ) );
+            getLog().info( tokenizer.nextToken() );
         }
     }
 }

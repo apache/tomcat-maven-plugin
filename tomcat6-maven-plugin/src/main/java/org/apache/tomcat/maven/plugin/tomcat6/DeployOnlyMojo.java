@@ -21,10 +21,10 @@ package org.apache.tomcat.maven.plugin.tomcat6;
 
 /**
  * Deploy a WAR to Tomcat witjout forking the package lifecycle
- * 
- * @goal deploy-only
+ *
  * @author olamy
  * @version $Id: DeployOnlyMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @goal deploy-only
  * @since 1.0-alpha-2
  */
 public class DeployOnlyMojo

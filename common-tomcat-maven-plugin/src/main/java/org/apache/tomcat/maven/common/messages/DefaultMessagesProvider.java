@@ -41,14 +41,14 @@ public class DefaultMessagesProvider
     private ResourceBundle messages;
 
 
-    public DefaultMessagesProvider( )
+    public DefaultMessagesProvider()
     {
-        String packageName = getClass( ).getPackage( ).getName( );
+        String packageName = getClass().getPackage().getName();
 
         messages = ResourceBundle.getBundle( packageName + ".messages" );
     }
 
-    public ResourceBundle getResourceBundle( )
+    public ResourceBundle getResourceBundle()
     {
         return this.messages;
     }
@@ -63,7 +63,7 @@ public class DefaultMessagesProvider
     {
         try
         {
-            return getResourceBundle( ).getString( key );
+            return getResourceBundle().getString( key );
         }
         catch ( NullPointerException exception )
         {

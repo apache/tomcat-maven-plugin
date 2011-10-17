@@ -26,10 +26,10 @@ import java.io.IOException;
 
 /**
  * Stop a WAR in Tomcat.
- * 
- * @goal stop
+ *
  * @author Mark Hobson <markhobson@gmail.com>
  * @version $Id: StopMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @goal stop
  */
 public class StopMojo
     extends AbstractWarCatalinaMojo

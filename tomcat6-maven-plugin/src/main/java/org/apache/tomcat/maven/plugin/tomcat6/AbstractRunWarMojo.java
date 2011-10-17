@@ -23,10 +23,10 @@ import java.io.File;
 
 /**
  * Runs the current project as a packaged web application using an embedded Tomcat server.
- * 
- * @requiresDependencyResolution runtime
+ *
  * @author Mark Hobson <markhobson@gmail.com>
  * @version $Id: AbstractRunWarMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @requiresDependencyResolution runtime
  * @todo depend on war:exploded when MNG-1649 resolved
  */
 public abstract class AbstractRunWarMojo
@@ -38,7 +38,7 @@ public abstract class AbstractRunWarMojo
 
     /**
      * The path of the exploded WAR directory to run.
-     * 
+     *
      * @parameter expression = "${project.build.directory}/${project.build.finalName}"
      * @required
      */
@@ -46,9 +46,9 @@ public abstract class AbstractRunWarMojo
 
     /**
      * The path of the Tomcat context XML file.
-     * 
+     *
      * @parameter expression =
-     *            "${project.build.directory}/${project.build.finalName}/META-INF/context.xml"
+     * "${project.build.directory}/${project.build.finalName}/META-INF/context.xml"
      */
     private File contextFile;
 

@@ -19,16 +19,16 @@ package org.apache.tomcat.maven.plugin.tomcat6;
  * under the License.
  */
 
-import java.io.File;
-
 import org.apache.maven.plugin.MojoExecutionException;
+
+import java.io.File;
 
 /**
  * Deploy a WAR in-place to Tomcat.
- * 
- * @goal inplace
+ *
  * @author Mark Hobson <markhobson@gmail.com>
  * @version $Id: InplaceMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @goal inplace
  * @todo depend on war:inplace when MNG-1649 resolved
  */
 public class InplaceMojo
@@ -40,7 +40,7 @@ public class InplaceMojo
 
     /**
      * The path of the inplace WAR directory to deploy.
-     * 
+     *
      * @parameter expression = "${basedir}/src/main/webapp"
      * @required
      */
@@ -68,7 +68,8 @@ public class InplaceMojo
     {
         if ( !warSourceDirectory.exists() || !warSourceDirectory.isDirectory() )
         {
-            throw new MojoExecutionException( messagesProvider.getMessage( "InplaceMojo.missingWar", warSourceDirectory.getPath() ) );
+            throw new MojoExecutionException(
+                messagesProvider.getMessage( "InplaceMojo.missingWar", warSourceDirectory.getPath() ) );
         }
     }
 }

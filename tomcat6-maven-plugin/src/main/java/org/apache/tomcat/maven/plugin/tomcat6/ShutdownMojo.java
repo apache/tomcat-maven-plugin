@@ -19,7 +19,6 @@ package org.apache.tomcat.maven.plugin.tomcat6;
 * under the License.
 */
 
-import org.apache.catalina.LifecycleException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.tomcat.maven.common.run.EmbeddedRegistry;
 
@@ -56,16 +55,16 @@ public class ShutdownMojo
      *
      * @throws MojoExecutionException if shutting down one or all servers failed
      */
-    public void execute( )
+    public void execute()
         throws MojoExecutionException
     {
         try
         {
-            EmbeddedRegistry.getInstance().shutdownAll( getLog( ) );
+            EmbeddedRegistry.getInstance().shutdownAll( getLog() );
         }
         catch ( Exception e )
         {
-            if (!skipErrorOnShutdown)
+            if ( !skipErrorOnShutdown )
             {
                 throw new MojoExecutionException( messagesProvider.getMessage( "ShutdownMojo.shutdownError" ), e );
             }

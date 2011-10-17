@@ -21,7 +21,7 @@ package org.apache.tomcat.maven.common.deployer;
 
 /**
  * Indicates an error received from Tomcat manager.
- * 
+ *
  * @author Mark Hobson <markhobson@gmail.com>
  * @version $Id: TomcatManagerException.java 12852 2010-10-12 22:04:32Z thragor $
  */
@@ -51,7 +51,7 @@ public class TomcatManagerException
 
     /**
      * Creates a new <code>TomcatManagerException</code> with the specified message and no cause.
-     * 
+     *
      * @param message the message for this exception
      */
     public TomcatManagerException( String message )
@@ -61,9 +61,9 @@ public class TomcatManagerException
 
     /**
      * Creates a new <code>TomcatManagerException</code> with the specified message and cause.
-     * 
+     *
      * @param message the message for this exception
-     * @param cause the cause of this exception
+     * @param cause   the cause of this exception
      */
     public TomcatManagerException( String message, Throwable cause )
     {

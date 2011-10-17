@@ -37,7 +37,7 @@ public class AbstractUsageContextpathIT
 {
     private static final Logger LOG = LoggerFactory.getLogger( AbstractUsageContextpathIT.class );
 
-    private static final String WEBAPP_URL = "http://localhost:" + getHttpItPort() +  "/lorem/index.html";
+    private static final String WEBAPP_URL = "http://localhost:" + getHttpItPort() + "/lorem/index.html";
 
     /**
      * ArtifactId of the sample WAR project.

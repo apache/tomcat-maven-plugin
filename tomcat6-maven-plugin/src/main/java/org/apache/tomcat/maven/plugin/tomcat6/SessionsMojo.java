@@ -26,10 +26,10 @@ import java.io.IOException;
 
 /**
  * Lists session information for a WAR in Tomcat.
- * 
- * @goal sessions
+ *
  * @author Mark Hobson <markhobson@gmail.com>
  * @version $Id: SessionsMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @goal sessions
  */
 public class SessionsMojo
     extends AbstractWarCatalinaMojo

@@ -26,10 +26,10 @@ import java.io.IOException;
 
 /**
  * Lists JNDI resources in Tomcat.
- * 
- * @goal resources
+ *
  * @author Mark Hobson <markhobson@gmail.com>
  * @version $Id: ResourcesMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @goal resources
  */
 public class ResourcesMojo
     extends AbstractCatalinaMojo
@@ -40,7 +40,7 @@ public class ResourcesMojo
 
     /**
      * The class name of the resources to list, or <code>null</code> for all.
-     * 
+     *
      * @parameter expression = "${maven.tomcat.type}"
      */
     private String type;

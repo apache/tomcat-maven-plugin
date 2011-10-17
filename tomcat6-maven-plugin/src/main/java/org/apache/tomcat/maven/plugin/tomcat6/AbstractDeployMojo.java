@@ -78,20 +78,20 @@ public abstract class AbstractDeployMojo
      * {@inheritDoc}
      */
     @Override
-    public void invokeManager( )
+    public void invokeManager()
         throws MojoExecutionException, TomcatManagerException, IOException
     {
         if ( "war".equals( mode ) )
         {
-            deployWar( );
+            deployWar();
         }
         else if ( "context".equals( mode ) )
         {
-            deployContext( );
+            deployContext();
         }
         else if ( "both".equals( mode ) )
         {
-            deployWarAndContext( );
+            deployWarAndContext();
         }
         else
         {
@@ -104,14 +104,14 @@ public abstract class AbstractDeployMojo
      *
      * @return the Tomcat WAR file.
      */
-    protected abstract File getWarFile( );
+    protected abstract File getWarFile();
 
     /**
      * Ensures that the Tomcat WAR file exists and is the correct type for the deployment mode.
      *
      * @throws MojoExecutionException if the WAR file does not exist or is not the correct type for the deployment mode
      */
-    protected abstract void validateWarFile( )
+    protected abstract void validateWarFile()
         throws MojoExecutionException;
 
     /**
@@ -119,7 +119,7 @@ public abstract class AbstractDeployMojo
      *
      * @return the Tomcat context XML file.
      */
-    protected File getContextFile( )
+    protected File getContextFile()
     {
         return contextFile;
     }
@@ -129,13 +129,13 @@ public abstract class AbstractDeployMojo
      *
      * @throws MojoExecutionException if the context file does not exist or is not a file
      */
-    protected void validateContextFile( )
+    protected void validateContextFile()
         throws MojoExecutionException
     {
-        if ( !contextFile.exists( ) || !contextFile.isFile( ) )
+        if ( !contextFile.exists() || !contextFile.isFile() )
         {
             throw new MojoExecutionException(
-                messagesProvider.getMessage( "AbstractDeployMojo.missingContext", contextFile.getPath( ) ) );
+                messagesProvider.getMessage( "AbstractDeployMojo.missingContext", contextFile.getPath() ) );
         }
     }
 
@@ -144,7 +144,7 @@ public abstract class AbstractDeployMojo
      *
      * @return whether Tomcat should automatically undeploy webapps that already exist when deploying
      */
-    protected boolean isUpdate( )
+    protected boolean isUpdate()
     {
         return update;
     }
@@ -154,7 +154,7 @@ public abstract class AbstractDeployMojo
      *
      * @return the Tomcat webapp tag name to use
      */
-    protected String getTag( )
+    protected String getTag()
     {
         return tag;
     }
@@ -166,15 +166,15 @@ public abstract class AbstractDeployMojo
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    protected void deployWar( )
+    protected void deployWar()
         throws MojoExecutionException, TomcatManagerException, IOException
     {
-        validateWarFile( );
+        validateWarFile();
 
-        getLog( ).info( messagesProvider.getMessage( "AbstractDeployMojo.deployingWar", getDeployedURL( ) ) );
+        getLog().info( messagesProvider.getMessage( "AbstractDeployMojo.deployingWar", getDeployedURL() ) );
 
-        URL warURL = getWarFile( ).toURL( );
-        log( getManager( ).deploy( getPath( ), warURL, isUpdate( ), getTag( ) ) );
+        URL warURL = getWarFile().toURL();
+        log( getManager().deploy( getPath(), warURL, isUpdate(), getTag() ) );
     }
 
     /**
@@ -184,15 +184,15 @@ public abstract class AbstractDeployMojo
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    protected void deployContext( )
+    protected void deployContext()
         throws MojoExecutionException, TomcatManagerException, IOException
     {
-        validateContextFile( );
+        validateContextFile();
 
-        getLog( ).info( messagesProvider.getMessage( "AbstractDeployMojo.deployingContext", getDeployedURL( ) ) );
+        getLog().info( messagesProvider.getMessage( "AbstractDeployMojo.deployingContext", getDeployedURL() ) );
 
-        URL contextURL = getContextFile( ).toURL( );
-        log( getManager( ).deployContext( getPath( ), contextURL, isUpdate( ), getTag( ) ) );
+        URL contextURL = getContextFile().toURL();
+        log( getManager().deployContext( getPath(), contextURL, isUpdate(), getTag() ) );
     }
 
     /**
@@ -202,16 +202,16 @@ public abstract class AbstractDeployMojo
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    protected void deployWarAndContext( )
+    protected void deployWarAndContext()
         throws MojoExecutionException, TomcatManagerException, IOException
     {
-        validateWarFile( );
-        validateContextFile( );
+        validateWarFile();
+        validateContextFile();
 
-        getLog( ).info( messagesProvider.getMessage( "AbstractDeployMojo.deployingWarContext", getDeployedURL( ) ) );
+        getLog().info( messagesProvider.getMessage( "AbstractDeployMojo.deployingWarContext", getDeployedURL() ) );
 
-        URL warURL = getWarFile( ).toURL( );
-        URL contextURL = getContextFile( ).toURL( );
-        log( getManager( ).deployContext( getPath( ), contextURL, warURL, isUpdate( ), getTag( ) ) );
+        URL warURL = getWarFile().toURL();
+        URL contextURL = getContextFile().toURL();
+        log( getManager().deployContext( getPath(), contextURL, warURL, isUpdate(), getTag() ) );
     }
 }

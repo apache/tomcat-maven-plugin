@@ -26,10 +26,10 @@ import java.io.IOException;
 
 /**
  * Reload a WAR in Tomcat.
- * 
- * @goal reload
+ *
  * @author olamy
  * @version $Id: ReloadMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @goal reload
  */
 public class ReloadMojo
     extends AbstractWarCatalinaMojo

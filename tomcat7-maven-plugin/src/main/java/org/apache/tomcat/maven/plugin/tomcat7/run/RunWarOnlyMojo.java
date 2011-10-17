@@ -22,11 +22,10 @@ package org.apache.tomcat.maven.plugin.tomcat7.run;
 
 /**
  * Runs the current project as a packaged web application using an embedded Tomcat server without forking the package cycle.
- * 
- * 
+ *
+ * @author vlatombe
  * @goal run-war-only
  * @requiresDependencyResolution runtime
- * @author vlatombe
  */
 public class RunWarOnlyMojo
     extends AbstractRunWarMojo

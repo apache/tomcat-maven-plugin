@@ -54,7 +54,7 @@ public class AbstractDeployWarMojo
      * {@inheritDoc}
      */
     @Override
-    protected File getWarFile( )
+    protected File getWarFile()
     {
         return warFile;
     }
@@ -63,13 +63,13 @@ public class AbstractDeployWarMojo
      * {@inheritDoc}
      */
     @Override
-    protected void validateWarFile( )
+    protected void validateWarFile()
         throws MojoExecutionException
     {
-        if ( !warFile.exists( ) || !warFile.isFile( ) )
+        if ( !warFile.exists() || !warFile.isFile() )
         {
             throw new MojoExecutionException(
-                messagesProvider.getMessage( "DeployMojo.missingWar", warFile.getPath( ) ) );
+                messagesProvider.getMessage( "DeployMojo.missingWar", warFile.getPath() ) );
         }
     }
 
@@ -77,13 +77,13 @@ public class AbstractDeployWarMojo
      * {@inheritDoc}
      */
     @Override
-    protected void deployWar( )
+    protected void deployWar()
         throws MojoExecutionException, TomcatManagerException, IOException
     {
-        validateWarFile( );
+        validateWarFile();
 
-        getLog( ).info( messagesProvider.getMessage( "AbstractDeployMojo.deployingWar", getDeployedURL( ) ) );
+        getLog().info( messagesProvider.getMessage( "AbstractDeployMojo.deployingWar", getDeployedURL() ) );
 
-        log( getManager( ).deploy( getPath( ), new FileInputStream( warFile ), isUpdate( ), getTag( ) ) );
+        log( getManager().deploy( getPath(), new FileInputStream( warFile ), isUpdate(), getTag() ) );
     }
 }

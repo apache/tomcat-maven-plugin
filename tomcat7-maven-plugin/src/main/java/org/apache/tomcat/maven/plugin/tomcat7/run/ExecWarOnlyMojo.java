@@ -19,8 +19,8 @@ package org.apache.tomcat.maven.plugin.tomcat7.run;
  */
 
 /**
- * @goal exec-war-only
  * @author Olivier Lamy
+ * @goal exec-war-only
  * @since 2.0
  */
 public class ExecWarOnlyMojo

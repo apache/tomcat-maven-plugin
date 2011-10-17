@@ -73,7 +73,7 @@ public final class EmbeddedRegistry
                         // ignore, the exception should already have been reported
                     }
                 }
-            });
+            } );
         }
         return instance;
     }

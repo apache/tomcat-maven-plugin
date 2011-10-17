@@ -22,7 +22,6 @@ import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
@@ -36,7 +35,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
-import org.apache.maven.settings.MavenSettingsBuilder;
 import org.apache.tomcat.maven.plugin.tomcat7.AbstractTomcat7Mojo;
 import org.apache.tomcat.maven.runner.Tomcat7Runner;
 import org.apache.tomcat.maven.runner.Tomcat7RunnerCli;
@@ -45,7 +43,6 @@ import org.codehaus.plexus.archiver.jar.ManifestException;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,7 +55,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
- *
  * @author Olivier Lamy
  * @since 2.0
  */
@@ -73,7 +69,7 @@ public abstract class AbstractExecWarMojo
      * @readonly
      */
     private Artifact projectArtifact;
-    
+
     /**
      * The maven project.
      *
@@ -82,7 +78,7 @@ public abstract class AbstractExecWarMojo
      * @readonly
      */
     protected MavenProject project;
-    
+
     /**
      * @parameter default-value="${plugin.artifacts}"
      * @required
@@ -123,7 +119,7 @@ public abstract class AbstractExecWarMojo
     protected String path;
 
     /**
-     *  @parameter
+     * @parameter
      */
     protected List<WarRunDependency> warRunDependencies;
 
@@ -138,7 +134,7 @@ public abstract class AbstractExecWarMojo
      * @component
      */
     private ArtifactFactory artifactFactory;
-    
+
     /**
      * Location of the local repository.
      *
@@ -209,6 +205,7 @@ public abstract class AbstractExecWarMojo
     /**
      * list of extra dependencies to add in the standalone tomcat jar: your jdbc driver, mail.jar etc..
      * <b>Those dependencies will be in root classloader.</b>
+     *
      * @parameter
      */
     private List<Dependency> extraDependencies;
@@ -224,10 +221,10 @@ public abstract class AbstractExecWarMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
-        
+
         //project.addAttachedArtifact(  );
         File warExecFile = new File( buildDirectory, finalName );
-        if (warExecFile.exists())
+        if ( warExecFile.exists() )
         {
             warExecFile.delete();
         }
@@ -259,10 +256,9 @@ public abstract class AbstractExecWarMojo
             tmpPropertiesFileOutputStream = new FileOutputStream( tmpPropertiesFile );
             execWarJar.getParentFile().mkdirs();
             execWarJar.createNewFile();
-            execWarJarOutputStream =  new FileOutputStream( execWarJar );
+            execWarJarOutputStream = new FileOutputStream( execWarJar );
 
             tmpManifestWriter = new PrintWriter( tmpManifestFile );
-
 
             // store :
             //* wars in the root: foo.war
@@ -275,36 +271,37 @@ public abstract class AbstractExecWarMojo
             //* optionnal: conf/ with usual tomcat configuration files
             //* MANIFEST with Main-Class
 
-            Properties properties = new Properties(  );
+            Properties properties = new Properties();
 
             properties.put( Tomcat7Runner.ENABLE_NAMING_KEY, Boolean.toString( enableNaming ) );
             properties.put( Tomcat7Runner.ACCESS_LOG_VALVE_FORMAT_KEY, accessLogValveFormat );
 
-            os =
-                new ArchiveStreamFactory().createArchiveOutputStream( ArchiveStreamFactory.JAR, execWarJarOutputStream );
+            os = new ArchiveStreamFactory().createArchiveOutputStream( ArchiveStreamFactory.JAR,
+                                                                       execWarJarOutputStream );
 
             if ( "war".equals( project.getPackaging() ) )
             {
                 os.putArchiveEntry( new JarArchiveEntry( path + ".war" ) );
                 IOUtils.copy( new FileInputStream( projectArtifact.getFile() ), os );
                 os.closeArchiveEntry();
-                properties.put( Tomcat7Runner.WARS_KEY , path + ".war|" + path );
+                properties.put( Tomcat7Runner.WARS_KEY, path + ".war|" + path );
             }
 
-
-
-            if ( "pom".equals( project.getPackaging() ) && ( warRunDependencies != null && !warRunDependencies.isEmpty() ) )
+            if ( "pom".equals( project.getPackaging() ) && ( warRunDependencies != null
+                && !warRunDependencies.isEmpty() ) )
             {
-                for (WarRunDependency warRunDependency : warRunDependencies )
+                for ( WarRunDependency warRunDependency : warRunDependencies )
                 {
                     if ( warRunDependency.dependency != null )
                     {
                         Dependency dependency = warRunDependency.dependency;
                         // String groupId, String artifactId, String version, String scope, String type
                         Artifact artifact =
-                            artifactFactory.createArtifact( dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion(), dependency.getScope(), dependency.getType()  );
-                        
-                        artifactResolver.resolve( artifact, this.remoteRepos , this.local );
+                            artifactFactory.createArtifact( dependency.getGroupId(), dependency.getArtifactId(),
+                                                            dependency.getVersion(), dependency.getScope(),
+                                                            dependency.getType() );
+
+                        artifactResolver.resolve( artifact, this.remoteRepos, this.local );
                         File warFile = artifact.getFile();
                         if ( warRunDependency.contextXml != null )
                         {
@@ -315,13 +312,16 @@ public abstract class AbstractExecWarMojo
                         os.closeArchiveEntry();
                         String propertyWarValue = properties.getProperty( Tomcat7Runner.WARS_KEY );
                         // FIXME check contextPath is not empty or at least only / for root app
-                        if (propertyWarValue != null )
+                        if ( propertyWarValue != null )
                         {
-                            properties.put( Tomcat7Runner.WARS_KEY , propertyWarValue + ";" + artifact.getFile().getName() + "|" + warRunDependency.contextPath );
+                            properties.put( Tomcat7Runner.WARS_KEY,
+                                            propertyWarValue + ";" + artifact.getFile().getName() + "|"
+                                                + warRunDependency.contextPath );
                         }
                         else
                         {
-                            properties.put( Tomcat7Runner.WARS_KEY , artifact.getFile().getName() + "|" + warRunDependency.contextPath );
+                            properties.put( Tomcat7Runner.WARS_KEY,
+                                            artifact.getFile().getName() + "|" + warRunDependency.contextPath );
                         }
                     }
                 }
@@ -329,18 +329,17 @@ public abstract class AbstractExecWarMojo
 
             // FIXME if no war has been added here we must stop with a human readable and user friendly error message
 
-
-            if (serverXml != null && serverXml.exists() )
+            if ( serverXml != null && serverXml.exists() )
             {
-                os.putArchiveEntry( new JarArchiveEntry( "conf/server.xml") );
-                IOUtils.copy( new FileInputStream(serverXml), os );
+                os.putArchiveEntry( new JarArchiveEntry( "conf/server.xml" ) );
+                IOUtils.copy( new FileInputStream( serverXml ), os );
                 os.closeArchiveEntry();
-                properties.put(Tomcat7Runner.USE_SERVER_XML_KEY, Boolean.TRUE.toString() );
-            } else
-            {
-                properties.put(Tomcat7Runner.USE_SERVER_XML_KEY, Boolean.FALSE.toString() );
+                properties.put( Tomcat7Runner.USE_SERVER_XML_KEY, Boolean.TRUE.toString() );
             }
-
+            else
+            {
+                properties.put( Tomcat7Runner.USE_SERVER_XML_KEY, Boolean.FALSE.toString() );
+            }
 
             properties.store( tmpPropertiesFileOutputStream, "created by Apache Tomcat Maven plugin" );
 
@@ -350,15 +349,14 @@ public abstract class AbstractExecWarMojo
             os.putArchiveEntry( new JarArchiveEntry( Tomcat7RunnerCli.STAND_ALONE_PROPERTIES_FILENAME ) );
             IOUtils.copy( new FileInputStream( tmpPropertiesFile ), os );
             os.closeArchiveEntry();
-            
 
             // add tomcat classes
-            for (Artifact pluginArtifact : pluginArtifacts)
+            for ( Artifact pluginArtifact : pluginArtifacts )
             {
-                if ( StringUtils.equals( "org.apache.tomcat", pluginArtifact.getGroupId() )
-                    || StringUtils.equals( "org.apache.tomcat.embed", pluginArtifact.getGroupId() )
-                    || StringUtils.equals( "org.eclipse.jdt.core.compiler", pluginArtifact.getGroupId() )
-                    || StringUtils.equals( "commons-cli", pluginArtifact.getArtifactId() )
+                if ( StringUtils.equals( "org.apache.tomcat", pluginArtifact.getGroupId() ) || StringUtils.equals(
+                    "org.apache.tomcat.embed", pluginArtifact.getGroupId() ) || StringUtils.equals(
+                    "org.eclipse.jdt.core.compiler", pluginArtifact.getGroupId() ) || StringUtils.equals( "commons-cli",
+                                                                                                          pluginArtifact.getArtifactId() )
                     || StringUtils.equals( "tomcat7-war-runner", pluginArtifact.getArtifactId() ) )
                 {
                     JarFile jarFile = new JarFile( pluginArtifact.getFile() );
@@ -366,7 +364,7 @@ public abstract class AbstractExecWarMojo
                     while ( jarEntries.hasMoreElements() )
                     {
                         JarEntry jarEntry = jarEntries.nextElement();
-                        InputStream jarEntryIs = jarFile.getInputStream(jarEntry);
+                        InputStream jarEntryIs = jarFile.getInputStream( jarEntry );
 
                         os.putArchiveEntry( new JarArchiveEntry( jarEntry.getName() ) );
                         IOUtils.copy( jarEntryIs, os );
@@ -382,15 +380,17 @@ public abstract class AbstractExecWarMojo
                 {
                     // String groupId, String artifactId, String version, String scope, String type
                     Artifact artifact =
-                        artifactFactory.createArtifact( dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion(), dependency.getScope(), dependency.getType()  );
+                        artifactFactory.createArtifact( dependency.getGroupId(), dependency.getArtifactId(),
+                                                        dependency.getVersion(), dependency.getScope(),
+                                                        dependency.getType() );
 
-                    artifactResolver.resolve( artifact, this.remoteRepos , this.local );
+                    artifactResolver.resolve( artifact, this.remoteRepos, this.local );
                     JarFile jarFile = new JarFile( artifact.getFile() );
                     Enumeration<JarEntry> jarEntries = jarFile.entries();
                     while ( jarEntries.hasMoreElements() )
                     {
                         JarEntry jarEntry = jarEntries.nextElement();
-                        InputStream jarEntryIs = jarFile.getInputStream(jarEntry);
+                        InputStream jarEntryIs = jarFile.getInputStream( jarEntry );
 
                         os.putArchiveEntry( new JarArchiveEntry( jarEntry.getName() ) );
                         IOUtils.copy( jarEntryIs, os );
@@ -399,10 +399,10 @@ public abstract class AbstractExecWarMojo
                 }
             }
 
-            Manifest manifest = new Manifest( );
+            Manifest manifest = new Manifest();
 
-            Manifest.Attribute mainClassAtt = new Manifest.Attribute( );
-            mainClassAtt.setName( "Main-Class");
+            Manifest.Attribute mainClassAtt = new Manifest.Attribute();
+            mainClassAtt.setName( "Main-Class" );
             mainClassAtt.setValue( mainClass );
             manifest.addConfiguredAttribute( mainClassAtt );
 
@@ -417,24 +417,31 @@ public abstract class AbstractExecWarMojo
             if ( attachArtifact )
             {
                 //MavenProject project, String artifactType, String artifactClassifier, File artifactFile
-                projectHelper.attachArtifact( project, attachArtifactClassifierType, attachArtifactClassifier, execWarJar );
+                projectHelper.attachArtifact( project, attachArtifactClassifierType, attachArtifactClassifier,
+                                              execWarJar );
             }
-        } catch ( ManifestException e )
+        }
+        catch ( ManifestException e )
         {
             throw new MojoExecutionException( e.getMessage(), e );
-        } catch ( IOException e )
+        }
+        catch ( IOException e )
         {
             throw new MojoExecutionException( e.getMessage(), e );
-        } catch ( ArchiveException e )
+        }
+        catch ( ArchiveException e )
         {
             throw new MojoExecutionException( e.getMessage(), e );
-        } catch ( ArtifactNotFoundException e )
+        }
+        catch ( ArtifactNotFoundException e )
         {
             throw new MojoExecutionException( e.getMessage(), e );
-        } catch ( ArtifactResolutionException e )
+        }
+        catch ( ArtifactResolutionException e )
         {
             throw new MojoExecutionException( e.getMessage(), e );
-        } finally
+        }
+        finally
         {
             IOUtils.closeQuietly( os );
             IOUtils.closeQuietly( tmpManifestWriter );
@@ -444,7 +451,7 @@ public abstract class AbstractExecWarMojo
     }
 
 
-    private void addContextXmlToWar(File contextXmlFile, File warFile)
+    private void addContextXmlToWar( File contextXmlFile, File warFile )
         throws IOException, ArchiveException
     {
         ArchiveOutputStream os = null;
@@ -452,12 +459,12 @@ public abstract class AbstractExecWarMojo
         try
         {
             warOutputStream = new FileOutputStream( warFile );
-            os =
-                new ArchiveStreamFactory().createArchiveOutputStream( ArchiveStreamFactory.JAR, warOutputStream );
+            os = new ArchiveStreamFactory().createArchiveOutputStream( ArchiveStreamFactory.JAR, warOutputStream );
             os.putArchiveEntry( new JarArchiveEntry( "META-INF/context.xml" ) );
             IOUtils.copy( new FileInputStream( contextXmlFile ), os );
             os.closeArchiveEntry();
-        } finally
+        }
+        finally
         {
             IOUtils.closeQuietly( os );
             IOUtils.closeQuietly( warOutputStream );

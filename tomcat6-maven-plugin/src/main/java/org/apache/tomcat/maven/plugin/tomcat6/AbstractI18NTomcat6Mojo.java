@@ -50,7 +50,7 @@ public abstract class AbstractI18NTomcat6Mojo
     protected String path;
 
 
-    protected String getPath( )
+    protected String getPath()
     {
         return path;
     }

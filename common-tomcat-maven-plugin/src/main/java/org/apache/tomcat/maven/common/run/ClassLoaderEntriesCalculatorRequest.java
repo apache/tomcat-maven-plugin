@@ -43,7 +43,7 @@ public class ClassLoaderEntriesCalculatorRequest
         return mavenProject;
     }
 
-    public ClassLoaderEntriesCalculatorRequest setMavenProject(MavenProject mavenProject)
+    public ClassLoaderEntriesCalculatorRequest setMavenProject( MavenProject mavenProject )
     {
         this.mavenProject = mavenProject;
         return this;
@@ -54,7 +54,7 @@ public class ClassLoaderEntriesCalculatorRequest
         return dependencies;
     }
 
-    public ClassLoaderEntriesCalculatorRequest setDependencies(Set<Artifact> dependencies)
+    public ClassLoaderEntriesCalculatorRequest setDependencies( Set<Artifact> dependencies )
     {
         this.dependencies = dependencies;
         return this;
@@ -65,7 +65,7 @@ public class ClassLoaderEntriesCalculatorRequest
         return log;
     }
 
-    public ClassLoaderEntriesCalculatorRequest setLog(Log log)
+    public ClassLoaderEntriesCalculatorRequest setLog( Log log )
     {
         this.log = log;
         return this;
@@ -76,7 +76,8 @@ public class ClassLoaderEntriesCalculatorRequest
         return addWarDependenciesInClassloader;
     }
 
-    public ClassLoaderEntriesCalculatorRequest setAddWarDependenciesInClassloader(boolean addWarDependenciesInClassloader)
+    public ClassLoaderEntriesCalculatorRequest setAddWarDependenciesInClassloader(
+        boolean addWarDependenciesInClassloader )
     {
         this.addWarDependenciesInClassloader = addWarDependenciesInClassloader;
         return this;

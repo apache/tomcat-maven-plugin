@@ -26,10 +26,10 @@ import java.io.IOException;
 
 /**
  * Undeploy a WAR from Tomcat.
- * 
- * @goal undeploy
+ *
  * @author Mark Hobson <markhobson@gmail.com>
  * @version $Id: UndeployMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @goal undeploy
  */
 public class UndeployMojo
     extends AbstractWarCatalinaMojo
@@ -40,7 +40,7 @@ public class UndeployMojo
 
     /**
      * Whether to fail the build if the web application cannot be undeployed.
-     * 
+     *
      * @parameter expression = "${maven.tomcat.failOnError}" default-value = "true"
      */
     private boolean failOnError;
@@ -56,7 +56,7 @@ public class UndeployMojo
     protected void invokeManager()
         throws MojoExecutionException, TomcatManagerException, IOException
     {
-        getLog().info( messagesProvider.getMessage( "UndeployMojo.undeployingApp", getDeployedURL( ) ) );
+        getLog().info( messagesProvider.getMessage( "UndeployMojo.undeployingApp", getDeployedURL() ) );
 
         try
         {
@@ -69,7 +69,7 @@ public class UndeployMojo
                 throw exception;
             }
 
-            getLog().warn( messagesProvider.getMessage( "UndeployMojo.undeployError", exception.getMessage( ) ) );
+            getLog().warn( messagesProvider.getMessage( "UndeployMojo.undeployError", exception.getMessage() ) );
         }
     }
 }

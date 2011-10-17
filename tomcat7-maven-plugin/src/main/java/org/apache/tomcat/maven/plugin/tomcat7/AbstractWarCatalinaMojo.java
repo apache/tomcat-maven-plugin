@@ -23,7 +23,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 
 /**
  * Abstract goal that provides common configuration for Catalina-based goals.
- * 
+ *
  * @author Mark Hobson <markhobson@gmail.com>
  * @version $Id: AbstractWarCatalinaMojo.java 12852 2010-10-12 22:04:32Z thragor $
  */
@@ -36,7 +36,7 @@ public abstract class AbstractWarCatalinaMojo
 
     /**
      * The packaging of the Maven project that this goal operates upon.
-     * 
+     *
      * @parameter expression = "${project.packaging}"
      * @required
      * @readonly
@@ -45,11 +45,12 @@ public abstract class AbstractWarCatalinaMojo
 
     /**
      * If set to true ignore if packaging of project is not 'war'.
-     * @since 1.1
+     *
      * @parameter expression="${tomcat.ignorePackaging}" default-value="false"
+     * @since 1.1
      */
     private boolean ignorePackaging;
-    
+
     // ----------------------------------------------------------------------
     // Mojo Implementation
     // ----------------------------------------------------------------------
@@ -76,11 +77,11 @@ public abstract class AbstractWarCatalinaMojo
 
     /**
      * Gets whether this project uses WAR packaging.
-     * 
+     *
      * @return whether this project uses WAR packaging
      */
     protected boolean isWar()
     {
-    	return "war".equals( packaging ) || ignorePackaging;
+        return "war".equals( packaging ) || ignorePackaging;
     }
 }

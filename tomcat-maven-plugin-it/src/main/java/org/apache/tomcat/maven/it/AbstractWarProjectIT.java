@@ -83,11 +83,9 @@ public abstract class AbstractWarProjectIT
     {
         httpClient = new DefaultHttpClient();
 
-
         final HttpParams params = httpClient.getParams();
         HttpConnectionParams.setConnectionTimeout( params, getTimeout() );
         HttpConnectionParams.setSoTimeout( params, getTimeout() );
-
 
         webappHome = ResourceExtractor.simpleExtractResources( getClass(), "/" + getWarArtifactId() );
         verifier = new Verifier( webappHome.getAbsolutePath() );
@@ -200,12 +198,12 @@ public abstract class AbstractWarProjectIT
             return -1;
         }
     }
-    
+
     protected int getTimeout()
     {
         return 15000;
     }
-    
+
     protected static String getHttpItPort()
     {
         return System.getProperty( "its.http.port" );

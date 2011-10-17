@@ -21,10 +21,10 @@ package org.apache.tomcat.maven.plugin.tomcat6;
 
 /**
  * Redeploy a WAR in Tomcat. Deploy with forcing update flag to true
- * 
- * @goal redeploy
+ *
  * @author Mark Hobson <markhobson@gmail.com>
  * @version $Id: RedeployMojo.java 12852 2010-10-12 22:04:32Z thragor $
+ * @goal redeploy
  * @todo depend on war:war, war:exploded or war:inplace when MNG-1649 resolved
  */
 public class RedeployMojo
