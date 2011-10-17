@@ -28,11 +28,11 @@
 
 Build a Executable War
 
- Prior to version 2.0, you can now build an executable war/jar with an embeded Apache Tomcat7.
+ Since version 2.0 you can now build an executable war/jar with an embedded Apache Tomcat7.
 
  This is only supported with the tomcat7 plugin.
 
-* Additionnal Artifact to your war module
+* Additional Artifact to your war module
 
 +--
 <project>
@@ -56,9 +56,9 @@ Build a Executable War
             <phase>package</phase>
             <configuration>
               <path>foo</path>
-              <!-- optionnal only if you want to use a preconfigured server.xml file -->
+              <!-- optional only if you want to use a preconfigured server.xml file -->
               <serverXml>src/main/tomcatconf/server.xml</serverXml>
-              <!-- optionnal values which can be configurable -->
+              <!-- optional values which can be configurable -->
               <attachArtifactClassifier>default value is exec-war but you can customize</attachArtifactClassifier>
               <attachArtifactClassifierType>default value is jar</attachArtifactClassifierType>
             </configuration>
@@ -73,7 +73,7 @@ Build a Executable War
 </project>
 +--
 
-* Additionnal Artifact to your pom module
+* Additional Artifact to your pom module
 
 +--
 <project>
@@ -96,7 +96,7 @@ Build a Executable War
             </goals>
             <phase>package</phase>
             <configuration>
-              <!-- optionnal only if you want to use a preconfigured server.xml file -->
+              <!-- optional only if you want to use a preconfigured server.xml file -->
               <!--
               <serverXml>src/main/tomcatconf/server.xml</serverXml>
               -->
@@ -140,7 +140,7 @@ Build a Executable War
 
 * Generated executable jar/war
 
-  You will be able to execute the generated jar which contains an embeded tomcat container
+  You will be able to execute the generated jar which contains an embedded tomcat container
 
 +------
   java -jar yourjar
@@ -156,7 +156,7 @@ usage: java -jar [path to your exec war jar]
  -httpPort <httpPort>             http port to use
  -httpsPort <httpsPort>           https port to use
  -resetExtract                    clean previous extract directory
- -serverXmlPath <serverXmlPath>   server.xml to use, optionnal
+ -serverXmlPath <serverXmlPath>   server.xml to use, optional
  -X,--debug                       debug
 +------
 

@@ -29,11 +29,11 @@
 Apache Tomcat Maven Plugin
 
   This is the new home for the Tomcat Maven Plugin (previously hosted at Codehaus).
-  The version 2.0 which will support Tomcat7 is under developpement.
+  The version 2.0 which will support Tomcat 7 is under development.
 
-  Prior to version 2.0, tomcat mojos has been renamed to tomcat6 and tomcat7 with the same goals.
+  The Tomcat Maven Plugin provides goals to manipulate WAR projects within the {{{http://tomcat.apache.org/}Apache Tomcat}} servlet container.
 
- The Tomcat Maven Plugin provides goals to manipulate WAR projects within the {{{http://tomcat.apache.org/}Tomcat}} servlet container.
+  Since version 2.0 tomcat mojos has been renamed to tomcat6 and tomcat7 with the same goals.
 
 * Goals Overview
 
