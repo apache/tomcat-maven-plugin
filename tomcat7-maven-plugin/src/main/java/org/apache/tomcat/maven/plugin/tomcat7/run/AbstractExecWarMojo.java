@@ -45,9 +45,11 @@ import org.codehaus.plexus.archiver.jar.ManifestException;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.List;
@@ -271,12 +273,12 @@ public abstract class AbstractExecWarMojo
             properties.put( Tomcat7Runner.ACCESS_LOG_VALVE_FORMAT_KEY, accessLogValveFormat );
 
             os =
-                new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.JAR, execWarJarOutputStream);
+                new ArchiveStreamFactory().createArchiveOutputStream( ArchiveStreamFactory.JAR, execWarJarOutputStream );
 
             if ( "war".equals( project.getPackaging() ) )
             {
                 os.putArchiveEntry( new JarArchiveEntry( path + ".war" ) );
-                IOUtils.copy( new FileInputStream(projectArtifact.getFile()), os );
+                IOUtils.copy( new FileInputStream( projectArtifact.getFile() ), os );
                 os.closeArchiveEntry();
                 properties.put( Tomcat7Runner.WARS_KEY , path + ".war|" + path );
             }
@@ -295,8 +297,13 @@ public abstract class AbstractExecWarMojo
                             artifactFactory.createArtifact( dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion(), dependency.getScope(), dependency.getType()  );
                         
                         artifactResolver.resolve( artifact, this.remoteRepos , this.local );
-                        os.putArchiveEntry( new JarArchiveEntry( artifact.getFile().getName() ) );
-                        IOUtils.copy( new FileInputStream(artifact.getFile()), os );
+                        File warFile = artifact.getFile();
+                        if ( warRunDependency.contextXml != null )
+                        {
+                            addContextXmlToWar( warRunDependency.contextXml, warFile );
+                        }
+                        os.putArchiveEntry( new JarArchiveEntry( warFile.getName() ) );
+                        IOUtils.copy( new FileInputStream( warFile ), os );
                         os.closeArchiveEntry();
                         String propertyWarValue = properties.getProperty( Tomcat7Runner.WARS_KEY );
                         // FIXME check contextPath is not empty or at least only / for root app
@@ -424,7 +431,28 @@ public abstract class AbstractExecWarMojo
             IOUtils.closeQuietly( os );
             IOUtils.closeQuietly( tmpManifestWriter );
             IOUtils.closeQuietly( execWarJarOutputStream );
-            IOUtils.closeQuietly(tmpPropertiesFileOutputStream);
+            IOUtils.closeQuietly( tmpPropertiesFileOutputStream );
+        }
+    }
+
+
+    private void addContextXmlToWar(File contextXmlFile, File warFile)
+        throws IOException, ArchiveException
+    {
+        ArchiveOutputStream os = null;
+        OutputStream warOutputStream = null;
+        try
+        {
+            warOutputStream = new FileOutputStream( warFile );
+            os =
+                new ArchiveStreamFactory().createArchiveOutputStream( ArchiveStreamFactory.JAR, warOutputStream );
+            os.putArchiveEntry( new JarArchiveEntry( "META-INF/context.xml" ) );
+            IOUtils.copy( new FileInputStream( contextXmlFile ), os );
+            os.closeArchiveEntry();
+        } finally
+        {
+            IOUtils.closeQuietly( os );
+            IOUtils.closeQuietly( warOutputStream );
         }
     }
 }

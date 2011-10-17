@@ -20,6 +20,8 @@ package org.apache.tomcat.maven.plugin.tomcat7.run;
 
 import org.apache.maven.model.Dependency;
 
+import java.io.File;
+
 /**
  * @author Olivier Lamy
  * @since 2.0
@@ -30,6 +32,8 @@ public class WarRunDependency
     public Dependency dependency;
     
     public String contextPath;
+
+    public File contextXml;
 
     public WarRunDependency()
     {
