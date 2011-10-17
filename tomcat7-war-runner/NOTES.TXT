@@ -23,6 +23,7 @@ The generated standalone jar will contains:
      in the maven plugin configuration
    * wars=foo.war|contextpath;bar.war  ( |contextpath is optionnal if empty use the war name)
    * enableNaming=true/false
+   * accessLogValveFormat=
 
 * optionnal: conf/ with usual tomcat configuration files
 

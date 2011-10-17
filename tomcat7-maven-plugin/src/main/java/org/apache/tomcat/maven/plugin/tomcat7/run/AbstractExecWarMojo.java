@@ -200,6 +200,14 @@ public abstract class AbstractExecWarMojo
      * @required
      */
     private boolean enableNaming;
+
+    /**
+     * see http://tomcat.apache.org/tomcat-7.0-doc/config/valve.html
+     *
+     * @parameter expression="${maven.tomcat.exec.war.accessLogValveFormat}" default-value="%h %l %u %t "%r" %s %b %I %D"
+     * @required
+     */
+    private String accessLogValveFormat;
     
     public void execute()
         throws MojoExecutionException, MojoFailureException
@@ -251,10 +259,14 @@ public abstract class AbstractExecWarMojo
             //   * useServerXml=true/false to use directly the one provided
             //   * enableNaming=true/false
             //   * wars=foo.war|contextpath;bar.war  ( |contextpath is optionnal if empty use the war name )
+            //   * accessLogValveFormat=
             //* optionnal: conf/ with usual tomcat configuration files
             //* MANIFEST with Main-Class
 
             Properties properties = new Properties(  );
+
+            properties.put( Tomcat7Runner.ENABLE_NAMING_KEY, Boolean.toString( enableNaming ) );
+            properties.put( Tomcat7Runner.ACCESS_LOG_VALVE_FORMAT_KEY, accessLogValveFormat );
 
             os =
                 new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.JAR, execWarJarOutputStream);
@@ -267,7 +279,7 @@ public abstract class AbstractExecWarMojo
                 properties.put( Tomcat7Runner.WARS_KEY , path + ".war|" + path );
             }
 
-            properties.put( Tomcat7Runner.ENABLE_NAMING_KEY, Boolean.toString( enableNaming ) );
+
 
             if ( "pom".equals( project.getPackaging() ) && ( warRunDependencies != null && !warRunDependencies.isEmpty() ) )
             {

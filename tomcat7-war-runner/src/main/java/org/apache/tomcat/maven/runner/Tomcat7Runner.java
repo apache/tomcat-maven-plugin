@@ -50,6 +50,8 @@ public class Tomcat7Runner
 
     public static final String ENABLE_NAMING_KEY = "enableNaming";
 
+    public static final String ACCESS_LOG_VALVE_FORMAT_KEY = "accessLogValveFormat";
+
     
     public int httpPort;
 
@@ -134,7 +136,7 @@ public class Tomcat7Runner
             // add a default acces log valve
             AccessLogValve alv = new AccessLogValve();
             alv.setDirectory(new File(extractDirectory, "logs").getAbsolutePath());
-            alv.setPattern("%h %l %u %t \"%r\" %s %b %I %D");
+            alv.setPattern( runtimeProperties.getProperty( Tomcat7Runner.ACCESS_LOG_VALVE_FORMAT_KEY ) );
             tomcat.getHost().getPipeline().addValve(alv);
 
 
