@@ -67,19 +67,25 @@ public class Tomcat7RunnerCli
     static Option help = OptionBuilder
                                     .withLongOpt( "help" )
                                     .withDescription("help")
-                                    .create("h");
+                                    .create('h');
 
     static Option debug = OptionBuilder
                                     .withLongOpt( "debug" )
                                     .withDescription("debug")
-                                    .create("X");
+                                    .create('X');
+
+    static Option sysProps = OptionBuilder.withDescription( "use value for given property" )
+                                            .hasArgs()
+                                            .withDescription("key=value")
+                                            .withValueSeparator()
+                                            .create( 'D' );
 
     static Options options = new Options();
 
     static
     {
         options.addOption( httpPort ).addOption( httpsPort ).addOption( ajpPort ).addOption( serverXmlPath )
-                .addOption( resetExtract ).addOption( help ).addOption( debug );
+                .addOption( resetExtract ).addOption( help ).addOption( debug ).addOption( sysProps );
     }
 
 
