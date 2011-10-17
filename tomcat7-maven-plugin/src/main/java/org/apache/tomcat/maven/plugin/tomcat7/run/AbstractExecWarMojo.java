@@ -212,7 +212,15 @@ public abstract class AbstractExecWarMojo
      * @parameter
      */
     private List<Dependency> extraDependencies;
-    
+
+    /**
+     * Main class to use for starting the standalone jar.
+     *
+     * @parameter expression="${maven.tomcat.exec.war.mainClass}" default-value="org.apache.tomcat.maven.runner.Tomcat7RunnerCli"
+     * @required
+     */
+    private String mainClass;
+
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
@@ -395,7 +403,7 @@ public abstract class AbstractExecWarMojo
 
             Manifest.Attribute mainClassAtt = new Manifest.Attribute( );
             mainClassAtt.setName( "Main-Class");
-            mainClassAtt.setValue( Tomcat7RunnerCli.class.getName() );
+            mainClassAtt.setValue( mainClass );
             manifest.addConfiguredAttribute( mainClassAtt );
 
             manifest.write( tmpManifestWriter );
