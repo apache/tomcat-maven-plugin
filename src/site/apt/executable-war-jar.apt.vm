@@ -1,0 +1,162 @@
+ ---
+ Executable War
+ ---
+ Olivier Lamy
+ ---
+ October 17, 2011
+ ---
+ 
+ ~~ Licensed to the Apache Software Foundation (ASF) under one
+ ~~ or more contributor license agreements.  See the NOTICE file
+ ~~ distributed with this work for additional information
+ ~~ regarding copyright ownership.  The ASF licenses this file
+ ~~ to you under the Apache License, Version 2.0 (the
+ ~~ "License"); you may not use this file except in compliance
+ ~~ with the License.  You may obtain a copy of the License at
+ ~~
+ ~~   http://www.apache.org/licenses/LICENSE-2.0
+ ~~
+ ~~ Unless required by applicable law or agreed to in writing,
+ ~~ software distributed under the License is distributed on an
+ ~~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ ~~ KIND, either express or implied.  See the License for the
+ ~~ specific language governing permissions and limitations
+ ~~ under the License.
+
+ ~~ NOTE: For help with the syntax of this file, see:
+ ~~ http://maven.apache.org/doxia/references/apt-format.html 
+
+Build a Executable War
+
+ Prior to version 2.0, you can now build an executable war/jar with an embeded Apache Tomcat7.
+
+ This is only supported with the tomcat7 plugin.
+
+* Additionnal Artifact to your war module
+
++--
+<project>
+  ...
+  <packaging>war</packaging>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat7-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <executions>
+          <execution>
+            <id>tomcat-run</id>
+            <goals>
+              <goal>exec-war-only</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <path>foo</path>
+              <!-- optionnal only if you want to use a preconfigured server.xml file -->
+              <serverXml>src/main/tomcatconf/server.xml</serverXml>
+              <!-- optionnal values which can be configurable -->
+              <attachArtifactClassifier>default value is exec-war but you can customize</attachArtifactClassifier>
+              <attachArtifactClassifierType>default value is jar</attachArtifactClassifierType>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
++--
+
+* Additionnal Artifact to your pom module
+
++--
+<project>
+  ...
+  <packaging>war</packaging>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat7-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <executions>
+          <execution>
+            <id>tomcat-run</id>
+            <goals>
+              <goal>exec-war-only</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <!-- optionnal only if you want to use a preconfigured server.xml file -->
+              <!--
+              <serverXml>src/main/tomcatconf/server.xml</serverXml>
+              -->
+              <warRunDependencies>
+                <warRunDependency>
+                  <dependency>
+                    <groupId>a groupId</groupId>
+                    <artifactId>and artifactId</artifactId>
+                    <version>version</version>
+                    <type>war</type>
+                  </dependency>
+                  <contextPath>/</contextPath>
+                </warRunDependency>
+              </warRunDependencies>
+              <!-- naming is disable by default so use true to enable it -->
+              <enableNaming>true</enableNaming>
+              <!-- extra dependencies to add jdbc driver mail jars -->
+              <extraDependencies>
+                <extraDependency>
+                  <groupId>org.apache.derby</groupId>
+                  <artifactId>derby</artifactId>
+                  <version>10.1.3.1</version>
+                </extraDependency>
+                <extraDependency>
+                  <groupId>javax.mail</groupId>
+                  <artifactId>mail</artifactId>
+                  <version>1.4</version>
+                </extraDependency>
+              </extraDependencies>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
++--
+
+* Generated executable jar/war
+
+  You will be able to execute the generated jar which contains an embeded tomcat container
+
++------
+  java -jar yourjar
++------
+
+  Help output
+
++------
+usage: java -jar [path to your exec war jar]
+ -ajpPort <ajpPort>               ajp port to use
+ -D <arg>                         key=value
+ -h,--help                        help
+ -httpPort <httpPort>             http port to use
+ -httpsPort <httpsPort>           https port to use
+ -resetExtract                    clean previous extract directory
+ -serverXmlPath <serverXmlPath>   server.xml to use, optionnal
+ -X,--debug                       debug
++------
+
