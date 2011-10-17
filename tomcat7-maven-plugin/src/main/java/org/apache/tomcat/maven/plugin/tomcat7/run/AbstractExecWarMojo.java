@@ -22,6 +22,7 @@ import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
@@ -302,7 +303,8 @@ public abstract class AbstractExecWarMojo
                                                             dependency.getType() );
 
                         artifactResolver.resolve( artifact, this.remoteRepos, this.local );
-                        File warFile = artifact.getFile();
+                        File warFile = new File( buildDirectory, artifact.getFile().getName() );
+                        FileUtils.copyFile( artifact.getFile(), warFile );
                         if ( warRunDependency.contextXml != null )
                         {
                             addContextXmlToWar( warRunDependency.contextXml, warFile );
