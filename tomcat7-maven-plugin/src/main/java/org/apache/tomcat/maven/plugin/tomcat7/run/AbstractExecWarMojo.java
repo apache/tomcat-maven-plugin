@@ -35,6 +35,7 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectHelper;
 import org.apache.maven.settings.MavenSettingsBuilder;
 import org.apache.tomcat.maven.plugin.tomcat7.AbstractTomcat7Mojo;
 import org.apache.tomcat.maven.runner.Tomcat7Runner;
@@ -97,12 +98,12 @@ public abstract class AbstractExecWarMojo
     private File buildDirectory;
 
     /**
-     * @parameter default-value="src/main/tomcatconf" expression="${tomcat.exec.war.tomcatConf}"
+     * @parameter default-value="src/main/tomcatconf" expression="${maven.tomcat.exec.war.tomcatConf}"
      */
     private File tomcatConfigurationFilesDirectory;
 
     /**
-     * @parameter default-value="src/main/tomcatconf/server.xml" expression="${tomcat.exec.war.serverXml}"
+     * @parameter default-value="src/main/tomcatconf/server.xml" expression="${maven.tomcat.exec.war.serverXml}"
      */
     private File serverXml;
 
@@ -157,7 +158,23 @@ public abstract class AbstractExecWarMojo
      * @readonly
      * @required
      */
-    protected List<ArtifactRepository> remoteRepos;    
+    protected List<ArtifactRepository> remoteRepos;
+
+    /**
+     * @component
+     * @required
+     * @readonly
+     */
+    private MavenProjectHelper projectHelper;
+
+    /**
+     * The webapp context path to use for the web application being run.
+     * The name to store webapp in exec jar. Do not use /
+     *
+     * @parameter expression="${maven.tomcat.exec.war.attachArtifact}" default-value="true"
+     * @required
+     */
+    private boolean attachArtifact;
     
     public void execute()
         throws MojoExecutionException, MojoFailureException
@@ -314,6 +331,13 @@ public abstract class AbstractExecWarMojo
             os.putArchiveEntry( new JarArchiveEntry( "META-INF/MANIFEST.MF" ) );
             IOUtils.copy( new FileInputStream( tmpManifestFile ), os );
             os.closeArchiveEntry();
+
+            if ( attachArtifact )
+            {
+                // MavenProject project, File artifactFile, String artifactClassifier
+                // classifier configurable ?
+                projectHelper.attachArtifact( project, execWarJar, "exec-war" );
+            }
         } catch ( ManifestException e )
         {
             throw new MojoExecutionException( e.getMessage(), e );
@@ -327,10 +351,10 @@ public abstract class AbstractExecWarMojo
         {
             throw new MojoExecutionException( e.getMessage(), e );
         } catch ( ArtifactResolutionException e )
-                {
-                    throw new MojoExecutionException( e.getMessage(), e );
-            
-        } finally {
+        {
+            throw new MojoExecutionException( e.getMessage(), e );
+        } finally
+        {
             IOUtils.closeQuietly( os );
             IOUtils.closeQuietly( tmpManifestWriter );
             IOUtils.closeQuietly( execWarJarOutputStream );
