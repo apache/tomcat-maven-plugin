@@ -29,6 +29,7 @@ import org.apache.commons.cli.ParseException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -142,6 +143,19 @@ public class Tomcat7RunnerCli
         {
             tomcat7Runner.debug = true;
         }
+
+        if ( line.hasOption( sysProps.getOpt() ) )
+        {
+            Properties systemProperties = line.getOptionProperties( sysProps.getOpt() );
+            if ( systemProperties != null && !systemProperties.isEmpty() )
+            {
+                for ( Map.Entry<Object, Object> sysProp : systemProperties.entrySet() )
+                {
+                    System.setProperty( (String) sysProp.getKey(), (String) sysProp.getValue() );
+                }
+            }
+        }
+
         // here we go
         tomcat7Runner.run();
     }
