@@ -18,17 +18,20 @@ package org.apache.tomcat.maven.runner;
  * under the License.
  */
 
+import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Catalina;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.valves.AccessLogValve;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -133,6 +136,7 @@ public class Tomcat7Runner
 
             if ( this.enableNaming() )
             {
+                System.setProperty( "catalina.useNaming", "true" );
                 tomcat.enableNaming();
             }
 
@@ -190,17 +194,21 @@ public class Tomcat7Runner
             // add webapps
             for ( Map.Entry<String, String> entry : this.webappWarPerContext.entrySet() )
             {
+                String baseDir = null;
                 if ( entry.getKey().equals( "/" ) )
                 {
-                    tomcat.addWebapp( entry.getKey(),
-                                      new File( extractDirectory, "webapps/ROOT.war" ).getAbsolutePath() );
+                    baseDir = new File( extractDirectory, "webapps/ROOT.war" ).getAbsolutePath();
                 }
                 else
                 {
-                    tomcat.addWebapp( entry.getKey(),
-                                      new File( extractDirectory, "webapps/" + entry.getValue() ).getAbsolutePath() );
+                    baseDir = new File( extractDirectory, "webapps/" + entry.getValue() ).getAbsolutePath();
                 }
-
+                Context context = tomcat.addWebapp( entry.getKey(), baseDir );
+                URL contextFileUrl = getContextXml( baseDir );
+                if ( contextFileUrl != null )
+                {
+                    context.setConfigFile( contextFileUrl );
+                }
             }
 
             tomcat.start();
@@ -209,6 +217,28 @@ public class Tomcat7Runner
         waitIndefinitely();
 
     }
+
+    private URL getContextXml( String warPath )
+        throws IOException
+    {
+        InputStream inputStream = null;
+        try
+        {
+            URL url = new URL( "jar:file:" + warPath + "!/META-INF/context.xml" );
+            inputStream = url.openConnection().getInputStream();
+            if ( inputStream != null )
+            {
+                return url;
+            }
+        }
+        finally
+        {
+            IOUtils.closeQuietly( inputStream );
+        }
+        return null;
+    }
+
+    //protected WebappLoader createWebappLoader()
 
     private void waitIndefinitely()
     {
@@ -249,7 +279,6 @@ public class Tomcat7Runner
             FileUtils.deleteDirectory( extractDirectory );
         }
         extractDirectory.mkdirs();
-
 
         // ensure webapp dir is here
         new File( extractDirectory, "webapps" ).mkdirs();
