@@ -38,7 +38,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -58,7 +58,7 @@ public class DefaultClassLoaderEntriesCalculator
     public List<String> calculateClassPathEntries( ClassLoaderEntriesCalculatorRequest request )
         throws TomcatRunException
     {
-        Set<String> classLoaderEntries = new HashSet<String>();
+        Set<String> classLoaderEntries = new LinkedHashSet<String>();
 
         // add classes directories to loader
         try
