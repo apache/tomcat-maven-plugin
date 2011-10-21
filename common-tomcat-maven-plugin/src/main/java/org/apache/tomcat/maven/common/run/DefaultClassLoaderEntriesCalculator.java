@@ -38,7 +38,9 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Olivier Lamy
@@ -56,7 +58,8 @@ public class DefaultClassLoaderEntriesCalculator
     public List<String> calculateClassPathEntries( ClassLoaderEntriesCalculatorRequest request )
         throws TomcatRunException
     {
-        List<String> classLoaderEntries = new ArrayList<String>();
+        Set<String> classLoaderEntries = new HashSet<String>();
+        //List<String> classLoaderEntries = new ArrayList<String>( );
         // add classes directories to loader
 
         try
@@ -158,7 +161,8 @@ public class DefaultClassLoaderEntriesCalculator
                 }
             }
         }
-        return classLoaderEntries;
+        return new ArrayList<String>( classLoaderEntries );
+        //return classLoaderEntries;
     }
 
     private void deleteDirectory( File directory, Log log )
