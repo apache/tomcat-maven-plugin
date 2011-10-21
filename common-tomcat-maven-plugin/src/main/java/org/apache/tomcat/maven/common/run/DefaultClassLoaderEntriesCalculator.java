@@ -61,8 +61,9 @@ public class DefaultClassLoaderEntriesCalculator
 
         try
         {
-            @SuppressWarnings( "unchecked" ) List<String> classPathElements =
-                request.getMavenProject().getCompileClasspathElements();
+            @SuppressWarnings( "unchecked" ) List<String> classPathElements = request.isUseTestClassPath()
+                ? request.getMavenProject().getTestClasspathElements()
+                : request.getMavenProject().getCompileClasspathElements();
             if ( classPathElements != null )
             {
                 for ( String classPathElement : classPathElements )
@@ -90,7 +91,8 @@ public class DefaultClassLoaderEntriesCalculator
                 String scope = artifact.getScope();
 
                 // skip provided and test scoped artifacts
-                if ( !Artifact.SCOPE_PROVIDED.equals( scope ) && !Artifact.SCOPE_TEST.equals( scope ) )
+                if ( !Artifact.SCOPE_PROVIDED.equals( scope ) && ( !Artifact.SCOPE_TEST.equals( scope )
+                    || request.isUseTestClassPath() ) )
                 {
                     request.getLog().debug(
                         "add dependency to webapploader " + artifact.getGroupId() + ":" + artifact.getArtifactId() + ":"

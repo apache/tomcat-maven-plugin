@@ -49,7 +49,7 @@ import java.util.Set;
  * @version $Id: RunMojo.java 13551 2011-02-09 16:05:47Z olamy $
  * @goal run
  * @execute phase="compile"
- * @requiresDependencyResolution runtime
+ * @requiresDependencyResolution test
  */
 public class RunMojo
     extends AbstractRunMojo
@@ -108,6 +108,14 @@ public class RunMojo
      */
     private boolean addWarDependenciesInClassloader;
 
+    /**
+     * will use the test classpath rather than the compile one and will add test dependencies too
+     *
+     * @parameter expression="${maven.tomcat.useTestClasspath}" default-value="false"
+     * @since 2.0
+     */
+    private boolean useTestClasspath;
+
     private File temporaryContextFile = null;
 
     // ----------------------------------------------------------------------
@@ -150,7 +158,7 @@ public class RunMojo
             ClassLoaderEntriesCalculatorRequest request =
                 new ClassLoaderEntriesCalculatorRequest().setDependencies( dependencies ).setLog(
                     getLog() ).setMavenProject( project ).setAddWarDependenciesInClassloader(
-                    addWarDependenciesInClassloader );
+                    addWarDependenciesInClassloader ).setUseTestClassPath( useTestClasspath );
             List<String> classLoaderEntries = classLoaderEntriesCalculator.calculateClassPathEntries( request );
 
             if ( classLoaderEntries != null )

@@ -104,6 +104,14 @@ public class RunMojo
      */
     private boolean addWarDependenciesInClassloader;
 
+    /**
+     * will use the test classpath rather than the compile one and will add test dependencies too
+     *
+     * @parameter expression="${maven.tomcat.useTestClasspath}" default-value="false"
+     * @since 2.0
+     */
+    private boolean useTestClasspath;
+
     private File temporaryContextFile = null;
 
     /**
@@ -210,7 +218,7 @@ public class RunMojo
             ClassLoaderEntriesCalculatorRequest request =
                 new ClassLoaderEntriesCalculatorRequest().setDependencies( dependencies ).setLog(
                     getLog() ).setMavenProject( project ).setAddWarDependenciesInClassloader(
-                    addWarDependenciesInClassloader );
+                    addWarDependenciesInClassloader ).setUseTestClassPath( useTestClasspath );
             List<String> classLoaderEntries = classLoaderEntriesCalculator.calculateClassPathEntries( request );
 
             if ( classLoaderEntries != null )

@@ -38,6 +38,8 @@ public class ClassLoaderEntriesCalculatorRequest
 
     private boolean addWarDependenciesInClassloader;
 
+    private boolean useTestClassPath;
+
     public MavenProject getMavenProject()
     {
         return mavenProject;
@@ -80,6 +82,17 @@ public class ClassLoaderEntriesCalculatorRequest
         boolean addWarDependenciesInClassloader )
     {
         this.addWarDependenciesInClassloader = addWarDependenciesInClassloader;
+        return this;
+    }
+
+    public boolean isUseTestClassPath()
+    {
+        return useTestClassPath;
+    }
+
+    public ClassLoaderEntriesCalculatorRequest setUseTestClassPath( boolean useTestClassPath )
+    {
+        this.useTestClassPath = useTestClassPath;
         return this;
     }
 }
