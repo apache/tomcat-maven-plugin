@@ -59,9 +59,8 @@ public class DefaultClassLoaderEntriesCalculator
         throws TomcatRunException
     {
         Set<String> classLoaderEntries = new HashSet<String>();
-        //List<String> classLoaderEntries = new ArrayList<String>( );
-        // add classes directories to loader
 
+        // add classes directories to loader
         try
         {
             @SuppressWarnings( "unchecked" ) List<String> classPathElements = request.isUseTestClassPath()
@@ -162,7 +161,6 @@ public class DefaultClassLoaderEntriesCalculator
             }
         }
         return new ArrayList<String>( classLoaderEntries );
-        //return classLoaderEntries;
     }
 
     private void deleteDirectory( File directory, Log log )
