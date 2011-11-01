@@ -343,7 +343,12 @@ public class Tomcat7Runner
             inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( "conf/" + fileName );
             if ( inputStream != null )
             {
-                expand( inputStream, new File( extractDirectory, "conf/" + fileName ) );
+                File confDirectory = new File( extractDirectory, "conf" );
+                if ( !confDirectory.exists() )
+                {
+                    confDirectory.mkdirs();
+                }
+                expand( inputStream, new File( confDirectory, fileName ) );
             }
         }
         finally

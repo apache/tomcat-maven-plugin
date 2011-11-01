@@ -282,10 +282,11 @@ public abstract class AbstractExecWarMojo
 
             if ( "war".equals( project.getPackaging() ) )
             {
-                os.putArchiveEntry( new JarArchiveEntry( path + ".war" ) );
+
+                os.putArchiveEntry( new JarArchiveEntry( StringUtils.removeStart( path, "/" ) + ".war" ) );
                 IOUtils.copy( new FileInputStream( projectArtifact.getFile() ), os );
                 os.closeArchiveEntry();
-                properties.put( Tomcat7Runner.WARS_KEY, path + ".war|" + path );
+                properties.put( Tomcat7Runner.WARS_KEY, StringUtils.removeStart( path, "/" ) + ".war|" + path );
             }
 
             if ( "pom".equals( project.getPackaging() ) && ( warRunDependencies != null
@@ -318,13 +319,11 @@ public abstract class AbstractExecWarMojo
                         if ( propertyWarValue != null )
                         {
                             properties.put( Tomcat7Runner.WARS_KEY,
-                                            propertyWarValue + ";" + warFileName + "|"
-                                                + warRunDependency.contextPath );
+                                            propertyWarValue + ";" + warFileName + "|" + warRunDependency.contextPath );
                         }
                         else
                         {
-                            properties.put( Tomcat7Runner.WARS_KEY,
-                                            warFileName + "|" + warRunDependency.contextPath );
+                            properties.put( Tomcat7Runner.WARS_KEY, warFileName + "|" + warRunDependency.contextPath );
                         }
                     }
                 }
