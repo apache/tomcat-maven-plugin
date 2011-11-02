@@ -71,7 +71,7 @@ public class RunMojo
     /**
      * The web resources directory for the web application being run.
      *
-     * @parameter expression="${basedir}/src/main/webapp"
+     * @parameter default-value="${basedir}/src/main/webapp" expression = "${tomcat.warSourceDirectory}"
      */
     private File warSourceDirectory;
 
