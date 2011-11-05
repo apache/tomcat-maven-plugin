@@ -70,7 +70,7 @@ import java.util.Set;
  * @since 2.0
  */
 public abstract class AbstractRunMojo
-    extends AbstractTomcat7Mojo
+    extends AbstractTomcat7Mojo             
 {
 // ----------------------------------------------------------------------
     // Mojo Parameters
@@ -313,6 +313,7 @@ public abstract class AbstractRunMojo
      * @since 2.0
      */
     private File tomcatLoggingFile;
+
 
     // ----------------------------------------------------------------------
     // Fields

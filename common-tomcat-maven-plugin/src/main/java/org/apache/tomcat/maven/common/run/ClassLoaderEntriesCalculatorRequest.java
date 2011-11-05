@@ -22,6 +22,7 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
+import java.io.File;
 import java.util.Set;
 
 /**
@@ -95,4 +96,5 @@ public class ClassLoaderEntriesCalculatorRequest
         this.useTestClassPath = useTestClassPath;
         return this;
     }
+
 }

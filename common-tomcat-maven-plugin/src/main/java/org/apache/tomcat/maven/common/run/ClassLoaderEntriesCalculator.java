@@ -27,6 +27,6 @@ import java.util.List;
  */
 public interface ClassLoaderEntriesCalculator
 {
-    List<String> calculateClassPathEntries( ClassLoaderEntriesCalculatorRequest classLoaderEntriesCalculatorRequest )
+    ClassLoaderEntriesCalculatorResult calculateClassPathEntries( ClassLoaderEntriesCalculatorRequest classLoaderEntriesCalculatorRequest )
         throws TomcatRunException;
 }

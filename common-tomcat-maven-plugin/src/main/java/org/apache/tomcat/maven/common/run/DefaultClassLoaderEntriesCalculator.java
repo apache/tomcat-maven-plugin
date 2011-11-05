@@ -19,7 +19,6 @@ package org.apache.tomcat.maven.common.run;
  * under the License.
  */
 
-import com.google.common.io.Files;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
@@ -55,10 +54,12 @@ public class DefaultClassLoaderEntriesCalculator
     private ArchiverManager archiverManager;
 
 
-    public List<String> calculateClassPathEntries( ClassLoaderEntriesCalculatorRequest request )
+    public ClassLoaderEntriesCalculatorResult calculateClassPathEntries( ClassLoaderEntriesCalculatorRequest request )
         throws TomcatRunException
     {
         Set<String> classLoaderEntries = new LinkedHashSet<String>();
+
+        List<File> tmpDirectories = new ArrayList<File>();
 
         // add classes directories to loader
         try
@@ -85,6 +86,17 @@ public class DefaultClassLoaderEntriesCalculator
             throw new TomcatRunException( e.getMessage(), e );
         }
 
+        // TODO find a solution to use a timestamp marker to not delete/extract all the time
+
+        File tmpExtractDatas =
+            new File( request.getMavenProject().getBuild().getDirectory(), "apache-tomcat-maven-plugin" );
+
+        if ( tmpExtractDatas.exists() )
+        {
+            deleteDirectory( tmpExtractDatas, request.getLog() );
+        }
+        tmpExtractDatas.mkdirs();
+
         // add artifacts to loader
         if ( request.getDependencies() != null )
         {
@@ -109,13 +121,19 @@ public class DefaultClassLoaderEntriesCalculator
                             "skip adding artifact " + artifact.getArtifactId() + " as it's in reactors" );
                     }
                 }
+
+
+
                 // in case of war dependency we must add /WEB-INF/lib/*.jar in entries and WEB-INF/classes
                 if ( "war".equals( artifact.getType() ) && request.isAddWarDependenciesInClassloader() )
                 {
-                    File tmpDir = null;
+
+                    File tmpDir = new File( tmpExtractDatas, artifact.getArtifactId() );
+
+                    tmpDirectories.add( tmpDir );
+
                     try
                     {
-                        tmpDir = Files.createTempDir();
                         tmpDir.deleteOnExit();
                         File warFile = artifact.getFile();
                         UnArchiver unArchiver = archiverManager.getUnArchiver( "jar" );
@@ -153,14 +171,12 @@ public class DefaultClassLoaderEntriesCalculator
                             "fail to extract war file " + artifact.getFile() + ", reason:" + e.getMessage(), e );
                         throw new TomcatRunException( e.getMessage(), e );
                     }
-                    finally
-                    {
-                        deleteDirectory( tmpDir, request.getLog() );
-                    }
                 }
             }
         }
-        return new ArrayList<String>( classLoaderEntries );
+
+        return new ClassLoaderEntriesCalculatorResult( new ArrayList<String>( classLoaderEntries ), tmpDirectories );
+
     }
 
     private void deleteDirectory( File directory, Log log )

@@ -22,10 +22,12 @@ package org.apache.tomcat.maven.plugin.tomcat6;
 import org.apache.catalina.Context;
 import org.apache.catalina.loader.WebappLoader;
 import org.apache.catalina.startup.Embedded;
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.tomcat.maven.common.run.ClassLoaderEntriesCalculator;
 import org.apache.tomcat.maven.common.run.ClassLoaderEntriesCalculatorRequest;
+import org.apache.tomcat.maven.common.run.ClassLoaderEntriesCalculatorResult;
 import org.apache.tomcat.maven.common.run.TomcatRunException;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
@@ -167,7 +169,29 @@ public class RunMojo
                 new ClassLoaderEntriesCalculatorRequest().setDependencies( dependencies ).setLog(
                     getLog() ).setMavenProject( project ).setAddWarDependenciesInClassloader(
                     addWarDependenciesInClassloader ).setUseTestClassPath( useTestClasspath );
-            List<String> classLoaderEntries = classLoaderEntriesCalculator.calculateClassPathEntries( request );
+            ClassLoaderEntriesCalculatorResult classLoaderEntriesCalculatorResult =
+                classLoaderEntriesCalculator.calculateClassPathEntries( request );
+            List<String> classLoaderEntries = classLoaderEntriesCalculatorResult.getClassPathEntries();
+            final List<File> tmpDirectories = classLoaderEntriesCalculatorResult.getTmpDirectories();
+
+            Runtime.getRuntime().addShutdownHook( new Thread()
+            {
+                @Override
+                public void run()
+                {
+                    for ( File tmpDir : tmpDirectories )
+                    {
+                        try
+                        {
+                            FileUtils.deleteDirectory( tmpDir );
+                        }
+                        catch ( IOException e )
+                        {
+                            // ignore
+                        }
+                    }
+                }
+            } );
 
             if ( classLoaderEntries != null )
             {
