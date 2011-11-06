@@ -28,6 +28,7 @@ import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
+import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.util.StringUtils;
@@ -130,6 +131,8 @@ public class DefaultClassLoaderEntriesCalculator
 
                     File tmpDir = new File( tmpExtractDatas, artifact.getArtifactId() );
 
+                    tmpDir.mkdirs();
+
                     tmpDirectories.add( tmpDir );
 
                     try
@@ -140,6 +143,8 @@ public class DefaultClassLoaderEntriesCalculator
                         unArchiver.setSourceFile( warFile );
                         unArchiver.setDestDirectory( tmpDir );
                         unArchiver.extract();
+
+
                         File libsDirectory = new File( tmpDir, "WEB-INF/lib" );
                         if ( libsDirectory.exists() )
                         {
