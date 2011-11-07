@@ -59,6 +59,8 @@ public class DefaultClassLoaderEntriesCalculator
     {
         Set<String> classLoaderEntries = new LinkedHashSet<String>();
 
+        List<String> fileInClassLoaderEntries = new ArrayList<String>();
+
         List<File> tmpDirectories = new ArrayList<File>();
 
         // add classes directories to loader
@@ -113,7 +115,12 @@ public class DefaultClassLoaderEntriesCalculator
                             + artifact.getVersion() + ":" + artifact.getScope() );
                     if ( !isInProjectReferences( artifact, request.getMavenProject() ) )
                     {
-                        classLoaderEntries.add( artifact.getFile().toURI().toString() );
+                        String fileName = artifact.getFile().getName();
+                        if ( !fileInClassLoaderEntries.contains( fileName ) )
+                        {
+                            classLoaderEntries.add( artifact.getFile().toURI().toString() );
+                            fileInClassLoaderEntries.add( fileName );
+                        }
                     }
                     else
                     {
@@ -121,8 +128,6 @@ public class DefaultClassLoaderEntriesCalculator
                             "skip adding artifact " + artifact.getArtifactId() + " as it's in reactors" );
                     }
                 }
-
-
 
                 // in case of war dependency we must add /WEB-INF/lib/*.jar in entries and WEB-INF/classes
                 if ( "war".equals( artifact.getType() ) && request.isAddWarDependenciesInClassloader() )
@@ -143,7 +148,6 @@ public class DefaultClassLoaderEntriesCalculator
                         unArchiver.setDestDirectory( tmpDir );
                         unArchiver.extract();
 
-
                         File libsDirectory = new File( tmpDir, "WEB-INF/lib" );
                         if ( libsDirectory.exists() )
                         {
@@ -156,7 +160,17 @@ public class DefaultClassLoaderEntriesCalculator
                             } );
                             for ( String jar : jars )
                             {
-                                classLoaderEntries.add( new File( libsDirectory, jar ).toURI().toString() );
+                                File jarFile = new File( libsDirectory, jar );
+                                if ( !fileInClassLoaderEntries.contains( jarFile.getName() ) )
+                                {
+                                    classLoaderEntries.add( jarFile.toURI().toString() );
+                                    fileInClassLoaderEntries.add( jarFile.getName() );
+                                }
+                                else
+                                {
+                                    request.getLog().debug( "skip adding file " + jarFile.getPath()
+                                                                + " as it's already in classloader entries" );
+                                }
                             }
                         }
                         File classesDirectory = new File( tmpDir, "WEB-INF/classes" );
