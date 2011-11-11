@@ -37,7 +37,7 @@ Testing SNAPSHOT
   <repositories>
     <repository>
       <id>people.apache.snapshots</id>
-      <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+      <url>http://repository.apache.org/content/groups/snapshots-group/</url>
       <releases>
         <enabled>false</enabled>
       </releases>
@@ -51,7 +51,7 @@ Testing SNAPSHOT
     <pluginRepository>
       <id>apache.snapshots</id>
       <name>Apache Snapshots</name>
-      <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+      <url>http://repository.apache.org/content/groups/snapshots-group/</url>
       <releases>
         <enabled>false</enabled>
       </releases>
