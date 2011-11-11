@@ -16,7 +16,9 @@
   KIND, either express or implied.  See the License for the
   specific language governing permissions and limitations
   under the License.
---><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <!-- for more information, see the documentation of this POM: http://maven.apache.org/pom/maven/ -->
   <parent>
@@ -51,9 +53,11 @@
     <verifier.debugJvm>false</verifier.debugJvm>
     <maven.resources.escapeString>\</maven.resources.escapeString>
     <distributionReleaseUrl>scp://people.apache.org/www/people.apache.org/repo/m2-ibiblio-rsync-repository</distributionReleaseUrl>
-    <distributionSnapshotsUrl>scp://people.apache.org/www/people.apache.org/repo/m2-snapshot-repository</distributionSnapshotsUrl>
     <distributionSiteUrl>scp://people.apache.org/www/tomcat.apache.org/maven-plugin-${project.version}</distributionSiteUrl>
-    <distributionIdSnapshots>apache.snapshots</distributionIdSnapshots>
+
+    <distributionSnapshotsUrl>https://repository.apache.org/content/repositories/snapshots</distributionSnapshotsUrl>
+    <distributionIdSnapshots>apache.snapshots.https</distributionIdSnapshots>
+
     <!-- http port used to run it test -->
     <its.http.port>1973</its.http.port>
     <!-- https port used to run it test -->
@@ -593,6 +597,7 @@
       <name>Apache Release Distribution Repository</name>
       <url>${distributionReleaseUrl}</url>
     </repository>
+
     <snapshotRepository>
       <id>${distributionIdSnapshots}</id>
       <name>Apache Development Snapshot Repository</name>
