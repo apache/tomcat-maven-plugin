@@ -209,7 +209,7 @@ public abstract class AbstractExecWarMojo
      *
      * @parameter
      */
-    private List<Dependency> extraDependencies;
+    private List<ExtraDependency> extraDependencies;
 
     /**
      * Main class to use for starting the standalone jar.
@@ -378,26 +378,30 @@ public abstract class AbstractExecWarMojo
             // add extra dependencies
             if ( extraDependencies != null && !extraDependencies.isEmpty() )
             {
-                for ( Dependency dependency : extraDependencies )
+                for ( ExtraDependency extraDependency : extraDependencies )
                 {
-                    // String groupId, String artifactId, String version, String scope, String type
-                    Artifact artifact =
-                        artifactFactory.createArtifact( dependency.getGroupId(), dependency.getArtifactId(),
-                                                        dependency.getVersion(), dependency.getScope(),
-                                                        dependency.getType() );
+					if ( extraDependency.dependency != null )
+					{
+		                    Dependency dependency = extraDependency.dependency;
+				            // String groupId, String artifactId, String version, String scope, String type
+				            Artifact artifact =
+				                artifactFactory.createArtifact( dependency.getGroupId(), dependency.getArtifactId(),
+				                                                dependency.getVersion(), dependency.getScope(),
+				                                                dependency.getType() );
 
-                    artifactResolver.resolve( artifact, this.remoteRepos, this.local );
-                    JarFile jarFile = new JarFile( artifact.getFile() );
-                    Enumeration<JarEntry> jarEntries = jarFile.entries();
-                    while ( jarEntries.hasMoreElements() )
-                    {
-                        JarEntry jarEntry = jarEntries.nextElement();
-                        InputStream jarEntryIs = jarFile.getInputStream( jarEntry );
+				            artifactResolver.resolve( artifact, this.remoteRepos, this.local );
+				            JarFile jarFile = new JarFile( artifact.getFile() );
+				            Enumeration<JarEntry> jarEntries = jarFile.entries();
+				            while ( jarEntries.hasMoreElements() )
+				            {
+				                JarEntry jarEntry = jarEntries.nextElement();
+				                InputStream jarEntryIs = jarFile.getInputStream( jarEntry );
 
-                        os.putArchiveEntry( new JarArchiveEntry( jarEntry.getName() ) );
-                        IOUtils.copy( jarEntryIs, os );
-                        os.closeArchiveEntry();
-                    }
+				                os.putArchiveEntry( new JarArchiveEntry( jarEntry.getName() ) );
+				                IOUtils.copy( jarEntryIs, os );
+				                os.closeArchiveEntry();
+				            }
+					}
                 }
             }
 
