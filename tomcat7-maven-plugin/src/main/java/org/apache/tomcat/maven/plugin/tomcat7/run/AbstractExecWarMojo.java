@@ -209,7 +209,7 @@ public abstract class AbstractExecWarMojo
      *
      * @parameter
      */
-    private List<Dependency> extraDependencies;
+    private List<ExtraDependency> extraDependencies;
 
     /**
      * Main class to use for starting the standalone jar.
