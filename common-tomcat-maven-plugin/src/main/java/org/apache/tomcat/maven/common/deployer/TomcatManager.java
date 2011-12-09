@@ -20,22 +20,35 @@ package org.apache.tomcat.maven.common.deployer;
  */
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.Credentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.AuthCache;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.entity.AbstractHttpEntity;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.BasicAuthCache;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.BasicClientConnectionManager;
+import org.apache.http.protocol.BasicHttpContext;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
 /**
  * FIXME http connection tru a proxy
- * FIXME preemptive support
- * FIXME move to ASF httpclient ?
  * A Tomcat manager webapp invocation wrapper.
- * 
+ *
  * @author Mark Hobson <markhobson@gmail.com>
  * @version $Id: TomcatManager.java 12852 2010-10-12 22:04:32Z thragor $
  */
@@ -79,6 +92,10 @@ public class TomcatManager
      */
     private String userAgent;
 
+    private DefaultHttpClient httpClient;
+
+    private BasicHttpContext localContext;
+
     // ----------------------------------------------------------------------
     // Constructors
     // ----------------------------------------------------------------------
@@ -86,7 +103,7 @@ public class TomcatManager
     /**
      * Creates a Tomcat manager wrapper for the specified URL that uses a username of <code>admin</code>, an empty
      * password and ISO-8859-1 URL encoding.
-     * 
+     *
      * @param url the full URL of the Tomcat manager instance to use
      */
     public TomcatManager( URL url )
@@ -97,8 +114,8 @@ public class TomcatManager
     /**
      * Creates a Tomcat manager wrapper for the specified URL and username that uses an empty password and ISO-8859-1
      * URL encoding.
-     * 
-     * @param url the full URL of the Tomcat manager instance to use
+     *
+     * @param url      the full URL of the Tomcat manager instance to use
      * @param username the username to use when authenticating with Tomcat manager
      */
     public TomcatManager( URL url, String username )
@@ -108,8 +125,8 @@ public class TomcatManager
 
     /**
      * Creates a Tomcat manager wrapper for the specified URL, username and password that uses ISO-8859-1 URL encoding.
-     * 
-     * @param url the full URL of the Tomcat manager instance to use
+     *
+     * @param url      the full URL of the Tomcat manager instance to use
      * @param username the username to use when authenticating with Tomcat manager
      * @param password the password to use when authenticating with Tomcat manager
      */
@@ -118,13 +135,14 @@ public class TomcatManager
         this( url, username, password, "ISO-8859-1" );
     }
 
+
     /**
      * Creates a Tomcat manager wrapper for the specified URL, username, password and URL encoding.
-     * 
-     * @param url the full URL of the Tomcat manager instance to use
+     *
+     * @param url      the full URL of the Tomcat manager instance to use
      * @param username the username to use when authenticating with Tomcat manager
      * @param password the password to use when authenticating with Tomcat manager
-     * @param charset the URL encoding charset to use when communicating with Tomcat manager
+     * @param charset  the URL encoding charset to use when communicating with Tomcat manager
      */
     public TomcatManager( URL url, String username, String password, String charset )
     {
@@ -132,6 +150,25 @@ public class TomcatManager
         this.username = username;
         this.password = password;
         this.charset = charset;
+
+        this.httpClient = new DefaultHttpClient( new BasicClientConnectionManager() );
+        if ( StringUtils.isNotEmpty( username ) && StringUtils.isNotEmpty( password ) )
+        {
+            Credentials creds = new UsernamePasswordCredentials( username, password );
+
+            String host = url.getHost();
+            int port = url.getPort() > -1 ? url.getPort() : AuthScope.ANY_PORT;
+
+            httpClient.getCredentialsProvider().setCredentials( new AuthScope( host, port ), creds );
+
+            AuthCache authCache = new BasicAuthCache();
+            BasicScheme basicAuth = new BasicScheme();
+            HttpHost targetHost = new HttpHost( url.getHost(), url.getPort(), url.getProtocol() );
+            authCache.put( targetHost, basicAuth );
+
+            localContext = new BasicHttpContext();
+            localContext.setAttribute( ClientContext.AUTH_CACHE, authCache );
+        }
     }
 
     // ----------------------------------------------------------------------
@@ -140,7 +177,7 @@ public class TomcatManager
 
     /**
      * Gets the full URL of the Tomcat manager instance.
-     * 
+     *
      * @return the full URL of the Tomcat manager instance
      */
     public URL getURL()
@@ -150,7 +187,7 @@ public class TomcatManager
 
     /**
      * Gets the username to use when authenticating with Tomcat manager.
-     * 
+     *
      * @return the username to use when authenticating with Tomcat manager
      */
     public String getUserName()
@@ -160,7 +197,7 @@ public class TomcatManager
 
     /**
      * Gets the password to use when authenticating with Tomcat manager.
-     * 
+     *
      * @return the password to use when authenticating with Tomcat manager
      */
     public String getPassword()
@@ -170,7 +207,7 @@ public class TomcatManager
 
     /**
      * Gets the URL encoding charset to use when communicating with Tomcat manager.
-     * 
+     *
      * @return the URL encoding charset to use when communicating with Tomcat manager
      */
     public String getCharset()
@@ -180,7 +217,7 @@ public class TomcatManager
 
     /**
      * Gets the user agent name to use when communicating with Tomcat manager.
-     * 
+     *
      * @return the user agent name to use when communicating with Tomcat manager
      */
     public String getUserAgent()
@@ -190,7 +227,7 @@ public class TomcatManager
 
     /**
      * Sets the user agent name to use when communicating with Tomcat manager.
-     * 
+     *
      * @param userAgent the user agent name to use when communicating with Tomcat manager
      */
     public void setUserAgent( String userAgent )
@@ -200,12 +237,12 @@ public class TomcatManager
 
     /**
      * Deploys the specified WAR as a URL to the specified context path.
-     * 
+     *
      * @param path the webapp context path to deploy to
-     * @param war the URL of the WAR to deploy
+     * @param war  the URL of the WAR to deploy
      * @return the Tomcat manager response
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
     public String deploy( String path, URL war )
         throws TomcatManagerException, IOException
@@ -216,13 +253,13 @@ public class TomcatManager
     /**
      * Deploys the specified WAR as a URL to the specified context path, optionally undeploying the webapp if it already
      * exists.
-     * 
-     * @param path the webapp context path to deploy to
-     * @param war the URL of the WAR to deploy
+     *
+     * @param path   the webapp context path to deploy to
+     * @param war    the URL of the WAR to deploy
      * @param update whether to first undeploy the webapp if it already exists
      * @return the Tomcat manager response
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
     public String deploy( String path, URL war, boolean update )
         throws TomcatManagerException, IOException
@@ -233,14 +270,14 @@ public class TomcatManager
     /**
      * Deploys the specified WAR as a URL to the specified context path, optionally undeploying the webapp if it already
      * exists and using the specified tag name.
-     * 
-     * @param path the webapp context path to deploy to
-     * @param war the URL of the WAR to deploy
+     *
+     * @param path   the webapp context path to deploy to
+     * @param war    the URL of the WAR to deploy
      * @param update whether to first undeploy the webapp if it already exists
-     * @param tag the tag name to use
+     * @param tag    the tag name to use
      * @return the Tomcat manager response
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
     public String deploy( String path, URL war, boolean update, String tag )
         throws TomcatManagerException, IOException
@@ -250,12 +287,12 @@ public class TomcatManager
 
     /**
      * Deploys the specified WAR as a HTTP PUT to the specified context path.
-     * 
+     *
      * @param path the webapp context path to deploy to
-     * @param war an input stream to the WAR to deploy
+     * @param war  an input stream to the WAR to deploy
      * @return the Tomcat manager response
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
     public String deploy( String path, InputStream war )
         throws TomcatManagerException, IOException
@@ -266,13 +303,13 @@ public class TomcatManager
     /**
      * Deploys the specified WAR as a HTTP PUT to the specified context path, optionally undeploying the webapp if it
      * already exists.
-     * 
-     * @param path the webapp context path to deploy to
-     * @param war an input stream to the WAR to deploy
+     *
+     * @param path   the webapp context path to deploy to
+     * @param war    an input stream to the WAR to deploy
      * @param update whether to first undeploy the webapp if it already exists
      * @return the Tomcat manager response
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
     public String deploy( String path, InputStream war, boolean update )
         throws TomcatManagerException, IOException
@@ -283,14 +320,14 @@ public class TomcatManager
     /**
      * Deploys the specified WAR as a HTTP PUT to the specified context path, optionally undeploying the webapp if it
      * already exists and using the specified tag name.
-     * 
-     * @param path the webapp context path to deploy to
-     * @param war an input stream to the WAR to deploy
+     *
+     * @param path   the webapp context path to deploy to
+     * @param war    an input stream to the WAR to deploy
      * @param update whether to first undeploy the webapp if it already exists
-     * @param tag the tag name to use
+     * @param tag    the tag name to use
      * @return the Tomcat manager response
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
     public String deploy( String path, InputStream war, boolean update, String tag )
         throws TomcatManagerException, IOException
@@ -300,12 +337,12 @@ public class TomcatManager
 
     /**
      * Deploys the specified context XML configuration to the specified context path.
-     * 
-     * @param path the webapp context path to deploy to
+     *
+     * @param path   the webapp context path to deploy to
      * @param config the URL of the context XML configuration to deploy
      * @return the Tomcat manager response
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
     public String deployContext( String path, URL config )
         throws TomcatManagerException, IOException
@@ -316,13 +353,13 @@ public class TomcatManager
     /**
      * Deploys the specified context XML configuration to the specified context path, optionally undeploying the webapp
      * if it already exists.
-     * 
-     * @param path the webapp context path to deploy to
+     *
+     * @param path   the webapp context path to deploy to
      * @param config the URL of the context XML configuration to deploy
      * @param update whether to first undeploy the webapp if it already exists
      * @return the Tomcat manager response
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
     public String deployContext( String path, URL config, boolean update )
         throws TomcatManagerException, IOException
@@ -333,14 +370,14 @@ public class TomcatManager
     /**
      * Deploys the specified context XML configuration to the specified context path, optionally undeploying the webapp
      * if it already exists and using the specified tag name.
-     * 
-     * @param path the webapp context path to deploy to
+     *
+     * @param path   the webapp context path to deploy to
      * @param config the URL of the context XML configuration to deploy
      * @param update whether to first undeploy the webapp if it already exists
-     * @param tag the tag name to use
+     * @param tag    the tag name to use
      * @return the Tomcat manager response
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
     public String deployContext( String path, URL config, boolean update, String tag )
         throws TomcatManagerException, IOException
@@ -350,13 +387,13 @@ public class TomcatManager
 
     /**
      * Deploys the specified context XML configuration and WAR as a URL to the specified context path.
-     * 
-     * @param path the webapp context path to deploy to
+     *
+     * @param path   the webapp context path to deploy to
      * @param config the URL of the context XML configuration to deploy
-     * @param war the URL of the WAR to deploy
+     * @param war    the URL of the WAR to deploy
      * @return the Tomcat manager response
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
     public String deployContext( String path, URL config, URL war )
         throws TomcatManagerException, IOException
@@ -367,14 +404,14 @@ public class TomcatManager
     /**
      * Deploys the specified context XML configuration and WAR as a URL to the specified context path, optionally
      * undeploying the webapp if it already exists.
-     * 
-     * @param path the webapp context path to deploy to
+     *
+     * @param path   the webapp context path to deploy to
      * @param config the URL of the context XML configuration to deploy
-     * @param war the URL of the WAR to deploy
+     * @param war    the URL of the WAR to deploy
      * @param update whether to first undeploy the webapp if it already exists
      * @return the Tomcat manager response
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
     public String deployContext( String path, URL config, URL war, boolean update )
         throws TomcatManagerException, IOException
@@ -385,15 +422,15 @@ public class TomcatManager
     /**
      * Deploys the specified context XML configuration and WAR as a URL to the specified context path, optionally
      * undeploying the webapp if it already exists and using the specified tag name.
-     * 
-     * @param path the webapp context path to deploy to
+     *
+     * @param path   the webapp context path to deploy to
      * @param config the URL of the context XML configuration to deploy
-     * @param war the URL of the WAR to deploy
+     * @param war    the URL of the WAR to deploy
      * @param update whether to first undeploy the webapp if it already exists
-     * @param tag the tag name to use
+     * @param tag    the tag name to use
      * @return the Tomcat manager response
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
     public String deployContext( String path, URL config, URL war, boolean update, String tag )
         throws TomcatManagerException, IOException
@@ -403,11 +440,11 @@ public class TomcatManager
 
     /**
      * Undeploys the webapp at the specified context path.
-     * 
+     *
      * @param path the webapp context path to undeploy
      * @return the Tomcat manager response
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
     public String undeploy( String path )
         throws TomcatManagerException, IOException
@@ -417,11 +454,11 @@ public class TomcatManager
 
     /**
      * Reloads the webapp at the specified context path.
-     * 
+     *
      * @param path the webapp context path to reload
      * @return the Tomcat manager response
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
     public String reload( String path )
         throws TomcatManagerException, IOException
@@ -431,11 +468,11 @@ public class TomcatManager
 
     /**
      * Starts the webapp at the specified context path.
-     * 
+     *
      * @param path the webapp context path to start
      * @return the Tomcat manager response
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
     public String start( String path )
         throws TomcatManagerException, IOException
@@ -445,11 +482,11 @@ public class TomcatManager
 
     /**
      * Stops the webapp at the specified context path.
-     * 
+     *
      * @param path the webapp context path to stop
      * @return the Tomcat manager response
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
     public String stop( String path )
         throws TomcatManagerException, IOException
@@ -459,10 +496,10 @@ public class TomcatManager
 
     /**
      * Lists all the currently deployed web applications.
-     * 
+     *
      * @return the list of currently deployed applications
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
     public String list()
         throws TomcatManagerException, IOException
@@ -472,10 +509,10 @@ public class TomcatManager
 
     /**
      * Lists information about the Tomcat version, OS, and JVM properties.
-     * 
+     *
      * @return the server information
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
     public String getServerInfo()
         throws TomcatManagerException, IOException
@@ -485,10 +522,10 @@ public class TomcatManager
 
     /**
      * Lists all of the global JNDI resources.
-     * 
+     *
      * @return the list of all global JNDI resources
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
     public String getResources()
         throws TomcatManagerException, IOException
@@ -498,11 +535,11 @@ public class TomcatManager
 
     /**
      * Lists the global JNDI resources of the given type.
-     * 
+     *
      * @param type the class name of the resources to list, or <code>null</code> for all
      * @return the list of global JNDI resources of the given type
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
     public String getResources( String type )
         throws TomcatManagerException, IOException
@@ -519,10 +556,10 @@ public class TomcatManager
 
     /**
      * Lists the security role names and corresponding descriptions that are available.
-     * 
+     *
      * @return the list of security role names and corresponding descriptions
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
     public String getRoles()
         throws TomcatManagerException, IOException
@@ -532,11 +569,11 @@ public class TomcatManager
 
     /**
      * Lists the default session timeout and the number of currently active sessions for the given context path.
-     * 
+     *
      * @param path the context path to list session information for
      * @return the default session timeout and the number of currently active sessions
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
     public String getSessions( String path )
         throws TomcatManagerException, IOException
@@ -550,11 +587,11 @@ public class TomcatManager
 
     /**
      * Invokes Tomcat manager with the specified command.
-     * 
+     *
      * @param path the Tomcat manager command to invoke
      * @return the Tomcat manager response
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
     protected String invoke( String path )
         throws TomcatManagerException, IOException
@@ -562,57 +599,6 @@ public class TomcatManager
         return invoke( path, null );
     }
 
-    /**
-     * Invokes Tomcat manager with the specified command and content data.
-     * 
-     * @param path the Tomcat manager command to invoke
-     * @param data an input stream to the content data
-     * @return the Tomcat manager response
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
-     */
-    protected String invoke( String path, InputStream data )
-        throws TomcatManagerException, IOException
-    {
-        HttpURLConnection connection = (HttpURLConnection) new URL( url + path ).openConnection();
-        connection.setAllowUserInteraction( false );
-        connection.setDoInput( true );
-        connection.setUseCaches( false );
-
-        if ( data == null )
-        {
-            connection.setDoOutput( false );
-            connection.setRequestMethod( "GET" );
-        }
-        else
-        {
-            connection.setDoOutput( true );
-            connection.setRequestMethod( "PUT" );
-            connection.setRequestProperty( "Content-Type", "application/octet-stream" );
-        }
-
-        if ( userAgent != null )
-        {
-            connection.setRequestProperty( "User-Agent", userAgent );
-        }
-        connection.setRequestProperty( "Authorization", toAuthorization( username, password ) );
-
-        connection.connect();
-
-        if ( data != null )
-        {
-            pipe( data, connection.getOutputStream() );
-        }
-
-        String response = toString( connection.getInputStream(), MANAGER_CHARSET );
-
-        if ( !response.startsWith( "OK -" ) )
-        {
-            throw new TomcatManagerException( response );
-        }
-
-        return response;
-    }
 
     // ----------------------------------------------------------------------
     // Private Methods
@@ -620,16 +606,16 @@ public class TomcatManager
 
     /**
      * Deploys the specified WAR.
-     * 
-     * @param path the webapp context path to deploy to
+     *
+     * @param path   the webapp context path to deploy to
      * @param config the URL of the context XML configuration to deploy, or null for none
-     * @param war the URL of the WAR to deploy, or null to use <code>data</code>
-     * @param data an input stream to the WAR to deploy, or null to use <code>war</code>
+     * @param war    the URL of the WAR to deploy, or null to use <code>data</code>
+     * @param data   an input stream to the WAR to deploy, or null to use <code>war</code>
      * @param update whether to first undeploy the webapp if it already exists
-     * @param tag the tag name to use
+     * @param tag    the tag name to use
      * @return the Tomcat manager response
      * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException if an i/o error occurs
+     * @throws IOException            if an i/o error occurs
      */
     private String deployImpl( String path, URL config, URL war, InputStream data, boolean update, String tag )
         throws TomcatManagerException, IOException
@@ -660,9 +646,50 @@ public class TomcatManager
         return invoke( buffer.toString(), data );
     }
 
+
+/**
+     * Invokes Tomcat manager with the specified command and content data.
+     *
+     * @param path the Tomcat manager command to invoke
+     * @param data an input stream to the content data
+     * @return the Tomcat manager response
+     * @throws TomcatManagerException if the Tomcat manager request fails
+     * @throws IOException            if an i/o error occurs
+     */
+    protected String invoke( String path, InputStream data )
+        throws TomcatManagerException, IOException
+    {
+
+        HttpRequestBase httpRequestBase = null;
+        if ( data == null )
+        {
+            httpRequestBase = new HttpGet( url + path );
+        }
+        else
+        {
+            HttpPut httpPut = new HttpPut( url + path );
+
+            httpPut.setEntity( new RequestEntityImplementation( data, -1 ) );
+
+            httpRequestBase = httpPut;
+
+        }
+
+        if ( userAgent != null )
+        {
+            httpRequestBase.setHeader( "User-Agent", userAgent );
+        }
+
+        HttpResponse response = httpClient.execute( httpRequestBase, localContext );
+        // FIXME take care of statuscode and reasonphase
+        return IOUtils.toString( response.getEntity().getContent() );
+    }
+
+
+
     /**
      * Gets the HTTP Basic Authorization header value for the supplied username and password.
-     * 
+     *
      * @param username the username to use for authentication
      * @param password the password to use for authentication
      * @return the HTTP Basic Authorization header value
@@ -678,50 +705,89 @@ public class TomcatManager
         return "Basic " + new String( Base64.encodeBase64( buffer.toString().getBytes() ) );
     }
 
-    /**
-     * Reads all the data from the specified input stream and writes it to the specified output stream. Both streams are
-     * also closed.
-     * 
-     * @param in the input stream to read from
-     * @param out the output stream to write to
-     * @throws IOException if an i/o error occurs
-     */
-    private void pipe( InputStream in, OutputStream out )
-        throws IOException
+    private final class RequestEntityImplementation
+        extends AbstractHttpEntity
     {
-        out = new BufferedOutputStream( out );
-        int n;
-        byte[] bytes = new byte[1024 * 4];
-        while ( ( n = in.read( bytes ) ) != -1 )
-        {
-            out.write( bytes, 0, n );
-        }
-        out.flush();
-        out.close();
-        in.close();
-    }
 
-    /**
-     * Gets the data from the specified input stream as a string using the specified charset.
-     * 
-     * @param in the input stream to read from
-     * @param charset the charset to use when constructing the string
-     * @return a string representation of the data read from the input stream
-     * @throws IOException if an i/o error occurs
-     */
-    private String toString( InputStream in, String charset )
-        throws IOException
-    {
-        InputStreamReader reader = new InputStreamReader( in, charset );
+        private final static int BUFFER_SIZE = 2048;
 
-        StringBuffer buffer = new StringBuffer();
-        char[] chars = new char[1024];
-        int n;
-        while ( ( n = reader.read( chars, 0, chars.length ) ) != -1 )
+        private InputStream stream;
+
+        private long length = -1;
+
+        private RequestEntityImplementation( final InputStream stream, long length )
         {
-            buffer.append( chars, 0, n );
+            this.stream = stream;
+            this.length = length;
         }
 
-        return buffer.toString();
+        public long getContentLength()
+        {
+            return length >= 0 ? length : -1;
+        }
+
+
+        public InputStream getContent()
+            throws IOException, IllegalStateException
+        {
+            return this.stream;
+        }
+
+        public boolean isRepeatable()
+        {
+            return false;
+        }
+
+
+        public void writeTo( final OutputStream outstream )
+            throws IOException
+        {
+            if ( outstream == null )
+            {
+                throw new IllegalArgumentException( "Output stream may not be null" );
+            }
+
+            try
+            {
+                byte[] buffer = new byte[BUFFER_SIZE];
+                int l;
+                if ( this.length < 0 )
+                {
+                    // until EOF
+                    while ( ( l = stream.read( buffer ) ) != -1 )
+                    {
+                        //fireTransferProgress( transferEvent, buffer, -1 );
+                        outstream.write( buffer, 0, l );
+                    }
+                }
+                else
+                {
+                    // no need to consume more than length
+                    long remaining = this.length;
+                    while ( remaining > 0 )
+                    {
+                        l = stream.read( buffer, 0, (int) Math.min( BUFFER_SIZE, remaining ) );
+                        if ( l == -1 )
+                        {
+                            break;
+                        }
+                        //fireTransferProgress( transferEvent, buffer, (int) Math.min( BUFFER_SIZE, remaining ) );
+                        outstream.write( buffer, 0, l );
+                        remaining -= l;
+                    }
+                }
+            }
+            finally
+            {
+                stream.close();
+            }
+        }
+
+        public boolean isStreaming()
+        {
+            return true;
+        }
+
+
     }
 }
