@@ -47,6 +47,6 @@ public class ListMojo
     {
         getLog().info( messagesProvider.getMessage( "ListMojo.listApps", getURL() ) );
 
-        log( getManager().list() );
+        log( getManager().list().getHttpResponseBody() );
     }
 }

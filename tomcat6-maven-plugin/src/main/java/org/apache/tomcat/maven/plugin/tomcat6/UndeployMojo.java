@@ -60,7 +60,7 @@ public class UndeployMojo
 
         try
         {
-            log( getManager().undeploy( getPath() ) );
+            log( getManager().undeploy( getPath() ).getHttpResponseBody() );
         }
         catch ( TomcatManagerException exception )
         {

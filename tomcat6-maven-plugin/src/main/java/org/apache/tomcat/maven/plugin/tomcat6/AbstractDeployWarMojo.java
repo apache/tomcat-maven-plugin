@@ -84,6 +84,7 @@ public class AbstractDeployWarMojo
 
         getLog().info( messagesProvider.getMessage( "AbstractDeployMojo.deployingWar", getDeployedURL() ) );
 
-        log( getManager().deploy( getPath(), new FileInputStream( warFile ), isUpdate(), getTag() ) );
+        log( getManager().deploy( getPath(), new FileInputStream( warFile ), isUpdate(),
+                                  getTag() ).getHttpResponseBody() );
     }
 }

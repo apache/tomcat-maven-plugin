@@ -47,6 +47,6 @@ public class RolesMojo
     {
         getLog().info( messagesProvider.getMessage( "RolesMojo.listRoles", getURL() ) );
 
-        log( getManager().getRoles() );
+        log( getManager().getRoles().getHttpResponseBody()  );
     }
 }

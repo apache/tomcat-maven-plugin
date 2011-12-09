@@ -47,6 +47,6 @@ public class StopMojo
     {
         getLog().info( messagesProvider.getMessage( "StopMojo.stoppingApp", getDeployedURL() ) );
 
-        log( getManager().stop( getPath() ) );
+        log( getManager().stop( getPath() ).getHttpResponseBody() );
     }
 }

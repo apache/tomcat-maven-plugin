@@ -47,6 +47,6 @@ public class ServerInfoMojo
     {
         getLog().info( messagesProvider.getMessage( "ServerInfoMojo.listInfo", getURL() ) );
 
-        log( getManager().getServerInfo() );
+        log( getManager().getServerInfo().getHttpResponseBody() );
     }
 }

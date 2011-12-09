@@ -47,6 +47,6 @@ public class SessionsMojo
     {
         getLog().info( messagesProvider.getMessage( "SessionsMojo.listSessions", getDeployedURL() ) );
 
-        log( getManager().getSessions( getPath() ) );
+        log( getManager().getSessions( getPath() ).getHttpResponseBody()  );
     }
 }

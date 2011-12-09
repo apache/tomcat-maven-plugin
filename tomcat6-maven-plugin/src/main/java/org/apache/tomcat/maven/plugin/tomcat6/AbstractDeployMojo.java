@@ -174,7 +174,7 @@ public abstract class AbstractDeployMojo
         getLog().info( messagesProvider.getMessage( "AbstractDeployMojo.deployingWar", getDeployedURL() ) );
 
         URL warURL = getWarFile().toURL();
-        log( getManager().deploy( getPath(), warURL, isUpdate(), getTag() ) );
+        log( getManager().deploy( getPath(), warURL, isUpdate(), getTag() ).getHttpResponseBody() );
     }
 
     /**
@@ -192,7 +192,7 @@ public abstract class AbstractDeployMojo
         getLog().info( messagesProvider.getMessage( "AbstractDeployMojo.deployingContext", getDeployedURL() ) );
 
         URL contextURL = getContextFile().toURL();
-        log( getManager().deployContext( getPath(), contextURL, isUpdate(), getTag() ) );
+        log( getManager().deployContext( getPath(), contextURL, isUpdate(), getTag() ).getHttpResponseBody() );
     }
 
     /**
@@ -212,6 +212,6 @@ public abstract class AbstractDeployMojo
 
         URL warURL = getWarFile().toURL();
         URL contextURL = getContextFile().toURL();
-        log( getManager().deployContext( getPath(), contextURL, warURL, isUpdate(), getTag() ) );
+        log( getManager().deployContext( getPath(), contextURL, warURL, isUpdate(), getTag() ).getHttpResponseBody() );
     }
 }

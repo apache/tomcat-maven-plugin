@@ -65,6 +65,6 @@ public class ResourcesMojo
             getLog().info( messagesProvider.getMessage( "ResourcesMojo.listTypedResources", type, getURL() ) );
         }
 
-        log( getManager().getResources( type ) );
+        log( getManager().getResources( type ).getHttpResponseBody() );
     }
 }

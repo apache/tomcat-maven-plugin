@@ -47,6 +47,6 @@ public class ReloadMojo
     {
         getLog().info( messagesProvider.getMessage( "RedeployMojo.redeployApp", getDeployedURL() ) );
 
-        log( getManager().reload( getPath() ) );
+        log( getManager().reload( getPath() ).getHttpResponseBody() );
     }
 }

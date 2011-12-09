@@ -47,6 +47,6 @@ public class StartMojo
     {
         getLog().info( messagesProvider.getMessage( "StartMojo.startingApp", getDeployedURL() ) );
 
-        log( getManager().start( getPath() ) );
+        log( getManager().start( getPath() ).getHttpResponseBody() );
     }
 }
