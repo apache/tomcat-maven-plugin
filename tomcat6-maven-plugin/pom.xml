@@ -34,7 +34,7 @@
   </description>
 
   <properties>
-    <tomcat.version>6.0.33</tomcat.version>
+    <tomcat.version>6.0.35</tomcat.version>
     <managerWebAppPath>${basedir}/target/</managerWebAppPath>
     <warTestPath>${basedir}/src/test/simple-war-project-1.0-SNAPSHOT.war</warTestPath>
     <keystoreTestPath>${basedir}/src/test/keystore</keystoreTestPath>
