@@ -42,6 +42,7 @@ import org.apache.http.protocol.BasicHttpContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.URL;
 import java.net.URLEncoder;
 
@@ -336,7 +337,6 @@ public class TomcatManager
     }
 
     /**
-     *
      * @param path
      * @param war
      * @param update
@@ -694,7 +694,7 @@ public class TomcatManager
         {
             HttpPut httpPut = new HttpPut( url + path );
 
-            httpPut.setEntity( new RequestEntityImplementation( data, length ) );
+            httpPut.setEntity( new RequestEntityImplementation( data, length, url + path ) );
 
             httpRequestBase = httpPut;
 
@@ -740,12 +740,19 @@ public class TomcatManager
 
         private InputStream stream;
 
+        PrintStream out = System.out;
+
         private long length = -1;
 
-        private RequestEntityImplementation( final InputStream stream, long length )
+        private int lastLength;
+
+        private String url;
+
+        private RequestEntityImplementation( final InputStream stream, long length, String url )
         {
             this.stream = stream;
             this.length = length;
+            this.url = url;
         }
 
         public long getContentLength()
@@ -769,11 +776,12 @@ public class TomcatManager
         public void writeTo( final OutputStream outstream )
             throws IOException
         {
+            long completed = 0;
             if ( outstream == null )
             {
                 throw new IllegalArgumentException( "Output stream may not be null" );
             }
-
+            transferInitiated( this.url );
             try
             {
                 byte[] buffer = new byte[BUFFER_SIZE];
@@ -783,7 +791,7 @@ public class TomcatManager
                     // until EOF
                     while ( ( l = stream.read( buffer ) ) != -1 )
                     {
-                        //fireTransferProgress( transferEvent, buffer, -1 );
+                        transferProgressed( completed += buffer.length, -1 );
                         outstream.write( buffer, 0, l );
                     }
                 }
@@ -793,26 +801,90 @@ public class TomcatManager
                     long remaining = this.length;
                     while ( remaining > 0 )
                     {
-                        l = stream.read( buffer, 0, (int) Math.min( BUFFER_SIZE, remaining ) );
+                        int transferSize = (int) Math.min( BUFFER_SIZE, remaining );
+                        completed += transferSize;
+                        l = stream.read( buffer, 0, transferSize );
                         if ( l == -1 )
                         {
                             break;
                         }
-                        //fireTransferProgress( transferEvent, buffer, (int) Math.min( BUFFER_SIZE, remaining ) );
+
                         outstream.write( buffer, 0, l );
                         remaining -= l;
+                        transferProgressed( completed, this.length );
                     }
                 }
             }
             finally
             {
                 stream.close();
+                out.println();
             }
+            // end transfer
         }
 
         public boolean isStreaming()
         {
             return true;
+        }
+
+
+        public void transferInitiated( String url )
+        {
+            String message = "Uploading";
+
+            out.println( message + ": " + url );
+        }
+
+        public void transferProgressed( long completedSize, long totalSize )
+        {
+
+            StringBuilder buffer = new StringBuilder( 64 );
+
+            buffer.append( getStatus( completedSize, totalSize ) ).append( "  " );
+
+            int pad = lastLength - buffer.length();
+            lastLength = buffer.length();
+            pad( buffer, pad );
+            buffer.append( '\r' );
+
+            out.print( buffer );
+        }
+
+        private void pad( StringBuilder buffer, int spaces )
+        {
+            String block = "                                        ";
+            while ( spaces > 0 )
+            {
+                int n = Math.min( spaces, block.length() );
+                buffer.append( block, 0, n );
+                spaces -= n;
+            }
+        }
+
+        private String getStatus( long complete, long total )
+        {
+            if ( total >= 1024 )
+            {
+                return toKB( complete ) + "/" + toKB( total ) + " KB ";
+            }
+            else if ( total >= 0 )
+            {
+                return complete + "/" + total + " B ";
+            }
+            else if ( complete >= 1024 )
+            {
+                return toKB( complete ) + " KB ";
+            }
+            else
+            {
+                return complete + " B ";
+            }
+        }
+
+        protected long toKB( long bytes )
+        {
+            return ( bytes + 1023 ) / 1024;
         }
 
 
