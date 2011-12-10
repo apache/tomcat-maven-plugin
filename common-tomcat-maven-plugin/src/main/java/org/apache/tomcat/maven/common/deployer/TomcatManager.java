@@ -336,6 +336,24 @@ public class TomcatManager
     }
 
     /**
+     *
+     * @param path
+     * @param war
+     * @param update
+     * @param tag
+     * @param length
+     * @return
+     * @throws TomcatManagerException
+     * @throws IOException
+     * @since 2.0
+     */
+    public TomcatManagerResponse deploy( String path, InputStream war, boolean update, String tag, long length )
+        throws TomcatManagerException, IOException
+    {
+        return deployImpl( path, null, null, war, update, tag, length );
+    }
+
+    /**
      * Deploys the specified context XML configuration to the specified context path.
      *
      * @param path   the webapp context path to deploy to
@@ -596,12 +614,19 @@ public class TomcatManager
     protected TomcatManagerResponse invoke( String path )
         throws TomcatManagerException, IOException
     {
-        return invoke( path, null );
+        return invoke( path, null, -1 );
     }
 
     // ----------------------------------------------------------------------
     // Private Methods
     // ----------------------------------------------------------------------
+
+    private TomcatManagerResponse deployImpl( String path, URL config, URL war, InputStream data, boolean update,
+                                              String tag )
+        throws TomcatManagerException, IOException
+    {
+        return deployImpl( path, config, war, data, update, tag, -1 );
+    }
 
     /**
      * Deploys the specified WAR.
@@ -616,7 +641,8 @@ public class TomcatManager
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    private TomcatManagerResponse deployImpl( String path, URL config, URL war, InputStream data, boolean update, String tag )
+    private TomcatManagerResponse deployImpl( String path, URL config, URL war, InputStream data, boolean update,
+                                              String tag, long length )
         throws TomcatManagerException, IOException
     {
         StringBuilder buffer = new StringBuilder( "/deploy" );
@@ -642,7 +668,7 @@ public class TomcatManager
             buffer.append( "&tag=" ).append( URLEncoder.encode( tag, charset ) );
         }
 
-        return invoke( buffer.toString(), data );
+        return invoke( buffer.toString(), data, length );
     }
 
 
@@ -655,7 +681,7 @@ public class TomcatManager
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    protected TomcatManagerResponse invoke( String path, InputStream data )
+    protected TomcatManagerResponse invoke( String path, InputStream data, long length )
         throws TomcatManagerException, IOException
     {
 
@@ -668,7 +694,7 @@ public class TomcatManager
         {
             HttpPut httpPut = new HttpPut( url + path );
 
-            httpPut.setEntity( new RequestEntityImplementation( data, -1 ) );
+            httpPut.setEntity( new RequestEntityImplementation( data, length ) );
 
             httpRequestBase = httpPut;
 
