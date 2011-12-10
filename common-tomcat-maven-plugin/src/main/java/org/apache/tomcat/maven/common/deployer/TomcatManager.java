@@ -38,6 +38,7 @@ import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.BasicClientConnectionManager;
 import org.apache.http.protocol.BasicHttpContext;
+import org.apache.maven.plugin.logging.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -96,8 +97,14 @@ public class TomcatManager
      */
     private String userAgent;
 
+    /**
+     * @since 2.0
+     */
     private DefaultHttpClient httpClient;
 
+    /**
+     * @since 2.0
+     */
     private BasicHttpContext localContext;
 
     // ----------------------------------------------------------------------
@@ -896,11 +903,10 @@ public class TomcatManager
             }
         }
 
-        protected long toKB( long bytes )
+        private long toKB( long bytes )
         {
             return ( bytes + 1023 ) / 1024;
         }
-
 
     }
 }

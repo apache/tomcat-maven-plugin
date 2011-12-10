@@ -21,6 +21,7 @@ package org.apache.tomcat.maven.plugin.tomcat7.deploy;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
+import org.apache.tomcat.maven.common.deployer.TomcatManagerResponse;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -84,7 +85,12 @@ public class AbstractDeployWarMojo
 
         getLog().info( messagesProvider.getMessage( "AbstractDeployMojo.deployingWar", getDeployedURL() ) );
 
-        log( getManager().deploy( getPath(), new FileInputStream( warFile ), isUpdate(), getTag(),
-                                  warFile.length() ).getHttpResponseBody() );
+        TomcatManagerResponse tomcatManagerResponse =
+            getManager().deploy( getPath(), new FileInputStream( warFile ), isUpdate(), getTag(), warFile.length() );
+
+        getLog().info( "tomcatManager status code:" + tomcatManagerResponse.getStatusCode() + ", ReasonPhrase:"
+                           + tomcatManagerResponse.getReasonPhrase() );
+
+        log( tomcatManagerResponse.getHttpResponseBody() );
     }
 }
