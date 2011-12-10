@@ -95,8 +95,7 @@ public final class EmbeddedRegistry
      * removed from the registry.
      *
      * @param log the log to write possible shutdown exceptions to
-     * @throws org.apache.catalina.LifecycleException
-     *          the first exception which occurred will be rethrown
+     * @throws Exception the first exception which occurred will be rethrown
      */
     public synchronized void shutdownAll( final Log log )
         throws Exception
