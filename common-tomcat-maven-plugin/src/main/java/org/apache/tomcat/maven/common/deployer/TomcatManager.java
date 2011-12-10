@@ -45,6 +45,9 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 /**
  * FIXME http connection tru a proxy
@@ -748,6 +751,8 @@ public class TomcatManager
 
         private String url;
 
+        private long startTime;
+
         private RequestEntityImplementation( final InputStream stream, long length, String url )
         {
             this.stream = stream;
@@ -782,6 +787,7 @@ public class TomcatManager
                 throw new IllegalArgumentException( "Output stream may not be null" );
             }
             transferInitiated( this.url );
+            this.startTime = System.currentTimeMillis();
             try
             {
                 byte[] buffer = new byte[BUFFER_SIZE];
@@ -814,6 +820,7 @@ public class TomcatManager
                         transferProgressed( completed, this.length );
                     }
                 }
+                transferSucceeded( completed );
             }
             finally
             {
@@ -842,23 +849,30 @@ public class TomcatManager
             StringBuilder buffer = new StringBuilder( 64 );
 
             buffer.append( getStatus( completedSize, totalSize ) ).append( "  " );
-
-            int pad = lastLength - buffer.length();
             lastLength = buffer.length();
-            pad( buffer, pad );
             buffer.append( '\r' );
 
             out.print( buffer );
         }
 
-        private void pad( StringBuilder buffer, int spaces )
+        public void transferSucceeded( long contentLength )
         {
-            String block = "                                        ";
-            while ( spaces > 0 )
+
+            if ( contentLength >= 0 )
             {
-                int n = Math.min( spaces, block.length() );
-                buffer.append( block, 0, n );
-                spaces -= n;
+                String type = "Uploaded";
+                String len = contentLength >= 1024 ? toKB( contentLength ) + " KB" : contentLength + " B";
+
+                String throughput = "";
+                long duration = System.currentTimeMillis() - startTime;
+                if ( duration > 0 )
+                {
+                    DecimalFormat format = new DecimalFormat( "0.0", new DecimalFormatSymbols( Locale.ENGLISH ) );
+                    double kbPerSec = ( contentLength / 1024.0 ) / ( duration / 1000.0 );
+                    throughput = " at " + format.format( kbPerSec ) + " KB/sec";
+                }
+
+                out.println( type + ": " + url + " (" + len + throughput + ")" );
             }
         }
 
