@@ -77,6 +77,8 @@ public class Tomcat7Runner
 
     public boolean debug = false;
 
+    public String httpProtocol;
+
     public File extractDirectory = new File( ".extract" );
 
     Catalina container;
@@ -149,6 +151,11 @@ public class Tomcat7Runner
             tomcat.getHost().setAppBase( new File( extractDirectory, "webapps" ).getAbsolutePath() );
 
             String connectorHttpProtocol = runtimeProperties.getProperty( HTTP_PROTOCOL_KEY );
+
+            if ( httpProtocol != null && httpProtocol.trim().length() > 0 )
+            {
+                connectorHttpProtocol = httpProtocol;
+            }
 
             debugMessage( "use connectorHttpProtocol:" + connectorHttpProtocol );
 

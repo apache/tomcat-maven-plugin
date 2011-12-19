@@ -65,12 +65,15 @@ public class Tomcat7RunnerCli
     static Option sysProps = OptionBuilder.withDescription( "use value for given property" ).hasArgs().withDescription(
         "key=value" ).withValueSeparator().create( 'D' );
 
+    static Option httpProtocol = OptionBuilder.withArgName( "httpProtocol" ).hasArg().withDescription(
+        "http protocol to use: HTTP/1.1 or org.apache.coyote.http11.Http11NioProtocol" ).create( "httpProtocol" );
+
     static Options options = new Options();
 
     static
     {
         options.addOption( httpPort ).addOption( httpsPort ).addOption( ajpPort ).addOption( serverXmlPath ).addOption(
-            resetExtract ).addOption( help ).addOption( debug ).addOption( sysProps );
+            resetExtract ).addOption( help ).addOption( debug ).addOption( sysProps ).addOption( httpProtocol );
     }
 
 
@@ -126,6 +129,11 @@ public class Tomcat7RunnerCli
         if ( line.hasOption( debug.getOpt() ) )
         {
             tomcat7Runner.debug = true;
+        }
+
+        if ( line.hasOption( httpProtocol.getOpt() ) )
+        {
+            tomcat7Runner.httpProtocol = line.getOptionValue( httpProtocol.getOpt() );
         }
 
         if ( line.hasOption( sysProps.getOpt() ) )
