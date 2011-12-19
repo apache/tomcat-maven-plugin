@@ -57,6 +57,11 @@ public class Tomcat7Runner
 
     public static final String ACCESS_LOG_VALVE_FORMAT_KEY = "accessLogValveFormat";
 
+    /**
+     * key of the property which contains http protocol : HTTP/1.1 or org.apache.coyote.http11.Http11NioProtocol
+     */
+    public static final String HTTP_PROTOCOL_KEY = "connectorhttpProtocol";
+
 
     public int httpPort;
 
@@ -143,7 +148,11 @@ public class Tomcat7Runner
 
             tomcat.getHost().setAppBase( new File( extractDirectory, "webapps" ).getAbsolutePath() );
 
-            Connector connector = new Connector( "HTTP/1.1" );
+            String connectorHttpProtocol = runtimeProperties.getProperty( HTTP_PROTOCOL_KEY );
+
+            debugMessage( "use connectorHttpProtocol:" + connectorHttpProtocol );
+
+            Connector connector = new Connector( connectorHttpProtocol );
             connector.setPort( httpPort );
 
             if ( httpsPort > 0 )

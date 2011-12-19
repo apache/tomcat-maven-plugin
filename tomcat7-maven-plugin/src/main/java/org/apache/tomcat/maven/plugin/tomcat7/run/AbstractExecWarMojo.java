@@ -219,6 +219,13 @@ public abstract class AbstractExecWarMojo
      */
     private String mainClass;
 
+    /**
+     * which connector protocol to use HTTP/1.1 or org.apache.coyote.http11.Http11NioProtocol
+     * @parameter expression="${maven.tomcat.exec.war.connectorHttpProtocol}" default-value="HTTP/1.1"
+     * @required
+     */
+    private String connectorHttpProtocol;
+
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
@@ -269,6 +276,7 @@ public abstract class AbstractExecWarMojo
             //   * enableNaming=true/false
             //   * wars=foo.war|contextpath;bar.war  ( |contextpath is optionnal if empty use the war name )
             //   * accessLogValveFormat=
+            //   * connectorhttpProtocol: HTTP/1.1 or org.apache.coyote.http11.Http11NioProtocol
             //* optionnal: conf/ with usual tomcat configuration files
             //* MANIFEST with Main-Class
 
@@ -276,6 +284,7 @@ public abstract class AbstractExecWarMojo
 
             properties.put( Tomcat7Runner.ENABLE_NAMING_KEY, Boolean.toString( enableNaming ) );
             properties.put( Tomcat7Runner.ACCESS_LOG_VALVE_FORMAT_KEY, accessLogValveFormat );
+            properties.put( Tomcat7Runner.HTTP_PROTOCOL_KEY, connectorHttpProtocol );
 
             os = new ArchiveStreamFactory().createArchiveOutputStream( ArchiveStreamFactory.JAR,
                                                                        execWarJarOutputStream );

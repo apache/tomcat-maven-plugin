@@ -24,6 +24,7 @@ The generated standalone jar will contains:
    * wars=foo.war|contextpath;bar.war  ( |contextpath is optionnal if empty use the war name)
    * enableNaming=true/false
    * accessLogValveFormat=
+   * connectorhttpProtocol: HTTP/1.1 or org.apache.coyote.http11.Http11NioProtocol
 
 * optionnal: conf/ with usual tomcat configuration files
 
