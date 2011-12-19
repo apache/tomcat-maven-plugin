@@ -77,6 +77,10 @@ public class Tomcat7Runner
 
     public boolean debug = false;
 
+	public boolean clientAuth = false;
+	
+	public String keyAlias = null;
+
     public String httpProtocol;
 
     public File extractDirectory = new File( ".extract" );
@@ -99,6 +103,8 @@ public class Tomcat7Runner
         throws Exception
     {
 
+    	PasswordUtil.deobfuscateSystemProps();
+    	
         // do we have to extract content
         if ( !new File( ".extract" ).exists() || resetExtract )
         {
@@ -159,19 +165,22 @@ public class Tomcat7Runner
 
             debugMessage( "use connectorHttpProtocol:" + connectorHttpProtocol );
 
-            Connector connector = new Connector( connectorHttpProtocol );
-            connector.setPort( httpPort );
+        	if (httpPort > 0) 
+			{
+        	    Connector connector = new Connector( connectorHttpProtocol );
+        	    connector.setPort( httpPort );
 
-            if ( httpsPort > 0 )
-            {
-                connector.setRedirectPort( httpsPort );
+        	    if ( httpsPort > 0 )
+        	    {
+        	        connector.setRedirectPort( httpsPort );
+        	    }
+        	    // FIXME parameter for that def ? ISO-8859-1
+        	    //connector.setURIEncoding(uriEncoding);
+
+        	    tomcat.getService().addConnector( connector );
+
+        	    tomcat.setConnector( connector );
             }
-            // FIXME parameter for that def ? ISO-8859-1
-            //connector.setURIEncoding(uriEncoding);
-
-            tomcat.getService().addConnector( connector );
-
-            tomcat.setConnector( connector );
 
             // add a default acces log valve
             AccessLogValve alv = new AccessLogValve();
@@ -182,10 +191,16 @@ public class Tomcat7Runner
             // create https connector
             if ( httpsPort > 0 )
             {
-                Connector httpsConnector = new Connector( "HTTP/1.1" );
+                Connector httpsConnector = new Connector( connectorHttpProtocol );
                 httpsConnector.setPort( httpsPort );
-                // FIXME parameters for that !!
-                /*
+                httpsConnector.setSecure(true);
+                httpsConnector.setProperty("SSLEnabled", "true");
+                httpsConnector.setProperty("sslProtocol", "TLS");
+
+                String keystoreFile = System.getProperty("javax.net.ssl.keyStore");
+                String keystorePass = System.getProperty("javax.net.ssl.keyStorePassword");
+                String keystoreType = System.getProperty("javax.net.ssl.keyStoreType", "jks");
+                
                 if ( keystoreFile != null )
                 {
                     httpsConnector.setAttribute("keystoreFile", keystoreFile);
@@ -193,9 +208,28 @@ public class Tomcat7Runner
                 if ( keystorePass != null )
                 {
                     httpsConnector.setAttribute("keystorePass", keystorePass);
-                }*/
+                }
+                httpsConnector.setAttribute("keystoreType", keystoreType);
+                
+                String truststoreFile = System.getProperty("javax.net.ssl.trustStore");
+                String truststorePass = System.getProperty("javax.net.ssl.trustStorePassword");
+                String truststoreType = System.getProperty("javax.net.ssl.trustStoreType", "jks");
+                if ( truststoreFile != null )
+                {
+                    httpsConnector.setAttribute("truststoreFile", truststoreFile);
+                }
+                if ( truststorePass != null )
+                {
+                    httpsConnector.setAttribute("truststorePass", truststorePass);
+                }
+                httpsConnector.setAttribute("truststoreType", truststoreType);
+                
+                httpsConnector.setAttribute("clientAuth", clientAuth);
+                httpsConnector.setAttribute("keyAlias", keyAlias);
+                
                 tomcat.getService().addConnector( httpsConnector );
-
+                
+                if (httpPort <= 0) tomcat.setConnector( httpsConnector );
             }
 
             // create ajp connector

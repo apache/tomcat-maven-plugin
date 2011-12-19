@@ -36,6 +36,7 @@ import java.util.Properties;
  * @author Olivier Lamy
  * @since 2.0
  */
+@SuppressWarnings("static-access")
 public class Tomcat7RunnerCli
 {
 
@@ -65,15 +66,29 @@ public class Tomcat7RunnerCli
     static Option sysProps = OptionBuilder.withDescription( "use value for given property" ).hasArgs().withDescription(
         "key=value" ).withValueSeparator().create( 'D' );
 
+	static Option clientAuth =
+            OptionBuilder.withArgName( "clientAuth" ).withDescription( "enable client authentication for https" ).create(
+                "clientAuth" );
+	
+	static Option keyAlias =
+            OptionBuilder.withArgName( "keyAlias" ).hasArgs().withDescription( "alias from keystore for ssl" ).create(
+                "keyAlias" );
+	
+	static Option obfuscate =
+            OptionBuilder.withArgName( "password" ).hasArgs().withDescription( "obfuscate the password and exit" ).create(
+                "obfuscate" );
+
     static Option httpProtocol = OptionBuilder.withArgName( "httpProtocol" ).hasArg().withDescription(
         "http protocol to use: HTTP/1.1 or org.apache.coyote.http11.Http11NioProtocol" ).create( "httpProtocol" );
+
 
     static Options options = new Options();
 
     static
     {
         options.addOption( httpPort ).addOption( httpsPort ).addOption( ajpPort ).addOption( serverXmlPath ).addOption(
-            resetExtract ).addOption( help ).addOption( debug ).addOption( sysProps ).addOption( httpProtocol );
+            resetExtract ).addOption( help ).addOption( debug ).addOption( sysProps ).addOption( httpProtocol )
+            .addOption(clientAuth).addOption(keyAlias).addOption(obfuscate);
     }
 
 
@@ -101,6 +116,11 @@ public class Tomcat7RunnerCli
             System.exit( 0 );
         }
 
+        if ( line.hasOption( obfuscate.getOpt() ) )
+        {
+            System.out.println( PasswordUtil.obfuscate( line.getOptionValue( obfuscate.getOpt() ) ) );
+            System.exit( 0 );
+        }
         Tomcat7Runner tomcat7Runner = new Tomcat7Runner();
 
         tomcat7Runner.runtimeProperties = buildStandaloneProperties();
@@ -147,7 +167,14 @@ public class Tomcat7RunnerCli
                 }
             }
         }
-
+        if ( line.hasOption( clientAuth.getOpt() ) )
+        {
+            tomcat7Runner.clientAuth = true;
+        }
+        if ( line.hasOption( keyAlias.getOpt() ) )
+        {
+            tomcat7Runner.keyAlias = line.getOptionValue( keyAlias.getOpt() );
+        }
         // here we go
         tomcat7Runner.run();
     }
