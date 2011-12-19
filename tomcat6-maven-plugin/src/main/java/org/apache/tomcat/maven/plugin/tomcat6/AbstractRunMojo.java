@@ -741,6 +741,10 @@ public abstract class AbstractRunMojo
                 if ( httpsPort > 0 )
                 {
                     Connector httpsConnector = container.createConnector( (InetAddress) null, httpsPort, true );
+                    httpsConnector.setSecure( true );
+                    httpsConnector.setProperty( "SSLEnabled", "true" );
+                    // should be default but configure it anyway
+                    httpsConnector.setProperty( "sslProtocol", "TLS" );
                     if ( keystoreFile != null )
                     {
                         httpsConnector.setAttribute( "keystoreFile", keystoreFile );
