@@ -84,6 +84,9 @@ public class Tomcat7RunnerCli
     static Option extractDirectory = OptionBuilder.withArgName( "extractDirectory" ).hasArg().withDescription(
         "path to extract war content default value .extract" ).create( "extractDirectory" );
 
+    static Option loggerName = OptionBuilder.withArgName( "loggerName" ).hasArg().withDescription(
+        "logger to use: slf4j to use slf4j bridge on top of jul" ).create( "loggerName" );
+
 
     static Options options = new Options();
 
@@ -92,7 +95,7 @@ public class Tomcat7RunnerCli
         options.addOption( httpPort ).addOption( httpsPort ).addOption( ajpPort ).addOption( serverXmlPath ).addOption(
             resetExtract ).addOption( help ).addOption( debug ).addOption( sysProps ).addOption(
             httpProtocol ).addOption( clientAuth ).addOption( keyAlias ).addOption( obfuscate ).addOption(
-            extractDirectory );
+            extractDirectory ).addOption( loggerName );
     }
 
 
@@ -183,6 +186,11 @@ public class Tomcat7RunnerCli
         if ( line.hasOption( extractDirectory.getOpt() ) )
         {
             tomcat7Runner.extractDirectory = line.getOptionValue( extractDirectory.getOpt() );
+        }
+
+        if ( line.hasOption( loggerName.getOpt() ) )
+        {
+            tomcat7Runner.loggerName = line.getOptionValue( loggerName.getOpt() );
         }
 
         // here we go

@@ -32,6 +32,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -87,6 +89,8 @@ public class Tomcat7Runner
 
     public File extractDirectoryFile;
 
+    public String loggerName;
+
     Catalina container;
 
     Tomcat tomcat;
@@ -106,6 +110,11 @@ public class Tomcat7Runner
     {
 
         PasswordUtil.deobfuscateSystemProps();
+
+        if ( loggerName != null && loggerName.length() > 0 )
+        {
+            installLogger( loggerName );
+        }
 
         this.extractDirectoryFile = new File( this.extractDirectory );
 
@@ -532,5 +541,35 @@ public class Tomcat7Runner
     public boolean enableNaming()
     {
         return Boolean.parseBoolean( runtimeProperties.getProperty( ENABLE_NAMING_KEY, Boolean.FALSE.toString() ) );
+    }
+
+    private void installLogger( String loggerName )
+        throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException,
+        InvocationTargetException
+    {
+        if ( "slf4j".equals( loggerName ) )
+        {
+
+            try
+            {
+                // Check class is available
+                final Class<?> clazz = Class.forName( "org.slf4j.bridge.SLF4JBridgeHandler" );
+
+                // Remove all JUL handlers
+                java.util.logging.LogManager.getLogManager().reset();
+
+                // Install slf4j bridge handler
+                final Method method = clazz.getMethod( "install", null );
+                method.invoke( null );
+            }
+            catch ( ClassNotFoundException e )
+            {
+                System.out.println( "WARNING: issue configuring slf4j jul bridge, skip it" );
+            }
+        }
+        else
+        {
+            System.out.println( "WARNING: loggerName " + loggerName + " not supported, skip it" );
+        }
     }
 }
