@@ -186,6 +186,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.tomcat.maven</groupId>
       <artifactId>tomcat-maven-plugin-it</artifactId>
       <scope>test</scope>

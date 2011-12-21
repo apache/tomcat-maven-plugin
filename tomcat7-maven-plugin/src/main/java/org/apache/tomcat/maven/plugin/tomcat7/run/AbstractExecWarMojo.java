@@ -41,6 +41,7 @@ import org.apache.tomcat.maven.runner.Tomcat7Runner;
 import org.apache.tomcat.maven.runner.Tomcat7RunnerCli;
 import org.codehaus.plexus.archiver.jar.Manifest;
 import org.codehaus.plexus.archiver.jar.ManifestException;
+import org.codehaus.plexus.util.DirectoryScanner;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -49,7 +50,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.jar.JarEntry;
@@ -212,6 +215,13 @@ public abstract class AbstractExecWarMojo
     private List<ExtraDependency> extraDependencies;
 
     /**
+     * list of extra resources to add in the standalone tomcat jar: your logger configuration etc
+     *
+     * @parameter
+     */
+    private List<ExtraResource> extraResources;
+
+    /**
      * Main class to use for starting the standalone jar.
      *
      * @parameter expression="${maven.tomcat.exec.war.mainClass}" default-value="org.apache.tomcat.maven.runner.Tomcat7RunnerCli"
@@ -221,6 +231,7 @@ public abstract class AbstractExecWarMojo
 
     /**
      * which connector protocol to use HTTP/1.1 or org.apache.coyote.http11.Http11NioProtocol
+     *
      * @parameter expression="${maven.tomcat.exec.war.connectorHttpProtocol}" default-value="HTTP/1.1"
      * @required
      */
@@ -431,6 +442,29 @@ public abstract class AbstractExecWarMojo
                 projectHelper.attachArtifact( project, attachArtifactClassifierType, attachArtifactClassifier,
                                               execWarJar );
             }
+
+            if ( extraResources != null )
+            {
+                for ( ExtraResource extraResource : extraResources )
+                {
+
+                    DirectoryScanner directoryScanner = new DirectoryScanner();
+                    directoryScanner.setBasedir( extraResource.getDirectory() );
+                    directoryScanner.addDefaultExcludes();
+                    directoryScanner.setExcludes( toStringArray( extraResource.getExcludes() ) );
+                    directoryScanner.setIncludes( toStringArray( extraResource.getIncludes() ) );
+                    directoryScanner.scan();
+                    for ( String includeFile : directoryScanner.getIncludedFiles() )
+                    {
+                        getLog().debug( "include file:" + includeFile );
+                        os.putArchiveEntry( new JarArchiveEntry( includeFile ) );
+                        IOUtils.copy( new FileInputStream( new File( extraResource.getDirectory(), includeFile ) ),
+                                      os );
+                        os.closeArchiveEntry();
+                    }
+                }
+            }
+
         }
         catch ( ManifestException e )
         {
@@ -459,6 +493,21 @@ public abstract class AbstractExecWarMojo
             IOUtils.closeQuietly( execWarJarOutputStream );
             IOUtils.closeQuietly( tmpPropertiesFileOutputStream );
         }
+    }
+
+    private String[] toStringArray( List list )
+    {
+        if ( list == null || list.isEmpty() )
+        {
+            return new String[0];
+        }
+        List<String> res = new ArrayList<String>( list.size() );
+
+        for ( Iterator ite = list.iterator(); ite.hasNext(); )
+        {
+            res.add( (String) ite.next() );
+        }
+        return res.toArray( new String[res.size()] );
     }
 
 
