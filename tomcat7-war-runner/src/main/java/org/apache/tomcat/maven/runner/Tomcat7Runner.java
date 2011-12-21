@@ -108,20 +108,11 @@ public class Tomcat7Runner
         PasswordUtil.deobfuscateSystemProps();
 
         this.extractDirectoryFile = new File( this.extractDirectory );
-        if ( !this.extractDirectoryFile.exists() )
-        {
-            boolean create = this.extractDirectoryFile.mkdirs();
-            if ( !create )
-            {
-                System.out.println( "FATAL: impossible to create directory:" + this.extractDirectoryFile.getPath() );
-                System.exit( 1 );
-            }
-        }
 
         debugMessage( "use extractDirectory:" + extractDirectoryFile.getPath() );
 
         // do we have to extract content
-        if ( !new File( ".extract" ).exists() || resetExtract )
+        if ( !extractDirectoryFile.exists() || resetExtract )
         {
             extract();
         }
@@ -293,7 +284,9 @@ public class Tomcat7Runner
         InputStream inputStream = null;
         try
         {
-            URL url = new URL( "jar:file:" + warPath + "!/META-INF/context.xml" );
+            String urlStr = "jar:file:" + warPath + "!/META-INF/context.xml";
+            debugMessage( "search context.xml in url:'" + urlStr + "'" );
+            URL url = new URL( urlStr );
             inputStream = url.openConnection().getInputStream();
             if ( inputStream != null )
             {
@@ -352,8 +345,24 @@ public class Tomcat7Runner
             FileUtils.deleteDirectory( extractDirectoryFile );
         }
 
+        if ( !this.extractDirectoryFile.exists() )
+        {
+            boolean created = this.extractDirectoryFile.mkdirs();
+            if ( !created )
+            {
+                System.out.println( "FATAL: impossible to create directory:" + this.extractDirectoryFile.getPath() );
+                System.exit( 1 );
+            }
+        }
+
         // ensure webapp dir is here
-        new File( extractDirectory, "webapps" ).mkdirs();
+        boolean created = new File( extractDirectory, "webapps" ).mkdirs();
+        if ( !created )
+        {
+            System.out.println(
+                "FATAL: impossible to create directory:" + this.extractDirectoryFile.getPath() + "/webapps" );
+            System.exit( 1 );
+        }
 
         String wars = runtimeProperties.getProperty( WARS_KEY );
         populateWebAppWarPerContext( wars );
@@ -369,15 +378,21 @@ public class Tomcat7Runner
                 {
                     if ( entry.getKey().equals( "/" ) )
                     {
-                        expand( inputStream, new File( extractDirectory, "webapps/ROOT.war" ) );
+                        File expandFile = new File( extractDirectory, "webapps/ROOT.war" );
+                        debugMessage( "expand to file:" + expandFile.getPath() );
+                        expand( inputStream, expandFile );
                     }
                     else
                     {
-                        expand( inputStream, new File( extractDirectory, "webapps/" + entry.getValue() ) );
+                        File expandFile = new File( extractDirectory, "webapps/" + entry.getValue() );
+                        debugMessage( "expand to file:" + expandFile.getPath() );
+                        expand( inputStream, expandFile );
                     }
                 }
                 else
                 {
+                    File expandFile = new File( extractDirectory, "webapps/" + entry.getValue() );
+                    debugMessage( "expand to file:" + expandFile.getPath() );
                     expand( inputStream, new File( extractDirectory, "webapps/" + entry.getValue() ) );
                 }
             }
