@@ -36,7 +36,7 @@ import java.util.Properties;
  * @author Olivier Lamy
  * @since 2.0
  */
-@SuppressWarnings("static-access")
+@SuppressWarnings( "static-access" )
 public class Tomcat7RunnerCli
 {
 
@@ -66,20 +66,23 @@ public class Tomcat7RunnerCli
     static Option sysProps = OptionBuilder.withDescription( "use value for given property" ).hasArgs().withDescription(
         "key=value" ).withValueSeparator().create( 'D' );
 
-	static Option clientAuth =
-            OptionBuilder.withArgName( "clientAuth" ).withDescription( "enable client authentication for https" ).create(
-                "clientAuth" );
-	
-	static Option keyAlias =
-            OptionBuilder.withArgName( "keyAlias" ).hasArgs().withDescription( "alias from keystore for ssl" ).create(
-                "keyAlias" );
-	
-	static Option obfuscate =
-            OptionBuilder.withArgName( "password" ).hasArgs().withDescription( "obfuscate the password and exit" ).create(
-                "obfuscate" );
+    static Option clientAuth =
+        OptionBuilder.withArgName( "clientAuth" ).withDescription( "enable client authentication for https" ).create(
+            "clientAuth" );
+
+    static Option keyAlias =
+        OptionBuilder.withArgName( "keyAlias" ).hasArgs().withDescription( "alias from keystore for ssl" ).create(
+            "keyAlias" );
+
+    static Option obfuscate =
+        OptionBuilder.withArgName( "password" ).hasArgs().withDescription( "obfuscate the password and exit" ).create(
+            "obfuscate" );
 
     static Option httpProtocol = OptionBuilder.withArgName( "httpProtocol" ).hasArg().withDescription(
         "http protocol to use: HTTP/1.1 or org.apache.coyote.http11.Http11NioProtocol" ).create( "httpProtocol" );
+
+    static Option extractDirectory = OptionBuilder.withArgName( "extractDirectory" ).hasArg().withDescription(
+        "path to extract war content" ).create( "extractDirectory" );
 
 
     static Options options = new Options();
@@ -87,8 +90,9 @@ public class Tomcat7RunnerCli
     static
     {
         options.addOption( httpPort ).addOption( httpsPort ).addOption( ajpPort ).addOption( serverXmlPath ).addOption(
-            resetExtract ).addOption( help ).addOption( debug ).addOption( sysProps ).addOption( httpProtocol )
-            .addOption(clientAuth).addOption(keyAlias).addOption(obfuscate);
+            resetExtract ).addOption( help ).addOption( debug ).addOption( sysProps ).addOption(
+            httpProtocol ).addOption( clientAuth ).addOption( keyAlias ).addOption( obfuscate ).addOption(
+            extractDirectory );
     }
 
 
@@ -175,6 +179,12 @@ public class Tomcat7RunnerCli
         {
             tomcat7Runner.keyAlias = line.getOptionValue( keyAlias.getOpt() );
         }
+
+        if ( line.hasOption( extractDirectory.getOpt() ) )
+        {
+            tomcat7Runner.extractDirectory = line.getOptionValue( extractDirectory.getOpt() );
+        }
+
         // here we go
         tomcat7Runner.run();
     }

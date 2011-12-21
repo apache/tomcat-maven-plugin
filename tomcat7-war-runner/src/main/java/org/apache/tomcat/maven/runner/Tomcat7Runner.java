@@ -77,13 +77,15 @@ public class Tomcat7Runner
 
     public boolean debug = false;
 
-	public boolean clientAuth = false;
-	
-	public String keyAlias = null;
+    public boolean clientAuth = false;
+
+    public String keyAlias = null;
 
     public String httpProtocol;
 
-    public File extractDirectory = new File( ".extract" );
+    public String extractDirectory = ".extract";
+
+    public File extractDirectoryFile;
 
     Catalina container;
 
@@ -103,8 +105,21 @@ public class Tomcat7Runner
         throws Exception
     {
 
-    	PasswordUtil.deobfuscateSystemProps();
-    	
+        PasswordUtil.deobfuscateSystemProps();
+
+        this.extractDirectoryFile = new File( this.extractDirectory );
+        if ( !this.extractDirectoryFile.exists() )
+        {
+            boolean create = this.extractDirectoryFile.mkdirs();
+            if ( !create )
+            {
+                System.out.println( "FATAL: impossible to create directory:" + this.extractDirectoryFile.getPath() );
+                System.exit( 1 );
+            }
+        }
+
+        debugMessage( "use extractDirectory:" + extractDirectoryFile.getPath() );
+
         // do we have to extract content
         if ( !new File( ".extract" ).exists() || resetExtract )
         {
@@ -126,8 +141,8 @@ public class Tomcat7Runner
 
         System.setProperty( "java.io.tmpdir", tmpDir.getAbsolutePath() );
 
-        System.setProperty( "catalina.base", extractDirectory.getAbsolutePath() );
-        System.setProperty( "catalina.home", extractDirectory.getAbsolutePath() );
+        System.setProperty( "catalina.base", extractDirectoryFile.getAbsolutePath() );
+        System.setProperty( "catalina.home", extractDirectoryFile.getAbsolutePath() );
 
         // start with a server.xml
         if ( serverXmlPath != null || useServerXml() )
@@ -165,21 +180,21 @@ public class Tomcat7Runner
 
             debugMessage( "use connectorHttpProtocol:" + connectorHttpProtocol );
 
-        	if (httpPort > 0) 
-			{
-        	    Connector connector = new Connector( connectorHttpProtocol );
-        	    connector.setPort( httpPort );
+            if ( httpPort > 0 )
+            {
+                Connector connector = new Connector( connectorHttpProtocol );
+                connector.setPort( httpPort );
 
-        	    if ( httpsPort > 0 )
-        	    {
-        	        connector.setRedirectPort( httpsPort );
-        	    }
-        	    // FIXME parameter for that def ? ISO-8859-1
-        	    //connector.setURIEncoding(uriEncoding);
+                if ( httpsPort > 0 )
+                {
+                    connector.setRedirectPort( httpsPort );
+                }
+                // FIXME parameter for that def ? ISO-8859-1
+                //connector.setURIEncoding(uriEncoding);
 
-        	    tomcat.getService().addConnector( connector );
+                tomcat.getService().addConnector( connector );
 
-        	    tomcat.setConnector( connector );
+                tomcat.setConnector( connector );
             }
 
             // add a default acces log valve
@@ -193,43 +208,46 @@ public class Tomcat7Runner
             {
                 Connector httpsConnector = new Connector( connectorHttpProtocol );
                 httpsConnector.setPort( httpsPort );
-                httpsConnector.setSecure(true);
-                httpsConnector.setProperty("SSLEnabled", "true");
-                httpsConnector.setProperty("sslProtocol", "TLS");
+                httpsConnector.setSecure( true );
+                httpsConnector.setProperty( "SSLEnabled", "true" );
+                httpsConnector.setProperty( "sslProtocol", "TLS" );
 
-                String keystoreFile = System.getProperty("javax.net.ssl.keyStore");
-                String keystorePass = System.getProperty("javax.net.ssl.keyStorePassword");
-                String keystoreType = System.getProperty("javax.net.ssl.keyStoreType", "jks");
-                
+                String keystoreFile = System.getProperty( "javax.net.ssl.keyStore" );
+                String keystorePass = System.getProperty( "javax.net.ssl.keyStorePassword" );
+                String keystoreType = System.getProperty( "javax.net.ssl.keyStoreType", "jks" );
+
                 if ( keystoreFile != null )
                 {
-                    httpsConnector.setAttribute("keystoreFile", keystoreFile);
+                    httpsConnector.setAttribute( "keystoreFile", keystoreFile );
                 }
                 if ( keystorePass != null )
                 {
-                    httpsConnector.setAttribute("keystorePass", keystorePass);
+                    httpsConnector.setAttribute( "keystorePass", keystorePass );
                 }
-                httpsConnector.setAttribute("keystoreType", keystoreType);
-                
-                String truststoreFile = System.getProperty("javax.net.ssl.trustStore");
-                String truststorePass = System.getProperty("javax.net.ssl.trustStorePassword");
-                String truststoreType = System.getProperty("javax.net.ssl.trustStoreType", "jks");
+                httpsConnector.setAttribute( "keystoreType", keystoreType );
+
+                String truststoreFile = System.getProperty( "javax.net.ssl.trustStore" );
+                String truststorePass = System.getProperty( "javax.net.ssl.trustStorePassword" );
+                String truststoreType = System.getProperty( "javax.net.ssl.trustStoreType", "jks" );
                 if ( truststoreFile != null )
                 {
-                    httpsConnector.setAttribute("truststoreFile", truststoreFile);
+                    httpsConnector.setAttribute( "truststoreFile", truststoreFile );
                 }
                 if ( truststorePass != null )
                 {
-                    httpsConnector.setAttribute("truststorePass", truststorePass);
+                    httpsConnector.setAttribute( "truststorePass", truststorePass );
                 }
-                httpsConnector.setAttribute("truststoreType", truststoreType);
-                
-                httpsConnector.setAttribute("clientAuth", clientAuth);
-                httpsConnector.setAttribute("keyAlias", keyAlias);
-                
+                httpsConnector.setAttribute( "truststoreType", truststoreType );
+
+                httpsConnector.setAttribute( "clientAuth", clientAuth );
+                httpsConnector.setAttribute( "keyAlias", keyAlias );
+
                 tomcat.getService().addConnector( httpsConnector );
-                
-                if (httpPort <= 0) tomcat.setConnector( httpsConnector );
+
+                if ( httpPort <= 0 )
+                {
+                    tomcat.setConnector( httpsConnector );
+                }
             }
 
             // create ajp connector
@@ -329,11 +347,10 @@ public class Tomcat7Runner
         throws Exception
     {
 
-        if ( extractDirectory.exists() )
+        if ( extractDirectoryFile.exists() )
         {
-            FileUtils.deleteDirectory( extractDirectory );
+            FileUtils.deleteDirectory( extractDirectoryFile );
         }
-        extractDirectory.mkdirs();
 
         // ensure webapp dir is here
         new File( extractDirectory, "webapps" ).mkdirs();
@@ -374,13 +391,13 @@ public class Tomcat7Runner
         }
 
         // expand tomcat configuration files if there
-        expandConfigurationFile( "catalina.properties", extractDirectory );
-        expandConfigurationFile( "logging.properties", extractDirectory );
-        expandConfigurationFile( "tomcat-users.xml", extractDirectory );
-        expandConfigurationFile( "catalina.policy", extractDirectory );
-        expandConfigurationFile( "context.xml", extractDirectory );
-        expandConfigurationFile( "server.xml", extractDirectory );
-        expandConfigurationFile( "web.xml", extractDirectory );
+        expandConfigurationFile( "catalina.properties", extractDirectoryFile );
+        expandConfigurationFile( "logging.properties", extractDirectoryFile );
+        expandConfigurationFile( "tomcat-users.xml", extractDirectoryFile );
+        expandConfigurationFile( "catalina.policy", extractDirectoryFile );
+        expandConfigurationFile( "context.xml", extractDirectoryFile );
+        expandConfigurationFile( "server.xml", extractDirectoryFile );
+        expandConfigurationFile( "web.xml", extractDirectoryFile );
 
     }
 
@@ -495,6 +512,7 @@ public class Tomcat7Runner
             System.out.println( message );
         }
     }
+
 
     public boolean enableNaming()
     {
