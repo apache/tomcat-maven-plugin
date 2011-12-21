@@ -82,7 +82,7 @@ public class Tomcat7RunnerCli
         "http protocol to use: HTTP/1.1 or org.apache.coyote.http11.Http11NioProtocol" ).create( "httpProtocol" );
 
     static Option extractDirectory = OptionBuilder.withArgName( "extractDirectory" ).hasArg().withDescription(
-        "path to extract war content" ).create( "extractDirectory" );
+        "path to extract war content default value .extract" ).create( "extractDirectory" );
 
 
     static Options options = new Options();
