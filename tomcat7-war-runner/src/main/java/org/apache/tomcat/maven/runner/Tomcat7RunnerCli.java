@@ -52,7 +52,7 @@ public class Tomcat7RunnerCli
         OptionBuilder.withArgName( "ajpPort" ).hasArg().withDescription( "ajp port to use" ).create( "ajpPort" );
 
     static Option serverXmlPath =
-        OptionBuilder.withArgName( "serverXmlPath" ).hasArg().withDescription( "server.xml to use, optionnal" ).create(
+        OptionBuilder.withArgName( "serverXmlPath" ).hasArg().withDescription( "server.xml to use, optional" ).create(
             "serverXmlPath" );
 
     static Option resetExtract =
@@ -82,7 +82,7 @@ public class Tomcat7RunnerCli
         "http protocol to use: HTTP/1.1 or org.apache.coyote.http11.Http11NioProtocol" ).create( "httpProtocol" );
 
     static Option extractDirectory = OptionBuilder.withArgName( "extractDirectory" ).hasArg().withDescription(
-        "path to extract war content default value .extract" ).create( "extractDirectory" );
+        "path to extract war content, default value: .extract" ).create( "extractDirectory" );
 
     static Option loggerName = OptionBuilder.withArgName( "loggerName" ).hasArg().withDescription(
         "logger to use: slf4j to use slf4j bridge on top of jul" ).create( "loggerName" );
