@@ -45,11 +45,12 @@
     </breadcrumbs>
 
     <menu name="Apache Tomcat Mojo">
-      <item name="About"           href="index.html"/>
-      <item name="Context Goals"   href="context-goals.html"/>
-      <item name="Container Goals" href="container-goals.html"/>
-      <item name="Executable War"  href="executable-war-jar.html"/>
+      <item name="About"             href="index.html"/>
+      <item name="Context Goals"     href="context-goals.html"/>
+      <item name="Container Goals"   href="container-goals.html"/>
+      <item name="Executable War"    href="executable-war-jar.html"/>
       <item name="Developement Test" href="snapshot-test.html"/>
+      <item name="Changelog"         href="jira-report.html"/>
 
     </menu>
 
