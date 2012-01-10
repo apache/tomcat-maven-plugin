@@ -313,8 +313,6 @@ public class Tomcat7Runner
         return null;
     }
 
-    //protected WebappLoader createWebappLoader()
-
     private void waitIndefinitely()
     {
         Object lock = new Object();
@@ -327,7 +325,8 @@ public class Tomcat7Runner
             }
             catch ( InterruptedException exception )
             {
-                System.exit( 1 );
+                throw new Error( "InterruptedException on wait Indefinitely lock:" + exception.getMessage(),
+                                 exception );
             }
         }
     }
@@ -359,8 +358,7 @@ public class Tomcat7Runner
             boolean created = this.extractDirectoryFile.mkdirs();
             if ( !created )
             {
-                System.out.println( "FATAL: impossible to create directory:" + this.extractDirectoryFile.getPath() );
-                System.exit( 1 );
+                throw new Exception( "FATAL: impossible to create directory:" + this.extractDirectoryFile.getPath() );
             }
         }
 
@@ -368,9 +366,9 @@ public class Tomcat7Runner
         boolean created = new File( extractDirectory, "webapps" ).mkdirs();
         if ( !created )
         {
-            System.out.println(
+            throw new Exception(
                 "FATAL: impossible to create directory:" + this.extractDirectoryFile.getPath() + "/webapps" );
-            System.exit( 1 );
+
         }
 
         String wars = runtimeProperties.getProperty( WARS_KEY );
