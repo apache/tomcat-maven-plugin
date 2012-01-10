@@ -3,7 +3,7 @@
  ---
  Oliver Lamy
  ---
- 2011-10-08
+ 2011-01-10
  ---
 
  ~~ Licensed to the Apache Software Foundation (ASF) under one
@@ -67,10 +67,13 @@ Apache Tomcat Maven Plugin
 
 * Goals Overview
 
-  The goals for this plugin come in two categories:
 
   * {{{./context-goals.html}Goals to manipulate deployed projects within Tomcat}}
 
   * {{{./container-goals.html}Goals to obtain information from Tomcat}}
+
+  * {{{./executable-war-jar.html}Build an Executable War/Jar}}
+
+  []
 
 

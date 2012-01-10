@@ -3,7 +3,7 @@
  ---
  Olivier Lamy
  ---
- October 17, 2011
+ 2011-01-10
  ---
  
  ~~ Licensed to the Apache Software Foundation (ASF) under one
@@ -26,7 +26,7 @@
  ~~ NOTE: For help with the syntax of this file, see:
  ~~ http://maven.apache.org/doxia/references/apt-format.html 
 
-Build a Executable War
+Build an Executable War/Jar
 
  Since version 2.0 you can now build an executable war/jar with an embedded Apache Tomcat7.
 
