@@ -49,6 +49,7 @@
       <item name="Context Goals"     href="context-goals.html"/>
       <item name="Container Goals"   href="container-goals.html"/>
       <item name="Executable War"    href="executable-war-jar.html"/>
+      <item name="Run Mojo"           href="run-mojo-features.html"/>
       <item name="Developement Test" href="snapshot-test.html"/>
       <item name="Changelog"         href="jira-report.html"/>
 
@@ -63,14 +64,12 @@
       <item name="Sponsoring Apache" href="http://www.apache.org/foundation/sponsorship.html"/>
       <item name="Thanks" href="http://www.apache.org/foundation/thanks.html"/>
     </menu>
-  </body>
 
-  <custom>
     <footer>
-      <div>
-      Apache Tomcat, Tomcat, Apache, the Apache feather logo, and the Apache Tomcat project logo are trademarks of The Apache Software Foundation.
-      All other marks mentioned may be trademarks or registered trademarks of their respective owners.</div>
+      <div class="row span16">
+        Apache Tomcat, Tomcat, Apache, the Apache feather, and the Apache Tomcat project logo are trademarks of the Apache Software Foundation.</div>
     </footer>
-  </custom>
+
+  </body>
 
 </project>
