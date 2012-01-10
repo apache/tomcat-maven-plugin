@@ -29,13 +29,24 @@
 Apache Tomcat Maven Plugin
 
   This is the new home for the Tomcat Maven Plugin (previously hosted at Codehaus).
-  The version 2.0 which will support Tomcat 7 is under development.
+
+  The version ${project.version} have the following new features:
+
+  * Apache Tomcat7 support
+
+  * {{{./executable-war-jar.html}Build an Executable War/Jar}}
+
+  []
+
+  More details in {{{./jira-report.html}Generated changelog from issue tracker}}.
 
   The Tomcat Maven Plugin provides goals to manipulate WAR projects within the {{{http://tomcat.apache.org/}Apache Tomcat}} servlet container.
 
-  Since version 2.0 tomcat mojos has been renamed to tomcat6 and tomcat7 with the same goals.
+* groupId and Mojo name change
 
-  You must configure your pom to use this new groupId
+  Since version 2.0-beta-1 tomcat mojos has been renamed to tomcat6 and tomcat7 with the same goals.
+
+  You must configure your pom to use this new groupId:
 
 +----------
     <pluginManagement>
