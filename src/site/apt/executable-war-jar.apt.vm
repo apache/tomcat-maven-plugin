@@ -150,13 +150,25 @@ Build a Executable War
 
 +------
 usage: java -jar [path to your exec war jar]
- -ajpPort <ajpPort>               ajp port to use
- -D <arg>                         key=value
- -h,--help                        help
- -httpPort <httpPort>             http port to use
- -httpsPort <httpsPort>           https port to use
- -resetExtract                    clean previous extract directory
- -serverXmlPath <serverXmlPath>   server.xml to use, optional
- -X,--debug                       debug
+ -ajpPort <ajpPort>                     ajp port to use
+ -clientAuth                            enable client authentication for
+                                        https
+ -D <arg>                               key=value
+ -extractDirectory <extractDirectory>   path to extract war content,
+                                        default value: .extract
+ -h,--help                              help
+ -httpPort <httpPort>                   http port to use
+ -httpProtocol <httpProtocol>           http protocol to use: HTTP/1.1 or
+                                        org.apache.coyote.http11.Http11Nio
+                                        Protocol
+ -httpsPort <httpsPort>                 https port to use
+ -keyAlias <keyAlias>                   alias from keystore for ssl
+ -loggerName <loggerName>               logger to use: slf4j to use slf4j
+                                        bridge on top of jul
+ -obfuscate <password>                  obfuscate the password and exit
+ -resetExtract                          clean previous extract directory
+ -serverXmlPath <serverXmlPath>         server.xml to use, optional
+ -X,--debug                             debug
+
 +------
 
