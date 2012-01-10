@@ -4,7 +4,7 @@
  Mark Hobson
  <markhobson@gmail.com>
  ---
- November 21, 2005
+ 2011-01-10
  ---
 
  ~~ Licensed to the Apache Software Foundation (ASF) under one
@@ -53,25 +53,25 @@ Context Goals
  * To redeploy a WAR project deployed by <<<tomcat:deploy>>> you can type:
 
 +--
-mvn package tomcat:redeploy
+mvn package tomcat6/7:redeploy
 +--
 
  * To redeploy a WAR project deployed by <<<tomcat:exploded>>> you can type:
 
 +--
-mvn war:exploded tomcat:redeploy
+mvn war:exploded tomcat6/7:redeploy
 +--
 
  * To redeploy a WAR project deployed by <<<tomcat:inplace>>> you can type:
 
 +--
-mvn war:inplace tomcat:redeploy
+mvn war:inplace tomcat6/7:redeploy
 +--
 
  * To redeploy a context.xml file deployed by <<<tomcat:deploy>>> you can type:
 
 +--
-mvn tomcat:redeploy
+mvn tomcat6/7:redeploy
 +--
 
  <<Note:>> Depending on the <<<docBase>>> specified in the <<<context.xml>>> you
@@ -82,7 +82,7 @@ mvn tomcat:redeploy
  To undeploy a WAR from Tomcat you can type:
 
 +--
-mvn tomcat:undeploy
+mvn tomcat6/7:undeploy
 +--
 
 * {Starting a WAR project}
@@ -90,7 +90,7 @@ mvn tomcat:undeploy
  To start a WAR in Tomcat you can type:
 
 +--
-mvn tomcat:start
+mvn tomcat6:start
 +--
 
 * {Stopping a WAR project}
@@ -98,7 +98,7 @@ mvn tomcat:start
  To stop a WAR in Tomcat you can type:
 
 +--
-mvn tomcat:stop
+mvn tomcat6:stop
 +--
 
 * {Listing session statistics}
@@ -106,5 +106,5 @@ mvn tomcat:stop
  To list the session statistics for a deployed WAR project you can type:
 
 +--
-mvn tomcat:sessions
+mvn tomcat6:sessions
 +--
