@@ -1,0 +1,44 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="js/jquery-1.7.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.1.4.0.css">
+  </head>
+
+  <body>
+  <div class="container-fluid">
+  <div class="row">
+    <div class="span16">
+      <label for="who">Who ?</label>
+      <input id="who" type="text"/>
+    </div>
+
+    <div class="span16">
+      <input id="send-btn" type="button" class="btn" value="send"/>
+    </div>
+
+    <div id="response" class="span6">
+    </div>
+    <div class="span10"></div>
+
+  </div>
+  </div>
+  </body>
+  <script>
+      ${symbol_dollar}(function() {
+        ${symbol_dollar}("${symbol_pound}send-btn").on("click", function(){
+            ${symbol_dollar}.ajax({
+              type: "GET",
+              url: "restServices/testServices/HelloService/sayHello/"+${symbol_dollar}("${symbol_pound}who").val()
+            }).done(function( msg ) {
+              ${symbol_dollar}("${symbol_pound}response").addClass("alert-message");
+              ${symbol_dollar}("${symbol_pound}response").addClass("info");
+              ${symbol_dollar}("${symbol_pound}response").html(msg);
+            });
+        })
+      });
+  </script>
+</html>

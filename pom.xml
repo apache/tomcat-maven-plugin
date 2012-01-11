@@ -220,6 +220,7 @@
     <module>tomcat6-maven-plugin</module>
     <module>tomcat7-maven-plugin</module>
     <module>tomcat7-war-runner</module>
+    <module>tomcat-maven-archetype</module>
   </modules>
 
   <dependencyManagement>
@@ -586,7 +587,7 @@
         <executions>
           <execution>
             <id>rat-verify</id>
-            <phase>test</phase>
+            <phase>verify</phase>
             <goals>
               <goal>check</goal>
             </goals>
