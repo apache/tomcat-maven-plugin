@@ -83,18 +83,26 @@
         </plugin>
       </plugins>
     </pluginManagement>
-
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-archetype-plugin</artifactId>
-        <version>${archetypeVersion}</version>
-        <configuration>
-          <settingsFile>${basedir}/src/test/test-settings.xml</settingsFile>
-          <localRepositoryPath>${basedir}/target/local-repo</localRepositoryPath>
-        </configuration>
-      </plugin>
-    </plugins>
-
   </build>
+
+
+  <profiles>
+    <profile>
+      <id>run-its</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-archetype-plugin</artifactId>
+            <version>${archetypeVersion}</version>
+            <configuration>
+              <settingsFile>${basedir}/src/test/test-settings.xml</settingsFile>
+              <localRepositoryPath>${basedir}/target/local-repo</localRepositoryPath>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
 </project>
