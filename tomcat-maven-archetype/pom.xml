@@ -38,6 +38,7 @@
   <properties>
     <archetypeVersion>2.2</archetypeVersion>
     <tomcatPluginVersion>${project.version}</tomcatPluginVersion>
+    <archetypeItGoals>clean,verify</archetypeItGoals>
   </properties>
   <build>
 
@@ -47,6 +48,12 @@
         <filtering>true</filtering>
       </resource>
     </resources>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>true</filtering>
+      </testResource>
+    </testResources>
 
     <extensions>
       <extension>
@@ -102,6 +109,12 @@
           </plugin>
         </plugins>
       </build>
+    </profile>
+    <profile>
+      <id>headless</id>
+      <properties>
+        <archetypeItGoals>clean,verify,-Pheadless</archetypeItGoals>
+      </properties>
     </profile>
   </profiles>
 
