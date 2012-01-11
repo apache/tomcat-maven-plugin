@@ -114,7 +114,7 @@
     <module id="test-webapp-it" dir="test-webapp-it" name="test-webapp-it">
       <fileSets>
         <fileSet filtered="true" packaged="true" encoding="UTF-8">
-          <directory>src/test/</directory>
+          <directory>src/test/java</directory>
           <includes>
             <include>**/*.java</include>
           </includes>

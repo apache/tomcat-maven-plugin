@@ -39,6 +39,7 @@
   </properties>
 
   <build>
+    <testSourceDirectory>src/test/java</testSourceDirectory>
     <pluginManagement>
       <plugins>
         <plugin>
@@ -68,6 +69,18 @@
       </plugins>
     </pluginManagement>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -100,7 +113,7 @@
         <version>2.11</version>
         <executions>
           <execution>
-            <id>integration-tests</id>
+            <id>selenium-integration-tests</id>
             <phase>integration-test</phase>
             <goals>
               <goal>test</goal>
@@ -111,9 +124,6 @@
                 <serverUrl>${serverUrl}</serverUrl>
                 <seleniumBrowser>${seleniumBrowser}</seleniumBrowser>
               </systemPropertyVariables>
-              <includes>
-                <include>**/**</include>
-              </includes>
             </configuration>
           </execution>
         </executions>
