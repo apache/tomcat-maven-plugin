@@ -26,7 +26,7 @@
     <version>${version}</version>
   </parent>
 
-  <artifactId>${artifactId}</artifactId>
+  <artifactId>${artifactId-webapp}</artifactId>
   <packaging>war</packaging>
 
   <properties>
@@ -127,7 +127,7 @@
               <path>/</path>
               <port>${tomcat.port}</port>
               <uriEncoding>UTF-8</uriEncoding>
-              <warDirectory>target/test-webapp-${project.version}</warDirectory>
+              <warDirectory>target/${artifactId-webapp}-${project.version}</warDirectory>
               <fork>true</fork>
             </configuration>
           </execution>
@@ -162,13 +162,15 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.tomcat.maven.archetype</groupId>
-      <artifactId>test-api</artifactId>
-    </dependency>
+       <groupId>${groupId}</groupId>
+       <artifactId>${artifactId-api}</artifactId>
+       <version>${project.version}</version>
+     </dependency>
     <dependency>
-      <groupId>org.apache.tomcat.maven.archetype</groupId>
-      <artifactId>test-api-impl</artifactId>
-    </dependency>
+       <groupId>${groupId}</groupId>
+       <artifactId>${artifactId-api}</artifactId>
+       <version>${project.version}</version>
+     </dependency>
     <dependency>
       <groupId>javax.ws.rs</groupId>
       <artifactId>jsr311-api</artifactId>
@@ -214,6 +216,11 @@
           <artifactId>geronimo-servlet_2.5_spec</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.12</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

@@ -26,7 +26,7 @@
     <version>${version}</version>
   </parent>
 
-  <artifactId>${artifactId}</artifactId>
+  <artifactId>${artifactId-api}</artifactId>
 
   <name>test-api</name>
 

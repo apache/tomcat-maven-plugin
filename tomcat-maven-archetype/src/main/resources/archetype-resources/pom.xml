@@ -22,7 +22,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>${groupId}</groupId>
-  <artifactId>${artifactId}</artifactId>
+  <artifactId>${rootArtifactId}</artifactId>
   <version>${version}</version>
   <packaging>pom</packaging>
 
@@ -60,13 +60,13 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.apache.tomcat.maven.archetype</groupId>
-        <artifactId>test-api</artifactId>
+        <groupId>${groupId}</groupId>
+        <artifactId>${artifactId-api}</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.tomcat.maven.archetype</groupId>
-        <artifactId>test-api-impl</artifactId>
+        <groupId>${groupId}</groupId>
+        <artifactId>${artifactId-api-impl}</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

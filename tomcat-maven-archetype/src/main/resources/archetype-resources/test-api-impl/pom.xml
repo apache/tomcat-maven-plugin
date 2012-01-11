@@ -26,15 +26,15 @@
     <version>${version}</version>
   </parent>
 
-  <artifactId>${artifactId}</artifactId>
+  <artifactId>${artifactId-api-impl}</artifactId>
 
   <name>test-api-impl</name>
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.tomcat.maven.archetype</groupId>
-      <artifactId>test-api</artifactId>
-    </dependency>
+       <groupId>${groupId}</groupId>
+       <artifactId>${artifactId-api}</artifactId>
+     </dependency>
     <dependency>
       <groupId>javax.ws.rs</groupId>
       <artifactId>jsr311-api</artifactId>

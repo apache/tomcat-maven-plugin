@@ -20,11 +20,34 @@
 <archetype-descriptor xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0 http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd" name="tomcat-archetype"
     xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <requiredProperties>
+    <requiredProperty key="groupId">
+      <defaultValue>org.foo</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="artifactId">
+      <defaultValue>basic</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="version">
+      <defaultValue>1.0-SNAPSHOT</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="rootArtifactId">
+      <defaultValue>basic</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="artifactId-api">
+      <defaultValue>basic-api</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="artifactId-api-impl">
+      <defaultValue>basic-api-impl</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="artifactId-webapp">
+      <defaultValue>basic-webapp</defaultValue>
+    </requiredProperty>
+  </requiredProperties>
   <fileSets>
     <fileSet encoding="UTF-8">
       <directory></directory>
       <includes>
-        <include>tomcat-archetype.iml</include>
+        <include>pom.xml</include>
       </includes>
     </fileSet>
   </fileSets>
@@ -35,12 +58,6 @@
           <directory>src/main/java</directory>
           <includes>
             <include>**/*.java</include>
-          </includes>
-        </fileSet>
-        <fileSet encoding="UTF-8">
-          <directory></directory>
-          <includes>
-            <include>test-api.iml</include>
           </includes>
         </fileSet>
       </fileSets>
@@ -57,12 +74,6 @@
           <directory>src/main/resources</directory>
           <includes>
             <include>**/*.xml</include>
-          </includes>
-        </fileSet>
-        <fileSet encoding="UTF-8">
-          <directory></directory>
-          <includes>
-            <include>test-api-impl.iml</include>
           </includes>
         </fileSet>
       </fileSets>
@@ -87,12 +98,6 @@
           <directory>src/test/java</directory>
           <includes>
             <include>**/*.java</include>
-          </includes>
-        </fileSet>
-        <fileSet encoding="UTF-8">
-          <directory></directory>
-          <includes>
-            <include>test-webapp.iml</include>
           </includes>
         </fileSet>
       </fileSets>
