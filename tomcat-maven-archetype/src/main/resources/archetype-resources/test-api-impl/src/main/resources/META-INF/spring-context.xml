@@ -39,8 +39,7 @@
   <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
 
   <context:annotation-config />
-  <context:component-scan
-    base-package="${package}"/>
+  <context:component-scan base-package="${package}"/>
 
   <jaxrs:server id="testServices" address="/testServices">
 

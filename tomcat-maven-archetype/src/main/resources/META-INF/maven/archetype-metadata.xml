@@ -80,6 +80,12 @@
     </module>
     <module id="test-webapp" dir="test-webapp" name="test-webapp">
       <fileSets>
+        <fileSet filtered="false" encoding="UTF-8">
+          <directory>src/main/resources</directory>
+          <includes>
+            <include>**/*.xml</include>
+          </includes>
+        </fileSet>
         <fileSet filtered="true" encoding="UTF-8">
           <directory>src/main/webapp</directory>
           <includes>
