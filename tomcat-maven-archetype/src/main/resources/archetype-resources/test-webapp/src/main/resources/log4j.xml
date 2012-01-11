@@ -29,7 +29,7 @@
   </appender>
 
   <logger name="org.springframework">
-    <level value="debug"/>
+    <level value="info"/>
   </logger>
 
 
