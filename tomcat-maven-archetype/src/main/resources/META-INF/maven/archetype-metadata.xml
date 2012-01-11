@@ -42,6 +42,9 @@
     <requiredProperty key="artifactId-webapp">
       <defaultValue>basic-webapp</defaultValue>
     </requiredProperty>
+    <requiredProperty key="artifactId-webapp-it">
+      <defaultValue>basic-webapp-it</defaultValue>
+    </requiredProperty>
   </requiredProperties>
   <fileSets>
     <fileSet encoding="UTF-8">
@@ -104,6 +107,22 @@
           <directory>src/test/java</directory>
           <includes>
             <include>**/*.java</include>
+          </includes>
+        </fileSet>
+      </fileSets>
+    </module>
+    <module id="test-webapp-it" dir="test-webapp-it" name="test-webapp-it">
+      <fileSets>
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+          <directory>src/test/</directory>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="false" packaged="false" encoding="UTF-8">
+          <directory>src/test/</directory>
+          <includes>
+            <include>**/*.xml</include>
           </includes>
         </fileSet>
       </fileSets>
