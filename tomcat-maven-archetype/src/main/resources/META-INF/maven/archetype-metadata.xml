@@ -55,7 +55,7 @@
     </fileSet>
   </fileSets>
   <modules>
-    <module id="test-api" dir="test-api" name="test-api">
+    <module id="basic-api" dir="basic-api" name="basic-api">
       <fileSets>
         <fileSet filtered="true" packaged="true" encoding="UTF-8">
           <directory>src/main/java</directory>
@@ -65,7 +65,7 @@
         </fileSet>
       </fileSets>
     </module>
-    <module id="test-api-impl" dir="test-api-impl" name="test-api-impl">
+    <module id="basic-api-impl" dir="basic-api-impl" name="basic-api-impl">
       <fileSets>
         <fileSet filtered="true" packaged="true" encoding="UTF-8">
           <directory>src/main/java</directory>
@@ -81,7 +81,7 @@
         </fileSet>
       </fileSets>
     </module>
-    <module id="test-webapp" dir="test-webapp" name="test-webapp">
+    <module id="basic-webapp" dir="basic-webapp" name="basic-webapp">
       <fileSets>
         <fileSet filtered="false" encoding="UTF-8">
           <directory>src/main/resources</directory>
@@ -111,7 +111,7 @@
         </fileSet>
       </fileSets>
     </module>
-    <module id="test-webapp-exec" dir="test-webapp-exec" name="test-webapp-exec">
+    <module id="basic-webapp-exec" dir="basic-webapp-exec" name="basic-webapp-exec">
       <fileSets>
         <fileSet filtered="false" packaged="false" encoding="UTF-8">
           <directory></directory>
@@ -121,7 +121,7 @@
         </fileSet>
       </fileSets>
     </module>
-    <module id="test-webapp-it" dir="test-webapp-it" name="test-webapp-it">
+    <module id="basic-webapp-it" dir="basic-webapp-it" name="basic-webapp-it">
       <fileSets>
         <fileSet filtered="true" packaged="true" encoding="UTF-8">
           <directory>src/test/java</directory>
