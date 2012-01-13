@@ -82,8 +82,8 @@
               <exclude>.git/**</exclude>
               <exclude>.idea/**</exclude>
               <exclude>.extract/**</exclude>
-              <exclude>src/main/resources/archetype-resources/test-webapp/src/main/webapp/css/bootstrap.min.1.4.0.css</exclude>
-              <exclude>src/main/resources/archetype-resources/test-webapp/src/main/webapp/js/jquery-1.7.js</exclude>
+              <exclude>src/main/resources/archetype-resources/basic-webapp/src/main/webapp/css/bootstrap.min.1.4.0.css</exclude>
+              <exclude>src/main/resources/archetype-resources/basic-webapp/src/main/webapp/js/jquery-1.7.js</exclude>
               <exclude>src/test/**</exclude>
             </excludes>
           </configuration>
