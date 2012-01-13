@@ -45,7 +45,6 @@
             </goals>
             <phase>package</phase>
             <configuration>
-              <path>/</path>
               <warRunDependencies>
                 <warRunDependency>
                   <dependency>

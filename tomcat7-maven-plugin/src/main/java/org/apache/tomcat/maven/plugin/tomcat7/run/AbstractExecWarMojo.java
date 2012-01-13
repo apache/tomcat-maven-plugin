@@ -335,15 +335,16 @@ public abstract class AbstractExecWarMojo
                         IOUtils.copy( new FileInputStream( warFile ), os );
                         os.closeArchiveEntry();
                         String propertyWarValue = properties.getProperty( Tomcat7Runner.WARS_KEY );
-                        // FIXME check contextPath is not empty or at least only / for root app
+                        String contextPath =
+                            StringUtils.isEmpty( warRunDependency.contextPath ) ? "/" : warRunDependency.contextPath;
                         if ( propertyWarValue != null )
                         {
                             properties.put( Tomcat7Runner.WARS_KEY,
-                                            propertyWarValue + ";" + warFileName + "|" + warRunDependency.contextPath );
+                                            propertyWarValue + ";" + warFileName + "|" + contextPath );
                         }
                         else
                         {
-                            properties.put( Tomcat7Runner.WARS_KEY, warFileName + "|" + warRunDependency.contextPath );
+                            properties.put( Tomcat7Runner.WARS_KEY, warFileName + "|" + contextPath );
                         }
                     }
                 }
