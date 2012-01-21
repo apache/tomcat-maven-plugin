@@ -181,7 +181,7 @@
     </dependencies>
   </dependencyManagement>
 
-  <pluginRepositories>
+  <!--pluginRepositories>
     <pluginRepository>
       <id>apache.snapshots</id>
       <name>Apache Snapshots</name>
@@ -192,6 +192,6 @@
       <snapshots>
       </snapshots>
     </pluginRepository>
-  </pluginRepositories>
+  </pluginRepositories-->
 
 </project>

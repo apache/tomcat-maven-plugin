@@ -95,6 +95,8 @@ public class Tomcat7Runner
 
     Tomcat tomcat;
 
+    String uriEncoding = "ISO-8859-1";
+
     /**
      * key = context of the webapp, value = war path on file system
      */
@@ -189,8 +191,7 @@ public class Tomcat7Runner
                 {
                     connector.setRedirectPort( httpsPort );
                 }
-                // FIXME parameter for that def ? ISO-8859-1
-                //connector.setURIEncoding(uriEncoding);
+                connector.setURIEncoding( uriEncoding );
 
                 tomcat.getService().addConnector( connector );
 
@@ -211,6 +212,7 @@ public class Tomcat7Runner
                 httpsConnector.setSecure( true );
                 httpsConnector.setProperty( "SSLEnabled", "true" );
                 httpsConnector.setProperty( "sslProtocol", "TLS" );
+                httpsConnector.setURIEncoding( uriEncoding );
 
                 String keystoreFile = System.getProperty( "javax.net.ssl.keyStore" );
                 String keystorePass = System.getProperty( "javax.net.ssl.keyStorePassword" );
@@ -255,8 +257,7 @@ public class Tomcat7Runner
             {
                 Connector ajpConnector = new Connector( "org.apache.coyote.ajp.AjpProtocol" );
                 ajpConnector.setPort( ajpPort );
-                // FIXME parameter for that def ? ISO-8859-1
-                //ajpConnector.setURIEncoding(uriEncoding);
+                ajpConnector.setURIEncoding( uriEncoding );
                 tomcat.getService().addConnector( ajpConnector );
             }
 

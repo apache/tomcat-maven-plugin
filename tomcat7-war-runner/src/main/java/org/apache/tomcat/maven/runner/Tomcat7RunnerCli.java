@@ -87,6 +87,8 @@ public class Tomcat7RunnerCli
     static Option loggerName = OptionBuilder.withArgName( "loggerName" ).hasArg().withDescription(
         "logger to use: slf4j to use slf4j bridge on top of jul" ).create( "loggerName" );
 
+    static Option uriEncoding = OptionBuilder.withArgName( "uriEncoding" ).hasArg().withDescription(
+        "connector uriEncoding default ISO-8859-1" ).create( "uriEncoding" );
 
     static Options options = new Options();
 
@@ -95,7 +97,7 @@ public class Tomcat7RunnerCli
         options.addOption( httpPort ).addOption( httpsPort ).addOption( ajpPort ).addOption( serverXmlPath ).addOption(
             resetExtract ).addOption( help ).addOption( debug ).addOption( sysProps ).addOption(
             httpProtocol ).addOption( clientAuth ).addOption( keyAlias ).addOption( obfuscate ).addOption(
-            extractDirectory ).addOption( loggerName );
+            extractDirectory ).addOption( loggerName ).addOption( uriEncoding );
     }
 
 
@@ -191,6 +193,11 @@ public class Tomcat7RunnerCli
         if ( line.hasOption( loggerName.getOpt() ) )
         {
             tomcat7Runner.loggerName = line.getOptionValue( loggerName.getOpt() );
+        }
+
+        if ( line.hasOption( uriEncoding.getOpt() ) )
+        {
+            tomcat7Runner.uriEncoding = line.getOptionValue( uriEncoding.getOpt() );
         }
 
         // here we go
