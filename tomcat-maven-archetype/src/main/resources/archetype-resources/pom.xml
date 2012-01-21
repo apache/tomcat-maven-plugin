@@ -181,15 +181,6 @@
     </dependencies>
   </dependencyManagement>
 
-  <repositories>
-    <repository>
-      <id>staged-tomcat</id>
-      <url>http://repository.apache.org/content/repositories/orgapachetomcat-082/</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
   <pluginRepositories>
     <pluginRepository>
       <id>apache.snapshots</id>
