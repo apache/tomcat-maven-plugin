@@ -24,3 +24,12 @@ Checkstyle: this project use the Apache Maven checkstyle configuration for ide c
 Site: to test site generation, just run: mvn site. If you want more reporting (javadoc, pmd, checkstyle, jxr, changelog from jira entries), use: mvn site -Preporting.
 
 To deploy site, use: mvn clean site-deploy -Preporting. The site will be deploy to http://tomcat.apache.org/maven-plugin-${project.version}
+
+For release your ~/.m2/settings.xml must contains :
+
+    <server>
+      <id>apache.releases.https</id>
+      <username>asf id</username>
+      <password>asf password</password>
+    </server>
+
