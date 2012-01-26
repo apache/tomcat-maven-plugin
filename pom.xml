@@ -632,7 +632,7 @@
 
   <distributionManagement>
     <repository>
-      <id>apache.releases</id>
+      <id>apache.releases.https</id>
       <name>Apache Release Distribution Repository</name>
       <url>${distributionReleaseUrl}</url>
     </repository>
