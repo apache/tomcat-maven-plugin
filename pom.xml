@@ -739,7 +739,6 @@
             <configuration>
               <columnNames>Type,Fix Version,Key,Summary,Assignee,Status,Created</columnNames>
               <maxEntries>200</maxEntries>
-              <onlyCurrentVersion>true</onlyCurrentVersion>
               <resolutionIds>Fixed</resolutionIds>
               <sortColumnNames>Type</sortColumnNames>
               <fixVersionIds>12317943</fixVersionIds>
