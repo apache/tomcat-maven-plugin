@@ -95,6 +95,6 @@ Apache Tomcat Maven Plugin
   Some goals are not yet available in tomcat7 mojo. Those {{{./container-goals.html}container goals}} are available with
   the tomcat6 mojo, you only need to update the manager url in your pom.
 
-  Use <<<http://localhost:8080/manager/html>>> rather than the default tomcat6 url.
+  Use <<<http://localhost:8080/manager/text>>> rather than the default tomcat6 url.
 
 
