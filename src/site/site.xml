@@ -24,11 +24,8 @@
     <href>http://tomcat.apache.org/</href>
   </bannerLeft>
   <bannerRight>
-    <name>Apache Tomcat Maven Plugin</name>
-    <!--
-    <src none
-    -->
-    <href>http://tomcat.apache.org/maven-plugin/</href>
+    <src>http://www.apache.org/images/asf-logo.gif</src>
+    <href>http://www.apache.org</href>
   </bannerRight>
   <skin>
     <groupId>org.apache.maven.skins</groupId>
