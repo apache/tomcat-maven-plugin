@@ -51,7 +51,7 @@
       <item name="Maven Archetype"   href="archetype.html"/>
       <item name="Developement Test" href="snapshot-test.html"/>
       <item name="Changelog"         href="jira-report.html"/>
-
+      <item name="License"           href="http://www.apache.org/licenses/"/>
     </menu>
 
     <menu ref="modules" inherit="bottom"/>
