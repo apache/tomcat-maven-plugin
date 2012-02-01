@@ -37,6 +37,7 @@
 
   <body>
     <breadcrumbs>
+      <item name="Apache" href="http://www.apache.org/" />
       <item name="Apache Tomcat" href="http://tomcat.apache.org/" />
       <item name="Apache Tomcat Maven plugin" href="index.html" />
     </breadcrumbs>
