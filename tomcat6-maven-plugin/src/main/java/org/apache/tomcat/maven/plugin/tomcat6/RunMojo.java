@@ -122,9 +122,9 @@ public class RunMojo
      * Additional optional directories to add to the embedded tomcat classpath.
      *
      * @parameter alias = "additionalClassesDirs"
-     * @since 2.0
+     * @since 2.0-beta-1
      */
-    private List<File> additionalClasspathDirs;
+    private List<String> additionalClasspathDirs;
 
     private File temporaryContextFile = null;
 
@@ -202,11 +202,14 @@ public class RunMojo
             }
             if ( additionalClasspathDirs != null && !additionalClasspathDirs.isEmpty() )
             {
-                for ( File additionalClasspathDir : additionalClasspathDirs )
+                for ( String additionalClasspathDir : additionalClasspathDirs )
                 {
-                    if ( additionalClasspathDir.exists() )
+                    File file = new File( additionalClasspathDir );
+                    if ( file.exists() )
                     {
-                        loader.addRepository( additionalClasspathDir.toURI().toString() );
+                        String fileUri = file.toURI().toString();
+                        getLog().debug( "add file:" + fileUri + " as a additionalClasspathDir" );
+                        loader.addRepository( fileUri );
                     }
                 }
             }
