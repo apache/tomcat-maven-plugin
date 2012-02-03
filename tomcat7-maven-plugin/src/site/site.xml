@@ -22,10 +22,10 @@
   <body>
     <menu name="Overview">
       <item name="Introduction" href="index.html"/>
+      <item name="Goals" href="plugin-info.html"/>
       <item name="Javadoc" href="apidocs/index.html"/>
     </menu>
 
-    <menu ref="modules"/>
     <menu ref="reports"/>
 
     <menu name="ASF">

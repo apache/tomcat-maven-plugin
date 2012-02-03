@@ -1,10 +1,9 @@
  ---
  Introduction
  ---
- Mark Hobson
- <markhobson@gmail.com>
+ Olivier Lamy
  ---
- 2010-02-15
+ 2012-02-03
  ---
 
  ~~ Licensed to the Apache Software Foundation (ASF) under one
@@ -29,25 +28,12 @@
 
 Tomcat Maven Plugin
 
- The Tomcat6 Maven Plugin provides goals to manipulate WAR projects within the {{{http://tomcat.apache.org/}Tomcat}} servlet container version 6.x .
+ The Tomcat7 Maven Plugin provides goals to manipulate WAR projects within the {{{http://tomcat.apache.org/}Tomcat}} servlet container version 7.x
 
 * Goals Overview
 
-  The goals for this plugin come in two categories:
-
-  * {{{./context-goals.html}Goals to manipulate deployed projects within Tomcat}}
-
-  * {{{./container-goals.html}Goals to obtain information from Tomcat}}
+  The goals for this plugin are available here {{{./plugin-info.html}goals page}}.
 
 * Usage
 
   Instructions on how to use the Tomcat Maven Plugin can be found on the {{{./usage.html}usage page}}.
-
-* Examples
-
-  To provide you with better understanding of some usages of the Tomcat Maven Plugin,
-  you can take a look into the following examples:
-
-  * {{{./examples/add-system-properties.html}Adding System Properties}}
-
-  * {{{./examples/deployment.html}How to deploy projects to Tomcat}}

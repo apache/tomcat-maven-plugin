@@ -34,7 +34,6 @@
       <item name="Deployment to Tomcat 7" href="examples/deployment-tomcat7.html"/>
     </menu>
 
-    <menu ref="modules"/>
     <menu ref="reports"/>
 
     <menu name="ASF">
