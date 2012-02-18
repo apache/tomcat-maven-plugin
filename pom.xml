@@ -763,6 +763,19 @@
         </plugins>
       </reporting>
     </profile>
+    <profile>
+      <id>tc-staging</id>
+      <properties>
+        <tcStagedReleaseUrl></tcStagedReleaseUrl>
+      </properties>
+
+      <repositories>
+        <repository>
+          <id>tc-staged</id>
+          <url>${tcStagedReleaseUrl}</url>
+        </repository>
+      </repositories>
+    </profile>
   </profiles>
 
 </project>
