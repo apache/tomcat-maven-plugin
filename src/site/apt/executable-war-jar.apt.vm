@@ -32,12 +32,14 @@ Build an Executable War/Jar
 
  This is only supported with the tomcat7 plugin.
 
+ <<Note>> Your project must have packaging pom or war.
+
 * Additional Artifact to your war module
 
 +--
 <project>
   ...
-  <packaging>war</packaging>
+  <packaging>war or pom</packaging>
   ...
   <build>
     ...
