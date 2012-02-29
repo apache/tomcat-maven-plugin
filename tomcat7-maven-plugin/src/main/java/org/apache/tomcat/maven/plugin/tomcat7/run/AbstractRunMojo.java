@@ -314,6 +314,14 @@ public abstract class AbstractRunMojo
      */
     private File tomcatLoggingFile;
 
+    /**
+     * Skip execution
+     *
+     * @parameter expression="${maven.tomcat.skip}" default-value="false"
+     * @since 2.0
+     */
+    protected boolean skip;
+
 
     // ----------------------------------------------------------------------
     // Fields
@@ -334,6 +342,11 @@ public abstract class AbstractRunMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
+        if ( skip )
+        {
+            getLog().info( "skip execution" );
+            return;
+        }
         // ensure project is a web application
         if ( !isWar() )
         {

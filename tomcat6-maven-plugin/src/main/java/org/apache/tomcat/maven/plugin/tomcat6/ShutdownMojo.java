@@ -51,6 +51,14 @@ public class ShutdownMojo
     protected boolean skipErrorOnShutdown;
 
     /**
+     * Skip execution
+     *
+     * @parameter expression="${maven.tomcat.skipShutdown}" default-value="false"
+     * @since 2.0
+     */
+    protected boolean skip;
+
+    /**
      * Shuts down all embedded tomcats which got started up to now.
      *
      * @throws MojoExecutionException if shutting down one or all servers failed
@@ -58,6 +66,11 @@ public class ShutdownMojo
     public void execute()
         throws MojoExecutionException
     {
+        if ( skip )
+        {
+            getLog().info( "skip execution" );
+            return;
+        }
         try
         {
             EmbeddedRegistry.getInstance().shutdownAll( getLog() );
