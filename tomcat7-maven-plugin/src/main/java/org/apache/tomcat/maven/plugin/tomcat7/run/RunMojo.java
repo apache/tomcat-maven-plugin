@@ -46,7 +46,7 @@ import java.util.Set;
  * @author Olivier Lamy
  * @goal run
  * @execute phase="compile"
- * @requiresDependencyResolution runtime
+ * @requiresDependencyResolution test
  * @since 2.0
  */
 public class RunMojo
