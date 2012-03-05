@@ -807,13 +807,12 @@ public abstract class AbstractRunMojo
             for ( @SuppressWarnings( "rawtypes" ) Iterator i = pluginArtifacts.iterator(); i.hasNext(); )
             {
                 Artifact pluginArtifact = (Artifact) i.next();
-                if ( "org.apache.tomcat".equals( pluginArtifact.getGroupId() ) )
+                // add all plugin artifacts see https://issues.apache.org/jira/browse/MTOMCAT-122
+                if ( pluginArtifact.getFile() != null )
                 {
-                    if ( pluginArtifact.getFile() != null )
-                    {
-                        root.addURL( pluginArtifact.getFile().toURI().toURL() );
-                    }
+                    root.addURL( pluginArtifact.getFile().toURI().toURL() );
                 }
+
             }
             tomcatRealm = root;
             return root;
