@@ -31,7 +31,7 @@
 
   <properties>
     <seleniumPluginVersion>2.2</seleniumPluginVersion>
-    <selenium-server.version>2.16.0</selenium-server.version>
+    <selenium-server.version>2.20.0</selenium-server.version>
     <selenium.port>4444</selenium.port>
     <tomcat.port>9898</tomcat.port>
     <serverUrl>http://localhost:${tomcat.port}/</serverUrl>
@@ -110,7 +110,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.11</version>
         <executions>
           <execution>
             <id>selenium-integration-tests</id>
