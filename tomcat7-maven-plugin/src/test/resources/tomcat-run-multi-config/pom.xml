@@ -79,10 +79,10 @@
           </execution>
           <execution>
             <id>tomcat-shutdown</id>
+            <phase>post-integration-test</phase>
             <goals>
               <goal>shutdown</goal>
             </goals>
-            <phase>post-integration-test</phase>
           </execution>
         </executions>
       </plugin>

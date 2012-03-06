@@ -46,7 +46,7 @@
     <mavenVersion>2.0.8</mavenVersion>
     <!-- Test settings -->
     <maven.test.redirectTestOutputToFile>false</maven.test.redirectTestOutputToFile>
-    <failsafe.version>2.11</failsafe.version>
+    <failsafe.version>2.12</failsafe.version>
     <junit.version>4.10</junit.version>
     <it.sleep.time>2000</it.sleep.time>
     <verifier.maven.debug>false</verifier.maven.debug>
