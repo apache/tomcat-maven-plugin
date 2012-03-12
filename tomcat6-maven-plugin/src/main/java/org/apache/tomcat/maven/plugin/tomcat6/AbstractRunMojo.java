@@ -71,7 +71,7 @@ import java.util.Set;
  *
  * @author Jurgen Lust
  * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: AbstractRunMojo.java 14033 2011-05-04 17:51:15Z bimargulies $
+ * @version $Id$
  */
 public abstract class AbstractRunMojo
     extends AbstractI18NTomcat6Mojo
@@ -253,6 +253,14 @@ public abstract class AbstractRunMojo
      * @since 1.1
      */
     private String keystorePass;
+    
+    /**
+     * Override the default keystoreType for the HTTPS connector (if enabled)
+     *
+     * @parameter
+     * @since 1.1
+     */
+    private String keystoreType;
 
     /**
      * <p>
@@ -766,6 +774,10 @@ public abstract class AbstractRunMojo
                     if ( keystorePass != null )
                     {
                         httpsConnector.setAttribute( "keystorePass", keystorePass );
+                    }
+                    if ( keystoreType != null )
+                    {
+                        httpsConnector.setAttribute( "keystoreType", keystoreType );
                     }
                     container.addConnector( httpsConnector );
 

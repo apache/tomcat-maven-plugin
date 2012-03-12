@@ -254,7 +254,13 @@ public abstract class AbstractRunMojo
      * @since 1.1
      */
     private String keystorePass;
-
+    
+    /**
+     * Override the type of keystore file to be used for the server certificate. If not specified, the default value is "JKS".
+     * @parameter default-value="JKS"
+     */
+    private String keystoreType;
+    
     /**
      * <p>
      * Enables or disables naming support for the embedded Tomcat server.
@@ -751,6 +757,10 @@ public abstract class AbstractRunMojo
                     if ( keystorePass != null )
                     {
                         httpsConnector.setAttribute( "keystorePass", keystorePass );
+                    }
+                    if ( keystoreType != null )
+                    {
+                    	httpsConnector.setAttribute( "keystoreType", keystoreType);
                     }
                     embeddedTomcat.getEngine().getService().addConnector( httpsConnector );
 
