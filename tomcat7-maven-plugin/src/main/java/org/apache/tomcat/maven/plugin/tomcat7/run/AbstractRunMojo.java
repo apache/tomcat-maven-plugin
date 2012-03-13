@@ -258,6 +258,7 @@ public abstract class AbstractRunMojo
     /**
      * Override the type of keystore file to be used for the server certificate. If not specified, the default value is "JKS".
      * @parameter default-value="JKS"
+     * @since 2.0.1
      */
     private String keystoreType;
     
