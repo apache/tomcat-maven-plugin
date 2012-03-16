@@ -23,6 +23,7 @@ import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.commons.io.IOUtils;
 import org.apache.tomcat.maven.common.deployer.TomcatManager;
+import org.apache.tomcat.maven.common.deployer.TomcatManagerResponse;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -46,9 +47,15 @@ public class TomcatManagerTest
 
     Tomcat tomcat;
 
+    Tomcat redirectTomcat;
+
     UploadServlet uploadServlet;
 
+    RedirectServlet redirectServlet;
+
     int port;
+
+    int redirectPort;
 
     public static String getBasedir()
     {
@@ -74,6 +81,18 @@ public class TomcatManagerTest
         port = tomcat.getConnector().getLocalPort();
 
         System.out.println( "Tomcat started on port:" + port );
+
+        redirectTomcat = new Tomcat();
+        redirectTomcat.setBaseDir( System.getProperty( "java.io.tmpdir" ) );
+        redirectTomcat.setPort( 0 );
+        context = redirectTomcat.addContext( "", System.getProperty( "java.io.tmpdir" ) );
+        redirectServlet = new RedirectServlet();
+        redirectTomcat.addServlet( context, "foo", redirectServlet );
+        context.addServletMapping( "/*", "foo" );
+        redirectTomcat.start();
+        redirectPort = redirectTomcat.getConnector().getLocalPort();
+
+        System.out.println( "redirect Tomcat started on port:" + redirectPort );
     }
 
     @Override
@@ -88,13 +107,82 @@ public class TomcatManagerTest
     public void testDeployWar()
         throws Exception
     {
+        uploadServlet.uploadedResources.clear();
         TomcatManager tomcatManager = new TomcatManager( new URL( "http://localhost:" + this.port + "/foo/bar" ) );
-        tomcatManager.deploy( "foo", new FileInputStream( new File( getBasedir(), "src/test/resources/test.txt" ) ) );
-        StringWriter sw = new StringWriter();
+        TomcatManagerResponse response =
+            tomcatManager.deploy( "foo", new File( getBasedir(), "src/test/resources/test.txt" ) );
+
+        assertEquals( 200, response.getStatusCode() );
+
         assertEquals( 1, uploadServlet.uploadedResources.size() );
+        assertEquals( "/foo/bar/deploy", uploadServlet.uploadedResources.get( 0 ).requestUri );
         FileInputStream fileInputStream = new FileInputStream( uploadServlet.uploadedResources.get( 0 ).uploadedFile );
         try
         {
+            StringWriter sw = new StringWriter();
+            IOUtils.copy( fileInputStream, sw );
+            assertTrue( sw.toString().contains( "Apache Tomcat rocks!!" ) );
+        }
+        finally
+        {
+            fileInputStream.close();
+        }
+    }
+
+    public void testDeployWarWithRedirect()
+        throws Exception
+    {
+        uploadServlet.uploadedResources.clear();
+        TomcatManager tomcatManager =
+            new TomcatManager( new URL( "http://localhost:" + this.redirectPort + "/foo/bar" ) );
+        redirectServlet.redirectPath = "http://localhost:" + this.port + "/foo/bar/redirected";
+        TomcatManagerResponse response =
+            tomcatManager.deploy( "foo", new File( getBasedir(), "src/test/resources/test.txt" ) );
+
+        assertEquals( 200, response.getStatusCode() );
+
+        assertEquals( "no request to redirect servlet", 1, redirectServlet.uploadedResources.size() );
+        assertEquals( "/foo/bar/deploy", redirectServlet.uploadedResources.get( 0 ).requestUri );
+        assertEquals( "no  redirected request to upload servlet", 1, uploadServlet.uploadedResources.size() );
+
+        assertEquals( "/foo/bar/deploy", redirectServlet.uploadedResources.get( 0 ).requestUri );
+
+        FileInputStream fileInputStream = new FileInputStream( uploadServlet.uploadedResources.get( 0 ).uploadedFile );
+        try
+        {
+            StringWriter sw = new StringWriter();
+            IOUtils.copy( fileInputStream, sw );
+            assertTrue( sw.toString().contains( "Apache Tomcat rocks!!" ) );
+        }
+        finally
+        {
+            fileInputStream.close();
+        }
+    }
+
+    public void testDeployWarWithRedirectRelative()
+        throws Exception
+    {
+        uploadServlet.uploadedResources.clear();
+        TomcatManager tomcatManager =
+            new TomcatManager( new URL( "http://localhost:" + this.redirectPort + "/foo/bar" ) );
+        redirectServlet.redirectPath = "redirectrelative/foo";
+        TomcatManagerResponse response =
+            tomcatManager.deploy( "foo", new File( getBasedir(), "src/test/resources/test.txt" ) );
+
+        assertEquals( 200, response.getStatusCode() );
+
+        assertEquals( "no request to redirect servlet", 2, redirectServlet.uploadedResources.size() );
+        assertEquals( "/foo/bar/deploy", redirectServlet.uploadedResources.get( 0 ).requestUri );
+        assertEquals( "found redirected request to upload servlet", 0, uploadServlet.uploadedResources.size() );
+
+        assertEquals( "/foo/bar/deploy", redirectServlet.uploadedResources.get( 0 ).requestUri );
+
+        FileInputStream fileInputStream =
+            new FileInputStream( redirectServlet.uploadedResources.get( 1 ).uploadedFile );
+        try
+        {
+            StringWriter sw = new StringWriter();
             IOUtils.copy( fileInputStream, sw );
             assertTrue( sw.toString().contains( "Apache Tomcat rocks!!" ) );
         }
@@ -132,10 +220,37 @@ public class TomcatManagerTest
             throws ServletException, IOException
         {
             System.out.println( "put ok:" + req.getRequestURI() );
-            super.doPut( req, resp );
             File file = File.createTempFile( "tomcat-unit-test", "tmp" );
             uploadedResources.add( new UploadedResource( req.getRequestURI(), file ) );
             IOUtils.copy( req.getInputStream(), new FileOutputStream( file ) );
+        }
+    }
+
+    public class RedirectServlet
+        extends HttpServlet
+    {
+        int redirectPort = 0;
+
+        String redirectPath;
+
+        public List<UploadedResource> uploadedResources = new ArrayList<UploadedResource>();
+
+        @Override
+        protected void doPut( HttpServletRequest req, HttpServletResponse resp )
+            throws ServletException, IOException
+        {
+            System.out.println( "RedirectServlet put ok:" + req.getRequestURI() );
+            if ( req.getRequestURI().contains( "redirectrelative" ) )
+            {
+                File file = File.createTempFile( "tomcat-unit-test", "tmp" );
+                uploadedResources.add( new UploadedResource( req.getRequestURI(), file ) );
+                IOUtils.copy( req.getInputStream(), new FileOutputStream( file ) );
+                return;
+            }
+            uploadedResources.add( new UploadedResource( req.getRequestURI(), null ) );
+            String redirectUri =
+                redirectPort > 0 ? "http://localhost:" + redirectPort + "/" + redirectPath : redirectPath;
+            resp.sendRedirect( redirectUri );
         }
     }
 }

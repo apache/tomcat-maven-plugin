@@ -22,8 +22,10 @@ package org.apache.tomcat.maven.common.deployer;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -36,10 +38,11 @@ import org.apache.http.entity.AbstractHttpEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.BasicClientConnectionManager;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.protocol.BasicHttpContext;
-import org.apache.maven.plugin.logging.Log;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -162,7 +165,9 @@ public class TomcatManager
         this.password = password;
         this.charset = charset;
 
-        this.httpClient = new DefaultHttpClient( new BasicClientConnectionManager() );
+        PoolingClientConnectionManager poolingClientConnectionManager = new PoolingClientConnectionManager();
+        poolingClientConnectionManager.setMaxTotal( 5 );
+        this.httpClient = new DefaultHttpClient( poolingClientConnectionManager );
         if ( StringUtils.isNotEmpty( username ) && StringUtils.isNotEmpty( password ) )
         {
             Credentials creds = new UsernamePasswordCredentials( username, password );
@@ -305,7 +310,7 @@ public class TomcatManager
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    public TomcatManagerResponse deploy( String path, InputStream war )
+    public TomcatManagerResponse deploy( String path, File war )
         throws TomcatManagerException, IOException
     {
         return deploy( path, war, false );
@@ -322,7 +327,7 @@ public class TomcatManager
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    public TomcatManagerResponse deploy( String path, InputStream war, boolean update )
+    public TomcatManagerResponse deploy( String path, File war, boolean update )
         throws TomcatManagerException, IOException
     {
         return deploy( path, war, update, null );
@@ -340,7 +345,7 @@ public class TomcatManager
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    public TomcatManagerResponse deploy( String path, InputStream war, boolean update, String tag )
+    public TomcatManagerResponse deploy( String path, File war, boolean update, String tag )
         throws TomcatManagerException, IOException
     {
         return deployImpl( path, null, null, war, update, tag );
@@ -357,7 +362,7 @@ public class TomcatManager
      * @throws IOException
      * @since 2.0
      */
-    public TomcatManagerResponse deploy( String path, InputStream war, boolean update, String tag, long length )
+    public TomcatManagerResponse deploy( String path, File war, boolean update, String tag, long length )
         throws TomcatManagerException, IOException
     {
         return deployImpl( path, null, null, war, update, tag, length );
@@ -631,8 +636,7 @@ public class TomcatManager
     // Private Methods
     // ----------------------------------------------------------------------
 
-    private TomcatManagerResponse deployImpl( String path, URL config, URL war, InputStream data, boolean update,
-                                              String tag )
+    private TomcatManagerResponse deployImpl( String path, URL config, URL war, File data, boolean update, String tag )
         throws TomcatManagerException, IOException
     {
         return deployImpl( path, config, war, data, update, tag, -1 );
@@ -644,15 +648,15 @@ public class TomcatManager
      * @param path   the webapp context path to deploy to
      * @param config the URL of the context XML configuration to deploy, or null for none
      * @param war    the URL of the WAR to deploy, or null to use <code>data</code>
-     * @param data   an input stream to the WAR to deploy, or null to use <code>war</code>
+     * @param data   WAR file to deploy, or null to use <code>war</code>
      * @param update whether to first undeploy the webapp if it already exists
      * @param tag    the tag name to use
      * @return the Tomcat manager response
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    private TomcatManagerResponse deployImpl( String path, URL config, URL war, InputStream data, boolean update,
-                                              String tag, long length )
+    private TomcatManagerResponse deployImpl( String path, URL config, URL war, File data, boolean update, String tag,
+                                              long length )
         throws TomcatManagerException, IOException
     {
         StringBuilder buffer = new StringBuilder( "/deploy" );
@@ -686,12 +690,12 @@ public class TomcatManager
      * Invokes Tomcat manager with the specified command and content data.
      *
      * @param path the Tomcat manager command to invoke
-     * @param data an input stream to the content data
+     * @param data file to deploy
      * @return the Tomcat manager response
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    protected TomcatManagerResponse invoke( String path, InputStream data, long length )
+    protected TomcatManagerResponse invoke( String path, File data, long length )
         throws TomcatManagerException, IOException
     {
 
@@ -717,10 +721,36 @@ public class TomcatManager
 
         HttpResponse response = httpClient.execute( httpRequestBase, localContext );
 
+        int statusCode = response.getStatusLine().getStatusCode();
+
+        switch ( statusCode )
+        {
+            // Success Codes
+            case HttpStatus.SC_OK: // 200
+            case HttpStatus.SC_CREATED: // 201
+            case HttpStatus.SC_ACCEPTED: // 202
+                break;
+            // handle all redirect even if http specs says " the user agent MUST NOT automatically redirect the request unless it can be confirmed by the user"
+            case HttpStatus.SC_MOVED_PERMANENTLY: // 301
+            case HttpStatus.SC_MOVED_TEMPORARILY: // 302
+            case HttpStatus.SC_SEE_OTHER: // 303
+                String relocateUrl = calculateRelocatedUrl( response );
+                this.url = new URL( relocateUrl );
+                return invoke( path, data, length );
+        }
+
         return new TomcatManagerResponse().setStatusCode( response.getStatusLine().getStatusCode() ).setReasonPhrase(
             response.getStatusLine().getReasonPhrase() ).setHttpResponseBody(
             IOUtils.toString( response.getEntity().getContent() ) );
 
+    }
+
+    protected String calculateRelocatedUrl( HttpResponse response )
+    {
+        Header locationHeader = response.getFirstHeader( "Location" );
+        String locationField = locationHeader.getValue();
+        // is it a relative Location or a full ?
+        return locationField.startsWith( "http" ) ? locationField : url.toString() + '/' + locationField;
     }
 
 
@@ -748,7 +778,7 @@ public class TomcatManager
 
         private final static int BUFFER_SIZE = 2048;
 
-        private InputStream stream;
+        private File file;
 
         PrintStream out = System.out;
 
@@ -760,28 +790,28 @@ public class TomcatManager
 
         private long startTime;
 
-        private RequestEntityImplementation( final InputStream stream, long length, String url )
+        private RequestEntityImplementation( final File file, long length, String url )
         {
-            this.stream = stream;
+            this.file = file;
             this.length = length;
             this.url = url;
         }
 
         public long getContentLength()
         {
-            return length >= 0 ? length : -1;
+            return length >= 0 ? length : ( file.length() >= 0 ? file.length() : -1 );
         }
 
 
         public InputStream getContent()
             throws IOException, IllegalStateException
         {
-            return this.stream;
+            return new FileInputStream( this.file );
         }
 
         public boolean isRepeatable()
         {
-            return false;
+            return true;
         }
 
 
@@ -793,11 +823,13 @@ public class TomcatManager
             {
                 throw new IllegalArgumentException( "Output stream may not be null" );
             }
+            FileInputStream stream = new FileInputStream( this.file );
             transferInitiated( this.url );
             this.startTime = System.currentTimeMillis();
             try
             {
                 byte[] buffer = new byte[BUFFER_SIZE];
+
                 int l;
                 if ( this.length < 0 )
                 {

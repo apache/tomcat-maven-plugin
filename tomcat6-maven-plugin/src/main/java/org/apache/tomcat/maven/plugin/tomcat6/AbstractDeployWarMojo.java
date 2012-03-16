@@ -23,7 +23,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
@@ -84,7 +83,6 @@ public class AbstractDeployWarMojo
 
         getLog().info( messagesProvider.getMessage( "AbstractDeployMojo.deployingWar", getDeployedURL() ) );
 
-        log( getManager().deploy( getPath(), new FileInputStream( warFile ), isUpdate(), getTag(),
-                                  warFile.length() ).getHttpResponseBody() );
+        log( getManager().deploy( getPath(), warFile, isUpdate(), getTag(), warFile.length() ).getHttpResponseBody() );
     }
 }
