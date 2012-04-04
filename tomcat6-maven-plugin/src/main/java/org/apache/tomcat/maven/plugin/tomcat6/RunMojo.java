@@ -23,6 +23,7 @@ import org.apache.catalina.Context;
 import org.apache.catalina.loader.WebappLoader;
 import org.apache.catalina.startup.Embedded;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.tomcat.maven.common.run.ClassLoaderEntriesCalculator;
@@ -48,7 +49,7 @@ import java.util.Set;
  *
  * @author Jurgen Lust
  * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: RunMojo.java 13551 2011-02-09 16:05:47Z olamy $
+ * @version $Id$
  * @goal run
  * @execute phase="compile"
  * @requiresDependencyResolution test
@@ -204,13 +205,16 @@ public class RunMojo
             {
                 for ( String additionalClasspathDir : additionalClasspathDirs )
                 {
-                    File file = new File( additionalClasspathDir );
-                    if ( file.exists() )
-                    {
-                        String fileUri = file.toURI().toString();
-                        getLog().debug( "add file:" + fileUri + " as a additionalClasspathDir" );
-                        loader.addRepository( fileUri );
-                    }
+                	if( StringUtils.isNotBlank(additionalClasspathDir))
+                	{
+	                    File file = new File( additionalClasspathDir );
+	                    if ( file.exists() )
+	                    {
+	                        String fileUri = file.toURI().toString();
+	                        getLog().debug( "add file:" + fileUri + " as a additionalClasspathDir" );
+	                        loader.addRepository( fileUri );
+	                    }
+                	}
                 }
             }
         }
