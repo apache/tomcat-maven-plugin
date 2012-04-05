@@ -393,10 +393,6 @@ public abstract class AbstractRunMojo
         {
             throw new MojoExecutionException( e.getMessage(), e );
         }
-        catch ( NamingException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
-        }
         finally
         {
             if ( useSeparateTomcatClassLoader )
@@ -429,7 +425,7 @@ public abstract class AbstractRunMojo
      * @throws MojoExecutionException in case of an error creating the context
      */
     protected Context createContext( Tomcat container )
-        throws IOException, MojoExecutionException, ServletException, NamingException
+        throws IOException, MojoExecutionException, ServletException
     {
         String contextPath = getPath();
 
@@ -704,7 +700,7 @@ public abstract class AbstractRunMojo
      * @throws MojoExecutionException if the server could not be configured
      */
     private void startContainer()
-        throws IOException, LifecycleException, MojoExecutionException, ServletException, NamingException
+        throws IOException, LifecycleException, MojoExecutionException, ServletException
     {
         String previousCatalinaBase = System.getProperty( "catalina.base" );
 
