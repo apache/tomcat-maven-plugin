@@ -19,8 +19,11 @@ package org.apache.tomcat.maven.runner;
  */
 
 import org.apache.catalina.Context;
+import org.apache.catalina.Host;
 import org.apache.catalina.connector.Connector;
+import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Catalina;
+import org.apache.catalina.startup.ContextConfig;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.valves.AccessLogValve;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
@@ -163,7 +166,33 @@ public class Tomcat7Runner
         }
         else
         {
-            tomcat = new Tomcat();
+            tomcat = new Tomcat()
+            {
+                public Context addWebapp( Host host, String url, String name, String path )
+                {
+
+                    Context ctx = new StandardContext();
+                    ctx.setName( name );
+                    ctx.setPath( url );
+                    ctx.setDocBase( path );
+
+                    ContextConfig ctxCfg = new ContextConfig();
+                    ctx.addLifecycleListener( ctxCfg );
+
+                    ctxCfg.setDefaultWebXml( new File( extractDirectory, "conf/web.xml" ).getAbsolutePath() );
+
+                    if ( host == null )
+                    {
+                        getHost().addChild( ctx );
+                    }
+                    else
+                    {
+                        host.addChild( ctx );
+                    }
+
+                    return ctx;
+                }
+            };
 
             if ( this.enableNaming() )
             {
@@ -265,15 +294,18 @@ public class Tomcat7Runner
             for ( Map.Entry<String, String> entry : this.webappWarPerContext.entrySet() )
             {
                 String baseDir = null;
+                Context context = null;
                 if ( entry.getKey().equals( "/" ) )
                 {
                     baseDir = new File( extractDirectory, "webapps/ROOT.war" ).getAbsolutePath();
+                    context = tomcat.addWebapp( "", baseDir );
                 }
                 else
                 {
                     baseDir = new File( extractDirectory, "webapps/" + entry.getValue() ).getAbsolutePath();
+                    context = tomcat.addWebapp( entry.getKey(), baseDir );
                 }
-                Context context = tomcat.addWebapp( entry.getKey(), baseDir );
+
                 URL contextFileUrl = getContextXml( baseDir );
                 if ( contextFileUrl != null )
                 {

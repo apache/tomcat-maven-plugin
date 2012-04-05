@@ -306,6 +306,7 @@ public abstract class AbstractExecWarMojo
                 os.putArchiveEntry( new JarArchiveEntry( StringUtils.removeStart( path, "/" ) + ".war" ) );
                 IOUtils.copy( new FileInputStream( projectArtifact.getFile() ), os );
                 os.closeArchiveEntry();
+
                 properties.put( Tomcat7Runner.WARS_KEY, StringUtils.removeStart( path, "/" ) + ".war|" + path );
             }
 
@@ -363,6 +364,11 @@ public abstract class AbstractExecWarMojo
             {
                 properties.put( Tomcat7Runner.USE_SERVER_XML_KEY, Boolean.FALSE.toString() );
             }
+
+            os.putArchiveEntry( new JarArchiveEntry( "conf/web.xml" ) );
+            IOUtils.copy( getClass().getResourceAsStream( "/conf/web.xml" ), os );
+            os.closeArchiveEntry();
+
 
             properties.store( tmpPropertiesFileOutputStream, "created by Apache Tomcat Maven plugin" );
 
