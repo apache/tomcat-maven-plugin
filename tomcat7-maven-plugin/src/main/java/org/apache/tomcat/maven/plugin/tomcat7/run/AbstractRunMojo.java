@@ -32,6 +32,8 @@ import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+import org.apache.naming.NamingEntry;
+import org.apache.naming.resources.FileDirContext;
 import org.apache.tomcat.maven.common.run.EmbeddedRegistry;
 import org.apache.tomcat.maven.common.run.ExternalRepositoriesReloadableWebappLoader;
 import org.apache.tomcat.maven.plugin.tomcat7.AbstractTomcat7Mojo;
@@ -49,6 +51,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -60,6 +63,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -254,14 +258,15 @@ public abstract class AbstractRunMojo
      * @since 1.1
      */
     private String keystorePass;
-    
+
     /**
      * Override the type of keystore file to be used for the server certificate. If not specified, the default value is "JKS".
+     *
      * @parameter default-value="JKS"
      * @since 2.0.1
      */
     private String keystoreType;
-    
+
     /**
      * <p>
      * Enables or disables naming support for the embedded Tomcat server.
@@ -388,6 +393,10 @@ public abstract class AbstractRunMojo
         {
             throw new MojoExecutionException( e.getMessage(), e );
         }
+        catch ( NamingException e )
+        {
+            throw new MojoExecutionException( e.getMessage(), e );
+        }
         finally
         {
             if ( useSeparateTomcatClassLoader )
@@ -420,10 +429,15 @@ public abstract class AbstractRunMojo
      * @throws MojoExecutionException in case of an error creating the context
      */
     protected Context createContext( Tomcat container )
-        throws IOException, MojoExecutionException, ServletException
+        throws IOException, MojoExecutionException, ServletException, NamingException
     {
         String contextPath = getPath();
+
         Context context = container.addWebapp( contextPath, getDocBase().getAbsolutePath() );
+
+        context.setResources(
+            new MyDirContext( new File( project.getBuild().getOutputDirectory() ).getAbsolutePath() ) );
+
         //Tomcat.initWebappDefaults( context );
 
         if ( useSeparateTomcatClassLoader )
@@ -437,8 +451,39 @@ public abstract class AbstractRunMojo
         {
             context.setConfigFile( getContextFile().toURI().toURL() );
         }
+
         return context;
 
+    }
+
+    private static class MyDirContext
+        extends FileDirContext
+    {
+        String buildOutputDirectory;
+
+        MyDirContext( String buildOutputDirectory )
+        {
+            this.buildOutputDirectory = buildOutputDirectory;
+        }
+
+        @Override
+        protected List<NamingEntry> doListBindings( String name )
+            throws NamingException
+        {
+            if ( "/WEB-INF/classes".equals( name ) )
+            {
+                if ( !new File( buildOutputDirectory ).exists() )
+                {
+                    return Collections.emptyList();
+                }
+                FileDirContext fileDirContext = new FileDirContext();
+                fileDirContext.setDocBase( buildOutputDirectory );
+                NamingEntry namingEntry = new NamingEntry( "/WEB-INF/classes", fileDirContext, -1 );
+                return Collections.singletonList( namingEntry );
+            }
+
+            return null;
+        }
     }
 
     /**
@@ -659,7 +704,7 @@ public abstract class AbstractRunMojo
      * @throws MojoExecutionException if the server could not be configured
      */
     private void startContainer()
-        throws IOException, LifecycleException, MojoExecutionException, ServletException
+        throws IOException, LifecycleException, MojoExecutionException, ServletException, NamingException
     {
         String previousCatalinaBase = System.getProperty( "catalina.base" );
 
@@ -695,6 +740,9 @@ public abstract class AbstractRunMojo
                 CatalinaProperties.getProperty( "foo" );
 
                 Tomcat embeddedTomcat = new Tomcat();
+
+                Context ctx = createContext( embeddedTomcat );
+
                 if ( useNaming )
                 {
                     embeddedTomcat.enableNaming();
@@ -735,8 +783,6 @@ public abstract class AbstractRunMojo
                     embeddedTomcat.getEngine().setParentClassLoader( getTomcatClassLoader() );
                 }
 
-                Context ctx = createContext( embeddedTomcat );
-
                 AccessLogValve alv = new AccessLogValve();
                 alv.setDirectory( new File( configurationDir, "logs" ).getAbsolutePath() );
                 alv.setPattern( "%h %l %u %t \"%r\" %s %b %I %D" );
@@ -761,7 +807,7 @@ public abstract class AbstractRunMojo
                     }
                     if ( keystoreType != null )
                     {
-                    	httpsConnector.setAttribute( "keystoreType", keystoreType);
+                        httpsConnector.setAttribute( "keystoreType", keystoreType );
                     }
                     embeddedTomcat.getEngine().getService().addConnector( httpsConnector );
 
