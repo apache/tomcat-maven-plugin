@@ -19,15 +19,12 @@ package org.apache.tomcat.maven.plugin.tomcat7.run;
  */
 
 import org.apache.catalina.Context;
-import org.apache.catalina.Host;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.connector.Connector;
-import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.loader.WebappLoader;
 import org.apache.catalina.realm.MemoryRealm;
 import org.apache.catalina.startup.Catalina;
 import org.apache.catalina.startup.CatalinaProperties;
-import org.apache.catalina.startup.ContextConfig;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.valves.AccessLogValve;
 import org.apache.maven.artifact.Artifact;
@@ -738,33 +735,7 @@ public abstract class AbstractRunMojo
                 // Trigger loading of catalina.properties
                 CatalinaProperties.getProperty( "foo" );
 
-                Tomcat embeddedTomcat = new Tomcat()
-                {
-                    public Context addWebapp( Host host, String url, String name, String path )
-                    {
-
-                        Context ctx = new StandardContext();
-                        ctx.setName( name );
-                        ctx.setPath( url );
-                        ctx.setDocBase( path );
-
-                        ContextConfig ctxCfg = new ContextConfig();
-                        ctx.addLifecycleListener( ctxCfg );
-
-                        ctxCfg.setDefaultWebXml( new File( configurationDir, "conf/web.xml" ).getAbsolutePath() );
-
-                        if ( host == null )
-                        {
-                            getHost().addChild( ctx );
-                        }
-                        else
-                        {
-                            host.addChild( ctx );
-                        }
-
-                        return ctx;
-                    }
-                };
+                Tomcat embeddedTomcat = new ExtendedTomcat( configurationDir );
 
                 Context ctx = createContext( embeddedTomcat );
 
