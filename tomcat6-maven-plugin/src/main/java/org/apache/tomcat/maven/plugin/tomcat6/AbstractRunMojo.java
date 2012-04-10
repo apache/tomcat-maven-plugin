@@ -24,9 +24,11 @@ import org.apache.catalina.Context;
 import org.apache.catalina.Engine;
 import org.apache.catalina.Host;
 import org.apache.catalina.LifecycleException;
+import org.apache.catalina.Wrapper;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.loader.WebappLoader;
 import org.apache.catalina.realm.MemoryRealm;
+import org.apache.catalina.servlets.DefaultServlet;
 import org.apache.catalina.startup.Catalina;
 import org.apache.catalina.startup.Embedded;
 import org.apache.maven.artifact.Artifact;
@@ -253,7 +255,7 @@ public abstract class AbstractRunMojo
      * @since 1.1
      */
     private String keystorePass;
-    
+
     /**
      * Override the type of keystore file to be used for the server certificate. If not specified, the default value is "JKS".
      *
@@ -340,6 +342,23 @@ public abstract class AbstractRunMojo
      * @since 1.0
      */
     private ClassRealm tomcatRealm;
+
+    /**
+     * The static context
+     *
+     * @parameter expression="${maven.tomcat.staticContextPath}" default-value="/"
+     * @since 2.0
+     */
+    private String staticContextPath;
+
+    /**
+     * The static context docroot base fully qualified path.
+     * if <code>null</code> static context won't be added
+     *
+     * @parameter expression="${maven.tomcat.staticContextPath}"
+     * @since 2.0
+     */
+    private String staticContextDocbase;
 
     // ----------------------------------------------------------------------
     // Mojo Implementation
@@ -730,7 +749,7 @@ public abstract class AbstractRunMojo
                 Host host = container.createHost( "localHost", appBase );
 
                 host.addChild( context );
-
+                createStaticContext( container, context, host );
                 if ( addContextWarDependencies )
                 {
                     Collection<Context> dependecyContexts = createDependencyContexts( container );
@@ -957,5 +976,21 @@ public abstract class AbstractRunMojo
             }
         }
         return contexts;
+    }
+
+
+    private void createStaticContext( final Embedded container, Context context, Host host )
+    {
+        if ( staticContextDocbase != null )
+        {
+            Context staticContext = container.createContext( staticContextPath, staticContextDocbase );
+            staticContext.setPrivileged( true );
+            Wrapper servlet = context.createWrapper();
+            servlet.setServletClass( DefaultServlet.class.getName() );
+            servlet.setName( "staticContent" );
+            staticContext.addChild( servlet );
+            staticContext.addServletMapping( "/", "staticContent" );
+            host.addChild( staticContext );
+        }
     }
 }

@@ -19,10 +19,13 @@ package org.apache.tomcat.maven.plugin.tomcat7.run;
  */
 
 import org.apache.catalina.Context;
+import org.apache.catalina.Host;
 import org.apache.catalina.LifecycleException;
+import org.apache.catalina.Wrapper;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.loader.WebappLoader;
 import org.apache.catalina.realm.MemoryRealm;
+import org.apache.catalina.servlets.DefaultServlet;
 import org.apache.catalina.startup.Catalina;
 import org.apache.catalina.startup.CatalinaProperties;
 import org.apache.catalina.startup.Tomcat;
@@ -333,6 +336,23 @@ public abstract class AbstractRunMojo
      * @since 2.0
      */
     protected boolean skip;
+
+    /**
+     * The static context
+     *
+     * @parameter expression="${maven.tomcat.staticContextPath}" default-value="/"
+     * @since 2.0
+     */
+    private String staticContextPath;
+
+    /**
+     * The static context docroot base fully qualified path
+     * if <code>null</code> static context won't be added
+     *
+     * @parameter expression="${maven.tomcat.staticContextPath}"
+     * @since 2.0
+     */
+    private String staticContextDocbase;
 
     // ----------------------------------------------------------------------
     // Fields
@@ -760,6 +780,8 @@ public abstract class AbstractRunMojo
 
                 embeddedTomcat.getHost().setAppBase( new File( configurationDir, "webapps" ).getAbsolutePath() );
 
+                createStaticContext( embeddedTomcat, ctx, embeddedTomcat.getHost() );
+
                 Connector connector = new Connector( protocol );
                 connector.setPort( port );
 
@@ -998,5 +1020,20 @@ public abstract class AbstractRunMojo
             }
         }
         return contexts;
+    }
+
+    private void createStaticContext( final Tomcat container, Context context, Host host )
+    {
+        if ( staticContextDocbase != null )
+        {
+            Context staticContext = container.addContext( staticContextPath, staticContextDocbase );
+            staticContext.setPrivileged( true );
+            Wrapper servlet = context.createWrapper();
+            servlet.setServletClass( DefaultServlet.class.getName() );
+            servlet.setName( "staticContent" );
+            staticContext.addChild( servlet );
+            staticContext.addServletMapping( "/", "staticContent" );
+            host.addChild( staticContext );
+        }
     }
 }
