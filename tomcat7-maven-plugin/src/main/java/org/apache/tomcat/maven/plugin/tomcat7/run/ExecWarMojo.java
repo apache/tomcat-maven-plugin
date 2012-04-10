@@ -19,6 +19,10 @@ package org.apache.tomcat.maven.plugin.tomcat7.run;
  */
 
 /**
+ * <p>This mojo will create a self executable jar file containing all tomcat classes.</p>
+ * <p>So you will be able to use only: java -jar createjar.jar to run your webapp without need
+ * to install an Apache Tomcat instance.</p>
+ * <p>More details here: <a href="http://tomcat.apache.org/maven-plugin-2.0-beta-1/executable-war-jar.html">http://tomcat.apache.org/maven-plugin-2.0-beta-1/executable-war-jar.html</a></p>
  * @author Olivier Lamy
  * @goal exec-war
  * @execute phase="package"
