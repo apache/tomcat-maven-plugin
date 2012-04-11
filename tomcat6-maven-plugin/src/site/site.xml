@@ -22,25 +22,25 @@
   <body>
     <menu name="Overview">
       <item name="Introduction" href="index.html"/>
-      <item name="Goals" href="plugin-info.html"/>
-      <item name="Usage" href="usage.html"/>
-      <item name="FAQ" href="faq.html"/>
-      <item name="Javadoc" href="apidocs/index.html"/>
+      <item name="Goals"        href="plugin-info.html"/>
+      <item name="Usage"        href="usage.html"/>
+      <item name="FAQ"          href="faq.html"/>
+      <item name="Javadoc"      href="apidocs/index.html"/>
     </menu>
     <menu name="Examples">
       <item name="Adding System Properties" href="examples/add-system-properties.html"/>
-      <item name="Adjust Tomcat Version" href="examples/adjust-embedded-tomcat-version.html"/>
-      <item name="Deployment" href="examples/deployment.html"/>
-      <item name="Deployment to Tomcat 7" href="examples/deployment-tomcat7.html"/>
+      <item name="Adjust Tomcat Version"    href="examples/adjust-embedded-tomcat-version.html"/>
+      <item name="Deployment"               href="examples/deployment.html"/>
+      <item name="Deployment to Tomcat 7"   href="examples/deployment-tomcat7.html"/>
     </menu>
 
     <menu ref="reports"/>
 
     <menu name="ASF">
-      <item name="How Apache Works" href="http://www.apache.org/foundation/how-it-works.html"/>
-      <item name="Foundation" href="http://www.apache.org/foundation/"/>
+      <item name="How Apache Works"  href="http://www.apache.org/foundation/how-it-works.html"/>
+      <item name="Foundation"        href="http://www.apache.org/foundation/"/>
       <item name="Sponsoring Apache" href="http://www.apache.org/foundation/sponsorship.html"/>
-      <item name="Thanks" href="http://www.apache.org/foundation/thanks.html"/>
+      <item name="Thanks"            href="http://www.apache.org/foundation/thanks.html"/>
     </menu>
 
   </body>
