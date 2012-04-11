@@ -349,7 +349,7 @@ public abstract class AbstractRunMojo
      * The static context docroot base fully qualified path
      * if <code>null</code> static context won't be added
      *
-     * @parameter expression="${maven.tomcat.staticContextPath}"
+     * @parameter expression="${maven.tomcat.staticContextDocbase}"
      * @since 2.0
      */
     private String staticContextDocbase;
