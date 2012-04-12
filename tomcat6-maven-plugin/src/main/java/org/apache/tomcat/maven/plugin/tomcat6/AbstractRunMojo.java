@@ -343,6 +343,8 @@ public abstract class AbstractRunMojo
      */
     private ClassRealm tomcatRealm;
 
+    private ClassLoader originalClassLoaser;
+
     /**
      * The static context
      *
@@ -381,12 +383,13 @@ public abstract class AbstractRunMojo
             getLog().info( messagesProvider.getMessage( "AbstractRunMojo.nonWar" ) );
             return;
         }
-        ClassLoader originalClassLoaser = Thread.currentThread().getContextClassLoader();
+        originalClassLoaser = Thread.currentThread().getContextClassLoader();
         try
         {
+
             if ( useSeparateTomcatClassLoader )
             {
-                Thread.currentThread().setContextClassLoader( getTomcatClassLoader() );
+                originalClassLoaser = Thread.currentThread().getContextClassLoader();
             }
             getLog().info( messagesProvider.getMessage( "AbstractRunMojo.runningWar", getWebappUrl() ) );
 
@@ -765,10 +768,7 @@ public abstract class AbstractRunMojo
                 engine.addChild( host );
                 engine.setDefaultHost( host.getName() );
                 container.addEngine( engine );
-                if ( useSeparateTomcatClassLoader )
-                {
-                    engine.setParentClassLoader( getTomcatClassLoader() );
-                }
+
                 // create http connector
                 Connector httpConnector = container.createConnector( (InetAddress) null, port, protocol );
                 if ( httpsPort > 0 )
@@ -808,6 +808,11 @@ public abstract class AbstractRunMojo
                     Connector ajpConnector = container.createConnector( (InetAddress) null, ajpPort, ajpProtocol );
                     ajpConnector.setURIEncoding( uriEncoding );
                     container.addConnector( ajpConnector );
+                }
+                if ( useSeparateTomcatClassLoader )
+                {
+                    Thread.currentThread().setContextClassLoader( getTomcatClassLoader() );
+                    engine.setParentClassLoader( getTomcatClassLoader() );
                 }
                 container.start();
             }
