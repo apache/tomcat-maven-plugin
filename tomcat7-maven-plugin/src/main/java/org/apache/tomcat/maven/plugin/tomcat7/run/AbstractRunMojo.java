@@ -363,7 +363,7 @@ public abstract class AbstractRunMojo
      */
     private ClassRealm tomcatRealm;
 
-    private ClassLoader originalClassLoaser;
+    private ClassLoader originalClassLoader;
 
     // ----------------------------------------------------------------------
     // Mojo Implementation
@@ -388,7 +388,7 @@ public abstract class AbstractRunMojo
         }
         if ( useSeparateTomcatClassLoader )
         {
-            originalClassLoaser = Thread.currentThread().getContextClassLoader();
+            originalClassLoader = Thread.currentThread().getContextClassLoader();
         }
         try
         {
@@ -418,7 +418,7 @@ public abstract class AbstractRunMojo
         {
             if ( useSeparateTomcatClassLoader )
             {
-                Thread.currentThread().setContextClassLoader( originalClassLoaser );
+                Thread.currentThread().setContextClassLoader( originalClassLoader );
             }
         }
     }

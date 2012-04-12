@@ -343,7 +343,7 @@ public abstract class AbstractRunMojo
      */
     private ClassRealm tomcatRealm;
 
-    private ClassLoader originalClassLoaser;
+    private ClassLoader originalClassLoader;
 
     /**
      * The static context
@@ -383,13 +383,13 @@ public abstract class AbstractRunMojo
             getLog().info( messagesProvider.getMessage( "AbstractRunMojo.nonWar" ) );
             return;
         }
-        originalClassLoaser = Thread.currentThread().getContextClassLoader();
+        originalClassLoader = Thread.currentThread().getContextClassLoader();
         try
         {
 
             if ( useSeparateTomcatClassLoader )
             {
-                originalClassLoaser = Thread.currentThread().getContextClassLoader();
+                originalClassLoader = Thread.currentThread().getContextClassLoader();
             }
             getLog().info( messagesProvider.getMessage( "AbstractRunMojo.runningWar", getWebappUrl() ) );
 
@@ -413,7 +413,7 @@ public abstract class AbstractRunMojo
         {
             if ( useSeparateTomcatClassLoader )
             {
-                Thread.currentThread().setContextClassLoader( originalClassLoaser );
+                Thread.currentThread().setContextClassLoader( originalClassLoader );
             }
         }
     }
