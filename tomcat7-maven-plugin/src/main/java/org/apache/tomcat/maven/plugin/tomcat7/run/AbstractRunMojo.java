@@ -363,7 +363,6 @@ public abstract class AbstractRunMojo
      */
     private ClassRealm tomcatRealm;
 
-    private ClassLoader originalClassLoader;
 
     // ----------------------------------------------------------------------
     // Mojo Implementation
@@ -386,6 +385,7 @@ public abstract class AbstractRunMojo
             getLog().info( messagesProvider.getMessage( "AbstractRunMojo.nonWar" ) );
             return;
         }
+        ClassLoader originalClassLoader = null;
         if ( useSeparateTomcatClassLoader )
         {
             originalClassLoader = Thread.currentThread().getContextClassLoader();
