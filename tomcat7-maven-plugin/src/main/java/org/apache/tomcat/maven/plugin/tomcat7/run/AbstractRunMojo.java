@@ -363,6 +363,8 @@ public abstract class AbstractRunMojo
      */
     private ClassRealm tomcatRealm;
 
+    private ClassLoader originalClassLoaser;
+
     // ----------------------------------------------------------------------
     // Mojo Implementation
     // ----------------------------------------------------------------------
@@ -384,13 +386,12 @@ public abstract class AbstractRunMojo
             getLog().info( messagesProvider.getMessage( "AbstractRunMojo.nonWar" ) );
             return;
         }
-        ClassLoader originalClassLoaser = Thread.currentThread().getContextClassLoader();
+        if ( useSeparateTomcatClassLoader )
+        {
+            originalClassLoaser = Thread.currentThread().getContextClassLoader();
+        }
         try
         {
-            if ( useSeparateTomcatClassLoader )
-            {
-                Thread.currentThread().setContextClassLoader( getTomcatClassLoader() );
-            }
             getLog().info( messagesProvider.getMessage( "AbstractRunMojo.runningWar", getWebappUrl() ) );
 
             initConfiguration();
@@ -796,11 +797,6 @@ public abstract class AbstractRunMojo
 
                 embeddedTomcat.setConnector( connector );
 
-                if ( useSeparateTomcatClassLoader )
-                {
-                    embeddedTomcat.getEngine().setParentClassLoader( getTomcatClassLoader() );
-                }
-
                 AccessLogValve alv = new AccessLogValve();
                 alv.setDirectory( new File( configurationDir, "logs" ).getAbsolutePath() );
                 alv.setPattern( "%h %l %u %t \"%r\" %s %b %I %D" );
@@ -840,14 +836,15 @@ public abstract class AbstractRunMojo
                     embeddedTomcat.getEngine().getService().addConnector( ajpConnector );
                 }
 
-                if ( useSeparateTomcatClassLoader )
-                {
-                    embeddedTomcat.getEngine().setParentClassLoader( getTomcatClassLoader() );
-                }
-
                 if ( addContextWarDependencies )
                 {
                     createDependencyContexts( embeddedTomcat );
+                }
+
+                if ( useSeparateTomcatClassLoader )
+                {
+                    Thread.currentThread().setContextClassLoader( getTomcatClassLoader() );
+                    embeddedTomcat.getEngine().setParentClassLoader( getTomcatClassLoader() );
                 }
 
                 embeddedTomcat.start();
