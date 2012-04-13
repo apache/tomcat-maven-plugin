@@ -354,6 +354,14 @@ public abstract class AbstractRunMojo
      */
     private String staticContextDocbase;
 
+    /**
+     * Class loader class to set.
+     *
+     * @parameter
+     * @since 2.0
+     */
+    protected String classLoaderClass;
+
     // ----------------------------------------------------------------------
     // Fields
     // ----------------------------------------------------------------------
@@ -362,7 +370,6 @@ public abstract class AbstractRunMojo
      * @since 1.0
      */
     private ClassRealm tomcatRealm;
-
 
     // ----------------------------------------------------------------------
     // Mojo Implementation
@@ -462,11 +469,19 @@ public abstract class AbstractRunMojo
             context.setParentClassLoader( getTomcatClassLoader() );
         }
 
-        context.setLoader( createWebappLoader() );
+        final WebappLoader loader = createWebappLoader();
+
+        context.setLoader( loader );
+
         File contextFile = getContextFile();
         if ( contextFile != null )
         {
             context.setConfigFile( getContextFile().toURI().toURL() );
+        }
+
+        if ( classLoaderClass != null )
+        {
+            loader.setLoaderClass( classLoaderClass );
         }
 
         return context;
