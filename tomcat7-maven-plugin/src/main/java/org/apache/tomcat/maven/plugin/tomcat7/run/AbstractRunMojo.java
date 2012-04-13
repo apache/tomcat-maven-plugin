@@ -23,6 +23,7 @@ import org.apache.catalina.Host;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.connector.Connector;
+import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.loader.WebappLoader;
 import org.apache.catalina.realm.MemoryRealm;
 import org.apache.catalina.servlets.DefaultServlet;
@@ -30,6 +31,7 @@ import org.apache.catalina.startup.Catalina;
 import org.apache.catalina.startup.CatalinaProperties;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.valves.AccessLogValve;
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -59,7 +61,12 @@ import javax.servlet.ServletException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -457,13 +464,30 @@ public abstract class AbstractRunMojo
     {
         String contextPath = getPath();
 
-        Context context =
-            container.addWebapp( "/".equals( contextPath ) ? "" : contextPath, getDocBase().getAbsolutePath() );
+        contextPath = "/".equals( contextPath ) ? "" : contextPath;
+
+        String baseDir = getDocBase().getAbsolutePath();
+
+        File overridedContextFile = getContextFile();
+
+        if ( overridedContextFile != null && overridedContextFile.exists() )
+        {
+            StandardContext standardContext = parseContextFile( overridedContextFile );
+
+            if ( standardContext.getPath() != null )
+            {
+                contextPath = standardContext.getPath();
+            }
+            if ( standardContext.getDocBase() != null )
+            {
+                baseDir = standardContext.getDocBase();
+            }
+        }
+
+        Context context = container.addWebapp( contextPath, baseDir );
 
         context.setResources(
             new MyDirContext( new File( project.getBuild().getOutputDirectory() ).getAbsolutePath() ) );
-
-        //Tomcat.initWebappDefaults( context );
 
         if ( useSeparateTomcatClassLoader )
         {
@@ -474,10 +498,9 @@ public abstract class AbstractRunMojo
 
         context.setLoader( loader );
 
-        File contextFile = getContextFile();
-        if ( contextFile != null )
+        if ( overridedContextFile != null )
         {
-            context.setConfigFile( getContextFile().toURI().toURL() );
+            context.setConfigFile( overridedContextFile.toURI().toURL() );
         }
 
         if ( classLoaderClass != null )
@@ -488,6 +511,52 @@ public abstract class AbstractRunMojo
         return context;
 
     }
+
+    protected StandardContext parseContextFile( File file )
+        throws MojoExecutionException
+    {
+        try
+        {
+            StandardContext standardContext = new StandardContext();
+            XMLStreamReader reader = XMLInputFactory.newFactory().createXMLStreamReader( new FileInputStream( file ) );
+
+            int tag = reader.next();
+
+            while ( true )
+            {
+                if ( tag == XMLStreamConstants.START_ELEMENT && StringUtils.equals( "Context", reader.getLocalName() ) )
+                {
+                    String path = reader.getAttributeValue( null, "path" );
+                    if ( StringUtils.isNotBlank( path ) )
+                    {
+                        standardContext.setPath( path );
+                    }
+
+                    String docBase = reader.getAttributeValue( null, "docBase" );
+                    if ( StringUtils.isNotBlank( docBase ) )
+                    {
+                        standardContext.setDocBase( docBase );
+                    }
+                }
+                if ( !reader.hasNext() )
+                {
+                    break;
+                }
+                tag = reader.next();
+            }
+
+            return standardContext;
+        }
+        catch ( XMLStreamException e )
+        {
+            throw new MojoExecutionException( e.getMessage(), e );
+        }
+        catch ( FileNotFoundException e )
+        {
+            throw new MojoExecutionException( e.getMessage(), e );
+        }
+    }
+
 
     private static class MyDirContext
         extends FileDirContext
