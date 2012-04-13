@@ -190,6 +190,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.apache.maven.shared</groupId>
+      <artifactId>maven-filtering</artifactId>
+      <version>1.0</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.tomcat.maven</groupId>
       <artifactId>tomcat-maven-plugin-it</artifactId>
       <scope>test</scope>

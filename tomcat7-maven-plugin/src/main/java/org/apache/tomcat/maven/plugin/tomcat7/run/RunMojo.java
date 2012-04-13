@@ -22,7 +22,11 @@ import org.apache.catalina.loader.WebappLoader;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.shared.filtering.MavenFileFilter;
+import org.apache.maven.shared.filtering.MavenFileFilterRequest;
+import org.apache.maven.shared.filtering.MavenFilteringException;
 import org.apache.tomcat.maven.common.run.ClassLoaderEntriesCalculator;
 import org.apache.tomcat.maven.common.run.ClassLoaderEntriesCalculatorRequest;
 import org.apache.tomcat.maven.common.run.ClassLoaderEntriesCalculatorResult;
@@ -126,6 +130,20 @@ public class RunMojo
     private File temporaryContextFile = null;
 
     /**
+     *
+     * @component role="org.apache.maven.shared.filtering.MavenFileFilter" role-hint="default"
+     * @required
+     */
+    private MavenFileFilter mavenFileFilter;
+
+    /**
+     * @parameter default-value="${session}"
+     * @readonly
+     * @required
+     */
+    protected MavenSession session;
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -147,7 +165,7 @@ public class RunMojo
         }
         //----------------------------------------------------------------------------
         // context attributes backgroundProcessorDelay reloadable cannot be modified at runtime.
-        // It looks only values from the file ared used
+        // It looks only values from the file are used
         // so here we create a temporary file with values modified
         //----------------------------------------------------------------------------
         FileReader fr = null;
@@ -157,14 +175,24 @@ public class RunMojo
         {
             temporaryContextFile = File.createTempFile( "tomcat-maven-plugin", "temp-ctx-file" );
             temporaryContextFile.deleteOnExit();
-            fw = new FileWriter( temporaryContextFile );
+
             // format to modify/create <Context backgroundProcessorDelay="5" reloadable="false">
             if ( contextFile != null && contextFile.exists() )
             {
-                fr = new FileReader( contextFile );
+                MavenFileFilterRequest mavenFileFilterRequest = new MavenFileFilterRequest();
+                mavenFileFilterRequest.setFrom( contextFile );
+                mavenFileFilterRequest.setTo( temporaryContextFile );
+                mavenFileFilterRequest.setMavenProject( project );
+                mavenFileFilterRequest.setMavenSession( session );
+                mavenFileFilterRequest.setFiltering( true );
+
+                mavenFileFilter.copyFile( mavenFileFilterRequest );
+
+                fr = new FileReader( temporaryContextFile );
                 Xpp3Dom xpp3Dom = Xpp3DomBuilder.build( fr );
                 xpp3Dom.setAttribute( "backgroundProcessorDelay", Integer.toString( backgroundProcessorDelay ) );
                 xpp3Dom.setAttribute( "reloadable", Boolean.toString( isContextReloadable() ) );
+                fw = new FileWriter( temporaryContextFile );
                 Xpp3DomWriter.write( fw, xpp3Dom );
                 Xpp3DomWriter.write( sw, xpp3Dom );
                 getLog().debug( " generated context file " + sw.toString() );
@@ -198,6 +226,11 @@ public class RunMojo
         {
             getLog().error( "error creating fake context.xml : " + e.getMessage(), e );
             throw new MojoExecutionException( "error creating fake context.xml : " + e.getMessage(), e );
+        }
+        catch ( MavenFilteringException e )
+        {
+            getLog().error( "error filtering context.xml : " + e.getMessage(), e );
+            throw new MojoExecutionException( "error filtering context.xml : " + e.getMessage(), e );
         }
         finally
         {
@@ -266,16 +299,16 @@ public class RunMojo
             {
                 for ( String additionalClasspathDir : additionalClasspathDirs )
                 {
-                	if( StringUtils.isNotBlank(additionalClasspathDir))
-                	{
-	                    File file = new File( additionalClasspathDir );
-	                    if ( file.exists() )
-	                    {
-	                        String fileUri = file.toURI().toString();
-	                        getLog().debug( "add file:" + fileUri + " as a additionalClasspathDir" );
-	                        loader.addRepository( fileUri );
-	                    }
-                	}
+                    if ( StringUtils.isNotBlank( additionalClasspathDir ) )
+                    {
+                        File file = new File( additionalClasspathDir );
+                        if ( file.exists() )
+                        {
+                            String fileUri = file.toURI().toString();
+                            getLog().debug( "add file:" + fileUri + " as a additionalClasspathDir" );
+                            loader.addRepository( fileUri );
+                        }
+                    }
                 }
             }
         }
