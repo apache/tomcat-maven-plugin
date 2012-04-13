@@ -457,7 +457,8 @@ public abstract class AbstractRunMojo
     {
         String contextPath = getPath();
 
-        Context context = container.addWebapp( contextPath, getDocBase().getAbsolutePath() );
+        Context context =
+            container.addWebapp( "/".equals( contextPath ) ? "" : contextPath, getDocBase().getAbsolutePath() );
 
         context.setResources(
             new MyDirContext( new File( project.getBuild().getOutputDirectory() ).getAbsolutePath() ) );
