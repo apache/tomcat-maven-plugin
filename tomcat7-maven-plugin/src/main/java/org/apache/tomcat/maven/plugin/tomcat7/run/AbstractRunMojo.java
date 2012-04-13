@@ -307,7 +307,7 @@ public abstract class AbstractRunMojo
     /**
      * The path of the Tomcat context XML file.
      *
-     * @parameter expression="src/main/webapp/META-INF/context.xml"
+     * @parameter expression="${maven.tomcat.contextFile}"
      */
     protected File contextFile;
 
