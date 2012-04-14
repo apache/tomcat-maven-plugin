@@ -306,7 +306,7 @@ public abstract class AbstractRunMojo
 
     /**
      * <p>The path of the Tomcat context XML file.</p>
-     * <p>Prior to release 2.0, the file is filtering as a maven resource so you can use
+     * <p>Since release 2.0, the file is filtered as a maven resource so you can use
      * interpolation tokens ${ }</p>
      *
      * @parameter expression="${maven.tomcat.contextFile}"
