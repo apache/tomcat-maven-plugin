@@ -486,6 +486,8 @@ public abstract class AbstractRunMojo
 
         contextPath = "/".equals( contextPath ) ? "" : contextPath;
 
+        getLog().info( "create webapp with contextPath: " + contextPath );
+
         Context context = container.addWebapp( contextPath, baseDir );
 
         context.setResources(
