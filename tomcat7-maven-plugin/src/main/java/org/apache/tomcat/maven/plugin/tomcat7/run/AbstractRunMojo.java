@@ -466,8 +466,6 @@ public abstract class AbstractRunMojo
     {
         String contextPath = getPath();
 
-        contextPath = "/".equals( contextPath ) ? "" : contextPath;
-
         String baseDir = getDocBase().getAbsolutePath();
 
         File overridedContextFile = getContextFile();
@@ -485,6 +483,8 @@ public abstract class AbstractRunMojo
                 baseDir = standardContext.getDocBase();
             }
         }
+
+        contextPath = "/".equals( contextPath ) ? "" : contextPath;
 
         Context context = container.addWebapp( contextPath, baseDir );
 
