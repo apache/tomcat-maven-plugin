@@ -20,7 +20,7 @@ package org.apache.tomcat.maven.plugin.tomcat7.deploy;
  */
 
 /**
- * Deploy a WAR to Tomcat witjout forking the package lifecycle
+ * Deploy a WAR to Tomcat without forking the package lifecycle
  *
  * @author olamy
  * @version $Id: DeployOnlyMojo.java 12852 2010-10-12 22:04:32Z thragor $
