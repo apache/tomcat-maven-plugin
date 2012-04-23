@@ -731,15 +731,7 @@ public abstract class AbstractRunMojo
                 // create server
                 container = new Embedded();
                 container.setCatalinaHome( configurationDir.getAbsolutePath() );
-                MemoryRealm memoryRealm = new MemoryRealm()
-                {
-                    @Override
-                    public Principal authenticate( String username, String credentials )
-                    {
-                        return super.authenticate( username,
-                                                   credentials );    //To change body of overridden methods use File | Settings | File Templates.
-                    }
-                };
+                MemoryRealm memoryRealm = new MemoryRealm();
 
                 if ( tomcatUsers != null )
                 {

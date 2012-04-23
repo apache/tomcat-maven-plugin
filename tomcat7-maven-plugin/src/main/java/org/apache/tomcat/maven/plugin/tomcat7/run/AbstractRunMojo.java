@@ -34,6 +34,7 @@ import org.apache.catalina.valves.AccessLogValve;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
@@ -847,12 +848,6 @@ public abstract class AbstractRunMojo
 
                 Tomcat embeddedTomcat = new ExtendedTomcat( configurationDir );
 
-                Context ctx = createContext( embeddedTomcat );
-
-                if ( useNaming )
-                {
-                    embeddedTomcat.enableNaming();
-                }
                 embeddedTomcat.setBaseDir( configurationDir.getAbsolutePath() );
                 MemoryRealm memoryRealm = new MemoryRealm();
 
@@ -867,6 +862,15 @@ public abstract class AbstractRunMojo
                 }
 
                 embeddedTomcat.setDefaultRealm( memoryRealm );
+
+
+                Context ctx = createContext( embeddedTomcat );
+
+                if ( useNaming )
+                {
+                    embeddedTomcat.enableNaming();
+                }
+
 
                 embeddedTomcat.getHost().setAppBase( new File( configurationDir, "webapps" ).getAbsolutePath() );
 
