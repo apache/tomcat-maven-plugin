@@ -420,6 +420,7 @@ public class Tomcat7Runner
 
         if ( extractDirectoryFile.exists() )
         {
+            debugMessage( "delete extractDirectory:" + extractDirectoryFile.getAbsolutePath() );
             FileUtils.deleteDirectory( extractDirectoryFile );
         }
 
