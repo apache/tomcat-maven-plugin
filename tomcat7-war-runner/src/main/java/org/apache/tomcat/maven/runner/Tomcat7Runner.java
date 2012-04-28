@@ -33,6 +33,8 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -57,6 +59,8 @@ public class Tomcat7Runner
 
     // contains war name wars=foo.war,bar.war
     public static final String WARS_KEY = "wars";
+
+    public static final String ARCHIVE_GENERATION_TIMESTAMP_KEY = "generationTimestamp";
 
     public static final String ENABLE_NAMING_KEY = "enableNaming";
 
@@ -125,15 +129,48 @@ public class Tomcat7Runner
 
         debugMessage( "use extractDirectory:" + extractDirectoryFile.getPath() );
 
-        // do we have to extract content
-        if ( !extractDirectoryFile.exists() || resetExtract )
+        boolean archiveTimestampChanged = false;
+
+        // compare timestamp stored during previous run if exists
+        File timestampFile = new File( extractDirectoryFile, ".tomcat_executable_archive.timestamp" );
+
+        Properties timestampProps = new Properties();
+
+        if ( timestampFile.exists() )
         {
-            extract();
+            timestampProps.load( new FileReader( timestampFile ) );
+            String timestampValue = timestampProps.getProperty( Tomcat7Runner.ARCHIVE_GENERATION_TIMESTAMP_KEY );
+            if ( timestampValue != null )
+            {
+                long timestamp = Long.parseLong( timestampValue );
+                archiveTimestampChanged =
+                    Long.parseLong( runtimeProperties.getProperty( Tomcat7Runner.ARCHIVE_GENERATION_TIMESTAMP_KEY ) )
+                        > timestamp;
+
+                debugMessage( "read timestamp from file " + timestampValue + ", archiveTimestampChanged: "
+                                  + archiveTimestampChanged );
+            }
+
         }
-        else
+
+        // do we have to extract content
         {
-            String wars = runtimeProperties.getProperty( WARS_KEY );
-            populateWebAppWarPerContext( wars );
+            if ( !extractDirectoryFile.exists() || resetExtract )
+            {
+                extract();
+                // first run so create timestamp file
+                if ( !timestampFile.exists() )
+                {
+                    timestampProps.put( Tomcat7Runner.ARCHIVE_GENERATION_TIMESTAMP_KEY, runtimeProperties.getProperty(
+                        Tomcat7Runner.ARCHIVE_GENERATION_TIMESTAMP_KEY ) );
+                    timestampProps.store( new FileWriter( timestampFile ), "Timestamp file for executable war/jar" );
+                }
+            }
+            else
+            {
+                String wars = runtimeProperties.getProperty( WARS_KEY );
+                populateWebAppWarPerContext( wars );
+            }
         }
 
         // create tomcat various paths

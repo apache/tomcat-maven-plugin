@@ -51,6 +51,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -293,6 +294,7 @@ public abstract class AbstractExecWarMojo
 
             Properties properties = new Properties();
 
+            properties.put( Tomcat7Runner.ARCHIVE_GENERATION_TIMESTAMP_KEY, Long.toString( new Date().getTime() ) );
             properties.put( Tomcat7Runner.ENABLE_NAMING_KEY, Boolean.toString( enableNaming ) );
             properties.put( Tomcat7Runner.ACCESS_LOG_VALVE_FORMAT_KEY, accessLogValveFormat );
             properties.put( Tomcat7Runner.HTTP_PROTOCOL_KEY, connectorHttpProtocol );
@@ -368,7 +370,6 @@ public abstract class AbstractExecWarMojo
             os.putArchiveEntry( new JarArchiveEntry( "conf/web.xml" ) );
             IOUtils.copy( getClass().getResourceAsStream( "/conf/web.xml" ), os );
             os.closeArchiveEntry();
-
 
             properties.store( tmpPropertiesFileOutputStream, "created by Apache Tomcat Maven plugin" );
 
