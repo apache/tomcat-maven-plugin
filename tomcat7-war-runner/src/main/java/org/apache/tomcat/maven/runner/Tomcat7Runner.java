@@ -622,7 +622,10 @@ public class Tomcat7Runner
             try
             {
                 // Check class is available
-                final Class<?> clazz = Class.forName( "org.slf4j.bridge.SLF4JBridgeHandler" );
+
+                //final Class<?> clazz = Class.forName( "org.slf4j.bridge.SLF4JBridgeHandler" );
+                final Class<?> clazz =
+                    Thread.currentThread().getContextClassLoader().loadClass( "org.slf4j.bridge.SLF4JBridgeHandler" );
 
                 // Remove all JUL handlers
                 java.util.logging.LogManager.getLogManager().reset();
