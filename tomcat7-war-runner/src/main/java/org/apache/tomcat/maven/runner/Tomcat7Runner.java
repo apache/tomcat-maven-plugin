@@ -155,7 +155,7 @@ public class Tomcat7Runner
 
         // do we have to extract content
         {
-            if ( !extractDirectoryFile.exists() || resetExtract )
+            if ( !extractDirectoryFile.exists() || resetExtract || archiveTimestampChanged )
             {
                 extract();
                 // first run so create timestamp file
