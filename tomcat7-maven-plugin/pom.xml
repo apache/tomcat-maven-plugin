@@ -238,7 +238,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.6</version>
         <executions>
           <execution>
             <phase>pre-integration-test</phase>
@@ -250,7 +249,6 @@
                 <unzip src="src/test/manager.war" dest="${managerWebAppPath}" />
               </target>
             </configuration>
-
           </execution>
         </executions>
       </plugin>

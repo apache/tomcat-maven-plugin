@@ -173,20 +173,6 @@
         <filtering>true</filtering>
       </testResource>
     </testResources>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>2.5</version>
-          <configuration>
-            <nonFilteredFileExtensions>
-              <nonFilteredFileExtensions>war</nonFilteredFileExtensions>
-            </nonFilteredFileExtensions>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -200,7 +186,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.6</version>
         <executions>
           <execution>
             <phase>pre-integration-test</phase>
@@ -212,7 +197,6 @@
                 <unzip src="src/test/manager.war" dest="${managerWebAppPath}" />
               </target>
             </configuration>
-
           </execution>
         </executions>
       </plugin>
