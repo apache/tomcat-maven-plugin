@@ -294,7 +294,7 @@ public abstract class AbstractExecWarMojo
 
             Properties properties = new Properties();
 
-            properties.put( Tomcat7Runner.ARCHIVE_GENERATION_TIMESTAMP_KEY, Long.toString( new Date().getTime() ) );
+            properties.put( Tomcat7Runner.ARCHIVE_GENERATION_TIMESTAMP_KEY, Long.toString( System.currentTimeMillis() ) );
             properties.put( Tomcat7Runner.ENABLE_NAMING_KEY, Boolean.toString( enableNaming ) );
             properties.put( Tomcat7Runner.ACCESS_LOG_VALVE_FORMAT_KEY, accessLogValveFormat );
             properties.put( Tomcat7Runner.HTTP_PROTOCOL_KEY, connectorHttpProtocol );

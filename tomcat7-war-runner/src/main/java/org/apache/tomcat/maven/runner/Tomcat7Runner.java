@@ -31,10 +31,9 @@ import org.apache.tomcat.util.http.fileupload.IOUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -134,11 +133,10 @@ public class Tomcat7Runner
         // compare timestamp stored during previous run if exists
         File timestampFile = new File( extractDirectoryFile, ".tomcat_executable_archive.timestamp" );
 
-        Properties timestampProps = new Properties();
+        Properties timestampProps = loadProperties( timestampFile );
 
         if ( timestampFile.exists() )
         {
-            timestampProps.load( new FileReader( timestampFile ) );
             String timestampValue = timestampProps.getProperty( Tomcat7Runner.ARCHIVE_GENERATION_TIMESTAMP_KEY );
             if ( timestampValue != null )
             {
@@ -158,12 +156,12 @@ public class Tomcat7Runner
             if ( !extractDirectoryFile.exists() || resetExtract || archiveTimestampChanged )
             {
                 extract();
-                // first run so create timestamp file
-                if ( !timestampFile.exists() )
+                //if archiveTimestampChanged or timestamp file not exists store the last timestamp from the archive
+                if ( archiveTimestampChanged || !timestampFile.exists() )
                 {
                     timestampProps.put( Tomcat7Runner.ARCHIVE_GENERATION_TIMESTAMP_KEY, runtimeProperties.getProperty(
                         Tomcat7Runner.ARCHIVE_GENERATION_TIMESTAMP_KEY ) );
-                    timestampProps.store( new FileWriter( timestampFile ), "Timestamp file for executable war/jar" );
+                    saveProperties( timestampProps, timestampFile );
                 }
             }
             else
@@ -642,6 +640,41 @@ public class Tomcat7Runner
         else
         {
             System.out.println( "WARNING: loggerName " + loggerName + " not supported, skip it" );
+        }
+    }
+
+    private Properties loadProperties( File file )
+        throws FileNotFoundException, IOException
+    {
+        Properties properties = new Properties();
+        if ( file.exists() )
+        {
+
+            FileInputStream fileInputStream = new FileInputStream( file );
+            try
+            {
+                properties.load( fileInputStream );
+            }
+            finally
+            {
+                fileInputStream.close();
+            }
+
+        }
+        return properties;
+    }
+
+    private void saveProperties( Properties properties, File file )
+        throws FileNotFoundException, IOException
+    {
+        FileOutputStream fileOutputStream = new FileOutputStream( file );
+        try
+        {
+            properties.store( fileOutputStream, "Timestamp file for executable war/jar" );
+        }
+        finally
+        {
+            fileOutputStream.close();
         }
     }
 }
