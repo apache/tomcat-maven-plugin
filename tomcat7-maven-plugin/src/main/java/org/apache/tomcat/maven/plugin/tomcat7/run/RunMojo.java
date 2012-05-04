@@ -137,13 +137,6 @@ public class RunMojo
     private MavenFileFilter mavenFileFilter;
 
     /**
-     * @parameter default-value="${session}"
-     * @readonly
-     * @required
-     */
-    protected MavenSession session;
-
-    /**
      * {@inheritDoc}
      */
     @Override

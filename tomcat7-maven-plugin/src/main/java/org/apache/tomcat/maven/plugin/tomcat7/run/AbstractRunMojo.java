@@ -372,6 +372,13 @@ public abstract class AbstractRunMojo
      */
     protected String classLoaderClass;
 
+    /**
+     * @parameter default-value="${session}"
+     * @readonly
+     * @required
+     */
+    protected MavenSession session;
+
     // ----------------------------------------------------------------------
     // Fields
     // ----------------------------------------------------------------------
@@ -863,14 +870,12 @@ public abstract class AbstractRunMojo
 
                 embeddedTomcat.setDefaultRealm( memoryRealm );
 
-
                 Context ctx = createContext( embeddedTomcat );
 
                 if ( useNaming )
                 {
                     embeddedTomcat.enableNaming();
                 }
-
 
                 embeddedTomcat.getHost().setAppBase( new File( configurationDir, "webapps" ).getAbsolutePath() );
 
@@ -896,9 +901,10 @@ public abstract class AbstractRunMojo
                 embeddedTomcat.getHost().getPipeline().addValve( alv );
 
                 // create https connector
+                Connector httpsConnector = null;
                 if ( httpsPort > 0 )
                 {
-                    Connector httpsConnector = new Connector( protocol );
+                    httpsConnector = new Connector( protocol );
                     httpsConnector.setPort( httpsPort );
                     httpsConnector.setSecure( true );
                     httpsConnector.setProperty( "SSLEnabled", "true" );
@@ -921,9 +927,10 @@ public abstract class AbstractRunMojo
                 }
 
                 // create ajp connector
+                Connector ajpConnector = null;
                 if ( ajpPort > 0 )
                 {
-                    Connector ajpConnector = new Connector( ajpProtocol );
+                    ajpConnector = new Connector( ajpProtocol );
                     ajpConnector.setPort( ajpPort );
                     ajpConnector.setURIEncoding( uriEncoding );
                     embeddedTomcat.getEngine().getService().addConnector( ajpConnector );
@@ -941,6 +948,25 @@ public abstract class AbstractRunMojo
                 }
 
                 embeddedTomcat.start();
+
+                session.getExecutionProperties().put( "tomcat.maven.http.port",
+                                                      Integer.toString( connector.getLocalPort() ) );
+                System.setProperty( "tomcat.maven.http.port", Integer.toString( connector.getLocalPort() ) );
+
+                if ( httpsConnector != null )
+                {
+                    session.getExecutionProperties().put( "tomcat.maven.https.port",
+                                                          Integer.toString( httpsConnector.getLocalPort() ) );
+                    System.setProperty( "tomcat.maven.https.port", Integer.toString( httpsConnector.getLocalPort() ) );
+                }
+
+                if ( ajpConnector != null )
+                {
+                    session.getExecutionProperties().put( "tomcat.maven.ajp.port",
+                                                          Integer.toString( ajpConnector.getLocalPort() ) );
+                    System.setProperty( "tomcat.maven.ajp.port", Integer.toString( ajpConnector.getLocalPort() ) );
+                }
+
                 EmbeddedRegistry.getInstance().register( embeddedTomcat );
 
             }
