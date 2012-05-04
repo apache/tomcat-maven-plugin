@@ -109,6 +109,7 @@ public abstract class AbstractRunMojo
 
     /**
      * The port to run the Tomcat server on.
+     * Will be exposed as System props and session.executionProperties with key tomcat.maven.http.port
      *
      * @parameter expression="${maven.tomcat.port}" default-value="8080"
      */
@@ -118,6 +119,7 @@ public abstract class AbstractRunMojo
      * The AJP port to run the Tomcat server on.
      * By default it's 0 this means won't be started.
      * The ajp connector will be started only for value > 0.
+     * Will be exposed as System props and session.executionProperties with key tomcat.maven.ajp.port
      *
      * @parameter expression="${maven.tomcat.ajp.port}" default-value="0"
      * @since 2.0
@@ -143,6 +145,7 @@ public abstract class AbstractRunMojo
      * The https port to run the Tomcat server on.
      * By default it's 0 this means won't be started.
      * The https connector will be started only for value > 0.
+     * Will be exposed as System props and session.executionProperties with key tomcat.maven.https.port
      *
      * @parameter expression="${maven.tomcat.httpsPort}" default-value="0"
      * @since 1.0
