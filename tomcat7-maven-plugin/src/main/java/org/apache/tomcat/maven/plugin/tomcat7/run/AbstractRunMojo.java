@@ -31,6 +31,7 @@ import org.apache.catalina.startup.Catalina;
 import org.apache.catalina.startup.CatalinaProperties;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.valves.AccessLogValve;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
@@ -69,6 +70,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -78,6 +80,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 /**
@@ -381,6 +384,14 @@ public abstract class AbstractRunMojo
      * @required
      */
     protected MavenSession session;
+
+    /**
+     * Will dump port in a properties file (see ports for property names).
+     * If empty no file generated
+     *
+     * @parameter expression="${maven.tomcat.propertiesPortFilePath}"
+     */
+    protected String propertiesPortFilePath;
 
     // ----------------------------------------------------------------------
     // Fields
@@ -952,6 +963,10 @@ public abstract class AbstractRunMojo
 
                 embeddedTomcat.start();
 
+                Properties portProperties = new Properties();
+
+                portProperties.put( "tomcat.maven.http.port", Integer.toString( connector.getLocalPort() ) );
+
                 session.getExecutionProperties().put( "tomcat.maven.http.port",
                                                       Integer.toString( connector.getLocalPort() ) );
                 System.setProperty( "tomcat.maven.http.port", Integer.toString( connector.getLocalPort() ) );
@@ -960,6 +975,7 @@ public abstract class AbstractRunMojo
                 {
                     session.getExecutionProperties().put( "tomcat.maven.https.port",
                                                           Integer.toString( httpsConnector.getLocalPort() ) );
+                    portProperties.put( "tomcat.maven.https.port", Integer.toString( connector.getLocalPort() ) );
                     System.setProperty( "tomcat.maven.https.port", Integer.toString( httpsConnector.getLocalPort() ) );
                 }
 
@@ -967,7 +983,25 @@ public abstract class AbstractRunMojo
                 {
                     session.getExecutionProperties().put( "tomcat.maven.ajp.port",
                                                           Integer.toString( ajpConnector.getLocalPort() ) );
+                    portProperties.put( "tomcat.maven.ajp.port", Integer.toString( ajpConnector.getLocalPort() ) );
                     System.setProperty( "tomcat.maven.ajp.port", Integer.toString( ajpConnector.getLocalPort() ) );
+                }
+                if ( propertiesPortFilePath != null )
+                {
+                    File propertiesPortsFile = new File( propertiesPortFilePath );
+                    if ( propertiesPortsFile.exists() )
+                    {
+                        propertiesPortsFile.delete();
+                    }
+                    FileOutputStream fileOutputStream = new FileOutputStream( propertiesPortsFile );
+                    try
+                    {
+                        portProperties.store( fileOutputStream, "Apache Tomcat Maven plugin port used" );
+                    }
+                    finally
+                    {
+                        IOUtils.closeQuietly( fileOutputStream );
+                    }
                 }
 
                 EmbeddedRegistry.getInstance().register( embeddedTomcat );
