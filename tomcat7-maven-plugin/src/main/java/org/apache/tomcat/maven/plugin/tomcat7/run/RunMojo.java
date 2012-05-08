@@ -83,7 +83,7 @@ public class RunMojo
      * Set the "follow standard delegation model" flag used to configure our ClassLoader.
      *
      * @parameter expression = "${tomcat.delegate}" default-value="true"
-     * @see http://tomcat.apache.org/tomcat-6.0-doc/api/org/apache/catalina/loader/WebappLoader.html#setDelegate(boolean)
+     * @see http://tomcat.apache.org/tomcat-7.0-doc/api/org/apache/catalina/loader/WebappLoader.html#setDelegate(boolean)
      * @since 1.0
      */
     private boolean delegate = true;
@@ -92,7 +92,7 @@ public class RunMojo
      * represents the delay in seconds between each classPathScanning change invocation
      *
      * @parameter expression="${maven.tomcat.backgroundProcessorDelay}" default-value="-1"
-     * @see <a href="http://tomcat.apache.org/tomcat-6.0-doc/config/context.html">http://tomcat.apache.org/tomcat-6.0-doc/config/context.html</a>
+     * @see <a href="http://tomcat.apache.org/tomcat-7.0-doc/config/context.html">http://tomcat.apache.org/tomcat-7.0-doc/config/context.html</a>
      */
     protected int backgroundProcessorDelay = -1;
 
