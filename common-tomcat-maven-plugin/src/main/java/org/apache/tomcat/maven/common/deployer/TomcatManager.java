@@ -168,7 +168,7 @@ public class TomcatManager
         PoolingClientConnectionManager poolingClientConnectionManager = new PoolingClientConnectionManager();
         poolingClientConnectionManager.setMaxTotal( 5 );
         this.httpClient = new DefaultHttpClient( poolingClientConnectionManager );
-        if ( StringUtils.isNotEmpty( username ) && StringUtils.isNotEmpty( password ) )
+        if ( StringUtils.isNotEmpty( username ) )
         {
             Credentials creds = new UsernamePasswordCredentials( username, password );
 
