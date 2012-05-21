@@ -322,9 +322,9 @@ public abstract class AbstractExecWarMojo
                         Dependency dependency = warRunDependency.dependency;
                         // String groupId, String artifactId, String version, String scope, String type
                         Artifact artifact =
-                            artifactFactory.createArtifact( dependency.getGroupId(), dependency.getArtifactId(),
-                                                            dependency.getVersion(), dependency.getScope(),
-                                                            dependency.getType() );
+                            artifactFactory.createArtifactWithClassifier( dependency.getGroupId(), dependency.getArtifactId(),
+                                                            dependency.getVersion(), dependency.getType(),
+                                                            dependency.getClassifier() );
 
                         artifactResolver.resolve( artifact, this.remoteRepos, this.local );
                         File warFile = new File( buildDirectory, artifact.getFile().getName() );
