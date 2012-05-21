@@ -311,9 +311,7 @@ public abstract class AbstractExecWarMojo
 
                 properties.put( Tomcat7Runner.WARS_KEY, StringUtils.removeStart( path, "/" ) + ".war|" + path );
             }
-
-            if ( "pom".equals( project.getPackaging() ) && ( warRunDependencies != null
-                && !warRunDependencies.isEmpty() ) )
+            else if ( warRunDependencies != null && !warRunDependencies.isEmpty() )
             {
                 for ( WarRunDependency warRunDependency : warRunDependencies )
                 {
@@ -352,8 +350,6 @@ public abstract class AbstractExecWarMojo
                     }
                 }
             }
-
-            // FIXME if no war has been added here we must stop with a human readable and user friendly error message
 
             if ( serverXml != null && serverXml.exists() )
             {
