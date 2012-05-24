@@ -318,7 +318,6 @@ public abstract class AbstractExecWarMojo
                     if ( warRunDependency.dependency != null )
                     {
                         Dependency dependency = warRunDependency.dependency;
-                        // String groupId, String artifactId, String version, String scope, String type
                         Artifact artifact =
                             artifactFactory.createArtifactWithClassifier( dependency.getGroupId(), dependency.getArtifactId(),
                                                             dependency.getVersion(), dependency.getType(),
