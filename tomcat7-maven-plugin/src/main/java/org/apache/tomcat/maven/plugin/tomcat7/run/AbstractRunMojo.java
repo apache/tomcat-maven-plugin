@@ -975,7 +975,7 @@ public abstract class AbstractRunMojo
                 {
                     session.getExecutionProperties().put( "tomcat.maven.https.port",
                                                           Integer.toString( httpsConnector.getLocalPort() ) );
-                    portProperties.put( "tomcat.maven.https.port", Integer.toString( connector.getLocalPort() ) );
+                    portProperties.put( "tomcat.maven.https.port", Integer.toString( httpsConnector.getLocalPort() ) );
                     System.setProperty( "tomcat.maven.https.port", Integer.toString( httpsConnector.getLocalPort() ) );
                 }
 
