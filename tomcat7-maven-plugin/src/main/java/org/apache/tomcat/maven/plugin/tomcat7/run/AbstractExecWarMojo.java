@@ -66,8 +66,6 @@ import java.util.jar.JarFile;
 public abstract class AbstractExecWarMojo
     extends AbstractTomcat7Mojo
 {
-
-
     /**
      * @parameter default-value="${project.artifact}"
      * @required
@@ -96,6 +94,13 @@ public abstract class AbstractExecWarMojo
     private File buildDirectory;
 
     /**
+     * Path under {@link #buildDirectory} where this mojo may do temporary work.
+     *
+     * @parameter default-value="tomcat7-maven-plugin-exec"
+     */
+    private String pluginWorkDirectory;
+
+    /**
      * @parameter default-value="src/main/tomcatconf" expression="${maven.tomcat.exec.war.tomcatConf}"
      */
     private File tomcatConfigurationFilesDirectory;
@@ -104,7 +109,6 @@ public abstract class AbstractExecWarMojo
      * @parameter default-value="src/main/tomcatconf/server.xml" expression="${maven.tomcat.exec.war.serverXml}"
      */
     private File serverXml;
-
 
     /**
      * Name of the generated exec JAR.
@@ -324,15 +328,17 @@ public abstract class AbstractExecWarMojo
                                                             dependency.getClassifier() );
 
                         artifactResolver.resolve( artifact, this.remoteRepos, this.local );
-                        File warFile = new File( buildDirectory, artifact.getFile().getName() );
-                        String warFileName = artifact.getFile().getName();
-                        FileUtils.copyFile( artifact.getFile(), warFile );
+
+                        File warFileToBundle = new File( resolvePluginWorkDir(), artifact.getFile().getName() );
+                        FileUtils.copyFile( artifact.getFile(), warFileToBundle );
+
                         if ( warRunDependency.contextXml != null )
                         {
-                            warFile = addContextXmlToWar( warRunDependency.contextXml, warFile );
+                            warFileToBundle = addContextXmlToWar( warRunDependency.contextXml, warFileToBundle );
                         }
+                        final String warFileName = artifact.getFile().getName();
                         os.putArchiveEntry( new JarArchiveEntry( warFileName ) );
-                        IOUtils.copy( new FileInputStream( warFile ), os );
+                        IOUtils.copy( new FileInputStream( warFileToBundle ), os );
                         os.closeArchiveEntry();
                         String propertyWarValue = properties.getProperty( Tomcat7Runner.WARS_KEY );
                         String contextPath =
@@ -496,6 +502,21 @@ public abstract class AbstractExecWarMojo
             IOUtils.closeQuietly( execWarJarOutputStream );
             IOUtils.closeQuietly( tmpPropertiesFileOutputStream );
         }
+    }
+
+    /**
+     * Resolves the plugin work dir as a sub directory of {@link #buildDirectory}, creating it if it does not exist.
+     *
+     * @return File representing the resolved plugin work dir
+     * @throws MojoExecutionException if the plugin work dir cannot be created
+     */
+    protected File resolvePluginWorkDir() throws MojoExecutionException {
+        File workDir = new File(buildDirectory, pluginWorkDirectory);
+        if(!workDir.exists() && !workDir.mkdirs()){
+            throw new MojoExecutionException("Could not create plugin work directory at " + workDir.getAbsolutePath());
+        };
+        return workDir;
+
     }
 
     private String[] toStringArray( List list )
