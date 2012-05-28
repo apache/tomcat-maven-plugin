@@ -51,7 +51,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -97,6 +96,7 @@ public abstract class AbstractExecWarMojo
      * Path under {@link #buildDirectory} where this mojo may do temporary work.
      *
      * @parameter default-value="tomcat7-maven-plugin-exec"
+     * @since 2.0
      */
     private String pluginWorkDirectory;
 
@@ -298,7 +298,8 @@ public abstract class AbstractExecWarMojo
 
             Properties properties = new Properties();
 
-            properties.put( Tomcat7Runner.ARCHIVE_GENERATION_TIMESTAMP_KEY, Long.toString( System.currentTimeMillis() ) );
+            properties.put( Tomcat7Runner.ARCHIVE_GENERATION_TIMESTAMP_KEY,
+                            Long.toString( System.currentTimeMillis() ) );
             properties.put( Tomcat7Runner.ENABLE_NAMING_KEY, Boolean.toString( enableNaming ) );
             properties.put( Tomcat7Runner.ACCESS_LOG_VALVE_FORMAT_KEY, accessLogValveFormat );
             properties.put( Tomcat7Runner.HTTP_PROTOCOL_KEY, connectorHttpProtocol );
@@ -322,10 +323,11 @@ public abstract class AbstractExecWarMojo
                     if ( warRunDependency.dependency != null )
                     {
                         Dependency dependency = warRunDependency.dependency;
-                        Artifact artifact =
-                            artifactFactory.createArtifactWithClassifier( dependency.getGroupId(), dependency.getArtifactId(),
-                                                            dependency.getVersion(), dependency.getType(),
-                                                            dependency.getClassifier() );
+                        Artifact artifact = artifactFactory.createArtifactWithClassifier( dependency.getGroupId(),
+                                                                                          dependency.getArtifactId(),
+                                                                                          dependency.getVersion(),
+                                                                                          dependency.getType(),
+                                                                                          dependency.getClassifier() );
 
                         artifactResolver.resolve( artifact, this.remoteRepos, this.local );
 
@@ -510,11 +512,16 @@ public abstract class AbstractExecWarMojo
      * @return File representing the resolved plugin work dir
      * @throws MojoExecutionException if the plugin work dir cannot be created
      */
-    protected File resolvePluginWorkDir() throws MojoExecutionException {
-        File workDir = new File(buildDirectory, pluginWorkDirectory);
-        if(!workDir.exists() && !workDir.mkdirs()){
-            throw new MojoExecutionException("Could not create plugin work directory at " + workDir.getAbsolutePath());
-        };
+    protected File resolvePluginWorkDir()
+        throws MojoExecutionException
+    {
+        File workDir = new File( buildDirectory, pluginWorkDirectory );
+        if ( !workDir.exists() && !workDir.mkdirs() )
+        {
+            throw new MojoExecutionException(
+                "Could not create plugin work directory at " + workDir.getAbsolutePath() );
+        }
+
         return workDir;
 
     }
