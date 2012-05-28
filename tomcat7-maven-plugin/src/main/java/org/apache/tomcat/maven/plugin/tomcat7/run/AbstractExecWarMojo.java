@@ -515,11 +515,6 @@ public abstract class AbstractExecWarMojo
     protected File resolvePluginWorkDir()
         throws MojoExecutionException
     {
-        if ( pluginWorkDirectory.exists() )
-        {
-            return pluginWorkDirectory;
-        }
-
         if ( !pluginWorkDirectory.exists() && !pluginWorkDirectory.mkdirs() )
         {
             throw new MojoExecutionException(
