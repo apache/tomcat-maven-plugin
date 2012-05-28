@@ -95,10 +95,10 @@ public abstract class AbstractExecWarMojo
     /**
      * Path under {@link #buildDirectory} where this mojo may do temporary work.
      *
-     * @parameter default-value="tomcat7-maven-plugin-exec"
+     * @parameter default-value="${project.build.directory}/tomcat7-maven-plugin-exec"
      * @since 2.0
      */
-    private String pluginWorkDirectory;
+    private File pluginWorkDirectory;
 
     /**
      * @parameter default-value="src/main/tomcatconf" expression="${maven.tomcat.exec.war.tomcatConf}"
@@ -515,14 +515,18 @@ public abstract class AbstractExecWarMojo
     protected File resolvePluginWorkDir()
         throws MojoExecutionException
     {
-        File workDir = new File( buildDirectory, pluginWorkDirectory );
-        if ( !workDir.exists() && !workDir.mkdirs() )
+        if ( pluginWorkDirectory.exists() )
         {
-            throw new MojoExecutionException(
-                "Could not create plugin work directory at " + workDir.getAbsolutePath() );
+            return pluginWorkDirectory;
         }
 
-        return workDir;
+        if ( !pluginWorkDirectory.exists() && !pluginWorkDirectory.mkdirs() )
+        {
+            throw new MojoExecutionException(
+                "Could not create plugin work directory at " + pluginWorkDirectory.getAbsolutePath() );
+        }
+
+        return pluginWorkDirectory;
 
     }
 
