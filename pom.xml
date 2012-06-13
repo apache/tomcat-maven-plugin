@@ -629,6 +629,7 @@
               <exclude>.git/**</exclude>
               <exclude>.idea/**</exclude>
               <exclude>.extract/**</exclude>
+              <exclude>*.patch</exclude>
             </excludes>
           </configuration>
         </plugin>
