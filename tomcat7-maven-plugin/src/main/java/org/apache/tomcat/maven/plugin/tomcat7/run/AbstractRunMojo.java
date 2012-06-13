@@ -412,7 +412,7 @@ public abstract class AbstractRunMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
-        if ( skip )
+        if ( skip && !addContextWarDependencies )
         {
             getLog().info( "skip execution" );
             return;
