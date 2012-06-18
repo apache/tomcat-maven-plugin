@@ -32,7 +32,11 @@ import org.apache.catalina.servlets.DefaultServlet;
 import org.apache.catalina.startup.Catalina;
 import org.apache.catalina.startup.Embedded;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
+import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
+import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
@@ -46,6 +50,7 @@ import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.classworlds.realm.DuplicateRealmException;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -60,9 +65,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +83,33 @@ import java.util.Set;
 public abstract class AbstractRunMojo
     extends AbstractI18NTomcat6Mojo
 {
+    // ---------------------------------------------------------------------
+    // Mojo Components
+    // ---------------------------------------------------------------------
+
+    /**
+     * Used to look up Artifacts in the remote repository.
+     *
+     * @component
+     */
+    protected org.apache.maven.artifact.factory.ArtifactFactory factory;
+
+    /**
+     * Location of the local repository.
+     *
+     * @parameter expression="${localRepository}"
+     * @readonly
+     * @required
+     */
+    private org.apache.maven.artifact.repository.ArtifactRepository local;
+
+    /**
+     * Used to look up Artifacts in the remote repository.
+     *
+     * @component
+     */
+    protected org.apache.maven.artifact.resolver.ArtifactResolver resolver;
+
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
@@ -195,6 +227,7 @@ public abstract class AbstractRunMojo
      *
      * @parameter expression="${maven.tomcat.addContextWarDependencies}" default-value="false"
      * @since 1.0
+     * @deprecated use additionalWebapps instead
      */
     private boolean addContextWarDependencies;
 
@@ -334,6 +367,12 @@ public abstract class AbstractRunMojo
      */
     protected boolean skip;
 
+    /**
+     * @parameter
+     * @since 2.0
+     */
+    private List<Webapp> additionalWebapps;
+
     // ----------------------------------------------------------------------
     // Fields
     // ----------------------------------------------------------------------
@@ -378,7 +417,8 @@ public abstract class AbstractRunMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
-        if ( skip && !addContextWarDependencies )
+
+        if ( skip && !addContextWarDependencies && getAdditionalWebapps().isEmpty() )
         {
             getLog().info( "skip execution" );
             return;
@@ -758,7 +798,7 @@ public abstract class AbstractRunMojo
 
                 host.addChild( context );
                 createStaticContext( container, context, host );
-                if ( addContextWarDependencies )
+                if ( addContextWarDependencies || !getAdditionalWebapps().isEmpty() )
                 {
                     Collection<Context> dependecyContexts = createDependencyContexts( container );
                     for ( Context extraContext : dependecyContexts )
@@ -831,6 +871,15 @@ public abstract class AbstractRunMojo
                 System.setProperty( "catalina.base", previousCatalinaBase );
             }
         }
+    }
+
+    private List<Webapp> getAdditionalWebapps()
+    {
+        if ( additionalWebapps == null )
+        {
+            return Collections.emptyList();
+        }
+        return additionalWebapps;
     }
 
     protected ClassRealm getTomcatClassLoader()
@@ -927,7 +976,7 @@ public abstract class AbstractRunMojo
      * "tomcat".
      *
      * @param container tomcat
-     * @return dependency tomcat contexts of warfiles in scope "tomcat"
+     * @return dependency tomcat contexts of warfiles in scope "tomcat" and those from additionalWebapps
      */
     private Collection<Context> createDependencyContexts( Embedded container )
         throws MojoExecutionException
@@ -940,52 +989,63 @@ public abstract class AbstractRunMojo
         @SuppressWarnings( "unchecked" ) Set<Artifact> artifacts = project.getArtifacts();
         for ( Artifact artifact : artifacts )
         {
-
             // Artifact is not yet registered and it has neither test, nor a
             // provided scope, not is it optional
             if ( "war".equals( artifact.getType() ) && !artifact.isOptional() && filter.include( artifact ) )
             {
-                getLog().info( "Deploy warfile: " + String.valueOf( artifact.getFile() ) );
-                File webapps = new File( configurationDir, "webapps" );
-                File artifactWarDir = new File( webapps, artifact.getArtifactId() );
-                if ( !artifactWarDir.exists() )
-                {
-                    //dont extract if exists
-                    artifactWarDir.mkdir();
-                    try
-                    {
-                        UnArchiver unArchiver = archiverManager.getUnArchiver( "zip" );
-                        unArchiver.setSourceFile( artifact.getFile() );
-                        unArchiver.setDestDirectory( artifactWarDir );
-
-                        // Extract the module
-                        unArchiver.extract();
-                    }
-                    catch ( NoSuchArchiverException e )
-                    {
-                        getLog().error( e );
-                        continue;
-                    }
-                    catch ( ArchiverException e )
-                    {
-                        getLog().error( e );
-                        continue;
-                    }
-                }
-                WebappLoader webappLoader = new WebappLoader( Thread.currentThread().getContextClassLoader() );
-                Context context =
-                    container.createContext( "/" + artifact.getArtifactId(), artifactWarDir.getAbsolutePath() );
-                context.setLoader( webappLoader );
-                File contextFile = getContextFile();
-                if ( contextFile != null )
-                {
-                    context.setConfigFile( getContextFile().getAbsolutePath() );
-                }
-                contexts.add( context );
-
+                addContextFromArtifact( container, contexts, artifact, "/" + artifact.getArtifactId() );
             }
         }
+
+        for ( Webapp additionalWebapp : getAdditionalWebapps() )
+        {
+            addContextFromArtifact( container, contexts, getArtifact( additionalWebapp ),
+                                    "/" + additionalWebapp.getContextPath() );
+        }
         return contexts;
+    }
+
+
+    private void addContextFromArtifact( Embedded container, List<Context> contexts, Artifact artifact,
+                                         String contextPath )
+        throws MojoExecutionException
+    {
+        getLog().info( "Deploy warfile: " + String.valueOf( artifact.getFile() ) + " to contextPath: " + contextPath );
+        File webapps = new File( configurationDir, "webapps" );
+        File artifactWarDir = new File( webapps, artifact.getArtifactId() );
+        if ( !artifactWarDir.exists() )
+        {
+            //dont extract if exists
+            artifactWarDir.mkdir();
+            try
+            {
+                UnArchiver unArchiver = archiverManager.getUnArchiver( "zip" );
+                unArchiver.setSourceFile( artifact.getFile() );
+                unArchiver.setDestDirectory( artifactWarDir );
+
+                // Extract the module
+                unArchiver.extract();
+            }
+            catch ( NoSuchArchiverException e )
+            {
+                getLog().error( e );
+                return;
+            }
+            catch ( ArchiverException e )
+            {
+                getLog().error( e );
+                return;
+            }
+        }
+        WebappLoader webappLoader = new WebappLoader( Thread.currentThread().getContextClassLoader() );
+        Context context = container.createContext( contextPath, artifactWarDir.getAbsolutePath() );
+        context.setLoader( webappLoader );
+        File contextFile = getContextFile();
+        if ( contextFile != null )
+        {
+            context.setConfigFile( getContextFile().getAbsolutePath() );
+        }
+        contexts.add( context );
     }
 
 
@@ -1002,5 +1062,60 @@ public abstract class AbstractRunMojo
             staticContext.addServletMapping( "/", "staticContent" );
             host.addChild( staticContext );
         }
+    }
+
+
+    /**
+     * Resolves the Artifact from the remote repository if necessary. If no version is specified, it will be retrieved
+     * from the dependency list or from the DependencyManagement section of the pom.
+     *
+     * @param additionalWebapp containing information about artifact from plugin configuration.
+     * @return Artifact object representing the specified file.
+     * @throws MojoExecutionException with a message if the version can't be found in DependencyManagement.
+     */
+    protected Artifact getArtifact( Webapp additionalWebapp )
+        throws MojoExecutionException
+    {
+
+        Artifact artifact;
+        VersionRange vr;
+        try
+        {
+            vr = VersionRange.createFromVersionSpec( additionalWebapp.getVersion() );
+        }
+        catch ( InvalidVersionSpecificationException e )
+        {
+            getLog().warn( "fail to create versionRange from version: " + additionalWebapp.getVersion(), e );
+            vr = VersionRange.createFromVersion( additionalWebapp.getVersion() );
+        }
+
+        if ( StringUtils.isEmpty( additionalWebapp.getClassifier() ) )
+        {
+            artifact =
+                factory.createDependencyArtifact( additionalWebapp.getGroupId(), additionalWebapp.getArtifactId(), vr,
+                                                  additionalWebapp.getType(), null, Artifact.SCOPE_COMPILE );
+        }
+        else
+        {
+            artifact =
+                factory.createDependencyArtifact( additionalWebapp.getGroupId(), additionalWebapp.getArtifactId(), vr,
+                                                  additionalWebapp.getType(), additionalWebapp.getClassifier(),
+                                                  Artifact.SCOPE_COMPILE );
+        }
+
+        try
+        {
+            resolver.resolve( artifact, project.getRemoteArtifactRepositories(), this.local );
+        }
+        catch ( ArtifactResolutionException e )
+        {
+            throw new MojoExecutionException( "Unable to resolve artifact.", e );
+        }
+        catch ( ArtifactNotFoundException e )
+        {
+            throw new MojoExecutionException( "Unable to find artifact.", e );
+        }
+
+        return artifact;
     }
 }
