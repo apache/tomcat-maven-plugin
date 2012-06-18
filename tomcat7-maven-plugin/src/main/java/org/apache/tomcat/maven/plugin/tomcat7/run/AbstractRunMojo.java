@@ -412,13 +412,13 @@ public abstract class AbstractRunMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
-        if ( skip && !addContextWarDependencies )
+        if ( skip )
         {
             getLog().info( "skip execution" );
             return;
         }
         // ensure project is a web application
-        if ( !isWar() )
+        if ( !isWar() && !addContextWarDependencies )
         {
             getLog().info( messagesProvider.getMessage( "AbstractRunMojo.nonWar" ) );
             return;
