@@ -86,7 +86,7 @@ public class RunMojo
      * @see http://tomcat.apache.org/tomcat-6.0-doc/api/org/apache/catalina/loader/WebappLoader.html#setDelegate(boolean)
      * @since 1.0
      */
-    private boolean delegate = true;
+    private final boolean delegate = true;
 
     /**
      * represents the delay in seconds between each classPathScanning change invocation
@@ -126,8 +126,6 @@ public class RunMojo
      * @since 2.0-beta-1
      */
     private List<String> additionalClasspathDirs;
-
-    private File temporaryContextFile = null;
 
     // ----------------------------------------------------------------------
     // AbstractRunMojo Implementation
@@ -205,16 +203,16 @@ public class RunMojo
             {
                 for ( String additionalClasspathDir : additionalClasspathDirs )
                 {
-                	if( StringUtils.isNotBlank(additionalClasspathDir))
-                	{
-	                    File file = new File( additionalClasspathDir );
-	                    if ( file.exists() )
-	                    {
-	                        String fileUri = file.toURI().toString();
-	                        getLog().debug( "add file:" + fileUri + " as a additionalClasspathDir" );
-	                        loader.addRepository( fileUri );
-	                    }
-                	}
+                    if ( StringUtils.isNotBlank( additionalClasspathDir ) )
+                    {
+                        File file = new File( additionalClasspathDir );
+                        if ( file.exists() )
+                        {
+                            String fileUri = file.toURI().toString();
+                            getLog().debug( "add file:" + fileUri + " as a additionalClasspathDir" );
+                            loader.addRepository( fileUri );
+                        }
+                    }
                 }
             }
         }
@@ -243,10 +241,8 @@ public class RunMojo
     protected File getContextFile()
         throws MojoExecutionException
     {
-        if ( temporaryContextFile != null )
-        {
-            return temporaryContextFile;
-        }
+        File temporaryContextFile = null;
+
         //----------------------------------------------------------------------------
         // context attributes backgroundProcessorDelay reloadable cannot be modified at runtime.
         // It looks only values from the file ared used
