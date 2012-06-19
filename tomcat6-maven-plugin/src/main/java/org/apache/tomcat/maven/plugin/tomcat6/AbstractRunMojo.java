@@ -40,6 +40,7 @@ import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+import org.apache.tomcat.maven.common.config.AbstractWebapp;
 import org.apache.tomcat.maven.common.run.EmbeddedRegistry;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.UnArchiver;
@@ -227,7 +228,7 @@ public abstract class AbstractRunMojo
      *
      * @parameter expression="${maven.tomcat.addContextWarDependencies}" default-value="false"
      * @since 1.0
-     * @deprecated use additionalWebapps instead
+     * @deprecated use webapps instead
      */
     private boolean addContextWarDependencies;
 
@@ -372,7 +373,7 @@ public abstract class AbstractRunMojo
      * @see {@link Webapp}
      * @since 2.0
      */
-    private List<Webapp> additionalWebapps;
+    private List<Webapp> webapps;
 
     // ----------------------------------------------------------------------
     // Fields
@@ -800,8 +801,8 @@ public abstract class AbstractRunMojo
                 createStaticContext( container, context, host );
                 if ( addContextWarDependencies || !getAdditionalWebapps().isEmpty() )
                 {
-                    Collection<Context> dependecyContexts = createDependencyContexts( container );
-                    for ( Context extraContext : dependecyContexts )
+                    Collection<Context> dependencyContexts = createDependencyContexts( container );
+                    for ( Context extraContext : dependencyContexts )
                     {
                         host.addChild( extraContext );
                     }
@@ -875,11 +876,11 @@ public abstract class AbstractRunMojo
 
     private List<Webapp> getAdditionalWebapps()
     {
-        if ( additionalWebapps == null )
+        if ( webapps == null )
         {
             return Collections.emptyList();
         }
-        return additionalWebapps;
+        return webapps;
     }
 
     protected ClassRealm getTomcatClassLoader()
@@ -976,7 +977,7 @@ public abstract class AbstractRunMojo
      * "tomcat".
      *
      * @param container tomcat
-     * @return dependency tomcat contexts of warfiles in scope "tomcat" and those from additionalWebapps
+     * @return dependency tomcat contexts of warfiles in scope "tomcat" and those from webapps
      */
     private Collection<Context> createDependencyContexts( Embedded container )
         throws MojoExecutionException
@@ -997,7 +998,7 @@ public abstract class AbstractRunMojo
             }
         }
 
-        for ( Webapp additionalWebapp : getAdditionalWebapps() )
+        for ( AbstractWebapp additionalWebapp : getAdditionalWebapps() )
         {
             addContextFromArtifact( container, contexts, getArtifact( additionalWebapp ),
                                     "/" + additionalWebapp.getContextPath() );
@@ -1073,7 +1074,7 @@ public abstract class AbstractRunMojo
      * @return Artifact object representing the specified file.
      * @throws MojoExecutionException with a message if the version can't be found in DependencyManagement.
      */
-    protected Artifact getArtifact( Webapp additionalWebapp )
+    protected Artifact getArtifact( AbstractWebapp additionalWebapp )
         throws MojoExecutionException
     {
 
