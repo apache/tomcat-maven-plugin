@@ -368,8 +368,8 @@ public abstract class AbstractRunMojo
     protected boolean skip;
 
     /**
-     * @see {@link Webapp}
      * @parameter
+     * @see {@link Webapp}
      * @since 2.0
      */
     private List<Webapp> additionalWebapps;
@@ -418,14 +418,13 @@ public abstract class AbstractRunMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
-
-        if ( skip && !addContextWarDependencies && getAdditionalWebapps().isEmpty() )
+        if ( skip )
         {
             getLog().info( "skip execution" );
             return;
         }
-        // ensure project is a web application
-        if ( !isWar() )
+        // ensure project is a web application and we have at least additionnal webapps to run
+        if ( !isWar() && !addContextWarDependencies && getAdditionalWebapps().isEmpty() )
         {
             getLog().info( messagesProvider.getMessage( "AbstractRunMojo.nonWar" ) );
             return;
