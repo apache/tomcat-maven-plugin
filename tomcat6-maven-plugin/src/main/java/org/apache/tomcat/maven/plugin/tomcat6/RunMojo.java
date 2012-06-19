@@ -86,7 +86,7 @@ public class RunMojo
      * @see http://tomcat.apache.org/tomcat-6.0-doc/api/org/apache/catalina/loader/WebappLoader.html#setDelegate(boolean)
      * @since 1.0
      */
-    private final boolean delegate = true;
+    private boolean delegate = true;
 
     /**
      * represents the delay in seconds between each classPathScanning change invocation
