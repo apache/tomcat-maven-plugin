@@ -22,7 +22,6 @@ import org.apache.catalina.loader.WebappLoader;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.shared.filtering.MavenFileFilter;
 import org.apache.maven.shared.filtering.MavenFileFilterRequest;
@@ -127,8 +126,6 @@ public class RunMojo
      */
     private List<String> additionalClasspathDirs;
 
-    private File temporaryContextFile = null;
-
     /**
      *
      * @component role="org.apache.maven.shared.filtering.MavenFileFilter" role-hint="default"
@@ -152,10 +149,8 @@ public class RunMojo
     protected File getContextFile()
         throws MojoExecutionException
     {
-        if ( temporaryContextFile != null )
-        {
-            return temporaryContextFile;
-        }
+        File temporaryContextFile = null;
+
         //----------------------------------------------------------------------------
         // context attributes backgroundProcessorDelay reloadable cannot be modified at runtime.
         // It looks only values from the file are used
