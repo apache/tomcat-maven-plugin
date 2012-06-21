@@ -31,7 +31,6 @@ import java.net.URL;
  * Deploy a WAR to Tomcat.
  *
  * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: AbstractDeployMojo.java 12852 2010-10-12 22:04:32Z thragor $
  */
 public abstract class AbstractDeployMojo
     extends AbstractWarCatalinaMojo

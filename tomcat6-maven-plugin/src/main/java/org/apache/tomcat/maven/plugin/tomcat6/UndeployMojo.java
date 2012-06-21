@@ -28,7 +28,6 @@ import java.io.IOException;
  * Undeploy a WAR from Tomcat.
  *
  * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: UndeployMojo.java 12852 2010-10-12 22:04:32Z thragor $
  * @goal undeploy
  */
 public class UndeployMojo

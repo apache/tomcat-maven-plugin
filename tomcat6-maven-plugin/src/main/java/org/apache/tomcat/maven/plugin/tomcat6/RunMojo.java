@@ -49,7 +49,6 @@ import java.util.Set;
  *
  * @author Jurgen Lust
  * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id$
  * @goal run
  * @execute phase="compile"
  * @requiresDependencyResolution test

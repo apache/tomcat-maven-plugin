@@ -25,7 +25,6 @@ import java.io.File;
  * Runs the current project as a packaged web application using an embedded Tomcat server.
  *
  * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: AbstractRunWarMojo.java 12852 2010-10-12 22:04:32Z thragor $
  * @requiresDependencyResolution runtime
  * @todo depend on war:exploded when MNG-1649 resolved
  */

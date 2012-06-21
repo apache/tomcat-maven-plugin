@@ -58,7 +58,6 @@ import java.util.Locale;
  * A Tomcat manager webapp invocation wrapper.
  *
  * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: TomcatManager.java 12852 2010-10-12 22:04:32Z thragor $
  */
 public class TomcatManager
 {

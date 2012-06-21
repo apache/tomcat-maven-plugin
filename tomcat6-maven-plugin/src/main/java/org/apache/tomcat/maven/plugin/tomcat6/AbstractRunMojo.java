@@ -79,7 +79,6 @@ import java.util.Set;
  *
  * @author Jurgen Lust
  * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id$
  */
 public abstract class AbstractRunMojo
     extends AbstractI18NTomcat6Mojo

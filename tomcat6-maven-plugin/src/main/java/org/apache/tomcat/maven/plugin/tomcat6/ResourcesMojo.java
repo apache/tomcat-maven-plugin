@@ -28,7 +28,6 @@ import java.io.IOException;
  * Lists JNDI resources in Tomcat.
  *
  * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: ResourcesMojo.java 12852 2010-10-12 22:04:32Z thragor $
  * @goal resources
  */
 public class ResourcesMojo

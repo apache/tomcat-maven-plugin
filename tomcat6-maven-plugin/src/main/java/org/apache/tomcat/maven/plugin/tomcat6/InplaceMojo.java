@@ -27,7 +27,6 @@ import java.io.File;
  * Deploy a WAR in-place to Tomcat.
  *
  * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: InplaceMojo.java 12852 2010-10-12 22:04:32Z thragor $
  * @goal inplace
  * @todo depend on war:inplace when MNG-1649 resolved
  */

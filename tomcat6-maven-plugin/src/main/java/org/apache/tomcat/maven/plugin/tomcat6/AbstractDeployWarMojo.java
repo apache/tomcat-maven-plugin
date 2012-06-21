@@ -27,7 +27,6 @@ import java.io.IOException;
 
 /**
  * @author olamy
- * @version $Id: AbstractDeployWarMojo.java 12852 2010-10-12 22:04:32Z thragor $
  * @since 1.0-alpha-2
  */
 public class AbstractDeployWarMojo

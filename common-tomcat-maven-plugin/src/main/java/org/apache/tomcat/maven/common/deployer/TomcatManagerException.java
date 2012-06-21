@@ -23,7 +23,6 @@ package org.apache.tomcat.maven.common.deployer;
  * Indicates an error received from Tomcat manager.
  *
  * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: TomcatManagerException.java 12852 2010-10-12 22:04:32Z thragor $
  */
 public class TomcatManagerException
     extends Exception

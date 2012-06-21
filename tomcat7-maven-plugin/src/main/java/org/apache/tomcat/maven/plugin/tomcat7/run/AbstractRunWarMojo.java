@@ -26,7 +26,6 @@ import java.io.File;
  * 
  * @requiresDependencyResolution runtime
  * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: AbstractRunWarMojo.java 12852 2010-10-12 22:04:32Z thragor $
  * @todo depend on war:exploded when MNG-1649 resolved
  */
 public abstract class AbstractRunWarMojo

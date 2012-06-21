@@ -27,7 +27,6 @@ import java.io.File;
  * Deploy an exploded WAR to Tomcat.
  *
  * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: ExplodedMojo.java 12852 2010-10-12 22:04:32Z thragor $
  * @goal exploded
  * @todo depend on war:exploded when MNG-1649 resolved
  */

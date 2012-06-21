@@ -28,7 +28,6 @@ import java.io.IOException;
  * Lists information about the Tomcat version, OS, and JVM properties.
  *
  * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: ServerInfoMojo.java 12852 2010-10-12 22:04:32Z thragor $
  * @goal info
  */
 public class ServerInfoMojo

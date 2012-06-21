@@ -23,7 +23,6 @@ package org.apache.tomcat.maven.plugin.tomcat7.deploy;
  * Deploy a WAR to Tomcat.
  *
  * @author Mark Hobson <markhobson@gmail.com>
- * @version $Id: DeployMojo.java 12852 2010-10-12 22:04:32Z thragor $
  * @goal deploy
  * @execute phase="package"
  */
