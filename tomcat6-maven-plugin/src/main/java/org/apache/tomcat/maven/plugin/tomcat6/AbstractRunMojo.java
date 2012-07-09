@@ -993,21 +993,26 @@ public abstract class AbstractRunMojo
             // provided scope, not is it optional
             if ( "war".equals( artifact.getType() ) && !artifact.isOptional() && filter.include( artifact ) )
             {
-                addContextFromArtifact( container, contexts, artifact, "/" + artifact.getArtifactId() );
+                addContextFromArtifact( container, contexts, artifact, "/" + artifact.getArtifactId(), null );
             }
         }
 
         for ( AbstractWebapp additionalWebapp : getAdditionalWebapps() )
         {
-            addContextFromArtifact( container, contexts, getArtifact( additionalWebapp ),
-                                    "/" + additionalWebapp.getContextPath() );
+            String contextPath = additionalWebapp.getContextPath();
+            if ( !contextPath.startsWith( "/" ) )
+            {
+                contextPath = "/" + contextPath;
+            }
+            addContextFromArtifact( container, contexts, getArtifact( additionalWebapp ), contextPath,
+                                    additionalWebapp.getContextFile() );
         }
         return contexts;
     }
 
 
     private void addContextFromArtifact( Embedded container, List<Context> contexts, Artifact artifact,
-                                         String contextPath )
+                                         String contextPath, File contextXml )
         throws MojoExecutionException
     {
         getLog().info( "Deploy warfile: " + String.valueOf( artifact.getFile() ) + " to contextPath: " + contextPath );
@@ -1040,10 +1045,11 @@ public abstract class AbstractRunMojo
         WebappLoader webappLoader = new WebappLoader( Thread.currentThread().getContextClassLoader() );
         Context context = container.createContext( contextPath, artifactWarDir.getAbsolutePath() );
         context.setLoader( webappLoader );
-        File contextFile = getContextFile();
+
+        File contextFile = contextXml != null ? contextXml : getContextFile();
         if ( contextFile != null )
         {
-            context.setConfigFile( getContextFile().getAbsolutePath() );
+            context.setConfigFile( contextFile.getAbsolutePath() );
         }
         contexts.add( context );
     }

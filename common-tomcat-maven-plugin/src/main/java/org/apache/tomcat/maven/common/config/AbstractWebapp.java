@@ -22,6 +22,8 @@ package org.apache.tomcat.maven.common.config;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
 
+import java.io.File;
+
 /**
  * @since 2.0
  */
@@ -59,6 +61,8 @@ public class AbstractWebapp
     private String contextPath;
 
     private Artifact artifact;
+
+    private File contextFile;
 
     public AbstractWebapp()
     {
@@ -147,6 +151,16 @@ public class AbstractWebapp
     public void setArtifact( Artifact artifact )
     {
         this.artifact = artifact;
+    }
+
+    public void setContextFile( File contextFile )
+    {
+        this.contextFile = contextFile;
+    }
+
+    public File getContextFile()
+    {
+        return contextFile;
     }
 
 }
