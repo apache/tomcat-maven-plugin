@@ -809,7 +809,7 @@ public abstract class AbstractRunMojo
 
                 // create engine
                 Engine engine = container.createEngine();
-                engine.setName( "localEngine" );
+                engine.setName( "localEngine-" + port );
                 engine.addChild( host );
                 engine.setDefaultHost( host.getName() );
                 container.addEngine( engine );
