@@ -280,11 +280,11 @@
             <artifactId>maven-install-plugin</artifactId>
             <executions>
               <execution>
+                <id>install-plugin-pre-integration-test</id>
+                <phase>pre-integration-test</phase>
                 <goals>
                   <goal>install</goal>
                 </goals>
-                <id>instral-plugin</id>
-                <phase>pre-integration-test</phase>
               </execution>
             </executions>
           </plugin>
