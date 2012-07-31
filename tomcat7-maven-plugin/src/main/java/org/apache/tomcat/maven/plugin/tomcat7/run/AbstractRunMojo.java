@@ -35,6 +35,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
@@ -113,7 +114,7 @@ public abstract class AbstractRunMojo
      * Location of the local repository.
      */
     @Parameter( defaultValue = "${localRepository}", required = true, readonly = true )
-    private org.apache.maven.artifact.repository.ArtifactRepository local;
+    private ArtifactRepository local;
 
     /**
      * Used to look up Artifacts in the remote repository.
@@ -427,6 +428,7 @@ public abstract class AbstractRunMojo
 
     /**
      * configure aliases
+     * see <a href="http://tomcat.apache.org/tomcat-7.0-doc/config/host.html#Host_Name_Aliases">Host Name aliases</a>
      *
      * @since 2.0
      */
