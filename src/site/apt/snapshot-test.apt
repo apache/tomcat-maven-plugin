@@ -36,7 +36,7 @@ Testing SNAPSHOT
 
   <repositories>
     <repository>
-      <id>people.apache.snapshots</id>
+      <id>apache.snapshots</id>
       <url>http://repository.apache.org/content/groups/snapshots-group/</url>
       <releases>
         <enabled>false</enabled>
