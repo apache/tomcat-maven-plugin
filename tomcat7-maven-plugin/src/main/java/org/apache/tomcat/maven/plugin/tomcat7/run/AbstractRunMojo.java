@@ -1165,7 +1165,7 @@ public abstract class AbstractRunMojo
      * @return dependency tomcat contexts of warfiles in scope "tomcat"
      */
     private Collection<Context> createDependencyContexts( Tomcat container )
-        throws MojoExecutionException, MalformedURLException
+        throws MojoExecutionException, MalformedURLException, ServletException
     {
         getLog().info( "Deploying dependency wars" );
         // Let's add other modules
@@ -1180,7 +1180,7 @@ public abstract class AbstractRunMojo
             // provided scope, not is it optional
             if ( "war".equals( artifact.getType() ) && !artifact.isOptional() && filter.include( artifact ) )
             {
-                addContextFromArtifact( container, contexts, artifact, "/" + artifact.getArtifactId(), null );
+                addContextFromArtifact( container, contexts, artifact, "/" + artifact.getArtifactId(), null, false );
             }
         }
 
@@ -1192,15 +1192,15 @@ public abstract class AbstractRunMojo
                 contextPath = "/" + contextPath;
             }
             addContextFromArtifact( container, contexts, getArtifact( additionalWebapp ), contextPath,
-                                    additionalWebapp.getContextFile() );
+                                    additionalWebapp.getContextFile(), additionalWebapp.isAsWebapp() );
         }
         return contexts;
     }
 
 
     private void addContextFromArtifact( Tomcat container, List<Context> contexts, Artifact artifact,
-                                         String contextPath, File contextXml )
-        throws MojoExecutionException, MalformedURLException
+                                         String contextPath, File contextXml, boolean asWebApp )
+        throws MojoExecutionException, MalformedURLException, ServletException
     {
         getLog().info( "Deploy warfile: " + String.valueOf( artifact.getFile() ) + " to contextPath: " + contextPath );
         File webapps = new File( configurationDir, "webapps" );
@@ -1230,7 +1230,15 @@ public abstract class AbstractRunMojo
             }
         }
         WebappLoader webappLoader = new WebappLoader( Thread.currentThread().getContextClassLoader() );
-        Context context = container.addContext( contextPath, artifactWarDir.getAbsolutePath() );
+        Context context = null;
+        if ( asWebApp )
+        {
+            context = container.addWebapp( contextPath, artifactWarDir.getAbsolutePath() );
+        }
+        else
+        {
+            context = container.addContext( contextPath, artifactWarDir.getAbsolutePath() );
+        }
         context.setLoader( webappLoader );
 
         File contextFile = contextXml != null ? contextXml : getContextFile();

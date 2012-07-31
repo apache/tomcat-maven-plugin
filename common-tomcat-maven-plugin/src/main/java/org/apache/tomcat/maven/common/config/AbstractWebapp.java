@@ -64,6 +64,8 @@ public class AbstractWebapp
 
     private File contextFile;
 
+    private boolean asWebapp = false;
+
     public AbstractWebapp()
     {
         super();
@@ -163,4 +165,13 @@ public class AbstractWebapp
         return contextFile;
     }
 
+    public boolean isAsWebapp()
+    {
+        return asWebapp;
+    }
+
+    public void setAsWebapp( boolean asWebapp )
+    {
+        this.asWebapp = asWebapp;
+    }
 }
