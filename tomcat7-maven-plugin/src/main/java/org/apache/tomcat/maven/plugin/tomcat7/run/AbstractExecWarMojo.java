@@ -34,6 +34,8 @@ import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.apache.tomcat.maven.plugin.tomcat7.AbstractTomcat7Mojo;
@@ -65,181 +67,133 @@ import java.util.jar.JarFile;
 public abstract class AbstractExecWarMojo
     extends AbstractTomcat7Mojo
 {
-    /**
-     * @parameter default-value="${project.artifact}"
-     * @required
-     * @readonly
-     */
+
+    @Parameter( defaultValue = "${project.artifact}", required = true, readonly = true )
     private Artifact projectArtifact;
 
     /**
      * The maven project.
-     *
-     * @parameter default-value="${project}"
-     * @required
-     * @readonly
      */
+    @Parameter( defaultValue = "${project}", required = true, readonly = true )
     protected MavenProject project;
 
-    /**
-     * @parameter default-value="${plugin.artifacts}"
-     * @required
-     */
+    @Parameter( defaultValue = "${plugin.artifacts}", required = true )
     private List<Artifact> pluginArtifacts;
 
-    /**
-     * @parameter default-value="${project.build.directory}"
-     */
+    @Parameter( defaultValue = "${project.build.directory}" )
     private File buildDirectory;
 
     /**
      * Path under {@link #buildDirectory} where this mojo may do temporary work.
-     *
-     * @parameter default-value="${project.build.directory}/tomcat7-maven-plugin-exec"
-     * @since 2.0
      */
+    @Parameter( defaultValue = "${project.build.directory}/tomcat7-maven-plugin-exec" )
     private File pluginWorkDirectory;
 
-    /**
-     * @parameter default-value="src/main/tomcatconf" expression="${maven.tomcat.exec.war.tomcatConf}"
-     */
+    @Parameter( property = "maven.tomcat.exec.war.tomcatConf", defaultValue = "src/main/tomcatconf" )
     private File tomcatConfigurationFilesDirectory;
 
-    /**
-     * @parameter default-value="src/main/tomcatconf/server.xml" expression="${maven.tomcat.exec.war.serverXml}"
-     */
+    @Parameter( defaultValue = "src/main/tomcatconf/server.xml", property = "maven.tomcat.exec.war.serverXml" )
     private File serverXml;
 
     /**
      * Name of the generated exec JAR.
-     *
-     * @parameter expression="${tomcat.jar.finalName}" default-value="${project.artifactId}-${project.version}-war-exec.jar"
-     * @required
      */
+    @Parameter( property = "tomcat.jar.finalName",
+                defaultValue = "${project.artifactId}-${project.version}-war-exec.jar", required = true )
     private String finalName;
 
     /**
      * The webapp context path to use for the web application being run.
      * The name to store webapp in exec jar. Do not use /
-     *
-     * @parameter expression="${maven.tomcat.path}" default-value="${project.artifactId}"
-     * @required
      */
+    @Parameter( property = "maven.tomcat.path", defaultValue = "${project.artifactId}", required = true )
     protected String path;
 
-    /**
-     * @parameter
-     */
+    @Parameter
     protected List<WarRunDependency> warRunDependencies;
 
-    /**
-     * @component
-     */
+    @Component
     protected ArtifactResolver artifactResolver;
 
     /**
      * Maven Artifact Factory component.
-     *
-     * @component
      */
+    @Component
     private ArtifactFactory artifactFactory;
 
     /**
      * Location of the local repository.
-     *
-     * @parameter expression="${localRepository}"
-     * @readonly
-     * @required
      */
+    @Parameter( defaultValue = "${localRepository}", required = true, readonly = true )
     private ArtifactRepository local;
 
     /**
      * List of Remote Repositories used by the resolver
-     *
-     * @parameter expression="${project.remoteArtifactRepositories}"
-     * @readonly
-     * @required
      */
+    @Parameter( defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true )
     protected List<ArtifactRepository> remoteRepos;
 
-    /**
-     * @component
-     * @required
-     * @readonly
-     */
+    @Component
     private MavenProjectHelper projectHelper;
 
     /**
      * Attach or not the generated artifact to the build (use true if you want to install or deploy it)
-     *
-     * @parameter expression="${maven.tomcat.exec.war.attachArtifact}" default-value="true"
-     * @required
      */
+    @Parameter( property = "maven.tomcat.exec.war.attachArtifact", defaultValue = "true", required = true )
     private boolean attachArtifact;
 
 
     /**
      * the classifier to use for the attached/generated artifact
-     *
-     * @parameter expression="${maven.tomcat.exec.war.attachArtifactClassifier}" default-value="exec-war"
-     * @required
      */
+    @Parameter( property = "maven.tomcat.exec.war.attachArtifactClassifier", defaultValue = "exec-war",
+                required = true )
     private String attachArtifactClassifier;
 
 
     /**
      * the type to use for the attached/generated artifact
-     *
-     * @parameter expression="${maven.tomcat.exec.war.attachArtifactType}" default-value="jar"
-     * @required
      */
+    @Parameter( property = "maven.tomcat.exec.war.attachArtifactType", defaultValue = "jar", required = true )
     private String attachArtifactClassifierType;
 
     /**
      * to enable naming when starting tomcat
-     *
-     * @parameter expression="${maven.tomcat.exec.war.enableNaming}" default-value="false"
-     * @required
      */
+    @Parameter( property = "maven.tomcat.exec.war.enableNaming", defaultValue = "false", required = true )
     private boolean enableNaming;
 
     /**
      * see http://tomcat.apache.org/tomcat-7.0-doc/config/valve.html
-     *
-     * @parameter expression="${maven.tomcat.exec.war.accessLogValveFormat}" default-value="%h %l %u %t "%r" %s %b %I %D"
-     * @required
      */
+    @Parameter( property = "maven.tomcat.exec.war.accessLogValveFormat", defaultValue = "%h %l %u %t %r %s %b %I %D",
+                required = true )
     private String accessLogValveFormat;
 
     /**
      * list of extra dependencies to add in the standalone tomcat jar: your jdbc driver, mail.jar etc..
      * <b>Those dependencies will be in root classloader.</b>
-     *
-     * @parameter
      */
+    @Parameter
     private List<ExtraDependency> extraDependencies;
 
     /**
      * list of extra resources to add in the standalone tomcat jar: your logger configuration etc
-     *
-     * @parameter
      */
+    @Parameter
     private List<ExtraResource> extraResources;
 
     /**
      * Main class to use for starting the standalone jar.
-     *
-     * @parameter expression="${maven.tomcat.exec.war.mainClass}" default-value="org.apache.tomcat.maven.runner.Tomcat7RunnerCli"
-     * @required
      */
+    @Parameter( property = "maven.tomcat.exec.war.mainClass",
+                defaultValue = "org.apache.tomcat.maven.runner.Tomcat7RunnerCli", required = true )
     private String mainClass;
 
     /**
      * which connector protocol to use HTTP/1.1 or org.apache.coyote.http11.Http11NioProtocol
-     *
-     * @parameter expression="${maven.tomcat.exec.war.connectorHttpProtocol}" default-value="HTTP/1.1"
-     * @required
      */
+    @Parameter( property = "maven.tomcat.exec.war.connectorHttpProtocol", defaultValue = "HTTP/1.1", required = true )
     private String connectorHttpProtocol;
 
     public void execute()

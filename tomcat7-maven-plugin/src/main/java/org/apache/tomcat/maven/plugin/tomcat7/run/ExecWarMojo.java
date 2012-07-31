@@ -18,16 +18,21 @@ package org.apache.tomcat.maven.plugin.tomcat7.run;
  * under the License.
  */
 
+import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+
 /**
  * <p>This mojo will create a self executable jar file containing all tomcat classes.</p>
  * <p>So you will be able to use only: java -jar createjar.jar to run your webapp without need
  * to install an Apache Tomcat instance.</p>
  * <p>More details here: <a href="http://tomcat.apache.org/maven-plugin-2.0-beta-1/executable-war-jar.html">http://tomcat.apache.org/maven-plugin-2.0-beta-1/executable-war-jar.html</a></p>
+ *
  * @author Olivier Lamy
- * @goal exec-war
- * @execute phase="package"
  * @since 2.0
  */
+@Mojo( name = "exec-war" )
+@Execute( phase = LifecyclePhase.PACKAGE )
 public class ExecWarMojo
     extends AbstractExecWarMojo
 {

@@ -20,6 +20,7 @@ package org.apache.tomcat.maven.plugin.tomcat7.deploy;
  */
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerResponse;
 
@@ -39,10 +40,8 @@ public class AbstractDeployWarMojo
 
     /**
      * The path of the WAR file to deploy.
-     *
-     * @parameter expression = "${project.build.directory}/${project.build.finalName}.war"
-     * @required
      */
+    @Parameter( defaultValue = "${project.build.directory}/${project.build.finalName}.war", required = true )
     private File warFile;
 
     // ----------------------------------------------------------------------

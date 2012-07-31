@@ -18,11 +18,13 @@ package org.apache.tomcat.maven.plugin.tomcat7.run;
  * under the License.
  */
 
+import org.apache.maven.plugins.annotations.Mojo;
+
 /**
  * @author Olivier Lamy
- * @goal exec-war-only
  * @since 2.0
  */
+@Mojo( name = "exec-war-only" )
 public class ExecWarOnlyMojo
     extends AbstractExecWarMojo
 {

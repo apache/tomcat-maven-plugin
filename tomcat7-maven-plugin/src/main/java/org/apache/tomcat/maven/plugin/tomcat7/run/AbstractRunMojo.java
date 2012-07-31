@@ -34,14 +34,18 @@ import org.apache.catalina.valves.AccessLogValve;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.naming.NamingEntry;
 import org.apache.naming.resources.FileDirContext;
@@ -101,26 +105,21 @@ public abstract class AbstractRunMojo
 
     /**
      * Used to look up Artifacts in the remote repository.
-     *
-     * @component
      */
-    protected org.apache.maven.artifact.factory.ArtifactFactory factory;
+    @Component
+    protected ArtifactFactory factory;
 
     /**
      * Location of the local repository.
-     *
-     * @parameter expression="${localRepository}"
-     * @readonly
-     * @required
      */
+    @Parameter( defaultValue = "${localRepository}", required = true, readonly = true )
     private org.apache.maven.artifact.repository.ArtifactRepository local;
 
     /**
      * Used to look up Artifacts in the remote repository.
-     *
-     * @component
      */
-    protected org.apache.maven.artifact.resolver.ArtifactResolver resolver;
+    @Component
+    protected ArtifactResolver resolver;
 
     // ----------------------------------------------------------------------
     // Mojo Parameters
@@ -128,26 +127,21 @@ public abstract class AbstractRunMojo
 
     /**
      * The packaging of the Maven project that this goal operates upon.
-     *
-     * @parameter expression = "${project.packaging}"
-     * @required
-     * @readonly
      */
+    @Parameter( defaultValue = "${project.packaging}", required = true, readonly = true )
     private String packaging;
 
     /**
      * The directory to create the Tomcat server configuration under.
-     *
-     * @parameter expression="${project.build.directory}/tomcat"
      */
+    @Parameter( defaultValue = "${project.build.directory}/tomcat" )
     private File configurationDir;
 
     /**
      * The port to run the Tomcat server on.
      * Will be exposed as System props and session.executionProperties with key tomcat.maven.http.port
-     *
-     * @parameter expression="${maven.tomcat.port}" default-value="8080"
      */
+    @Parameter( property = "maven.tomcat.port", defaultValue = "8080" )
     private int port;
 
     /**
@@ -156,9 +150,9 @@ public abstract class AbstractRunMojo
      * The ajp connector will be started only for value > 0.
      * Will be exposed as System props and session.executionProperties with key tomcat.maven.ajp.port
      *
-     * @parameter expression="${maven.tomcat.ajp.port}" default-value="0"
      * @since 2.0
      */
+    @Parameter( property = "maven.tomcat.ajp.port", defaultValue = "0" )
     private int ajpPort;
 
     /**
@@ -171,9 +165,9 @@ public abstract class AbstractRunMojo
      * <li>org.apache.coyote.ajp.AjpAprProtocol - the APR/native connector.</li>
      * </ul>
      *
-     * @parameter expression="${maven.tomcat.ajp.protocol}" default-value="org.apache.coyote.ajp.AjpProtocol"
      * @since 2.0
      */
+    @Parameter( property = "maven.tomcat.ajp.protocol", defaultValue = "org.apache.coyote.ajp.AjpProtocol" )
     private String ajpProtocol;
 
     /**
@@ -182,58 +176,58 @@ public abstract class AbstractRunMojo
      * The https connector will be started only for value > 0.
      * Will be exposed as System props and session.executionProperties with key tomcat.maven.https.port
      *
-     * @parameter expression="${maven.tomcat.httpsPort}" default-value="0"
      * @since 1.0
      */
+    @Parameter( property = "maven.tomcat.httpsPort", defaultValue = "0" )
     private int httpsPort;
 
     /**
      * The character encoding to use for decoding URIs.
      *
-     * @parameter expression="${maven.tomcat.uriEncoding}" default-value="ISO-8859-1"
      * @since 1.0
      */
+    @Parameter( property = "maven.tomcat.uriEncoding", defaultValue = "ISO-8859-1" )
     private String uriEncoding;
 
     /**
      * List of System properties to pass to the Tomcat Server.
      *
-     * @parameter
      * @since 1.0-alpha-2
      */
+    @Parameter
     private Map<String, String> systemProperties;
 
     /**
      * The directory contains additional configuration Files that copied in the Tomcat conf Directory.
      *
-     * @parameter expression = "${maven.tomcat.additionalConfigFilesDir}" default-value="${basedir}/src/main/tomcatconf"
      * @since 1.0-alpha-2
      */
+    @Parameter( property = "maven.tomcat.additionalConfigFilesDir", defaultValue = "${basedir}/src/main/tomcatconf" )
     private File additionalConfigFilesDir;
 
     /**
      * server.xml to use <b>Note if you use this you must configure in this file your webapp paths</b>.
      *
-     * @parameter expression="${maven.tomcat.serverXml}"
      * @since 1.0-alpha-2
      */
+    @Parameter( property = "maven.tomcat.serverXml" )
     private File serverXml;
 
     /**
      * overriding the providing web.xml to run tomcat
      *
-     * @parameter expression="${maven.tomcat.webXml}"
      * @since 1.0-alpha-2
      */
+    @Parameter( property = "maven.tomcat.webXml" )
     private File tomcatWebXml;
 
     /**
      * Set this to true to allow Maven to continue to execute after invoking
      * the run goal.
      *
-     * @parameter expression="${maven.tomcat.fork}" default-value="false"
      * @since 1.0
      */
+    @Parameter( property = "maven.tomcat.fork", defaultValue = "false" )
     private boolean fork;
 
     /**
@@ -245,76 +239,72 @@ public abstract class AbstractRunMojo
      * </pre>
      * To preserve backward compatibility it's false by default.
      *
-     * @parameter expression="${maven.tomcat.addContextWarDependencies}" default-value="false"
      * @since 1.0
      * @deprecated use webapps instead
      */
+    @Parameter( property = "maven.tomcat.addContextWarDependencies", defaultValue = "false" )
     private boolean addContextWarDependencies;
 
     /**
      * The maven project.
      *
-     * @parameter expression="${project}"
-     * @required
-     * @readonly
      * @since 1.0
      */
+    @Component
     protected MavenProject project;
 
     /**
      * The archive manager.
      *
-     * @component
      * @since 1.0
      */
+    @Component
     private ArchiverManager archiverManager;
 
     /**
      * if <code>true</code> a new classLoader separated from maven core will be created to start tomcat.
      *
-     * @parameter expression="${tomcat.useSeparateTomcatClassLoader}" default-value="false"
      * @since 1.0
      */
+    @Parameter( property = "tomcat.useSeparateTomcatClassLoader", defaultValue = "false" )
     protected boolean useSeparateTomcatClassLoader;
 
     /**
-     * @parameter expression="${plugin.artifacts}"
-     * @required
      * @since 1.0
      */
-    @SuppressWarnings( "rawtypes" )
-    private List pluginArtifacts;
+    @Parameter( defaultValue = "${plugin.artifacts}", required = true )
+    private List<Artifact> pluginArtifacts;
 
     /**
      * If set to true ignore if packaging of project is not 'war'.
      *
-     * @parameter expression="${tomcat.ignorePackaging}" default-value="false"
      * @since 1.0
      */
+    @Parameter( property = "tomcat.ignorePackaging", defaultValue = "false" )
     private boolean ignorePackaging;
 
     /**
      * Override the default keystoreFile for the HTTPS connector (if enabled)
      *
-     * @parameter
      * @since 1.1
      */
+    @Parameter
     private String keystoreFile;
 
     /**
      * Override the default keystorePass for the HTTPS connector (if enabled)
      *
-     * @parameter
      * @since 1.1
      */
+    @Parameter
     private String keystorePass;
 
     /**
      * Override the type of keystore file to be used for the server certificate. If not specified, the default value is "JKS".
      *
-     * @parameter default-value="JKS"
-     * @since 2.0.1
+     * @since 2.0
      */
+    @Parameter( defaultValue = "JKS" )
     private String keystoreType;
 
     /**
@@ -326,11 +316,11 @@ public abstract class AbstractRunMojo
      * Tomcat. Instead please configure naming in the <code>server.xml</code>.
      * </p>
      *
-     * @parameter expression="${maven.tomcat.useNaming}" default-value="true"
      * @see <a href="http://tomcat.apache.org/tomcat-6.0-doc/api/org/apache/catalina/startup/Embedded.html">org.apache.catalina.startup.Embedded</a>
      * @see <a href="http://tomcat.apache.org/tomcat-7.0-doc/api/org/apache/catalina/startup/Tomcat.html">org.apache.catalina.startup.Tomcat</a>
      * @since 2.0
      */
+    @Parameter( property = "maven.tomcat.useNaming", defaultValue = "true" )
     private boolean useNaming;
 
     /**
@@ -338,9 +328,9 @@ public abstract class AbstractRunMojo
      * The other way to use contextReloadable is to add attribute reloadable = "true"
      * in your context file.
      *
-     * @parameter expression="${maven.tomcat.contextReloadable}" default-value="false"
      * @since 2.0
      */
+    @Parameter( property = "maven.tomcat.contextReloadable", defaultValue = "false" )
     protected boolean contextReloadable;
 
 
@@ -348,105 +338,99 @@ public abstract class AbstractRunMojo
      * <p>The path of the Tomcat context XML file.</p>
      * <p>Since release 2.0, the file is filtered as a maven resource so you can use
      * interpolation tokens ${ }</p>
-     *
-     * @parameter expression="${maven.tomcat.contextFile}"
      */
+    @Parameter( property = "maven.tomcat.contextFile" )
     protected File contextFile;
 
     /**
      * The protocol to run the Tomcat server on.
      * By default it's HTTP/1.1.
      *
-     * @parameter expression="${maven.tomcat.protocol}" default-value="HTTP/1.1"
      * @since 2.0
      */
+    @Parameter( property = "maven.tomcat.protocol", defaultValue = "HTTP/1.1" )
     private String protocol;
 
     /**
      * The path of the Tomcat users XML file.
      *
-     * @parameter expression = "${maven.tomcat.tomcatUsers.file}"
      * @since 2.0
      */
+    @Parameter( property = "maven.tomcat.tomcatUsers.file" )
     private File tomcatUsers;
 
     /**
      * The path of the Tomcat logging configuration.
      *
-     * @parameter expression = "${maven.tomcat.tomcatLogging.file}"
      * @since 2.0
      */
+    @Parameter( property = "maven.tomcat.tomcatLogging.file" )
     private File tomcatLoggingFile;
 
     /**
      * Skip execution
      *
-     * @parameter expression="${maven.tomcat.skip}" default-value="false"
      * @since 2.0
      */
+    @Parameter( property = "maven.tomcat.skip", defaultValue = "false" )
     protected boolean skip;
 
     /**
-     * @parameter
      * @see {@link Webapp}
      * @since 2.0
      */
+    @Parameter
     private List<Webapp> webapps;
 
     /**
      * The static context
      *
-     * @parameter expression="${maven.tomcat.staticContextPath}" default-value="/"
      * @since 2.0
      */
+    @Parameter( property = "maven.tomcat.staticContextPath", defaultValue = "/" )
     private String staticContextPath;
 
     /**
      * The static context docroot base fully qualified path
      * if <code>null</code> static context won't be added
      *
-     * @parameter expression="${maven.tomcat.staticContextDocbase}"
      * @since 2.0
      */
+    @Parameter( property = "maven.tomcat.staticContextDocbase" )
     private String staticContextDocbase;
 
     /**
      * Class loader class to set.
      *
-     * @parameter
      * @since 2.0
      */
+    @Parameter
     protected String classLoaderClass;
 
-    /**
-     * @parameter default-value="${session}"
-     * @readonly
-     * @required
-     */
+    @Parameter( defaultValue = "${session}", readonly = true, required = true )
     protected MavenSession session;
 
     /**
      * Will dump port in a properties file (see ports for property names).
      * If empty no file generated
-     *
-     * @parameter expression="${maven.tomcat.propertiesPortFilePath}"
      */
+    @Parameter( property = "maven.tomcat.propertiesPortFilePath" )
     protected String propertiesPortFilePath;
 
     /**
      * configure host name
      *
-     * @parameter expression="${maven.tomcat.hostName}" default-value="localhost"
      * @since 2.0
      */
+    @Parameter( property = "maven.tomcat.hostName", defaultValue = "localhost" )
     protected String hostName;
 
     /**
      * configure aliases
      *
-     * @parameter
      * @since 2.0
      */
+    @Parameter
     protected String[] aliases;
 
     // ----------------------------------------------------------------------

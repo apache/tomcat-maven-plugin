@@ -20,6 +20,7 @@ package org.apache.tomcat.maven.plugin.tomcat7;
  */
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Parameter;
 
 /**
  * Abstract goal that provides common configuration for Catalina-based goals.
@@ -35,19 +36,16 @@ public abstract class AbstractWarCatalinaMojo
 
     /**
      * The packaging of the Maven project that this goal operates upon.
-     *
-     * @parameter expression = "${project.packaging}"
-     * @required
-     * @readonly
      */
+    @Parameter( defaultValue = "${project.packaging}", required = true, readonly = true )
     private String packaging;
 
     /**
      * If set to true ignore if packaging of project is not 'war'.
      *
-     * @parameter expression="${tomcat.ignorePackaging}" default-value="false"
      * @since 1.1
      */
+    @Parameter( property = "tomcat.ignorePackaging", defaultValue = "false" )
     private boolean ignorePackaging;
 
     // ----------------------------------------------------------------------

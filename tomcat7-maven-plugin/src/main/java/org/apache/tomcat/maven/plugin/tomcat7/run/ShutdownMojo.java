@@ -20,6 +20,9 @@ package org.apache.tomcat.maven.plugin.tomcat7.run;
 */
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.tomcat.maven.common.run.EmbeddedRegistry;
 import org.apache.tomcat.maven.plugin.tomcat7.AbstractTomcat7Mojo;
 
@@ -35,10 +38,9 @@ import org.apache.tomcat.maven.plugin.tomcat7.AbstractTomcat7Mojo;
  * </p>
  *
  * @author Mark Michaelis
- * @goal shutdown
- * @requiresDependencyResolution runtime
  * @since 2.0
  */
+@Mojo( name = "shutdown", requiresDependencyResolution = ResolutionScope.RUNTIME )
 public class ShutdownMojo
     extends AbstractTomcat7Mojo
 {
@@ -46,17 +48,17 @@ public class ShutdownMojo
     /**
      * Ignore error when shutdown
      *
-     * @parameter expression="${maven.tomcat.skipErrorOnShutdown}" default-value="false"
      * @since 2.0
      */
+    @Parameter( property = "maven.tomcat.skipErrorOnShutdown", defaultValue = "false" )
     protected boolean skipErrorOnShutdown;
 
     /**
      * Skip execution
      *
-     * @parameter expression="${maven.tomcat.skipShutdown}" default-value="false"
      * @since 2.0
      */
+    @Parameter( property = "maven.tomcat.skipShutdown", defaultValue = "false" )
     protected boolean skip;
 
     /**

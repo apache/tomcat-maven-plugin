@@ -19,13 +19,17 @@ package org.apache.tomcat.maven.plugin.tomcat7.deploy;
  * under the License.
  */
 
+import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+
 /**
  * Deploy a WAR to Tomcat.
  *
  * @author Mark Hobson <markhobson@gmail.com>
- * @goal deploy
- * @execute phase="package"
  */
+@Mojo( name = "deploy" )
+@Execute( phase = LifecyclePhase.PACKAGE )
 public class DeployMojo
     extends AbstractDeployWarMojo
 {

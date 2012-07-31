@@ -23,6 +23,12 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.shared.filtering.MavenFileFilter;
 import org.apache.maven.shared.filtering.MavenFileFilterRequest;
 import org.apache.maven.shared.filtering.MavenFilteringException;
@@ -48,11 +54,10 @@ import java.util.Set;
  * Runs the current project as a dynamic web application using an embedded Tomcat server.
  *
  * @author Olivier Lamy
- * @goal run
- * @execute phase="compile"
- * @requiresDependencyResolution test
  * @since 2.0
  */
+@Mojo( name = "run", requiresDependencyResolution = ResolutionScope.TEST )
+@Execute( phase = LifecyclePhase.COMPILE )
 public class RunMojo
     extends AbstractRunMojo
 {
@@ -63,74 +68,65 @@ public class RunMojo
 
     /**
      * The set of dependencies for the web application being run.
-     *
-     * @parameter default-value = "${project.artifacts}"
-     * @required
-     * @readonly
      */
+    @Parameter( defaultValue = "${project.artifacts}", required = true, readonly = true )
     private Set<Artifact> dependencies;
 
     /**
      * The web resources directory for the web application being run.
-     *
-     * @parameter default-value="${basedir}/src/main/webapp" expression = "${tomcat.warSourceDirectory}"
      */
+    @Parameter( defaultValue = "${basedir}/src/main/webapp", property = "tomcat.warSourceDirectory" )
     private File warSourceDirectory;
 
 
     /**
      * Set the "follow standard delegation model" flag used to configure our ClassLoader.
      *
-     * @parameter expression = "${tomcat.delegate}" default-value="true"
      * @see http://tomcat.apache.org/tomcat-7.0-doc/api/org/apache/catalina/loader/WebappLoader.html#setDelegate(boolean)
      * @since 1.0
      */
+    @Parameter( property = "tomcat.delegate", defaultValue = "true" )
     private boolean delegate = true;
 
     /**
      * represents the delay in seconds between each classPathScanning change invocation
      *
-     * @parameter expression="${maven.tomcat.backgroundProcessorDelay}" default-value="-1"
      * @see <a href="http://tomcat.apache.org/tomcat-7.0-doc/config/context.html">http://tomcat.apache.org/tomcat-7.0-doc/config/context.html</a>
      */
+    @Parameter( property = "maven.tomcat.backgroundProcessorDelay", defaultValue = "-1" )
     protected int backgroundProcessorDelay = -1;
 
     /**
-     * @readonly
-     * @component
      * @since 2.0
      */
+    @Component
     private ClassLoaderEntriesCalculator classLoaderEntriesCalculator;
 
     /**
      * will add /WEB-INF/lib/*.jar and /WEB-INF/classes from war dependencies in the webappclassloader
      *
-     * @parameter expression="${maven.tomcat.addWarDependenciesInClassloader}" default-value="true"
      * @since 2.0
      */
+    @Parameter( property = "maven.tomcat.addWarDependenciesInClassloader", defaultValue = "true" )
     private boolean addWarDependenciesInClassloader;
 
     /**
      * will use the test classpath rather than the compile one and will add test dependencies too
      *
-     * @parameter expression="${maven.tomcat.useTestClasspath}" default-value="false"
      * @since 2.0
      */
+    @Parameter( property = "maven.tomcat.useTestClasspath", defaultValue = "false" )
     private boolean useTestClasspath;
 
     /**
      * Additional optional directories to add to the embedded tomcat classpath.
      *
-     * @parameter alias = "additionalClassesDirs"
      * @since 2.0
      */
+    @Parameter( alias = "additionalClassesDirs" )
     private List<String> additionalClasspathDirs;
 
-    /**
-     *
-     * @component role="org.apache.maven.shared.filtering.MavenFileFilter" role-hint="default"
-     * @required
-     */
+    @Component( role = MavenFileFilter.class, hint = "default" )
     private MavenFileFilter mavenFileFilter;
 
     /**

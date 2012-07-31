@@ -20,17 +20,21 @@ package org.apache.tomcat.maven.plugin.tomcat7.run;
  */
 
 
+import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+
 /**
  * Runs the current project as a packaged web application using an embedded Tomcat server.
- * 
- * @goal run-war
- * @execute phase="package"
- * @requiresDependencyResolution runtime
+ *
  * @author Mark Hobson <markhobson@gmail.com>
  * @todo depend on war:exploded when MNG-1649 resolved
  */
+@Mojo( name = "run-war", requiresDependencyResolution = ResolutionScope.RUNTIME )
+@Execute( phase = LifecyclePhase.PACKAGE )
 public class RunWarMojo
     extends AbstractRunWarMojo
 {
- // no-op : only mojo metadata overriding
+    // no-op : only mojo metadata overriding
 }
