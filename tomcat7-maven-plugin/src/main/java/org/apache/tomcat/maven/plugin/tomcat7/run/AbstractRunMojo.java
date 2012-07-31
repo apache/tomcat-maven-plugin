@@ -1165,7 +1165,7 @@ public abstract class AbstractRunMojo
      * @return dependency tomcat contexts of warfiles in scope "tomcat"
      */
     private Collection<Context> createDependencyContexts( Tomcat container )
-        throws MojoExecutionException, MalformedURLException, ServletException
+        throws MojoExecutionException, MalformedURLException, ServletException, IOException
     {
         getLog().info( "Deploying dependency wars" );
         // Let's add other modules
@@ -1200,7 +1200,7 @@ public abstract class AbstractRunMojo
 
     private void addContextFromArtifact( Tomcat container, List<Context> contexts, Artifact artifact,
                                          String contextPath, File contextXml, boolean asWebApp )
-        throws MojoExecutionException, MalformedURLException, ServletException
+        throws MojoExecutionException, MalformedURLException, ServletException, IOException
     {
         getLog().info( "Deploy warfile: " + String.valueOf( artifact.getFile() ) + " to contextPath: " + contextPath );
         File webapps = new File( configurationDir, "webapps" );
@@ -1229,7 +1229,9 @@ public abstract class AbstractRunMojo
                 return;
             }
         }
-        WebappLoader webappLoader = new WebappLoader( Thread.currentThread().getContextClassLoader() );
+        // TODO make that configurable ?
+        //WebappLoader webappLoader = new WebappLoader( Thread.currentThread().getContextClassLoader() );
+        WebappLoader webappLoader = createWebappLoader();
         Context context = null;
         if ( asWebApp )
         {
