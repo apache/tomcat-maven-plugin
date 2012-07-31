@@ -37,7 +37,7 @@
     container.
   </description>
 
-  <url>http://tomcat.apache.org/maven-plugin-${project.version}</url>
+  <url>${siteUrl}</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -53,10 +53,12 @@
     <verifier.debugJvm>false</verifier.debugJvm>
     <maven.resources.escapeString>\</maven.resources.escapeString>
     <distributionReleaseUrl>https://repository.apache.org/service/local/staging/deploy/maven2</distributionReleaseUrl>
-    <distributionSiteUrl>scp://people.apache.org/www/tomcat.apache.org/maven-plugin-${project.version}</distributionSiteUrl>
 
     <distributionSnapshotsUrl>https://repository.apache.org/content/repositories/snapshots</distributionSnapshotsUrl>
     <distributionIdSnapshots>apache.snapshots.https</distributionIdSnapshots>
+
+    <distributionSiteUrl>scp://people.apache.org/www/tomcat.apache.org/maven-plugin-${project.version}</distributionSiteUrl>
+    <siteUrl>http://tomcat.apache.org/maven-plugin-${project.version}</siteUrl>
 
     <!-- http port used to run it test -->
     <its.http.port>1973</its.http.port>
