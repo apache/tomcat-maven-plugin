@@ -32,6 +32,23 @@
     <artifactId>maven-fluido-skin</artifactId>
     <version>1.2.2</version>
   </skin>
+
+  <custom>
+    <fluidoSkin>
+      <topBarEnabled>true</topBarEnabled>
+      <sideBarEnabled>false</sideBarEnabled>
+      <googleSearch>
+        <sitesearch>${project.url}</sitesearch>
+      </googleSearch>
+      <twitter>
+        <user>TheApacheTomcat</user>
+        <showUser>true</showUser>
+        <showFollowers>false</showFollowers>
+      </twitter>
+    </fluidoSkin>
+
+  </custom>
+
   <publishDate format="dd MMMM yyyy" position="right" />
   <version position="right" />
 
