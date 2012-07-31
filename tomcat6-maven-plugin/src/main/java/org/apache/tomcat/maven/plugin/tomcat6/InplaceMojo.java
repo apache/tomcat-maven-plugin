@@ -20,6 +20,8 @@ package org.apache.tomcat.maven.plugin.tomcat6;
  */
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
 
@@ -27,9 +29,9 @@ import java.io.File;
  * Deploy a WAR in-place to Tomcat.
  *
  * @author Mark Hobson <markhobson@gmail.com>
- * @goal inplace
  * @todo depend on war:inplace when MNG-1649 resolved
  */
+@Mojo( name = "inplace" )
 public class InplaceMojo
     extends AbstractDeployMojo
 {
@@ -39,10 +41,8 @@ public class InplaceMojo
 
     /**
      * The path of the inplace WAR directory to deploy.
-     *
-     * @parameter expression = "${basedir}/src/main/webapp"
-     * @required
      */
+    @Parameter( defaultValue = "${basedir}/src/main/webapp", required = true )
     private File warSourceDirectory;
 
     // ----------------------------------------------------------------------

@@ -20,6 +20,8 @@ package org.apache.tomcat.maven.plugin.tomcat6;
  */
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
 
@@ -27,9 +29,9 @@ import java.io.File;
  * Deploy an exploded WAR to Tomcat.
  *
  * @author Mark Hobson <markhobson@gmail.com>
- * @goal exploded
  * @todo depend on war:exploded when MNG-1649 resolved
  */
+@Mojo( name = "exploded" )
 public class ExplodedMojo
     extends AbstractDeployMojo
 {
@@ -39,10 +41,8 @@ public class ExplodedMojo
 
     /**
      * The path of the exploded WAR directory to deploy.
-     *
-     * @parameter expression = "${project.build.directory}/${project.build.finalName}"
-     * @required
      */
+    @Parameter( defaultValue = "${project.build.directory}/${project.build.finalName}", required = true )
     private File warDirectory;
 
     // ----------------------------------------------------------------------

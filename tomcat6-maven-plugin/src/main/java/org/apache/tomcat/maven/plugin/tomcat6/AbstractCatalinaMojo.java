@@ -21,6 +21,8 @@ package org.apache.tomcat.maven.plugin.tomcat6;
 
 import org.apache.maven.artifact.manager.WagonManager;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
 import org.apache.tomcat.maven.common.deployer.TomcatManager;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
@@ -64,58 +66,46 @@ public abstract class AbstractCatalinaMojo
 
     /**
      * The Maven Wagon manager to use when obtaining server authentication details.
-     *
-     * @component role="org.apache.maven.artifact.manager.WagonManager"
-     * @required
-     * @readonly
      */
+    @Component( role = WagonManager.class )
     private WagonManager wagonManager;
 
     /**
      * The full URL of the Tomcat manager instance to use.
-     *
-     * @parameter expression="${maven.tomcat.url}" default-value="http://localhost:8080/manager"
-     * @required
      */
+    @Parameter( property = "maven.tomcat.url", defaultValue = "http://localhost:8080/manager", required = true )
     private URL url;
 
     /**
      * The server id in settings.xml to use when authenticating with Tomcat manager, or <code>null</code> to use
      * defaults of username <code>admin</code> and no password.
-     *
-     * @parameter expression="${maven.tomcat.server}"
      */
+    @Parameter( property = "maven.tomcat.server" )
     private String server;
 
     /**
      * The URL encoding charset to use when communicating with Tomcat manager.
-     *
-     * @parameter expression="${maven.tomcat.charset}" default-value="ISO-8859-1"
-     * @required
      */
+    @Parameter( property = "maven.tomcat.charset", defaultValue = "ISO-8859-1", required = true )
     private String charset;
 
     /**
      * The tomcat username to use for deployment
      *
-     * @parameter expression="${tomcat.username}"
      * @since 1.0-alpha-2
      */
+    @Parameter( property = "tomcat.username" )
     private String username;
 
     /**
      * The password to use for deployment
      *
-     * @parameter expression="${tomcat.password}"
      * @since 1.0-alpha-2
      */
+    @Parameter( property = "tomcat.password" )
     private String password;
 
-    /**
-     * @parameter expression="${plugin.version}"
-     * @required
-     * @readonly
-     */
+    @Parameter( property = "plugin.version", required = true, readonly = true )
     private String version;
 
     // ----------------------------------------------------------------------

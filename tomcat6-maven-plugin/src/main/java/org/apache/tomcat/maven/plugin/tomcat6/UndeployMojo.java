@@ -20,6 +20,8 @@ package org.apache.tomcat.maven.plugin.tomcat6;
  */
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
 
 import java.io.IOException;
@@ -28,8 +30,8 @@ import java.io.IOException;
  * Undeploy a WAR from Tomcat.
  *
  * @author Mark Hobson <markhobson@gmail.com>
- * @goal undeploy
  */
+@Mojo( name = "undeploy" )
 public class UndeployMojo
     extends AbstractWarCatalinaMojo
 {
@@ -39,9 +41,8 @@ public class UndeployMojo
 
     /**
      * Whether to fail the build if the web application cannot be undeployed.
-     *
-     * @parameter expression = "${maven.tomcat.failOnError}" default-value = "true"
      */
+    @Parameter( property = "maven.tomcat.failOnError", defaultValue = "true" )
     private boolean failOnError;
 
     // ----------------------------------------------------------------------

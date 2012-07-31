@@ -20,6 +20,7 @@ package org.apache.tomcat.maven.plugin.tomcat6;
  */
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
 
 import java.io.IOException;
@@ -28,8 +29,8 @@ import java.io.IOException;
  * Lists security roles in Tomcat.
  *
  * @author Mark Hobson <markhobson@gmail.com>
- * @goal roles
  */
+@Mojo( name = "roles" )
 public class RolesMojo
     extends AbstractCatalinaMojo
 {
@@ -46,6 +47,6 @@ public class RolesMojo
     {
         getLog().info( messagesProvider.getMessage( "RolesMojo.listRoles", getURL() ) );
 
-        log( getManager().getRoles().getHttpResponseBody()  );
+        log( getManager().getRoles().getHttpResponseBody() );
     }
 }

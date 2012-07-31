@@ -19,6 +19,8 @@ package org.apache.tomcat.maven.plugin.tomcat6;
  */
 
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.tomcat.maven.common.messages.MessagesProvider;
 
 /**
@@ -31,9 +33,7 @@ public abstract class AbstractI18NTomcat6Mojo
     extends AbstractMojo
 {
 
-    /**
-     * @component
-     */
+    @Component( role = MessagesProvider.class )
     protected MessagesProvider messagesProvider;
 
     // ----------------------------------------------------------------------
@@ -43,10 +43,8 @@ public abstract class AbstractI18NTomcat6Mojo
     /**
      * The webapp context path to use for the web application being run. This must always start with a forward-slash
      * ('/').
-     *
-     * @parameter expression="${maven.tomcat.path}" default-value="/${project.artifactId}"
-     * @required
      */
+    @Parameter( property = "maven.tomcat.path", defaultValue = "/${project.artifactId}", required = true )
     protected String path;
 
 

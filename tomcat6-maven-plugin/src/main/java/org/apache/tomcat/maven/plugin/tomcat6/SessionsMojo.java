@@ -20,6 +20,7 @@ package org.apache.tomcat.maven.plugin.tomcat6;
  */
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
 
 import java.io.IOException;
@@ -28,8 +29,8 @@ import java.io.IOException;
  * Lists session information for a WAR in Tomcat.
  *
  * @author Mark Hobson <markhobson@gmail.com>
- * @goal sessions
  */
+@Mojo( name = "sessions" )
 public class SessionsMojo
     extends AbstractWarCatalinaMojo
 {
@@ -46,6 +47,6 @@ public class SessionsMojo
     {
         getLog().info( messagesProvider.getMessage( "SessionsMojo.listSessions", getDeployedURL() ) );
 
-        log( getManager().getSessions( getPath() ).getHttpResponseBody()  );
+        log( getManager().getSessions( getPath() ).getHttpResponseBody() );
     }
 }

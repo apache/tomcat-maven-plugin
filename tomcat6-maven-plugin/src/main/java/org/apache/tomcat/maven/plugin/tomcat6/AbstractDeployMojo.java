@@ -20,6 +20,7 @@ package org.apache.tomcat.maven.plugin.tomcat6;
  */
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
 
 import java.io.File;
@@ -41,32 +42,26 @@ public abstract class AbstractDeployMojo
     /**
      * The deployment mode to use. This must be either <code>war</code> to deploy the war, <code>context</code> to
      * deploy the context XML file, or <code>both</code> to deploy the war with the context XML file.
-     *
-     * @parameter expression = "${maven.tomcat.mode}" default-value = "war"
-     * @required
      */
+    @Parameter( property = "maven.tomcat.mode", defaultValue = "war", required = true )
     private String mode;
 
     /**
      * The path of the Tomcat context XML file. This is not used for war deployment mode.
-     *
-     * @parameter expression = "${project.build.directory}/${project.build.finalName}/META-INF/context.xml"
      */
+    @Parameter( defaultValue = "${project.build.directory}/${project.build.finalName}/META-INF/context.xml" )
     private File contextFile;
 
     /**
      * Whether Tomcat should automatically undeploy webapps that already exist when deploying.
-     *
-     * @parameter expression = "${maven.tomcat.update}" default-value = "false"
-     * @required
      */
+    @Parameter( property = "maven.tomcat.update", defaultValue = "false", required = true )
     private boolean update;
 
     /**
      * The Tomcat webapp tag name to use.
-     *
-     * @parameter expression = "${maven.tomcat.tag}"
      */
+    @Parameter( property = "maven.tomcat.tag" )
     private String tag;
 
     // ----------------------------------------------------------------------

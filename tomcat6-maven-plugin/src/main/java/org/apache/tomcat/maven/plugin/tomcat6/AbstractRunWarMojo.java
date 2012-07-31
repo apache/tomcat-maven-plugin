@@ -19,13 +19,14 @@ package org.apache.tomcat.maven.plugin.tomcat6;
  * under the License.
  */
 
+import org.apache.maven.plugins.annotations.Parameter;
+
 import java.io.File;
 
 /**
  * Runs the current project as a packaged web application using an embedded Tomcat server.
  *
  * @author Mark Hobson <markhobson@gmail.com>
- * @requiresDependencyResolution runtime
  * @todo depend on war:exploded when MNG-1649 resolved
  */
 public abstract class AbstractRunWarMojo
@@ -37,18 +38,14 @@ public abstract class AbstractRunWarMojo
 
     /**
      * The path of the exploded WAR directory to run.
-     *
-     * @parameter expression = "${project.build.directory}/${project.build.finalName}"
-     * @required
      */
+    @Parameter( defaultValue = "${project.build.directory}/${project.build.finalName", required = true )
     private File warDirectory;
 
     /**
      * The path of the Tomcat context XML file.
-     *
-     * @parameter expression =
-     * "${project.build.directory}/${project.build.finalName}/META-INF/context.xml"
      */
+    @Parameter( defaultValue = "${project.build.directory}/${project.build.finalName}/META-INF/context.xml" )
     private File contextFile;
 
     // ----------------------------------------------------------------------

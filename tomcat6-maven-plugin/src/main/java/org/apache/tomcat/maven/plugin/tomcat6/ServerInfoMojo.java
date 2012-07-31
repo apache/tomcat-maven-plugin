@@ -20,6 +20,7 @@ package org.apache.tomcat.maven.plugin.tomcat6;
  */
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
 
 import java.io.IOException;
@@ -28,8 +29,8 @@ import java.io.IOException;
  * Lists information about the Tomcat version, OS, and JVM properties.
  *
  * @author Mark Hobson <markhobson@gmail.com>
- * @goal info
  */
+@Mojo( name = "info" )
 public class ServerInfoMojo
     extends AbstractCatalinaMojo
 {

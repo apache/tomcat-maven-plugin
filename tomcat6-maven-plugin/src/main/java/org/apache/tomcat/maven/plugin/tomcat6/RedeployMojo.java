@@ -19,13 +19,15 @@ package org.apache.tomcat.maven.plugin.tomcat6;
  * under the License.
  */
 
+import org.apache.maven.plugins.annotations.Mojo;
+
 /**
  * Redeploy a WAR in Tomcat. Deploy with forcing update flag to true
  *
  * @author Mark Hobson <markhobson@gmail.com>
- * @goal redeploy
  * @todo depend on war:war, war:exploded or war:inplace when MNG-1649 resolved
  */
+@Mojo( name = "redeploy" )
 public class RedeployMojo
     extends DeployMojo
 {

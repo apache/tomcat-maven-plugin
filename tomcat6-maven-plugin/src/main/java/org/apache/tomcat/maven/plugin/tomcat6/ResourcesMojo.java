@@ -20,6 +20,7 @@ package org.apache.tomcat.maven.plugin.tomcat6;
  */
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
 
 import java.io.IOException;
@@ -28,8 +29,8 @@ import java.io.IOException;
  * Lists JNDI resources in Tomcat.
  *
  * @author Mark Hobson <markhobson@gmail.com>
- * @goal resources
  */
+@Mojo( name = "resources" )
 public class ResourcesMojo
     extends AbstractCatalinaMojo
 {

@@ -19,13 +19,15 @@ package org.apache.tomcat.maven.plugin.tomcat6;
  * under the License.
  */
 
+import org.apache.maven.plugins.annotations.Mojo;
+
 /**
  * Deploy a WAR to Tomcat without forking the package lifecycle
  *
  * @author olamy
- * @goal deploy-only
  * @since 1.0-alpha-2
  */
+@Mojo( name = "deploy-only" )
 public class DeployOnlyMojo
     extends AbstractDeployWarMojo
 {
