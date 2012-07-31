@@ -433,6 +433,22 @@ public abstract class AbstractRunMojo
      */
     protected String propertiesPortFilePath;
 
+    /**
+     * configure host name
+     *
+     * @parameter expression="${maven.tomcat.hostName}" default-value="localhost"
+     * @since 2.0
+     */
+    protected String hostName;
+
+    /**
+     * configure aliases
+     *
+     * @parameter
+     * @since 2.0
+     */
+    protected String[] aliases;
+
     // ----------------------------------------------------------------------
     // Fields
     // ----------------------------------------------------------------------
@@ -933,6 +949,18 @@ public abstract class AbstractRunMojo
 
                 embeddedTomcat.getHost().setAppBase( new File( configurationDir, "webapps" ).getAbsolutePath() );
 
+                if ( hostName != null )
+                {
+                    embeddedTomcat.getHost().setName( hostName );
+                }
+                if ( aliases != null )
+                {
+                    for ( String alias : aliases )
+                    {
+                        embeddedTomcat.getHost().addAlias( alias );
+                    }
+
+                }
                 createStaticContext( embeddedTomcat, ctx, embeddedTomcat.getHost() );
 
                 Connector connector = new Connector( protocol );
