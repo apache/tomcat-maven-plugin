@@ -136,6 +136,7 @@
         <configuration>
           <systemPropertyVariables>
             <basedir>${basedir}</basedir>
+            <java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
           </systemPropertyVariables>
         </configuration>
       </plugin>
