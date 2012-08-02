@@ -38,7 +38,7 @@
   <properties>
     <archetypeVersion>2.2</archetypeVersion>
     <tomcatPluginVersion>${project.version}</tomcatPluginVersion>
-    <archetypeItGoals>clean,verify</archetypeItGoals>
+    <archetypeItGoals>clean,install</archetypeItGoals>
   </properties>
   <build>
 
@@ -113,7 +113,7 @@
     <profile>
       <id>headless</id>
       <properties>
-        <archetypeItGoals>clean,verify,-Pheadless</archetypeItGoals>
+        <archetypeItGoals>clean,install,-Pheadless</archetypeItGoals>
       </properties>
     </profile>
   </profiles>
