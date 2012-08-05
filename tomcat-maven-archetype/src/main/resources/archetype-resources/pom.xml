@@ -22,7 +22,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>\${groupId}</groupId>
-  <artifactId>${rootArtifactId}</artifactId>
+  <artifactId>\${artifactId}</artifactId>
   <version>\${version}</version>
   <packaging>pom</packaging>
 
@@ -93,17 +93,17 @@
     <dependencies>
       <dependency>
         <groupId>\${groupId}</groupId>
-        <artifactId>${artifactId-api}</artifactId>
+        <artifactId>\${artifactId}-api</artifactId>
         <version>\${project.version}</version>
       </dependency>
       <dependency>
         <groupId>\${groupId}</groupId>
-        <artifactId>${artifactId-api-impl}</artifactId>
+        <artifactId>\${artifactId}-api-impl</artifactId>
         <version>\${project.version}</version>
       </dependency>
       <dependency>
         <groupId>\${groupId}</groupId>
-        <artifactId>${artifactId-webapp}</artifactId>
+        <artifactId>\${artifactId}-webapp</artifactId>
         <version>\${project.version}</version>
         <type>war</type>
       </dependency>

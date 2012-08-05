@@ -38,6 +38,7 @@
   <properties>
     <archetypeVersion>2.2</archetypeVersion>
     <tomcatPluginVersion>${project.version}</tomcatPluginVersion>
+    <archetypeItGoalsBatch>clean,pre-integration-test</archetypeItGoalsBatch>
     <archetypeItGoals>clean,install</archetypeItGoals>
   </properties>
   <build>
@@ -80,10 +81,8 @@
               <exclude>README.txt</exclude>
               <exclude>*.sh</exclude>
               <exclude>.git/**</exclude>
-              <exclude>.idea/**</exclude>
               <exclude>.extract/**</exclude>
-              <exclude>src/main/resources/archetype-resources/basic-webapp/src/main/webapp/css/bootstrap.min.1.4.0.css</exclude>
-              <exclude>src/main/resources/archetype-resources/basic-webapp/src/main/webapp/js/jquery-1.7.js</exclude>
+              <exclude>src/main/resources/archetype-resources/*/src/main/webapp/js/jquery-1.7.js</exclude>
               <exclude>src/test/**</exclude>
             </excludes>
           </configuration>
@@ -113,6 +112,7 @@
     <profile>
       <id>headless</id>
       <properties>
+        <archetypeItGoalsBatch>clean,pre-integration-test,-Pheadless</archetypeItGoalsBatch>
         <archetypeItGoals>clean,install,-Pheadless</archetypeItGoals>
       </properties>
     </profile>
