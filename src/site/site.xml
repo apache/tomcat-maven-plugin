@@ -37,6 +37,7 @@
     <fluidoSkin>
       <topBarEnabled>true</topBarEnabled>
       <sideBarEnabled>false</sideBarEnabled>
+      <topBarContainerStyle>width: auto;</topBarContainerStyle>
       <googleSearch>
         <sitesearch>${project.url}</sitesearch>
       </googleSearch>
