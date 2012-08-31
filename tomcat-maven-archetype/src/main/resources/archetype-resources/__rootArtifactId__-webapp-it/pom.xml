@@ -204,7 +204,7 @@
     <profile>
       <id>chrome</id>
       <properties>
-        <seleniumBrowser>*chrome</seleniumBrowser>
+        <seleniumBrowser>*googlechrome</seleniumBrowser>
       </properties>
     </profile>
     <profile>
