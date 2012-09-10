@@ -38,8 +38,9 @@
   <properties>
     <archetypeVersion>2.2</archetypeVersion>
     <tomcatPluginVersion>${project.version}</tomcatPluginVersion>
-    <archetypeItGoalsBatch>clean,pre-integration-test</archetypeItGoalsBatch>
-    <archetypeItGoals>clean,install</archetypeItGoals>
+    <tomcatPluginSeleniumBrowser>firefox</tomcatPluginSeleniumBrowser>
+    <archetypeItGoalsBatch>clean,pre-integration-test,-P${tomcatPluginSeleniumBrowser}</archetypeItGoalsBatch>
+    <archetypeItGoals>clean,install,-P${tomcatPluginSeleniumBrowser}</archetypeItGoals>
   </properties>
   <build>
 
@@ -112,8 +113,8 @@
     <profile>
       <id>headless</id>
       <properties>
-        <archetypeItGoalsBatch>clean,pre-integration-test,-Pheadless</archetypeItGoalsBatch>
-        <archetypeItGoals>clean,install,-Pheadless</archetypeItGoals>
+        <archetypeItGoalsBatch>clean,pre-integration-test,-Pheadless,-P$(tomcatPluginSeleniumBrowser}</archetypeItGoalsBatch>
+        <archetypeItGoals>clean,install,-Pheadless,,-P$(tomcatPluginSeleniumBrowser}</archetypeItGoals>
       </properties>
     </profile>
   </profiles>
