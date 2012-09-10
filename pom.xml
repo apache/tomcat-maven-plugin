@@ -660,6 +660,11 @@
           </dependencies>
         </plugin>
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-invoker-plugin</artifactId>
+          <version>1.7</version>
+        </plugin>
+        <plugin>
           <groupId>org.codehaus.plexus</groupId>
           <artifactId>plexus-component-metadata</artifactId>
           <version>1.5.5</version>

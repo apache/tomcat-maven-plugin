@@ -65,6 +65,16 @@ try
         System.err.println( "conf/server.xml is missing." );
         return false;
     }
+    if (!contents.contains("conf/logging.properties") )
+    {
+        System.err.println( "conf/logging.properties is missing." );
+        return false;
+    }
+    if (!contents.contains("conf/Catalina/localhost/manager.xml") )
+    {
+        System.err.println( "conf/Catalina/localhost/manager.xml is missing." );
+        return false;
+    }
     if (!contents.contains("tomcat.standalone.properties") )
     {
         System.err.println( "tomcat.standalone.properties is missing." );
