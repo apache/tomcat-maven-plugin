@@ -69,45 +69,45 @@ public abstract class AbstractExecWarMojo
     extends AbstractTomcat7Mojo
 {
 
-    @Parameter ( defaultValue = "${project.artifact}", required = true, readonly = true )
+    @Parameter (defaultValue = "${project.artifact}", required = true, readonly = true)
     private Artifact projectArtifact;
 
     /**
      * The maven project.
      */
-    @Parameter ( defaultValue = "${project}", required = true, readonly = true )
+    @Parameter (defaultValue = "${project}", required = true, readonly = true)
     protected MavenProject project;
 
-    @Parameter ( defaultValue = "${plugin.artifacts}", required = true )
+    @Parameter (defaultValue = "${plugin.artifacts}", required = true)
     private List<Artifact> pluginArtifacts;
 
-    @Parameter ( defaultValue = "${project.build.directory}" )
+    @Parameter (defaultValue = "${project.build.directory}")
     private File buildDirectory;
 
     /**
      * Path under {@link #buildDirectory} where this mojo may do temporary work.
      */
-    @Parameter ( defaultValue = "${project.build.directory}/tomcat7-maven-plugin-exec" )
+    @Parameter (defaultValue = "${project.build.directory}/tomcat7-maven-plugin-exec")
     private File pluginWorkDirectory;
 
-    @Parameter ( property = "maven.tomcat.exec.war.tomcatConf", defaultValue = "src/main/tomcatconf" )
+    @Parameter (property = "maven.tomcat.exec.war.tomcatConf", defaultValue = "src/main/tomcatconf")
     private File tomcatConfigurationFilesDirectory;
 
-    @Parameter ( defaultValue = "src/main/tomcatconf/server.xml", property = "maven.tomcat.exec.war.serverXml" )
+    @Parameter (defaultValue = "src/main/tomcatconf/server.xml", property = "maven.tomcat.exec.war.serverXml")
     private File serverXml;
 
     /**
      * Name of the generated exec JAR.
      */
-    @Parameter ( property = "tomcat.jar.finalName",
-                 defaultValue = "${project.artifactId}-${project.version}-war-exec.jar", required = true )
+    @Parameter (property = "tomcat.jar.finalName",
+                defaultValue = "${project.artifactId}-${project.version}-war-exec.jar", required = true)
     private String finalName;
 
     /**
      * The webapp context path to use for the web application being run.
      * The name to store webapp in exec jar. Do not use /
      */
-    @Parameter ( property = "maven.tomcat.path", defaultValue = "${project.artifactId}", required = true )
+    @Parameter (property = "maven.tomcat.path", defaultValue = "${project.artifactId}", required = true)
     protected String path;
 
     @Parameter
@@ -125,13 +125,13 @@ public abstract class AbstractExecWarMojo
     /**
      * Location of the local repository.
      */
-    @Parameter ( defaultValue = "${localRepository}", required = true, readonly = true )
+    @Parameter (defaultValue = "${localRepository}", required = true, readonly = true)
     private ArtifactRepository local;
 
     /**
      * List of Remote Repositories used by the resolver
      */
-    @Parameter ( defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true )
+    @Parameter (defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true)
     protected List<ArtifactRepository> remoteRepos;
 
     @Component
@@ -140,35 +140,35 @@ public abstract class AbstractExecWarMojo
     /**
      * Attach or not the generated artifact to the build (use true if you want to install or deploy it)
      */
-    @Parameter ( property = "maven.tomcat.exec.war.attachArtifact", defaultValue = "true", required = true )
+    @Parameter (property = "maven.tomcat.exec.war.attachArtifact", defaultValue = "true", required = true)
     private boolean attachArtifact;
 
 
     /**
      * the classifier to use for the attached/generated artifact
      */
-    @Parameter ( property = "maven.tomcat.exec.war.attachArtifactClassifier", defaultValue = "exec-war",
-                 required = true )
+    @Parameter (property = "maven.tomcat.exec.war.attachArtifactClassifier", defaultValue = "exec-war",
+                required = true)
     private String attachArtifactClassifier;
 
 
     /**
      * the type to use for the attached/generated artifact
      */
-    @Parameter ( property = "maven.tomcat.exec.war.attachArtifactType", defaultValue = "jar", required = true )
+    @Parameter (property = "maven.tomcat.exec.war.attachArtifactType", defaultValue = "jar", required = true)
     private String attachArtifactClassifierType;
 
     /**
      * to enable naming when starting tomcat
      */
-    @Parameter ( property = "maven.tomcat.exec.war.enableNaming", defaultValue = "false", required = true )
+    @Parameter (property = "maven.tomcat.exec.war.enableNaming", defaultValue = "false", required = true)
     private boolean enableNaming;
 
     /**
      * see http://tomcat.apache.org/tomcat-7.0-doc/config/valve.html
      */
-    @Parameter ( property = "maven.tomcat.exec.war.accessLogValveFormat", defaultValue = "%h %l %u %t %r %s %b %I %D",
-                 required = true )
+    @Parameter (property = "maven.tomcat.exec.war.accessLogValveFormat", defaultValue = "%h %l %u %t %r %s %b %I %D",
+                required = true)
     private String accessLogValveFormat;
 
     /**
@@ -187,14 +187,14 @@ public abstract class AbstractExecWarMojo
     /**
      * Main class to use for starting the standalone jar.
      */
-    @Parameter ( property = "maven.tomcat.exec.war.mainClass",
-                 defaultValue = "org.apache.tomcat.maven.runner.Tomcat7RunnerCli", required = true )
+    @Parameter (property = "maven.tomcat.exec.war.mainClass",
+                defaultValue = "org.apache.tomcat.maven.runner.Tomcat7RunnerCli", required = true)
     private String mainClass;
 
     /**
      * which connector protocol to use HTTP/1.1 or org.apache.coyote.http11.Http11NioProtocol
      */
-    @Parameter ( property = "maven.tomcat.exec.war.connectorHttpProtocol", defaultValue = "HTTP/1.1", required = true )
+    @Parameter (property = "maven.tomcat.exec.war.connectorHttpProtocol", defaultValue = "HTTP/1.1", required = true)
     private String connectorHttpProtocol;
 
     public void execute()
@@ -493,16 +493,6 @@ public abstract class AbstractExecWarMojo
 
         }
 
-        /*
-        // Each Dir
-        for (String aIncludeDir : directoryScanner.getIncludedDirectories()) {
-            File aSubDir = new File(pSourceFolder + "/" + aIncludeDir);
-            if(!pSourceFolder.equals(aSubDir)){
-                getLog().debug("include configuration dir : " + pDestinationPath + "/" + aIncludeDir);
-                copyDirectoryContentIntoArchive(new File(pSourceFolder + "/" + aIncludeDir), pDestinationPath + "/" + aIncludeDir, pArchiveOutputSteam);
-            }
-        }
-        */
     }
 
     /**
