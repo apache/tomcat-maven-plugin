@@ -39,7 +39,7 @@ public abstract class AbstractRunWarMojo
     /**
      * The path of the exploded WAR directory to run.
      */
-    @Parameter( defaultValue = "${project.build.directory}/${project.build.finalName", required = true )
+    @Parameter( defaultValue = "${project.build.directory}/${project.build.finalName}", required = true )
     private File warDirectory;
 
     /**
