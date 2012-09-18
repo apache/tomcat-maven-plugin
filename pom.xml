@@ -836,6 +836,7 @@
               <resolutionIds>Fixed</resolutionIds>
               <sortColumnNames>Type</sortColumnNames>
               <fixVersionIds>12319450</fixVersionIds>
+              <useJql>true</useJql>
             </configuration>
             <reportSets>
               <reportSet>
