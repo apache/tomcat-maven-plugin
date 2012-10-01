@@ -72,6 +72,11 @@
 
     <!-- to prevent isssues with last apache parent pom -->
     <arguments />
+
+    <tomcat-maven.siteFilePath>${user.home}/tomcat-maven-plugin-${project.version}/</tomcat-maven.siteFilePath>
+    <tomcat-maven.siteUrlDeployment>file://${tomcat-maven.siteFilePath}</tomcat-maven.siteUrlDeployment>
+    <tomcat-maven.scmPubCheckoutDirectory>${user.home}/tomcat-maven-plugin-${project.version}-content</tomcat-maven.scmPubCheckoutDirectory>
+
   </properties>
 
   <prerequisites>
@@ -686,6 +691,20 @@
             </excludes>
           </configuration>
         </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-scm-publish-plugin</artifactId>
+          <version>1.0</version>
+          <configuration>
+            <pubScmUrl>scm:svn:https://svn.apache.org/repos/asf/tomcat/site/trunk/docs/maven-plugin-${project.version}</pubScmUrl>
+            <checkinComment>Apache Tomcat Maven Plugin site documentation for ${project.version}</checkinComment>
+            <content>${tomcat-maven.siteFilePath}</content>
+            <checkoutDirectory>${tomcat-maven.scmPubCheckoutDirectory}</checkoutDirectory>
+            <tryUpdate>true</tryUpdate>
+          </configuration>
+        </plugin>
+
       </plugins>
     </pluginManagement>
     <plugins>
@@ -739,7 +758,7 @@
     </snapshotRepository>
     <site>
       <id>apache.website</id>
-      <url>${distributionSiteUrl}</url>
+      <url>${tomcat-maven.siteUrlDeployment}</url>
     </site>
   </distributionManagement>
 
