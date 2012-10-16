@@ -160,8 +160,6 @@ public class RunMojo
             temporaryContextFile = File.createTempFile( "tomcat-maven-plugin", "temp-ctx-file" );
             temporaryContextFile.deleteOnExit();
 
-            fw = new FileWriter( temporaryContextFile );
-
             // format to modify/create <Context backgroundProcessorDelay="5" reloadable="false">
             if ( contextFile != null && contextFile.exists() )
             {
@@ -178,6 +176,7 @@ public class RunMojo
                 Xpp3Dom xpp3Dom = Xpp3DomBuilder.build( fr );
                 xpp3Dom.setAttribute( "backgroundProcessorDelay", Integer.toString( backgroundProcessorDelay ) );
                 xpp3Dom.setAttribute( "reloadable", Boolean.toString( isContextReloadable() ) );
+                fw = new FileWriter( temporaryContextFile );
                 Xpp3DomWriter.write( fw, xpp3Dom );
                 Xpp3DomWriter.write( sw, xpp3Dom );
                 getLog().debug( " generated context file " + sw.toString() );
@@ -192,7 +191,7 @@ public class RunMojo
                         " reloadable=\"" + Boolean.toString( isContextReloadable() ) + "\"/>" );
 
                     getLog().debug( " generated context file " + sb.toString() );
-
+                    fw = new FileWriter( temporaryContextFile );
                     fw.write( sb.toString() );
                 }
                 else
