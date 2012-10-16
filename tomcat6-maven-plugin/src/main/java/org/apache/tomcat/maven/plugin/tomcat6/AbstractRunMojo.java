@@ -360,6 +360,23 @@ public abstract class AbstractRunMojo
     @Parameter
     private List<Webapp> webapps;
 
+    /**
+     * configure host name
+     *
+     * @since 2.1
+     */
+    @Parameter( property = "maven.tomcat.hostName", defaultValue = "localhost" )
+    protected String hostName;
+
+    /**
+     * configure aliases
+     * see <a href="http://tomcat.apache.org/tomcat-6.0-doc/config/host.html#Host_Name_Aliases">Host Name aliases</a>
+     *
+     * @since 2.1
+     */
+    @Parameter
+    protected String[] aliases;
+
     // ----------------------------------------------------------------------
     // Fields
     // ----------------------------------------------------------------------
@@ -781,6 +798,18 @@ public abstract class AbstractRunMojo
                 // create host
                 String appBase = new File( configurationDir, "webapps" ).getAbsolutePath();
                 Host host = container.createHost( "localHost", appBase );
+
+                if ( hostName != null )
+                {
+                    host.setName( hostName );
+                }
+                if ( aliases != null )
+                {
+                    for ( String alias : aliases )
+                    {
+                        host.addAlias( alias );
+                    }
+                }
 
                 host.addChild( context );
                 createStaticContext( container, context, host );
