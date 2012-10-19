@@ -56,5 +56,7 @@ To test staging artifacts for a vote process.
 * pass staging repository as parameter: -DtcStagedReleaseUrl=
 * pass tomcat version as parameter: -Dtomcat7Version=
 
-Sample: mvn clean install -Prun-its -Ptc-staging -DtcStagedReleaseUrl=https://repository.apache.org/content/repositories/orgapachetomcat-020/ -Dtomcat7Version=7.0.26
+Sample for tomcat7 artifacts: mvn clean install -Prun-its -Ptc-staging -DtcStagedReleaseUrl=https://repository.apache.org/content/repositories/orgapachetomcat-020/ -Dtomcat7Version=7.0.26
+
+Sample for tomcat6 artifacts: mvn clean install -Prun-its -Ptc-staging -DtcStagedReleaseUrl=https://repository.apache.org/content/repositories/orgapachetomcat-020/ -Dtomcat6Version=7.0.26
 
