@@ -33,7 +33,7 @@
   </description>
 
   <properties>
-    <tomcat.version>6.0.35</tomcat.version>
+    <tomcat6Version>6.0.35</tomcat6Version>
     <managerWebAppPath>${basedir}/target/</managerWebAppPath>
     <warTestPath>${basedir}/src/test/simple-war-project-1.0-SNAPSHOT.war</warTestPath>
     <keystoreTestPath>${basedir}/src/test/keystore</keystoreTestPath>
@@ -94,24 +94,24 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>catalina</artifactId>
-      <version>${tomcat.version}</version>
+      <version>${tomcat6Version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>catalina-ha</artifactId>
-      <version>${tomcat.version}</version>
+      <version>${tomcat6Version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tribes</artifactId>
-      <version>${tomcat.version}</version>
+      <version>${tomcat6Version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>el-api</artifactId>
-      <version>${tomcat.version}</version>
+      <version>${tomcat6Version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -121,37 +121,37 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>jasper</artifactId>
-      <version>${tomcat.version}</version>
+      <version>${tomcat6Version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>jasper-el</artifactId>
-      <version>${tomcat.version}</version>
+      <version>${tomcat6Version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>jsp-api</artifactId>
-      <version>${tomcat.version}</version>
+      <version>${tomcat6Version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>servlet-api</artifactId>
-      <version>${tomcat.version}</version>
+      <version>${tomcat6Version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>coyote</artifactId>
-      <version>${tomcat.version}</version>
+      <version>${tomcat6Version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>dbcp</artifactId>
-      <version>${tomcat.version}</version>
+      <version>${tomcat6Version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
