@@ -695,7 +695,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-scm-publish-plugin</artifactId>
-          <version>1.0</version>
+          <version>1.0-beta-2</version>
           <configuration>
             <pubScmUrl>scm:svn:https://svn.apache.org/repos/asf/tomcat/site/trunk/docs/maven-plugin-${project.version}</pubScmUrl>
             <checkinComment>Apache Tomcat Maven Plugin site documentation for ${project.version}</checkinComment>
