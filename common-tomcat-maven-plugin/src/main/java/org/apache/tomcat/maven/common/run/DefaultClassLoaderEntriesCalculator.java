@@ -45,7 +45,7 @@ import java.util.Set;
  * @author Olivier Lamy
  * @since 2.0
  */
-@Component( role = ClassLoaderEntriesCalculator.class )
+@Component (role = ClassLoaderEntriesCalculator.class)
 public class DefaultClassLoaderEntriesCalculator
     implements ClassLoaderEntriesCalculator
 {
@@ -66,7 +66,7 @@ public class DefaultClassLoaderEntriesCalculator
         // add classes directories to loader
         try
         {
-            @SuppressWarnings( "unchecked" ) List<String> classPathElements = request.isUseTestClassPath()
+            @SuppressWarnings ("unchecked") List<String> classPathElements = request.isUseTestClassPath()
                 ? request.getMavenProject().getTestClasspathElements()
                 : request.getMavenProject().getCompileClasspathElements();
             if ( classPathElements != null )
@@ -113,7 +113,10 @@ public class DefaultClassLoaderEntriesCalculator
                     request.getLog().debug(
                         "add dependency to webapploader " + artifact.getGroupId() + ":" + artifact.getArtifactId() + ":"
                             + artifact.getVersion() + ":" + artifact.getScope() );
-                    if ( !isInProjectReferences( artifact, request.getMavenProject() ) )
+                    // we add artifact dependencies and projects from reactor if file (ie jar) as users can go to install/package phase
+                    // so artifact.getFile is a file not a directory and not added when iterate on project.classPathElements
+                    if ( !isInProjectReferences( artifact, request.getMavenProject() ) || ( artifact.getFile().exists()
+                        && artifact.getFile().isFile() ) )
                     {
                         String fileName = artifact.getFile().getName();
                         if ( !fileInClassLoaderEntries.contains( fileName ) )
@@ -126,6 +129,7 @@ public class DefaultClassLoaderEntriesCalculator
                     {
                         request.getLog().debug(
                             "skip adding artifact " + artifact.getArtifactId() + " as it's in reactors" );
+
                     }
                 }
 
@@ -217,7 +221,7 @@ public class DefaultClassLoaderEntriesCalculator
         {
             return false;
         }
-        @SuppressWarnings( "unchecked" ) Collection<MavenProject> mavenProjects =
+        @SuppressWarnings ("unchecked") Collection<MavenProject> mavenProjects =
             project.getProjectReferences().values();
         for ( MavenProject mavenProject : mavenProjects )
         {
