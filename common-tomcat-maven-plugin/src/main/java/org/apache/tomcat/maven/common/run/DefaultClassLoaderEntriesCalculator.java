@@ -74,7 +74,7 @@ public class DefaultClassLoaderEntriesCalculator
                 for ( String classPathElement : classPathElements )
                 {
                     File classPathElementFile = new File( classPathElement );
-                    if ( classPathElementFile.exists() && classPathElementFile.isDirectory() )
+                    if ( classPathElementFile.isDirectory() )
                     {
                         request.getLog().debug(
                             "adding classPathElementFile " + classPathElementFile.toURI().toString() );
@@ -115,8 +115,7 @@ public class DefaultClassLoaderEntriesCalculator
                             + artifact.getVersion() + ":" + artifact.getScope() );
                     // we add artifact dependencies and projects from reactor if file (ie jar) as users can go to install/package phase
                     // so artifact.getFile is a file not a directory and not added when iterate on project.classPathElements
-                    if ( !isInProjectReferences( artifact, request.getMavenProject() ) || ( artifact.getFile().exists()
-                        && artifact.getFile().isFile() ) )
+                    if ( !isInProjectReferences( artifact, request.getMavenProject() ) ||  artifact.getFile().isFile() )
                     {
                         String fileName = artifact.getFile().getName();
                         if ( !fileInClassLoaderEntries.contains( fileName ) )
