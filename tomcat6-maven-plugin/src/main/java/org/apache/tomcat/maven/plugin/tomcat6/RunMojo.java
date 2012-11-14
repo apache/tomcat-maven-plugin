@@ -57,7 +57,7 @@ import java.util.Set;
  * @author Mark Hobson <markhobson@gmail.com>
  */
 @Mojo( name = "run", requiresDependencyResolution = ResolutionScope.TEST )
-@Execute( phase = LifecyclePhase.COMPILE )
+@Execute( phase = LifecyclePhase.PROCESS_CLASSES )
 public class RunMojo
     extends AbstractRunMojo
 {
