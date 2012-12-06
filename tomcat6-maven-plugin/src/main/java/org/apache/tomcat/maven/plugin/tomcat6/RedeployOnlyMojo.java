@@ -1,5 +1,4 @@
 package org.apache.tomcat.maven.plugin.tomcat6;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -9,7 +8,7 @@ package org.apache.tomcat.maven.plugin.tomcat6;
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -24,26 +23,10 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
 /**
- * Redeploy a WAR in Tomcat. Deploy with forcing update flag to true
- *
- * @author Mark Hobson <markhobson@gmail.com>
- * @todo depend on war:war, war:exploded or war:inplace when MNG-1649 resolved
+ * @since 2.1
  */
-@Mojo( name = "redeploy" )
-@Execute( phase = LifecyclePhase.PACKAGE )
-public class RedeployMojo
-    extends DeployMojo
+@Mojo( name = "redeploy-only" )
+public class RedeployOnlyMojo
 {
-    // ----------------------------------------------------------------------
-    // Protected Methods
-    // ----------------------------------------------------------------------
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected boolean isUpdate()
-    {
-        return true;
-    }
+    // no-op : only mojo metadata overriding
 }
