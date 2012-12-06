@@ -38,7 +38,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -59,11 +62,15 @@ public class Tomcat7Runner
     // contains war name wars=foo.war,bar.war
     public static final String WARS_KEY = "wars";
 
+    |
+
     public static final String ARCHIVE_GENERATION_TIMESTAMP_KEY = "generationTimestamp";
 
     public static final String ENABLE_NAMING_KEY = "enableNaming";
 
     public static final String ACCESS_LOG_VALVE_FORMAT_KEY = "accessLogValveFormat";
+
+    public static final String CODE_SOURCE_CONTEXT_PATH = "codeSourceContextPath";
 
     /**
      * key of the property which contains http protocol : HTTP/1.1 or org.apache.coyote.http11.Http11NioProtocol
@@ -94,6 +101,10 @@ public class Tomcat7Runner
     public String extractDirectory = ".extract";
 
     public File extractDirectoryFile;
+
+    public String codeSourceContextPath = null;
+
+    public File codeSourceWar = null;
 
     public String loggerName;
 
@@ -149,6 +160,36 @@ public class Tomcat7Runner
                                   + archiveTimestampChanged );
             }
 
+        }
+
+        codeSourceContextPath = runtimeProperties.getProperty( CODE_SOURCE_CONTEXT_PATH );
+        if ( codeSourceContextPath != null && !codeSourceContextPath.isEmpty() )
+        {
+            codeSourceWar = AccessController.doPrivileged( new PrivilegedAction<File>()
+            {
+                public File run()
+                {
+                    try
+                    {
+                        File src =
+                            new File( Tomcat7Runner.class.getProtectionDomain().getCodeSource().getLocation().toURI() );
+                        if ( src.getName().endsWith( ".war" ) )
+                        {
+                            return src;
+                        }
+                        else
+                        {
+                            debugMessage( "ERROR: Code source is not a war file, ignoring." );
+                        }
+                    }
+                    catch ( URISyntaxException e )
+                    {
+                        debugMessage( "ERROR: Could not find code source. " + e.getMessage() );
+
+                    }
+                    return null;
+                }
+            } );
         }
 
         // do we have to extract content
@@ -348,6 +389,17 @@ public class Tomcat7Runner
                 }
             }
 
+            if ( codeSourceWar != null )
+            {
+                String baseDir = new File( extractDirectory, "webapps/" + codeSourceWar.getName() ).getAbsolutePath();
+                Context context = tomcat.addWebapp( codeSourceContextPath, baseDir );
+                URL contextFileUrl = getContextXml( baseDir );
+                if ( contextFileUrl != null )
+                {
+                    context.setConfigFile( contextFileUrl );
+                }
+            }
+
             tomcat.start();
         }
 
@@ -481,6 +533,26 @@ public class Tomcat7Runner
             }
         }
 
+        //Copy code source to webapps folder
+        if ( codeSourceWar != null )
+        {
+            FileInputStream inputStream = null;
+            try
+            {
+                File expandFile = new File( extractDirectory, "webapps/" + codeSourceContextPath + ".war" );
+                inputStream = new FileInputStream( codeSourceWar );
+                debugMessage( "move code source to file:" + expandFile.getPath() );
+                expand( inputStream, expandFile );
+            }
+            finally
+            {
+                if ( inputStream != null )
+                {
+                    inputStream.close();
+                }
+            }
+        }
+
         // expand tomcat configuration files if there
         expandConfigurationFile( "catalina.properties", extractDirectoryFile );
         expandConfigurationFile( "logging.properties", extractDirectoryFile );
@@ -525,6 +597,11 @@ public class Tomcat7Runner
      */
     private void populateWebAppWarPerContext( String warsValue )
     {
+        if ( warsValue == null )
+        {
+            return;
+        }
+
         StringTokenizer st = new StringTokenizer( warsValue, ";" );
         while ( st.hasMoreTokens() )
         {

@@ -69,45 +69,45 @@ public abstract class AbstractExecWarMojo
     extends AbstractTomcat7Mojo
 {
 
-    @Parameter (defaultValue = "${project.artifact}", required = true, readonly = true)
-    private Artifact projectArtifact;
+    @Parameter( defaultValue = "${project.artifact}", required = true, readonly = true )
+    protected Artifact projectArtifact;
 
     /**
      * The maven project.
      */
-    @Parameter (defaultValue = "${project}", required = true, readonly = true)
+    @Parameter( defaultValue = "${project}", required = true, readonly = true )
     protected MavenProject project;
 
-    @Parameter (defaultValue = "${plugin.artifacts}", required = true)
-    private List<Artifact> pluginArtifacts;
+    @Parameter( defaultValue = "${plugin.artifacts}", required = true )
+    protected List<Artifact> pluginArtifacts;
 
-    @Parameter (defaultValue = "${project.build.directory}")
-    private File buildDirectory;
+    @Parameter( defaultValue = "${project.build.directory}" )
+    protected File buildDirectory;
 
     /**
      * Path under {@link #buildDirectory} where this mojo may do temporary work.
      */
-    @Parameter (defaultValue = "${project.build.directory}/tomcat7-maven-plugin-exec")
+    @Parameter( defaultValue = "${project.build.directory}/tomcat7-maven-plugin-exec" )
     private File pluginWorkDirectory;
 
-    @Parameter (property = "maven.tomcat.exec.war.tomcatConf", defaultValue = "src/main/tomcatconf")
-    private File tomcatConfigurationFilesDirectory;
+    @Parameter( property = "maven.tomcat.exec.war.tomcatConf", defaultValue = "src/main/tomcatconf" )
+    protected File tomcatConfigurationFilesDirectory;
 
-    @Parameter (defaultValue = "src/main/tomcatconf/server.xml", property = "maven.tomcat.exec.war.serverXml")
-    private File serverXml;
+    @Parameter( defaultValue = "src/main/tomcatconf/server.xml", property = "maven.tomcat.exec.war.serverXml" )
+    protected File serverXml;
 
     /**
      * Name of the generated exec JAR.
      */
-    @Parameter (property = "tomcat.jar.finalName",
-                defaultValue = "${project.artifactId}-${project.version}-war-exec.jar", required = true)
-    private String finalName;
+    @Parameter( property = "tomcat.jar.finalName",
+                defaultValue = "${project.artifactId}-${project.version}-war-exec.jar", required = true )
+    protected String finalName;
 
     /**
      * The webapp context path to use for the web application being run.
      * The name to store webapp in exec jar. Do not use /
      */
-    @Parameter (property = "maven.tomcat.path", defaultValue = "${project.artifactId}", required = true)
+    @Parameter( property = "maven.tomcat.path", defaultValue = "${project.artifactId}", required = true )
     protected String path;
 
     @Parameter
@@ -120,82 +120,82 @@ public abstract class AbstractExecWarMojo
      * Maven Artifact Factory component.
      */
     @Component
-    private ArtifactFactory artifactFactory;
+    protected ArtifactFactory artifactFactory;
 
     /**
      * Location of the local repository.
      */
-    @Parameter (defaultValue = "${localRepository}", required = true, readonly = true)
-    private ArtifactRepository local;
+    @Parameter( defaultValue = "${localRepository}", required = true, readonly = true )
+    protected ArtifactRepository local;
 
     /**
      * List of Remote Repositories used by the resolver
      */
-    @Parameter (defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true)
+    @Parameter( defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true )
     protected List<ArtifactRepository> remoteRepos;
 
     @Component
-    private MavenProjectHelper projectHelper;
+    protected MavenProjectHelper projectHelper;
 
     /**
      * Attach or not the generated artifact to the build (use true if you want to install or deploy it)
      */
-    @Parameter (property = "maven.tomcat.exec.war.attachArtifact", defaultValue = "true", required = true)
-    private boolean attachArtifact;
+    @Parameter( property = "maven.tomcat.exec.war.attachArtifact", defaultValue = "true", required = true )
+    protected boolean attachArtifact;
 
 
     /**
      * the classifier to use for the attached/generated artifact
      */
-    @Parameter (property = "maven.tomcat.exec.war.attachArtifactClassifier", defaultValue = "exec-war",
-                required = true)
-    private String attachArtifactClassifier;
+    @Parameter( property = "maven.tomcat.exec.war.attachArtifactClassifier", defaultValue = "exec-war",
+                required = true )
+    protected String attachArtifactClassifier;
 
 
     /**
      * the type to use for the attached/generated artifact
      */
-    @Parameter (property = "maven.tomcat.exec.war.attachArtifactType", defaultValue = "jar", required = true)
-    private String attachArtifactClassifierType;
+    @Parameter( property = "maven.tomcat.exec.war.attachArtifactType", defaultValue = "jar", required = true )
+    protected String attachArtifactClassifierType;
 
     /**
      * to enable naming when starting tomcat
      */
-    @Parameter (property = "maven.tomcat.exec.war.enableNaming", defaultValue = "false", required = true)
-    private boolean enableNaming;
+    @Parameter( property = "maven.tomcat.exec.war.enableNaming", defaultValue = "false", required = true )
+    protected boolean enableNaming;
 
     /**
      * see http://tomcat.apache.org/tomcat-7.0-doc/config/valve.html
      */
-    @Parameter (property = "maven.tomcat.exec.war.accessLogValveFormat", defaultValue = "%h %l %u %t %r %s %b %I %D",
-                required = true)
-    private String accessLogValveFormat;
+    @Parameter( property = "maven.tomcat.exec.war.accessLogValveFormat", defaultValue = "%h %l %u %t %r %s %b %I %D",
+                required = true )
+    protected String accessLogValveFormat;
 
     /**
      * list of extra dependencies to add in the standalone tomcat jar: your jdbc driver, mail.jar etc..
      * <b>Those dependencies will be in root classloader.</b>
      */
     @Parameter
-    private List<ExtraDependency> extraDependencies;
+    protected List<ExtraDependency> extraDependencies;
 
     /**
      * list of extra resources to add in the standalone tomcat jar: your logger configuration etc
      */
     @Parameter
-    private List<ExtraResource> extraResources;
+    protected List<ExtraResource> extraResources;
 
     /**
      * Main class to use for starting the standalone jar.
      */
-    @Parameter (property = "maven.tomcat.exec.war.mainClass",
-                defaultValue = "org.apache.tomcat.maven.runner.Tomcat7RunnerCli", required = true)
-    private String mainClass;
+    @Parameter( property = "maven.tomcat.exec.war.mainClass",
+                defaultValue = "org.apache.tomcat.maven.runner.Tomcat7RunnerCli", required = true )
+    protected String mainClass;
 
     /**
      * which connector protocol to use HTTP/1.1 or org.apache.coyote.http11.Http11NioProtocol
      */
-    @Parameter (property = "maven.tomcat.exec.war.connectorHttpProtocol", defaultValue = "HTTP/1.1", required = true)
-    private String connectorHttpProtocol;
+    @Parameter( property = "maven.tomcat.exec.war.connectorHttpProtocol", defaultValue = "HTTP/1.1", required = true )
+    protected String connectorHttpProtocol;
 
     public void execute()
         throws MojoExecutionException, MojoFailureException
@@ -348,16 +348,7 @@ public abstract class AbstractExecWarMojo
                     || StringUtils.equals( "tomcat7-war-runner", pluginArtifact.getArtifactId() ) )
                 {
                     JarFile jarFile = new JarFile( pluginArtifact.getFile() );
-                    Enumeration<JarEntry> jarEntries = jarFile.entries();
-                    while ( jarEntries.hasMoreElements() )
-                    {
-                        JarEntry jarEntry = jarEntries.nextElement();
-                        InputStream jarEntryIs = jarFile.getInputStream( jarEntry );
-
-                        os.putArchiveEntry( new JarArchiveEntry( jarEntry.getName() ) );
-                        IOUtils.copy( jarEntryIs, os );
-                        os.closeArchiveEntry();
-                    }
+                    extractJarToArchive( jarFile, os );
                 }
             }
 
@@ -374,16 +365,7 @@ public abstract class AbstractExecWarMojo
 
                     artifactResolver.resolve( artifact, this.remoteRepos, this.local );
                     JarFile jarFile = new JarFile( artifact.getFile() );
-                    Enumeration<JarEntry> jarEntries = jarFile.entries();
-                    while ( jarEntries.hasMoreElements() )
-                    {
-                        JarEntry jarEntry = jarEntries.nextElement();
-                        InputStream jarEntryIs = jarFile.getInputStream( jarEntry );
-
-                        os.putArchiveEntry( new JarArchiveEntry( jarEntry.getName() ) );
-                        IOUtils.copy( jarEntryIs, os );
-                        os.closeArchiveEntry();
-                    }
+                    extractJarToArchive( jarFile, os );
                 }
             }
 
@@ -468,8 +450,8 @@ public abstract class AbstractExecWarMojo
         }
     }
 
-    private void copyDirectoryContentIntoArchive( File pSourceFolder, String pDestinationPath,
-                                                  ArchiveOutputStream pArchiveOutputSteam )
+    protected void copyDirectoryContentIntoArchive( File pSourceFolder, String pDestinationPath,
+                                                    ArchiveOutputStream pArchiveOutputSteam )
         throws FileNotFoundException, IOException
     {
 
@@ -514,7 +496,7 @@ public abstract class AbstractExecWarMojo
 
     }
 
-    private String[] toStringArray( List list )
+    protected String[] toStringArray( List list )
     {
         if ( list == null || list.isEmpty() )
         {
@@ -533,7 +515,7 @@ public abstract class AbstractExecWarMojo
     /**
      * return file can be deleted
      */
-    private File addContextXmlToWar( File contextXmlFile, File warFile )
+    protected File addContextXmlToWar( File contextXmlFile, File warFile )
         throws IOException, ArchiveException
     {
         ArchiveOutputStream os = null;
@@ -550,14 +532,7 @@ public abstract class AbstractExecWarMojo
             os.closeArchiveEntry();
 
             JarFile jarFile = new JarFile( warFile );
-            Enumeration<JarEntry> jarEntries = jarFile.entries();
-            while ( jarEntries.hasMoreElements() )
-            {
-                JarEntry jarEntry = jarEntries.nextElement();
-                os.putArchiveEntry( new JarArchiveEntry( jarEntry.getName() ) );
-                IOUtils.copy( jarFile.getInputStream( jarEntry ), os );
-                os.closeArchiveEntry();
-            }
+            extractJarToArchive( jarFile, os );
             os.flush();
         }
         finally
@@ -566,5 +541,29 @@ public abstract class AbstractExecWarMojo
             IOUtils.closeQuietly( warOutputStream );
         }
         return tmpWar;
+    }
+
+    /**
+     * Copy the contents of a jar file to another archive
+     *
+     * @param file The input jar file
+     * @param os   The output archive
+     * @throws IOException
+     */
+    protected void extractJarToArchive( JarFile file, ArchiveOutputStream os )
+        throws IOException
+    {
+        Enumeration<? extends JarEntry> entries = file.entries();
+        while ( entries.hasMoreElements() )
+        {
+            JarEntry j = entries.nextElement();
+            os.putArchiveEntry( new JarArchiveEntry( j.getName() ) );
+            IOUtils.copy( file.getInputStream( j ), os );
+            os.closeArchiveEntry();
+        }
+        if ( file != null )
+        {
+            IOUtils.closeQuietly( file );
+        }
     }
 }
