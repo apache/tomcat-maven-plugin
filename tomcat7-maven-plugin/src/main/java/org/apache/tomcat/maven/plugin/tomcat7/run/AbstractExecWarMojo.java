@@ -563,7 +563,7 @@ public abstract class AbstractExecWarMojo
         }
         if ( file != null )
         {
-            IOUtils.closeQuietly( file );
+            file.close();
         }
     }
 }
