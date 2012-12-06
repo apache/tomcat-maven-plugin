@@ -25,7 +25,6 @@
       <item name="Goals"        href="plugin-info.html"/>
       <item name="Usage"        href="usage.html"/>
       <item name="FAQ"          href="faq.html"/>
-      <item name="Javadoc"      href="apidocs/index.html"/>
     </menu>
     <menu name="Examples">
       <item name="Adding System Properties" href="examples/add-system-properties.html"/>

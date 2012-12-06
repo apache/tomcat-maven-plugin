@@ -23,7 +23,6 @@
     <menu name="Overview">
       <item name="Introduction"          href="index.html"/>
       <item name="Goals"                 href="plugin-info.html"/>
-      <item name="Javadoc"               href="apidocs/index.html"/>
       <item name="Adjust Tomcat Version" href="adjust-embedded-tomcat-version.html"/>
     </menu>
 
