@@ -62,8 +62,6 @@ public class Tomcat7Runner
     // contains war name wars=foo.war,bar.war
     public static final String WARS_KEY = "wars";
 
-    |
-
     public static final String ARCHIVE_GENERATION_TIMESTAMP_KEY = "generationTimestamp";
 
     public static final String ENABLE_NAMING_KEY = "enableNaming";
