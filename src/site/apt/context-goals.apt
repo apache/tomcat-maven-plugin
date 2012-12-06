@@ -29,8 +29,8 @@
 
 Context Goals
 
- The plugin provides goals to perform various tasks upon your project's context
- once deployed within Tomcat:
+ This plugin provides goals that perform various tasks on your project's context
+ once deployed on Tomcat:
 
  * {{{#Redeploying a WAR project}Redeploying a WAR project}}
 

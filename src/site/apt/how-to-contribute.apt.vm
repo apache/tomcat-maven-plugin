@@ -28,7 +28,7 @@
 
 How To Contribute
 
-  All contributions are welcome !! (new features, patches, documentation etc..)
+  All contributions are welcome!! (new features, patches, documentation etc..)
 
 * Get the sources from scm
 
@@ -43,18 +43,11 @@ How To Contribute
 
   []
 
-  Then you can use git svn, simple configuration using the existing script :
+  Then you can use git svn, simple configuration using the existing script:
 
 +----------------
 sh ./init-git-svn.sh
 +----------------
 
-  You must then create a jira issue see {{{./issue-tracking.html}Issue Tracking}} and attach a patch (pull request accepted too)
-
-
-
-
-
-
-
+  You must then create a JIRA issue see {{{./issue-tracking.html}Issue Tracking}} and attach a patch (pull request accepted too)
 

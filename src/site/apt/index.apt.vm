@@ -30,7 +30,7 @@ Apache Tomcat Maven Plugin
 
   This is the new home for the Tomcat Maven Plugin (previously hosted at Codehaus).
 
-  The version ${project.version} have the following new features:
+  Version ${project.version} has the following new features:
 
   * Apache Tomcat7 support
 
@@ -42,8 +42,8 @@ Apache Tomcat Maven Plugin
 
   The Tomcat Maven Plugin provides goals to manipulate WAR projects within the {{{http://tomcat.apache.org/}Apache Tomcat}} servlet container.
 
-  Or to run your war project in an embeded Apache Tomcat. The run goal give you the opportunity to develop quickly your application without any
-  huge install to do manually. More details and features: {{{./run-mojo-features.html}see documentation}}.
+  Or to run your war project with an embedded Apache Tomcat. The run goals give you the opportunity to quickly develop your application without needing
+  to install a standalone Tomcat instance. More details and features: {{{./run-mojo-features.html}see documentation}}.
 
 * groupId and Mojo name change
 
@@ -90,11 +90,10 @@ Apache Tomcat Maven Plugin
 
   []
 
-* Know limitations
+* Known limitations
 
-  Some goals are not yet available in tomcat7 mojo. Those {{{./container-goals.html}container goals}} are available with
+  Some goals are not yet available with the tomcat7 mojo. Those {{{./container-goals.html}container goals}} are available with
   the tomcat6 mojo, you only need to update the manager url in your pom.
 
   Use <<<http://localhost:8080/manager/text>>> rather than the default tomcat6 url.
-
 

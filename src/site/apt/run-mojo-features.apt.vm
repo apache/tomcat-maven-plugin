@@ -26,20 +26,20 @@
  ~~ NOTE: For help with the syntax of this file, see:
  ~~ http://maven.apache.org/doxia/references/apt-format.html
 
-Run Mojo: run your Maven war project quickly !
+Run Mojo: run your Maven war project quickly!
 
-  When developping a war project, you usually build your war and deploy it to an installed Tomcat instance.
-  This is time and resources consuming and take time to install locally the instance.
+  When developing a war project, you usually build your war and deploy it to an installed Tomcat instance.
+  This is time and resources consuming and also requires a local Tomcat instance.
 
-  The run mojo give you the opportunity to save that by simply running your war inside an embeded Tomcat instance in your Maven build.
+  The run mojo gives you the opportunity to avoid those efforts by simply running your war inside an embedded Tomcat instance in your Maven build.
 
-  <<<NOTE>>> If you have a multi module Maven projects and use Maven3, you don't need to install all modules before use the run goal,
-  just use tomcat6/7:run from the root module and the plugin will auto detect build output directory from various modules and replace
+  <<<NOTE>>> If you have a multi module Maven project and use Maven3, you don't need to install all modules before using the run goal,
+  just use tomcat6/7:run from the root module and the plugin will auto detect the build output directory from various modules and replace
   dependencies with those directories in the webapp classloader.
 
-* Run an embeded Tomcat
+* Running an embedded Tomcat
 
-  Configure your pom with the plugin version (for other mojo parameters see each mojo documentation details).
+  Configure your pom with the plugin version (for other mojo parameters see each mojo's documentation).
 
   And use: mvn tomcat6/7:run
 
@@ -56,9 +56,9 @@ Run Mojo: run your Maven war project quickly !
       <port>9090</port>
       <!-- application path always starts with /-->
       <path>/</path>
-      <!-- optionnal path to a context file -->
+      <!-- optional path to a context file -->
       <contextFile>${tomcatContextXml}</contextFile>
-      <!-- optionnal system propoerties you want to add -->
+      <!-- optional system propoerties you want to add -->
       <systemProperties>
         <appserver.base>${project.build.directory}/appserver-base</appserver.base>
         <appserver.home>${project.build.directory}/appserver-home</appserver.home>
@@ -67,12 +67,12 @@ Run Mojo: run your Maven war project quickly !
       </systemProperties>
       <!-- if you want to use test dependencies rather than only runtime -->
       <useTestClasspath>false</useTestClasspath>
-      <!-- optionnal if you want to add some extra directories in the class loader -->
+      <!-- optional if you want to add some extra directories into the classloader -->
       <additionalClasspathDirs>
         <additionalClasspathDir></additionalClasspathDir>
       </additionalClasspathDirs>
     </configuration>
-    <!-- if you need some extra dependencies only for running the embeded tomcat add them in the plugin dependencies -->
+    <!-- For any extra dependencies needed when running embedded Tomcat (not WAR dependencies) add them below -->
     <dependencies>
       <dependency>
         <groupId>org.apache.derby</groupId>
@@ -93,19 +93,19 @@ Run Mojo: run your Maven war project quickly !
 
 +---------------------
   pom.xml             (top level pom with packaging pom)
-  my-api/pom.xml      (api project with packaging jar)
-  my-api-impl/pom.xml (api implementation project with packaging jar)
+  my-api/pom.xml      (API project with packaging jar)
+  my-api-impl/pom.xml (API implementation project with packaging jar)
   my-webapp/pom.xml   (webapp project with packaging war)
 
 +---------------------
 
-  With a such structure, from the top level directory use mvn tomcat6/7:run -pl :my-webapp -am.
+  With the structure given above, from the top level directory use mvn tomcat6/7:run -pl :my-webapp -am.
 
 * Use it with selenium mojo
 
-  You can use the mojo, to start your application in a Tomcat instance and run you selenium test against this instance.
+  You can use this mojo to start your application in a Tomcat instance and run your selenium test against this instance.
 
-  The following configuration will start an emdeded tomcat in pre-integration-test and stop it in post-integration-test.
+  The following configuration will start an embedded Tomcat in the pre-integration-test and stop it in the post-integration-test.
 
 +---------------------
 

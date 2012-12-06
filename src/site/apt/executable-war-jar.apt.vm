@@ -28,13 +28,13 @@
 
 Build an Executable War/Jar
 
- Since version 2.0 you can now build an executable war/jar with an embedded Apache Tomcat7.
+ Starting with Version 2.0 of the plugin you can build an executable war/jar with an embedded Apache Tomcat7.
 
  This is only supported with the tomcat7 plugin.
 
- <<Note>> Your project must have packaging pom or war.
+ <<Note>> Your project must have a packaging value of <<<pom>>> or <<<war>>>.
 
-* Additional Artifact to your war module
+* Artifact to add to your war module:
 
 +--
 <project>
@@ -58,7 +58,7 @@ Build an Executable War/Jar
             <phase>package</phase>
             <configuration>
               <path>foo</path>
-              <!-- optional only if you want to use a preconfigured server.xml file -->
+              <!-- optional, needed only if you want to use a preconfigured server.xml file -->
               <serverXml>src/main/tomcatconf/server.xml</serverXml>
               <!-- optional values which can be configurable -->
               <attachArtifactClassifier>default value is exec-war but you can customize</attachArtifactClassifier>
@@ -75,7 +75,7 @@ Build an Executable War/Jar
 </project>
 +--
 
-* Additional Artifact to your pom module
+* Artifact to add to your pom module:
 
 +--
 <project>
@@ -113,9 +113,9 @@ Build an Executable War/Jar
                   <contextPath>/</contextPath>
                 </warRunDependency>
               </warRunDependencies>
-              <!-- naming is disable by default so use true to enable it -->
+              <!-- naming is disabled by default so use true to enable it -->
               <enableNaming>true</enableNaming>
-              <!-- extra dependencies to add jdbc driver mail jars -->
+              <!-- extra dependencies to add jdbc driver, mail jars, etc. -->
               <extraDependencies>
                 <extraDependency>
                   <groupId>org.apache.derby</groupId>
@@ -142,7 +142,7 @@ Build an Executable War/Jar
 
 * Generated executable jar/war
 
-  You will be able to execute the generated jar which contains an embedded tomcat container
+  With the above configuration you can execute the generated jar due to its embedded Tomcat container
 
 +------
   java -jar yourjar

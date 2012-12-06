@@ -69,7 +69,7 @@ mvn tomcat6:info
 mvn tomcat6:resources
 +--
 
- Alternatively, to only list JNDI resources of a specific type you can type:
+ Alternatively, to list only JNDI resources of a specific type you can type:
 
 +--
 mvn -Dmaven.tomcat.type=my.class.name tomcat6:resources

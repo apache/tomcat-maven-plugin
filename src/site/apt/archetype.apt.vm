@@ -118,14 +118,6 @@ java -jar basic-webapp-exec-1.0-SNAPSHOT-war-exec.jar -httpPort 9191
 +------------------
 
 
+  And go to http://localhost:9191 with a browser.
 
-  And hit your browser to http://localhost:9191.
-
-  So you have a tomcat7 running our fabulous application and without installing nothing !
-
-
-
-
-
-
-
+  So you now have a Tomcat 7 instance running this fabulous application without needing to install anything!
