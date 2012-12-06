@@ -134,6 +134,9 @@
     <contributor>
       <name>Robin Bohm</name>
     </contributor>
+    <contributor>
+      <name>Mitch Kyle</name>
+    </contributor>
   </contributors>
 
   <licenses>
@@ -369,9 +372,6 @@
         <artifactId>tomcat-i18n-ja</artifactId>
         <version>${tomcat7Version}</version>
       </dependency>
-
-
-
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
