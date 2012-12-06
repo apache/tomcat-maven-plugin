@@ -48,7 +48,6 @@ import org.codehaus.plexus.util.DirectoryScanner;
 /**
  * Abstract Mojo for building deployable and executable war files
  *
- * @author Mitch Kyle
  * @since 2.1
  */
 public abstract class AbstractStandaloneWarMojo

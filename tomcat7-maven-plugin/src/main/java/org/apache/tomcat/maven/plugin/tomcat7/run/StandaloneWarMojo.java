@@ -25,7 +25,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 /**
  * This Mojo will create an executable war file with embedded tomcat that is also capable of being deployed elsewhere
  *
- * @author Mitch Kyle
  * @since 2.1
  */
 @Mojo(name = "standalone-war")
