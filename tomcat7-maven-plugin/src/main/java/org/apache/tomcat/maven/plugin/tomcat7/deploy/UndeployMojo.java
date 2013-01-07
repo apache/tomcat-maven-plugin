@@ -30,7 +30,6 @@ import java.io.IOException;
 /**
  * Undeploy a WAR from Tomcat.
  *
- * @goal undeploy
  * @since 2.1
  */
 @Mojo( name = "undeploy" )
