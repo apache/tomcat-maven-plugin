@@ -73,7 +73,7 @@ public abstract class AbstractCatalinaMojo
     /**
      * The full URL of the Tomcat manager instance to use.
      */
-    @Parameter( property = "maven.tomcat.url", defaultValue = "http://localhost:8080/manager/html", required = true )
+    @Parameter( property = "maven.tomcat.url", defaultValue = "http://localhost:8080/manager/text", required = true )
     private URL url;
 
     /**
