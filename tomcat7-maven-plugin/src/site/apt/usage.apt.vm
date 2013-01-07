@@ -69,7 +69,7 @@ Usage
 </project>
 +--
 
- The default Tomcat manager URL is <<<http://localhost:8080/manager>>>.
+  The default Tomcat manager URL is <<<http://localhost:8080/manager/text>>>.
 
 * Using different Tomcat manager authentication details
 
