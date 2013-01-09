@@ -23,7 +23,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
-import org.apache.tomcat.maven.plugin.tomcat7.AbstractCatalinaMojo;
 import org.apache.tomcat.maven.plugin.tomcat7.AbstractWarCatalinaMojo;
 
 import java.io.IOException;

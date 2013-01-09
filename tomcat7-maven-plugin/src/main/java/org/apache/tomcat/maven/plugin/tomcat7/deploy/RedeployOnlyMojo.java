@@ -19,8 +19,6 @@ package org.apache.tomcat.maven.plugin.tomcat7.deploy;
  * under the License.
  */
 
-import org.apache.maven.plugins.annotations.Execute;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
 /**

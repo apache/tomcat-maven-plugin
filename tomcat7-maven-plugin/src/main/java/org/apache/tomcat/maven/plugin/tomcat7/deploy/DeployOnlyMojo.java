@@ -27,7 +27,7 @@ import org.apache.maven.plugins.annotations.Mojo;
  * @author olamy
  * @since 1.0-alpha-2
  */
-@Mojo( name = "deploy-only" )
+@Mojo(name = "deploy-only")
 public class DeployOnlyMojo
     extends AbstractDeployWarMojo
 {
