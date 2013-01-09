@@ -26,7 +26,7 @@ import org.apache.maven.plugins.annotations.Mojo;
  * Create a self executable jar file containing all necessary Apache Tomcat classes. 
  * This allows for using just <code>java -jar mywebapp.jar</code> to run your webapp without 
  * needing to install a Tomcat instance.
- * More details <a href="http://tomcat.apache.org/maven-plugin-2.0-beta-1/executable-war-jar.html">here</a>.
+ * More details <a href="http://tomcat.apache.org/maven-plugin-2.0/executable-war-jar.html">here</a>.
  *
  * @author Olivier Lamy
  * @since 2.0
