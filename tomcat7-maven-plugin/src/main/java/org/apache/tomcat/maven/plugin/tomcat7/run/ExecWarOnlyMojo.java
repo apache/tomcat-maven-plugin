@@ -21,6 +21,8 @@ package org.apache.tomcat.maven.plugin.tomcat7.run;
 import org.apache.maven.plugins.annotations.Mojo;
 
 /**
+ * Same as exec-war goal without forking the package lifecycle.
+ *
  * @author Olivier Lamy
  * @since 2.0
  */

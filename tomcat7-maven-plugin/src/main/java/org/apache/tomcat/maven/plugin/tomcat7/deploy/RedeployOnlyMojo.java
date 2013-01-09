@@ -22,7 +22,8 @@ package org.apache.tomcat.maven.plugin.tomcat7.deploy;
 import org.apache.maven.plugins.annotations.Mojo;
 
 /**
- * Redeploy a WAR in Tomcat. Deploy with forcing update flag to true
+ * Redeploy a WAR in Tomcat without forking the package lifecycle. 
+ * (Alias for the deploy-only goal with its update parameter set to true.)
  *
  * @since 2.1
  */

@@ -28,7 +28,7 @@ import org.apache.tomcat.maven.common.run.EmbeddedRegistry;
 
 /**
  * <p>
- * Shuts down all possibly started embedded tomcat servers. This will be automatically down
+ * Shuts down all possibly started embedded Tomcat servers. This will be automatically done
  * through a shutdown hook or you may call this Mojo to shut them down explictly.
  * </p>
  * <p>

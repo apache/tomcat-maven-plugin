@@ -24,7 +24,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
 /**
- * Redeploy a WAR in Tomcat. Deploy with forcing update flag to true
+ * Redeploy a WAR in Tomcat.  (Alias for the deploy goal with its update parameter set to true.)
  *
  * @author Olivier Lamy
  * @since 2.1

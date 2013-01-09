@@ -22,7 +22,7 @@ package org.apache.tomcat.maven.plugin.tomcat7.deploy;
 import org.apache.maven.plugins.annotations.Mojo;
 
 /**
- * Deploy a WAR to Tomcat without forking the package lifecycle
+ * Deploy a WAR to Tomcat without forking the package lifecycle.
  *
  * @author olamy
  * @since 1.0-alpha-2

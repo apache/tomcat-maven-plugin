@@ -23,7 +23,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
 /**
- * This Mojo will create an executable war file with embedded tomcat that is also capable of being deployed elsewhere
+ * This Mojo will create an executable war file with embedded Tomcat that is also capable of being deployed elsewhere.
  *
  * @since 2.1
  */

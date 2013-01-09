@@ -23,6 +23,9 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
 /**
+ * Redeploy a WAR in Tomcat without forking the package lifecycle. 
+ * (Alias for the deploy-only goal with its update parameter set to true.)
+ *
  * @since 2.1
  */
 @Mojo( name = "redeploy-only" )

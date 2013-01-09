@@ -24,7 +24,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 
 /**
- * Runs the current project as a packaged web application using an embedded Tomcat server without forking the package cycle.
+ * Same as run-war goal without forking the package cycle.
  *
  * @author vlatombe
  */
