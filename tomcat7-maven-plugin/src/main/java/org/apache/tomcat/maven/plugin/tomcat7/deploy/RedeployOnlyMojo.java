@@ -28,10 +28,9 @@ import org.apache.maven.plugins.annotations.Mojo;
  *
  * @since 2.1
  */
-@Mojo( name = "redeplo-only" )
-@Execute( phase = LifecyclePhase.PACKAGE )
+@Mojo( name = "redeploy-only" )
 public class RedeployOnlyMojo
-    extends AbstractDeployWarMojo
+    extends DeployOnlyMojo
 {
     @Override
     protected boolean isUpdate()

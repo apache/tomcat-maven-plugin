@@ -32,7 +32,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 @Mojo( name = "redeploy" )
 @Execute( phase = LifecyclePhase.PACKAGE )
 public class RedeployMojo
-    extends AbstractDeployWarMojo
+    extends DeployMojo
 {
     @Override
     protected boolean isUpdate()
