@@ -344,6 +344,16 @@ public abstract class AbstractRunMojo
     protected File contextFile;
 
     /**
+     * The default context file to check for if contextFile not configured. 
+     * If no contextFile configured and the below default not present, no   
+     * contextFile will be sent to Tomcat, resulting in the latter's default  
+     * context configuration being used instead.  
+     */
+    @Parameter( defaultValue = "${project.build.directory}/${project.build.finalName}/META-INF/context.xml", 
+        readonly = true )
+    private File defaultContextFile; 
+
+    /**
      * The protocol to run the Tomcat server on.
      * By default it's HTTP/1.1.
      *
@@ -532,12 +542,21 @@ public abstract class AbstractRunMojo
 
         String baseDir = getDocBase().getAbsolutePath();
 
-        File overridedContextFile = getContextFile();
+        File overriddenContextFile = getContextFile();
 
-        if ( overridedContextFile != null && overridedContextFile.exists() )
+        StandardContext standardContext = null;
+
+        if ( overriddenContextFile != null && overriddenContextFile.exists() )
         {
-            StandardContext standardContext = parseContextFile( overridedContextFile );
+            standardContext = parseContextFile( overriddenContextFile );
+        } 
+        else if (defaultContextFile.exists()) 
+        {
+            standardContext = parseContextFile( defaultContextFile );
+        }
 
+        if (standardContext != null)   
+        {    
             if ( standardContext.getPath() != null )
             {
                 contextPath = standardContext.getPath();
@@ -566,11 +585,18 @@ public abstract class AbstractRunMojo
 
         context.setLoader( loader );
 
-        if ( overridedContextFile != null )
+        if ( overriddenContextFile != null )
         {
-            context.setConfigFile( overridedContextFile.toURI().toURL() );
+            // here, send file to Tomcat for it to complain if missing
+            context.setConfigFile( overriddenContextFile.toURI().toURL() );
+        } 
+        else if (defaultContextFile.exists()) 
+        {
+            // here, only sending default file if it indeed exists
+            // otherwise Tomcat will create a default context
+        	context.setConfigFile( defaultContextFile.toURI().toURL() );
         }
-
+        
         if ( classLoaderClass != null )
         {
             loader.setLoaderClass( classLoaderClass );

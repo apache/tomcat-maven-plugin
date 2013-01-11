@@ -39,14 +39,8 @@ public abstract class AbstractRunWarMojo
     /**
      * The path of the exploded WAR directory to run.
      */
-    @Parameter( defaultValue = "${project.build.directory}/${project.build.finalName}", required = true )
+    @Parameter( property = "maven.tomcat.warDirectory", defaultValue = "${project.build.directory}/${project.build.finalName}", required = true )
     private File warDirectory;
-
-    /**
-     * The path of the Tomcat context XML file.
-     */
-    @Parameter( defaultValue = "${project.build.directory}/${project.build.finalName}/META-INF/context.xml" )
-    private File contextFile;
 
     // ----------------------------------------------------------------------
     // AbstractRunMojo Implementation
