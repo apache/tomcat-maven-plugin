@@ -447,6 +447,7 @@ public abstract class AbstractRunMojo
 
     /**
      * enable client authentication for https (if configured)
+     * @since 2.1
      */
     @Parameter( property = "maven.tomcat.https.clientAuth", defaultValue = "false" )
     protected boolean clientAuth = false;
