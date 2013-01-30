@@ -344,14 +344,14 @@ public abstract class AbstractRunMojo
     protected File contextFile;
 
     /**
-     * The default context file to check for if contextFile not configured. 
-     * If no contextFile configured and the below default not present, no   
-     * contextFile will be sent to Tomcat, resulting in the latter's default  
-     * context configuration being used instead.  
+     * The default context file to check for if contextFile not configured.
+     * If no contextFile configured and the below default not present, no
+     * contextFile will be sent to Tomcat, resulting in the latter's default
+     * context configuration being used instead.
      */
-    @Parameter( defaultValue = "${project.build.directory}/${project.build.finalName}/META-INF/context.xml", 
-        readonly = true )
-    private File defaultContextFile; 
+    @Parameter( defaultValue = "${project.build.directory}/${project.build.finalName}/META-INF/context.xml",
+                readonly = true )
+    private File defaultContextFile;
 
     /**
      * The protocol to run the Tomcat server on.
@@ -444,6 +444,12 @@ public abstract class AbstractRunMojo
      */
     @Parameter
     protected String[] aliases;
+
+    /**
+     * enable client authentication for https (if configured)
+     */
+    @Parameter( property = "maven.tomcat.https.clientAuth", defaultValue = "false" )
+    protected boolean clientAuth = false;
 
     // ----------------------------------------------------------------------
     // Fields
@@ -549,14 +555,14 @@ public abstract class AbstractRunMojo
         if ( overriddenContextFile != null && overriddenContextFile.exists() )
         {
             standardContext = parseContextFile( overriddenContextFile );
-        } 
-        else if (defaultContextFile.exists()) 
+        }
+        else if ( defaultContextFile.exists() )
         {
             standardContext = parseContextFile( defaultContextFile );
         }
 
-        if (standardContext != null)   
-        {    
+        if ( standardContext != null )
+        {
             if ( standardContext.getPath() != null )
             {
                 contextPath = standardContext.getPath();
@@ -589,14 +595,14 @@ public abstract class AbstractRunMojo
         {
             // here, send file to Tomcat for it to complain if missing
             context.setConfigFile( overriddenContextFile.toURI().toURL() );
-        } 
-        else if (defaultContextFile.exists()) 
+        }
+        else if ( defaultContextFile.exists() )
         {
             // here, only sending default file if it indeed exists
             // otherwise Tomcat will create a default context
-        	context.setConfigFile( defaultContextFile.toURI().toURL() );
+            context.setConfigFile( defaultContextFile.toURI().toURL() );
         }
-        
+
         if ( classLoaderClass != null )
         {
             loader.setLoaderClass( classLoaderClass );
@@ -1022,6 +1028,11 @@ public abstract class AbstractRunMojo
                     if ( keystoreType != null )
                     {
                         httpsConnector.setAttribute( "keystoreType", keystoreType );
+                    }
+
+                    if ( clientAuth )
+                    {
+                        httpsConnector.setAttribute( "clientAuth", clientAuth );
                     }
                     embeddedTomcat.getEngine().getService().addConnector( httpsConnector );
 
