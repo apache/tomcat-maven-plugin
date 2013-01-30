@@ -920,6 +920,13 @@ public abstract class AbstractRunMojo
                 }
 
                 Catalina container = new Catalina();
+
+                if ( useSeparateTomcatClassLoader )
+                {
+                    Thread.currentThread().setContextClassLoader( getTomcatClassLoader() );
+                    container.setParentClassLoader( getTomcatClassLoader() );
+                }
+
                 container.setUseNaming( this.useNaming );
                 container.setConfig( serverXml.getAbsolutePath() );
                 container.start();
