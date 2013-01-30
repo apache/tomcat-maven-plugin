@@ -314,6 +314,13 @@ public abstract class AbstractRunMojo
     @Parameter( property = "maven.tomcat.contextReloadable", defaultValue = "false" )
     protected boolean contextReloadable;
 
+    /**
+     * represents the delay in seconds between each classPathScanning change invocation
+     *
+     * @see <a href="http://tomcat.apache.org/tomcat-6.0-doc/config/context.html">http://tomcat.apache.org/tomcat-6.0-doc/config/context.html</a>
+     */
+    @Parameter( property = "maven.tomcat.backgroundProcessorDelay", defaultValue = "-1" )
+    protected int backgroundProcessorDelay = -1;
 
     /**
      * The path of the Tomcat context XML file.
@@ -547,7 +554,7 @@ public abstract class AbstractRunMojo
     protected boolean isContextReloadable()
         throws MojoExecutionException
     {
-        if ( contextReloadable )
+        if ( contextReloadable || backgroundProcessorDelay > 0 )
         {
             return true;
         }

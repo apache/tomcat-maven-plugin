@@ -89,14 +89,6 @@ public class RunMojo
     private boolean delegate = true;
 
     /**
-     * represents the delay in seconds between each classPathScanning change invocation
-     *
-     * @see <a href="http://tomcat.apache.org/tomcat-6.0-doc/config/context.html">http://tomcat.apache.org/tomcat-6.0-doc/config/context.html</a>
-     */
-    @Parameter( property = "maven.tomcat.backgroundProcessorDelay", defaultValue = "-1" )
-    protected int backgroundProcessorDelay = -1;
-
-    /**
      * @since 2.0
      */
     @Component( role = ClassLoaderEntriesCalculator.class )
