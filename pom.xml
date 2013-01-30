@@ -512,6 +512,17 @@
         <version>3.0.8</version>
       </dependency>
       <dependency>
+        <groupId>org.apache.maven.shared</groupId>
+        <artifactId>maven-filtering</artifactId>
+        <version>1.0</version>
+        <exclusions>
+          <exclusion>
+            <groupId>nekohtml</groupId>
+            <artifactId>xercesMinimal</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
         <groupId>commons-codec</groupId>
         <artifactId>commons-codec</artifactId>
         <version>1.6</version>
