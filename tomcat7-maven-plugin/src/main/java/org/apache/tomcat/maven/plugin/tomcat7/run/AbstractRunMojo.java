@@ -48,6 +48,9 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.filtering.MavenFileFilter;
+import org.apache.maven.shared.filtering.MavenFileFilterRequest;
+import org.apache.maven.shared.filtering.MavenFilteringException;
 import org.apache.naming.NamingEntry;
 import org.apache.naming.resources.FileDirContext;
 import org.apache.tomcat.maven.common.config.AbstractWebapp;
@@ -455,10 +458,14 @@ public abstract class AbstractRunMojo
 
     /**
      * enable client authentication for https (if configured)
+     *
      * @since 2.1
      */
     @Parameter( property = "maven.tomcat.https.clientAuth", defaultValue = "false" )
     protected boolean clientAuth = false;
+
+    @Component( role = MavenFileFilter.class, hint = "default" )
+    protected MavenFileFilter mavenFileFilter;
 
     // ----------------------------------------------------------------------
     // Fields
@@ -518,6 +525,10 @@ public abstract class AbstractRunMojo
         catch ( ServletException e )
         {
             throw new MojoExecutionException( e.getMessage(), e );
+        }
+        catch ( MavenFilteringException e )
+        {
+            throw new MojoExecutionException( "filtering issue: " + e.getMessage(), e );
         }
         finally
         {
@@ -816,7 +827,7 @@ public abstract class AbstractRunMojo
      * @throws MojoExecutionException if the Tomcat configuration could not be created
      */
     private void initConfiguration()
-        throws IOException, MojoExecutionException
+        throws IOException, MojoExecutionException, MavenFilteringException
     {
         if ( configurationDir.exists() )
         {
@@ -848,7 +859,16 @@ public abstract class AbstractRunMojo
                     throw new MojoExecutionException( " tomcatWebXml " + tomcatWebXml.getPath() + " not exists" );
                 }
                 //MTOMCAT-42  here it's a real file resources not a one coming with the mojo
-                FileUtils.copyFile( tomcatWebXml, new File( confDir, "web.xml" ) );
+                //MTOMCAT-128 apply filtering
+                MavenFileFilterRequest mavenFileFilterRequest = new MavenFileFilterRequest();
+                mavenFileFilterRequest.setFrom( tomcatWebXml );
+                mavenFileFilterRequest.setTo( new File( confDir, "web.xml" ) );
+                mavenFileFilterRequest.setMavenProject( project );
+                mavenFileFilterRequest.setMavenSession( session );
+                mavenFileFilterRequest.setFiltering( true );
+
+                mavenFileFilter.copyFile( mavenFileFilterRequest );
+
             }
             else
             {

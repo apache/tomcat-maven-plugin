@@ -118,9 +118,6 @@ public class RunMojo
     @Parameter( alias = "additionalClassesDirs" )
     private List<String> additionalClasspathDirs;
 
-    @Component( role = MavenFileFilter.class, hint = "default" )
-    private MavenFileFilter mavenFileFilter;
-
     /**
      * {@inheritDoc}
      */

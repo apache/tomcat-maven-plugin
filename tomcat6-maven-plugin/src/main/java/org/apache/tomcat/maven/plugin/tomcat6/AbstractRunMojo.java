@@ -40,11 +40,15 @@ import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 import org.apache.maven.artifact.versioning.VersionRange;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.filtering.MavenFileFilter;
+import org.apache.maven.shared.filtering.MavenFileFilterRequest;
+import org.apache.maven.shared.filtering.MavenFilteringException;
 import org.apache.tomcat.maven.common.config.AbstractWebapp;
 import org.apache.tomcat.maven.common.run.EmbeddedRegistry;
 import org.codehaus.plexus.archiver.ArchiverException;
@@ -418,6 +422,12 @@ public abstract class AbstractRunMojo
     @Parameter
     protected String classLoaderClass;
 
+    @Parameter( defaultValue = "${session}", readonly = true, required = true )
+    protected MavenSession session;
+
+    @Component( role = MavenFileFilter.class, hint = "default" )
+    protected MavenFileFilter mavenFileFilter;
+
     // ----------------------------------------------------------------------
     // Mojo Implementation
     // ----------------------------------------------------------------------
@@ -464,6 +474,10 @@ public abstract class AbstractRunMojo
         {
             throw new MojoExecutionException(
                 messagesProvider.getMessage( "AbstractRunMojo.cannotCreateConfiguration" ), exception );
+        }
+        catch ( MavenFilteringException e )
+        {
+            throw new MojoExecutionException( "filtering issue: " + e.getMessage(), e );
         }
         finally
         {
@@ -642,7 +656,7 @@ public abstract class AbstractRunMojo
      * @throws MojoExecutionException if the Tomcat configuration could not be created
      */
     private void initConfiguration()
-        throws IOException, MojoExecutionException
+        throws IOException, MojoExecutionException, MavenFilteringException
     {
         if ( configurationDir.exists() )
         {
@@ -667,7 +681,15 @@ public abstract class AbstractRunMojo
                 }
                 //MTOMCAT-42  here it's a real file resources not a one coming with the mojo 
                 FileUtils.copyFile( tomcatWebXml, new File( confDir, "web.xml" ) );
-                //copyFile( tomcatWebXml.getPath(), new File( confDir, "web.xml" ) );
+                //MTOMCAT-128 apply filtering
+                MavenFileFilterRequest mavenFileFilterRequest = new MavenFileFilterRequest();
+                mavenFileFilterRequest.setFrom( tomcatWebXml );
+                mavenFileFilterRequest.setTo( new File( confDir, "web.xml" ) );
+                mavenFileFilterRequest.setMavenProject( project );
+                mavenFileFilterRequest.setMavenSession( session );
+                mavenFileFilterRequest.setFiltering( true );
+
+                mavenFileFilter.copyFile( mavenFileFilterRequest );
             }
             else
             {
