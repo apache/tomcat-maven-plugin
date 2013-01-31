@@ -458,11 +458,12 @@ public abstract class AbstractRunMojo
 
     /**
      * enable client authentication for https (if configured)
+     * see <a href="http://tomcat.apache.org/tomcat-7.0-doc/config/http.html#SSL_Support_-_BIO_and_NIO">http://tomcat.apache.org/tomcat-7.0-doc/config/http.html#SSL_Support_-_BIO_and_NIO</a>
      *
      * @since 2.1
      */
     @Parameter( property = "maven.tomcat.https.clientAuth", defaultValue = "false" )
-    protected boolean clientAuth = false;
+    protected String clientAuth = "false";
 
     @Component( role = MavenFileFilter.class, hint = "default" )
     protected MavenFileFilter mavenFileFilter;
@@ -1059,10 +1060,8 @@ public abstract class AbstractRunMojo
                         httpsConnector.setAttribute( "keystoreType", keystoreType );
                     }
 
-                    if ( clientAuth )
-                    {
-                        httpsConnector.setAttribute( "clientAuth", clientAuth );
-                    }
+                    httpsConnector.setAttribute( "clientAuth", clientAuth );
+
                     embeddedTomcat.getEngine().getService().addConnector( httpsConnector );
 
                 }
