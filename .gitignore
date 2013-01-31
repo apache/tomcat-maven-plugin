@@ -2,6 +2,7 @@ target
 # idea
 *.iml
 .idea
+out/
 # eclipse
 .classpath
 .project
