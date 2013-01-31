@@ -707,6 +707,7 @@
               <exclude>*.sh</exclude>
               <exclude>.git/**</exclude>
               <exclude>.idea/**</exclude>
+              <exclude>out/**</exclude>
               <exclude>.extract/**</exclude>
               <exclude>*.patch</exclude>
             </excludes>

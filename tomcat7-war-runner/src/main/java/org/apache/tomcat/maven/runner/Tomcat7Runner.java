@@ -26,6 +26,8 @@ import org.apache.catalina.startup.Catalina;
 import org.apache.catalina.startup.ContextConfig;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.valves.AccessLogValve;
+import org.apache.juli.ClassLoaderLogManager;
+import org.apache.tomcat.util.ExceptionUtils;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 
@@ -46,6 +48,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.logging.LogManager;
 
 /**
  * FIXME add junit for that but when https://issues.apache.org/bugzilla/show_bug.cgi?id=52028 fixed
@@ -399,10 +402,47 @@ public class Tomcat7Runner
             }
 
             tomcat.start();
+
+            Runtime.getRuntime().addShutdownHook( new TomcatShutdownHook() );
+
         }
 
         waitIndefinitely();
 
+    }
+
+    protected class TomcatShutdownHook
+        extends Thread
+    {
+
+        protected TomcatShutdownHook()
+        {
+            // no op
+        }
+
+        @Override
+        public void run()
+        {
+            try
+            {
+                Tomcat7Runner.this.stop();
+            }
+            catch ( Throwable ex )
+            {
+                ExceptionUtils.handleThrowable( ex );
+                System.out.println( "fail to properly shutdown Tomcat:" + ex.getMessage() );
+            }
+            finally
+            {
+                // If JULI is used, shut JULI down *after* the server shuts down
+                // so log messages aren't lost
+                LogManager logManager = LogManager.getLogManager();
+                if ( logManager instanceof ClassLoaderLogManager )
+                {
+                    ( (ClassLoaderLogManager) logManager ).shutdown();
+                }
+            }
+        }
     }
 
     private URL getContextXml( String warPath )
