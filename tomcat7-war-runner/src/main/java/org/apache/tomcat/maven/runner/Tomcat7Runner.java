@@ -90,7 +90,7 @@ public class Tomcat7Runner
 
     public boolean debug = false;
 
-    public boolean clientAuth = false;
+    public String clientAuth = "false";
 
     public String keyAlias = null;
 
