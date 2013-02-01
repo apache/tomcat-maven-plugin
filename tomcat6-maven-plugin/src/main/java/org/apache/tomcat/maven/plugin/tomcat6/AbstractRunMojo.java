@@ -199,7 +199,7 @@ public abstract class AbstractRunMojo
 
     /**
      * overriding the providing web.xml to run tomcat
-     *
+     * <b>This override the global Tomcat web.xml located in $CATALINA_HOME/conf/</b>
      * @since 1.0-alpha-2
      */
     @Parameter( property = "maven.tomcat.webXml" )
