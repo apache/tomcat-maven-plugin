@@ -3,7 +3,7 @@ Build Apache Tomcat Maven Plugin
 To build this project you must Apache Maven at least 2.2.1 .
 mvn clean install will install the mojos without running integration tests.
 As there are some hardcoded integration tests with http port 1973, ajp 2001 and 2008, you could have some port allocation issues (if you don't know why those values ask olamy :-) )
-mvn clean install -Prun-its will run integration tests too: to override the default used htpp port you can use -Dits.http.port= -Dits.ajp.port=
+mvn clean install -Prun-its will run integration tests too: to override the default used http port you can use -Dits.http.port= -Dits.ajp.port=
 
 Snapshots deployment
 ---------------------
