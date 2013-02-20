@@ -25,17 +25,9 @@ Checkstyle: this project uses the Apache Maven checkstyle configuration for ide 
 
 Site: to test site generation, just run: mvn site. If you want more reporting (javadoc, pmd, checkstyle, jxr, changelog from jira entries), use: mvn site -Preporting.
 
-To deploy site, use: mvn clean site-deploy -Preporting. The site will be deployed to http://tomcat.apache.org/maven-plugin-${project.version}
+To deploy site, use: mvn clean site-deploy scm-publish:publish-scm -Dusername=$svnuid -Dpassword=$svnpwd -Preporting . The site will be deployed to http://tomcat.apache.org/maven-plugin-trunk($svnuid is your asf id, $svnpwd is your asf password)
 
-Note you need some configuration in ~/.m2/settings.xml:
-    <server>
-      <id>apache.website</id>
-      <username>your asf id</username>
-      <filePermissions>664</filePermissions>
-      <directoryPermissions>775</directoryPermissions>
-    </server>
-
-If you have a nice ssh key in ~/.ssh/ no need of configuring password, privateKey, passphrase.
+When releasing deploy with -Psite-release
 
 Releasing
 ----------
