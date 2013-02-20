@@ -62,7 +62,8 @@
     <distributionIdSnapshots>apache.snapshots.https</distributionIdSnapshots>
 
     <distributionSiteUrl>scp://people.apache.org/www/tomcat.apache.org/maven-plugin-${project.version}</distributionSiteUrl>
-    <siteUrl>http://tomcat.apache.org/maven-plugin-${project.version}</siteUrl>
+    <sitePath>maven-plugin-trunk</sitePath>
+    <siteUrl>http://tomcat.apache.org/${sitePath}</siteUrl>
 
     <!-- http port used to run it test -->
     <its.http.port>1973</its.http.port>
@@ -725,7 +726,7 @@
           <artifactId>maven-scm-publish-plugin</artifactId>
           <version>1.0-beta-2</version>
           <configuration>
-            <pubScmUrl>scm:svn:https://svn.apache.org/repos/asf/tomcat/site/trunk/docs/maven-plugin-${project.version}</pubScmUrl>
+            <pubScmUrl>scm:svn:https://svn.apache.org/repos/asf/tomcat/site/trunk/docs/${sitePath}</pubScmUrl>
             <checkinComment>Apache Tomcat Maven Plugin site documentation for ${project.version}</checkinComment>
             <content>${tomcat-maven.siteFilePath}</content>
             <checkoutDirectory>${tomcat-maven.scmPubCheckoutDirectory}</checkoutDirectory>
@@ -869,6 +870,12 @@
   </reporting>
 
   <profiles>
+    <profile>
+      <id>site-release</id>
+      <properties>
+        <sitePath>maven-plugin-${project.version}</sitePath>
+      </properties>
+    </profile>
     <profile>
       <id>reporting</id>
       <reporting>
