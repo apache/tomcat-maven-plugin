@@ -57,13 +57,13 @@ Run Mojo: run your Maven war project quickly!
       <!-- application path always starts with /-->
       <path>/</path>
       <!-- optional path to a context file -->
-      <contextFile>${tomcatContextXml}</contextFile>
+      <contextFile>\${tomcatContextXml}</contextFile>
       <!-- optional system propoerties you want to add -->
       <systemProperties>
-        <appserver.base>${project.build.directory}/appserver-base</appserver.base>
-        <appserver.home>${project.build.directory}/appserver-home</appserver.home>
-        <derby.system.home>${project.build.directory}/appserver-base/logs</derby.system.home>
-        <java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
+        <appserver.base>\${project.build.directory}/appserver-base</appserver.base>
+        <appserver.home>\${project.build.directory}/appserver-home</appserver.home>
+        <derby.system.home>\${project.build.directory}/appserver-base/logs</derby.system.home>
+        <java.io.tmpdir>\${project.build.directory}</java.io.tmpdir>
       </systemProperties>
       <!-- if you want to use test dependencies rather than only runtime -->
       <useTestClasspath>false</useTestClasspath>
@@ -77,7 +77,7 @@ Run Mojo: run your Maven war project quickly!
       <dependency>
         <groupId>org.apache.derby</groupId>
         <artifactId>derby</artifactId>
-        <version>${derbyVersion}</version>
+        <version>\${derbyVersion}</version>
       </dependency>
       <dependency>
         <groupId>javax.mail</groupId>
