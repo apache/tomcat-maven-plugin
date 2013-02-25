@@ -335,7 +335,8 @@ public abstract class AbstractRunMojo
     /**
      * The protocol to run the Tomcat server on.
      * By default it's HTTP/1.1.
-     *
+     * See possible values <a href="http://tomcat.apache.org/tomcat-6.0-doc/config/http.html">HTTP Connector</a>
+     * protocol attribute
      * @since 2.0
      */
     @Parameter( property = "maven.tomcat.protocol", defaultValue = "HTTP/1.1" )
