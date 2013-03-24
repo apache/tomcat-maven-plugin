@@ -68,6 +68,13 @@ public abstract class AbstractStandaloneWarMojo
                required = true)
     protected String attachArtifactClassifier;
 
+    /**
+     * the type to use for the attached/generated artifact
+     * @since 2.2
+     */
+    @Parameter( property = "maven.tomcat.exec.war.attachArtifactType", defaultValue = "war", required = true )
+    protected String attachArtifactClassifierType;
+
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
