@@ -466,9 +466,25 @@ public class Tomcat7Runner
         }
         finally
         {
-            IOUtils.closeQuietly( inputStream );
+            closeQuietly( inputStream );
         }
         return null;
+    }
+
+    private static void closeQuietly( InputStream inputStream )
+    {
+        if ( inputStream == null )
+        {
+            return;
+        }
+        try
+        {
+            inputStream.close();
+        }
+        catch ( IOException e )
+        {
+            // ignore exception here
+        }
     }
 
     private void waitIndefinitely()
