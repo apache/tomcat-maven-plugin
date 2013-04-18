@@ -209,6 +209,7 @@ public abstract class AbstractExecWarMojo
     {
         if ( this.skip )
         {
+            getLog().info( "skip execution" );
             return;
         }
         //project.addAttachedArtifact(  );
