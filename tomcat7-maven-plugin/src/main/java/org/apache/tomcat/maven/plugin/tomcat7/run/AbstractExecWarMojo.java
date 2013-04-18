@@ -105,6 +105,7 @@ public abstract class AbstractExecWarMojo
 
 	/**
      * Skip the execution
+     * @since 2.2
      */
     @Parameter( property = "maven.tomcat.skip", defaultValue = "false" )
     private boolean skip;
@@ -206,9 +207,10 @@ public abstract class AbstractExecWarMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
-		if (this.skip) {
-			return;
-		}
+        if ( this.skip )
+        {
+            return;
+        }
         //project.addAttachedArtifact(  );
         File warExecFile = new File( buildDirectory, finalName );
         if ( warExecFile.exists() )
