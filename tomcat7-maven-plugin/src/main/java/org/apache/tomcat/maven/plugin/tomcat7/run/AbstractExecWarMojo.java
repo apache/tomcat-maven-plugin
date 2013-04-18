@@ -103,6 +103,12 @@ public abstract class AbstractExecWarMojo
                defaultValue = "${project.artifactId}-${project.version}-war-exec.jar", required = true)
     protected String finalName;
 
+	/**
+     * Skip the execution
+     */
+    @Parameter( property = "maven.tomcat.skip", defaultValue = "false" )
+    private boolean skip;
+
     /**
      * The webapp context path to use for the web application being run.
      * The name to store webapp in exec jar. Do not use /
@@ -200,7 +206,9 @@ public abstract class AbstractExecWarMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
-
+		if (this.skip) {
+			return;
+		}
         //project.addAttachedArtifact(  );
         File warExecFile = new File( buildDirectory, finalName );
         if ( warExecFile.exists() )
