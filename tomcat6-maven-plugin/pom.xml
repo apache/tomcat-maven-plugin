@@ -33,7 +33,7 @@
   </description>
 
   <properties>
-    <tomcat6Version>6.0.36</tomcat6Version>
+    <tomcat6Version>6.0.37</tomcat6Version>
     <managerWebAppPath>${basedir}/target/</managerWebAppPath>
     <warTestPath>${basedir}/src/test/simple-war-project-1.0-SNAPSHOT.war</warTestPath>
     <keystoreTestPath>${basedir}/src/test/keystore</keystoreTestPath>
