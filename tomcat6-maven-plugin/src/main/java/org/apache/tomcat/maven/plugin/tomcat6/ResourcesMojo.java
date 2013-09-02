@@ -67,9 +67,9 @@ public class ResourcesMojo
         }
 
         TomcatManagerResponse tomcatResponse = getManager().getResources( type );
-        
-        checkTomcatResponse(tomcatResponse) ;          
-        
+
+        checkTomcatResponse( tomcatResponse );
+
         log( tomcatResponse.getHttpResponseBody() );          
     }
 }

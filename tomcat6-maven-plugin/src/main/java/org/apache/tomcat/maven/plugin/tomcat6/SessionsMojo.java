@@ -48,10 +48,10 @@ public class SessionsMojo
     {
         getLog().info( messagesProvider.getMessage( "SessionsMojo.listSessions", getDeployedURL() ) );
 
-        TomcatManagerResponse tomcatResponse = getManager().getSessions( getPath() ) ;
-        
-        checkTomcatResponse(tomcatResponse) ;          
-        
+        TomcatManagerResponse tomcatResponse = getManager().getSessions( getPath() );
+
+        checkTomcatResponse( tomcatResponse );
+
         log( tomcatResponse.getHttpResponseBody() );            
     }
 }

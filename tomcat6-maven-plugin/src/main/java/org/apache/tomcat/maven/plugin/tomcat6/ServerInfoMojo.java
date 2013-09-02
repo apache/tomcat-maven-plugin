@@ -47,11 +47,11 @@ public class ServerInfoMojo
         throws MojoExecutionException, TomcatManagerException, IOException
     {
         getLog().info( messagesProvider.getMessage( "ServerInfoMojo.listInfo", getURL() ) );
-       
-        TomcatManagerResponse tomcatResponse = getManager().getServerInfo() ;
-        
-        checkTomcatResponse(tomcatResponse) ;          
-        
+
+        TomcatManagerResponse tomcatResponse = getManager().getServerInfo();
+
+        checkTomcatResponse( tomcatResponse );
+
         log( tomcatResponse.getHttpResponseBody() );                
     }
 }

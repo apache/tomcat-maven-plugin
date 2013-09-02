@@ -82,8 +82,9 @@ public class AbstractDeployWarMojo
 
         getLog().info( messagesProvider.getMessage( "AbstractDeployMojo.deployingWar", getDeployedURL() ) );
 
-        TomcatManagerResponse tomcatResponse = getManager().deploy(  getPath(), warFile, isUpdate(), getTag(), warFile.length() ) ;
-        
-        checkTomcatResponse(tomcatResponse) ;  
+        TomcatManagerResponse tomcatResponse =
+            getManager().deploy( getPath(), warFile, isUpdate(), getTag(), warFile.length() );
+
+        checkTomcatResponse( tomcatResponse );
     }
 }

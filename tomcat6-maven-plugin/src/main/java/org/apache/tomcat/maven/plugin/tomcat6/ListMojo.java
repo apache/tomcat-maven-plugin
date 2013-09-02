@@ -48,10 +48,10 @@ public class ListMojo
     {
         getLog().info( messagesProvider.getMessage( "ListMojo.listApps", getURL() ) );
 
-        TomcatManagerResponse tomcatResponse = getManager().list() ;
-        
-        checkTomcatResponse(tomcatResponse) ;          
-        
+        TomcatManagerResponse tomcatResponse = getManager().list();
+
+        checkTomcatResponse( tomcatResponse );
+
         log( tomcatResponse.getHttpResponseBody() );
     }
 }

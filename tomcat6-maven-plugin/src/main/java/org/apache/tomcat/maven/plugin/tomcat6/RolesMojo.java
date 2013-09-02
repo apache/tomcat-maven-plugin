@@ -52,9 +52,9 @@ public class RolesMojo
         
         /* TODO : Tomcat always return http status 200. How check message to know error or not,
          * cause is can be in french, english....       
-         */        
-        checkTomcatResponse(tomcatResponse) ;          
-        
+         */
+        checkTomcatResponse( tomcatResponse );
+
         log( tomcatResponse.getHttpResponseBody() );          
     }
 }

@@ -48,13 +48,13 @@ public class ReloadMojo
     {
         getLog().info( messagesProvider.getMessage( "RedeployMojo.redeployApp", getDeployedURL() ) );
 
-        TomcatManagerResponse tomcatResponse = getManager().reload( getPath() ) ;
+        TomcatManagerResponse tomcatResponse = getManager().reload( getPath() );
         
         /* TODO : Tomcat always return http status 200. How check message to know error or not,
          * cause is can be in french, english....       
          */
-        checkTomcatResponse(tomcatResponse) ;          
-        
+        checkTomcatResponse( tomcatResponse );
+
         log( tomcatResponse.getHttpResponseBody() );        
     }
 }

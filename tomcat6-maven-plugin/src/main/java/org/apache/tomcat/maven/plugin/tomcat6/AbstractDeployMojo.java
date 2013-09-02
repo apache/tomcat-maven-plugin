@@ -169,10 +169,10 @@ public abstract class AbstractDeployMojo
         getLog().info( messagesProvider.getMessage( "AbstractDeployMojo.deployingWar", getDeployedURL() ) );
 
         URL warURL = getWarFile().toURL();
-        
-        TomcatManagerResponse tomcatResponse = getManager().deploy( getPath(), warURL, isUpdate(), getTag() ) ;
-        
-        checkTomcatResponse(tomcatResponse) ;
+
+        TomcatManagerResponse tomcatResponse = getManager().deploy( getPath(), warURL, isUpdate(), getTag() );
+
+        checkTomcatResponse( tomcatResponse );
     }
 
     /**
@@ -214,8 +214,9 @@ public abstract class AbstractDeployMojo
         URL warURL = getWarFile().toURL();
         URL contextURL = getContextFile().toURL();
 
-        TomcatManagerResponse tomcatResponse = getManager().deployContext( getPath(), contextURL, warURL, isUpdate(), getTag() ) ;
-      
-        checkTomcatResponse(tomcatResponse) ;  
+        TomcatManagerResponse tomcatResponse =
+            getManager().deployContext( getPath(), contextURL, warURL, isUpdate(), getTag() );
+
+        checkTomcatResponse( tomcatResponse );
     }
 }

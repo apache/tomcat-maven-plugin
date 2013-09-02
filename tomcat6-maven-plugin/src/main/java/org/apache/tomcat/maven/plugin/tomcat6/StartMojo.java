@@ -48,13 +48,13 @@ public class StartMojo
     {
         getLog().info( messagesProvider.getMessage( "StartMojo.startingApp", getDeployedURL() ) );
 
-        TomcatManagerResponse tomcatResponse = getManager().start( getPath() ) ;
+        TomcatManagerResponse tomcatResponse = getManager().start( getPath() );
         
         /* TODO : Tomcat always return http status 200. How check message to know error or not,
          * cause is can be in french, english....       
          */
-        checkTomcatResponse(tomcatResponse) ;          
-        
+        checkTomcatResponse( tomcatResponse );
+
         log( tomcatResponse.getHttpResponseBody() );            
     }
 }
