@@ -35,7 +35,7 @@ public abstract class AbstractI18NTomcat6Mojo
     extends AbstractMojo
 {
 
-    @Component( role = MessagesProvider.class )
+    @Component(role = MessagesProvider.class)
     protected MessagesProvider messagesProvider;
 
     // ----------------------------------------------------------------------
@@ -46,7 +46,7 @@ public abstract class AbstractI18NTomcat6Mojo
      * The webapp context path to use for the web application being run. This must always start with a forward-slash
      * ('/').
      */
-    @Parameter( property = "maven.tomcat.path", defaultValue = "/${project.artifactId}", required = true )
+    @Parameter(property = "maven.tomcat.path", defaultValue = "/${project.artifactId}", required = true)
     protected String path;
 
 
@@ -54,23 +54,25 @@ public abstract class AbstractI18NTomcat6Mojo
     {
         return path;
     }
-    
+
     /**
      * Check response of Tomcat to know if ok or not.
-     * 
+     *
      * @param tomcatResponse response of tomcat return by TomcatManager class
-     * 
      * @throws MojoExecutionException if HTTP status code greater than 400 (included)
      */
-    protected void checkTomcatResponse(final TomcatManagerResponse tomcatResponse)
-        	throws MojoExecutionException
+    protected void checkTomcatResponse( final TomcatManagerResponse tomcatResponse )
+        throws MojoExecutionException
     {
-    	final int statusCode = tomcatResponse.getStatusCode() ;
-    	
-    	if (statusCode >= 400) {
-    		getLog().error(tomcatResponse.getHttpResponseBody()) ;
-    		
-    		throw new MojoExecutionException( messagesProvider.getMessage("AbstractI18NTomcat6Mojo.tomcatHttStatusError", statusCode)) ;
-    	}
-    }       
+        final int statusCode = tomcatResponse.getStatusCode();
+
+        if ( statusCode >= 400 )
+        {
+            getLog().error( messagesProvider.getMessage( "AbstractI18NTomcat6Mojo.tomcatHttStatusError", statusCode ) );
+
+            throw new MojoExecutionException(
+                messagesProvider.getMessage( "AbstractI18NTomcat6Mojo.tomcatHttStatusError", statusCode ) + ": "
+                    + tomcatResponse.getHttpResponseBody() );
+        }
+    }
 }
