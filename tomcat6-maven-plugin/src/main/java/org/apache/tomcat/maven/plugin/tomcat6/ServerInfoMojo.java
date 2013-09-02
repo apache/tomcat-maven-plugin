@@ -22,6 +22,7 @@ package org.apache.tomcat.maven.plugin.tomcat6;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
+import org.apache.tomcat.maven.common.deployer.TomcatManagerResponse;
 
 import java.io.IOException;
 
@@ -46,7 +47,11 @@ public class ServerInfoMojo
         throws MojoExecutionException, TomcatManagerException, IOException
     {
         getLog().info( messagesProvider.getMessage( "ServerInfoMojo.listInfo", getURL() ) );
-
-        log( getManager().getServerInfo().getHttpResponseBody() );
+       
+        TomcatManagerResponse tomcatResponse = getManager().getServerInfo() ;
+        
+        checkTomcatResponse(tomcatResponse) ;          
+        
+        log( tomcatResponse.getHttpResponseBody() );                
     }
 }

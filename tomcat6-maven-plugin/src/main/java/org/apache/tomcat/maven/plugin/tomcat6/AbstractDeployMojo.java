@@ -22,6 +22,7 @@ package org.apache.tomcat.maven.plugin.tomcat6;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
+import org.apache.tomcat.maven.common.deployer.TomcatManagerResponse;
 
 import java.io.File;
 import java.io.IOException;
@@ -152,7 +153,7 @@ public abstract class AbstractDeployMojo
     {
         return tag;
     }
-
+    
     /**
      * Deploys the WAR to Tomcat.
      *
@@ -168,7 +169,10 @@ public abstract class AbstractDeployMojo
         getLog().info( messagesProvider.getMessage( "AbstractDeployMojo.deployingWar", getDeployedURL() ) );
 
         URL warURL = getWarFile().toURL();
-        log( getManager().deploy( getPath(), warURL, isUpdate(), getTag() ).getHttpResponseBody() );
+        
+        TomcatManagerResponse tomcatResponse = getManager().deploy( getPath(), warURL, isUpdate(), getTag() ) ;
+        
+        checkTomcatResponse(tomcatResponse) ;
     }
 
     /**
@@ -186,7 +190,10 @@ public abstract class AbstractDeployMojo
         getLog().info( messagesProvider.getMessage( "AbstractDeployMojo.deployingContext", getDeployedURL() ) );
 
         URL contextURL = getContextFile().toURL();
-        log( getManager().deployContext( getPath(), contextURL, isUpdate(), getTag() ).getHttpResponseBody() );
+        
+        TomcatManagerResponse tomcatResponse = getManager().deployContext( getPath(), contextURL, isUpdate(), getTag() ) ;
+        
+        checkTomcatResponse(tomcatResponse) ;  
     }
 
     /**
@@ -206,6 +213,9 @@ public abstract class AbstractDeployMojo
 
         URL warURL = getWarFile().toURL();
         URL contextURL = getContextFile().toURL();
-        log( getManager().deployContext( getPath(), contextURL, warURL, isUpdate(), getTag() ).getHttpResponseBody() );
+
+        TomcatManagerResponse tomcatResponse = getManager().deployContext( getPath(), contextURL, warURL, isUpdate(), getTag() ) ;
+      
+        checkTomcatResponse(tomcatResponse) ;  
     }
 }

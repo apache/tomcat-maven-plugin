@@ -22,6 +22,7 @@ package org.apache.tomcat.maven.plugin.tomcat6;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
+import org.apache.tomcat.maven.common.deployer.TomcatManagerResponse;
 
 import java.io.IOException;
 
@@ -47,6 +48,13 @@ public class ReloadMojo
     {
         getLog().info( messagesProvider.getMessage( "RedeployMojo.redeployApp", getDeployedURL() ) );
 
-        log( getManager().reload( getPath() ).getHttpResponseBody() );
+        TomcatManagerResponse tomcatResponse = getManager().reload( getPath() ) ;
+        
+        /* TODO : Tomcat always return http status 200. How check message to know error or not,
+         * cause is can be in french, english....       
+         */
+        checkTomcatResponse(tomcatResponse) ;          
+        
+        log( tomcatResponse.getHttpResponseBody() );        
     }
 }

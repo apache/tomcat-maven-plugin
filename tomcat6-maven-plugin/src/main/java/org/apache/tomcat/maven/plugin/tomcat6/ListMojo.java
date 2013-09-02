@@ -22,6 +22,7 @@ package org.apache.tomcat.maven.plugin.tomcat6;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
+import org.apache.tomcat.maven.common.deployer.TomcatManagerResponse;
 
 import java.io.IOException;
 
@@ -47,6 +48,10 @@ public class ListMojo
     {
         getLog().info( messagesProvider.getMessage( "ListMojo.listApps", getURL() ) );
 
-        log( getManager().list().getHttpResponseBody() );
+        TomcatManagerResponse tomcatResponse = getManager().list() ;
+        
+        checkTomcatResponse(tomcatResponse) ;          
+        
+        log( tomcatResponse.getHttpResponseBody() );
     }
 }

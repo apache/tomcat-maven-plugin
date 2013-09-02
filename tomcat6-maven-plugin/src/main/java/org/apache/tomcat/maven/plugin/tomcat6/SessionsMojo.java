@@ -22,6 +22,7 @@ package org.apache.tomcat.maven.plugin.tomcat6;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
+import org.apache.tomcat.maven.common.deployer.TomcatManagerResponse;
 
 import java.io.IOException;
 
@@ -47,6 +48,10 @@ public class SessionsMojo
     {
         getLog().info( messagesProvider.getMessage( "SessionsMojo.listSessions", getDeployedURL() ) );
 
-        log( getManager().getSessions( getPath() ).getHttpResponseBody() );
+        TomcatManagerResponse tomcatResponse = getManager().getSessions( getPath() ) ;
+        
+        checkTomcatResponse(tomcatResponse) ;          
+        
+        log( tomcatResponse.getHttpResponseBody() );            
     }
 }

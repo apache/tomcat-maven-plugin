@@ -22,6 +22,7 @@ package org.apache.tomcat.maven.plugin.tomcat6;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
+import org.apache.tomcat.maven.common.deployer.TomcatManagerResponse;
 
 import java.io.IOException;
 
@@ -65,6 +66,10 @@ public class ResourcesMojo
             getLog().info( messagesProvider.getMessage( "ResourcesMojo.listTypedResources", type, getURL() ) );
         }
 
-        log( getManager().getResources( type ).getHttpResponseBody() );
+        TomcatManagerResponse tomcatResponse = getManager().getResources( type );
+        
+        checkTomcatResponse(tomcatResponse) ;          
+        
+        log( tomcatResponse.getHttpResponseBody() );          
     }
 }
