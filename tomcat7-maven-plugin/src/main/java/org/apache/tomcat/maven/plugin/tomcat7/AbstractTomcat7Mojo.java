@@ -43,7 +43,7 @@ public abstract class AbstractTomcat7Mojo
      * The webapp context path to use for the web application being run. This must always start with a forward-slash
      * ('/').
      */
-    @Parameter( defaultValue = "/${project.artifactId}", property = "maven.tomcat.path", required = true )
+    @Parameter(defaultValue = "/${project.artifactId}", property = "maven.tomcat.path", required = true)
     protected String path;
 
 
@@ -56,7 +56,8 @@ public abstract class AbstractTomcat7Mojo
      * Check response of Tomcat to know if ok or not.
      *
      * @param tomcatResponse response of tomcat return by TomcatManager class
-     * @throws org.apache.maven.plugin.MojoExecutionException if HTTP status code greater than 400 (included)
+     * @throws org.apache.maven.plugin.MojoExecutionException
+     *          if HTTP status code greater than 400 (included)
      */
     protected void checkTomcatResponse( TomcatManagerResponse tomcatResponse )
         throws MojoExecutionException
@@ -65,10 +66,12 @@ public abstract class AbstractTomcat7Mojo
 
         if ( statusCode >= 400 )
         {
-            getLog().error( messagesProvider.getMessage( "AbstractTomcat7Mojo.tomcatHttStatusError", statusCode ) );
+            getLog().error( messagesProvider.getMessage( "AbstractTomcat7Mojo.tomcatHttStatusError", statusCode,
+                                                         tomcatResponse.getReasonPhrase() ) );
 
             throw new MojoExecutionException(
-                messagesProvider.getMessage( "AbstractTomcat7Mojo.tomcatHttStatusError", statusCode ) + ": "
+                messagesProvider.getMessage( "AbstractTomcat7Mojo.tomcatHttStatusError", statusCode,
+                                             tomcatResponse.getReasonPhrase() ) + ": "
                     + tomcatResponse.getHttpResponseBody() );
         }
     }
