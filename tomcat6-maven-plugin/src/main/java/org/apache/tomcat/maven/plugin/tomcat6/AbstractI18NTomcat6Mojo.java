@@ -70,7 +70,7 @@ public abstract class AbstractI18NTomcat6Mojo
     	if (statusCode >= 400) {
     		getLog().error(tomcatResponse.getHttpResponseBody()) ;
     		
-    		throw new MojoExecutionException( messagesProvider.getMessage("AbstractI18NTomcat6Mojo.tomcatHttStatusError")) ;
+    		throw new MojoExecutionException( messagesProvider.getMessage("AbstractI18NTomcat6Mojo.tomcatHttStatusError", statusCode)) ;
     	}
     }       
 }

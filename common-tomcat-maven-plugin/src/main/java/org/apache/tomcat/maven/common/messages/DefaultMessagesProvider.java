@@ -83,36 +83,12 @@ public class DefaultMessagesProvider
      * Gets the message for the given key from this packages resource bundle and formats it with the given parameter.
      *
      * @param key   the key for the required message
-     * @param param the parameter to be used to format the message with
-     * @return the formatted message
-     */
-    public String getMessage( String key, Object param )
-    {
-        return MessageFormat.format( getMessage( key ), new Object[]{ param } );
-    }
-
-    /**
-     * Gets the message for the given key from this packages resource bundle and formats it with the given parameters.
-     *
-     * @param key    the key for the required message
-     * @param param1 the first parameter to be used to format the message with
-     * @param param2 the second parameter to be used to format the message with
-     * @return the formatted message
-     */
-    public String getMessage( String key, Object param1, Object param2 )
-    {
-        return MessageFormat.format( getMessage( key ), new Object[]{ param1, param2 } );
-    }
-
-    /**
-     * Gets the message for the given key from this packages resource bundle and formats it with the given parameters.
-     *
-     * @param key    the key for the required message
      * @param params the parameters to be used to format the message with
      * @return the formatted message
      */
-    public String getMessage( String key, Object[] params )
+    public String getMessage( String key, Object... params )
     {
         return MessageFormat.format( getMessage( key ), params );
     }
+
 }

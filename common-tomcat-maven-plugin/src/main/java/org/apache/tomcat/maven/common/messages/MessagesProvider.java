@@ -29,9 +29,6 @@ public interface MessagesProvider
 {
     String getMessage( String key );
 
-    String getMessage( String key, Object param );
+    String getMessage( String key, Object... param1 );
 
-    String getMessage( String key, Object param1, Object param2 );
-
-    String getMessage( String key, Object[] params );
 }
