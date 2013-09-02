@@ -61,10 +61,10 @@ public abstract class AbstractI18NTomcat6Mojo
      * @param tomcatResponse response of tomcat return by TomcatManager class
      * @throws MojoExecutionException if HTTP status code greater than 400 (included)
      */
-    protected void checkTomcatResponse( final TomcatManagerResponse tomcatResponse )
+    protected void checkTomcatResponse( TomcatManagerResponse tomcatResponse )
         throws MojoExecutionException
     {
-        final int statusCode = tomcatResponse.getStatusCode();
+        int statusCode = tomcatResponse.getStatusCode();
 
         if ( statusCode >= 400 )
         {

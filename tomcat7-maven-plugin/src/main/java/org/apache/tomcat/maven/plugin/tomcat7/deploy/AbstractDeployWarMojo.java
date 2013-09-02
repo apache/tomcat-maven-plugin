@@ -85,6 +85,8 @@ public class AbstractDeployWarMojo
         TomcatManagerResponse tomcatManagerResponse =
             getManager().deploy( getPath(), warFile, isUpdate(), getTag(), warFile.length() );
 
+        checkTomcatResponse( tomcatManagerResponse );
+
         getLog().info( "tomcatManager status code:" + tomcatManagerResponse.getStatusCode() + ", ReasonPhrase:"
                            + tomcatManagerResponse.getReasonPhrase() );
 

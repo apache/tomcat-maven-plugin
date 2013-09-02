@@ -23,6 +23,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
+import org.apache.tomcat.maven.common.deployer.TomcatManagerResponse;
 import org.apache.tomcat.maven.plugin.tomcat7.AbstractWarCatalinaMojo;
 
 import java.io.IOException;
@@ -61,7 +62,13 @@ public class UndeployMojo
 
         try
         {
-            log( getManager().undeploy( getPath() ).getHttpResponseBody() );
+
+            TomcatManagerResponse tomcatResponse = getManager().undeploy( getPath() );
+
+            checkTomcatResponse( tomcatResponse );
+
+            log( tomcatResponse.getHttpResponseBody() );
+
         }
         catch ( TomcatManagerException e )
         {

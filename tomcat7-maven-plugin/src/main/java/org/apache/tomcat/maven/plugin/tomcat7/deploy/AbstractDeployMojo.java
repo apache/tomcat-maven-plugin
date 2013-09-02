@@ -22,6 +22,7 @@ package org.apache.tomcat.maven.plugin.tomcat7.deploy;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
+import org.apache.tomcat.maven.common.deployer.TomcatManagerResponse;
 import org.apache.tomcat.maven.plugin.tomcat7.AbstractWarCatalinaMojo;
 
 import java.io.File;
@@ -215,6 +216,11 @@ public abstract class AbstractDeployMojo
 
         URL warURL = getWarFile().toURL();
         URL contextURL = getContextFile().toURL();
-        log( getManager().deployContext( getPath(), contextURL, warURL, isUpdate(), getTag() ).getHttpResponseBody() );
+
+        TomcatManagerResponse tomcatResponse = getManager().deployContext( getPath(), contextURL, warURL, isUpdate(), getTag() );
+
+        checkTomcatResponse( tomcatResponse );
+
+        log( tomcatResponse.getHttpResponseBody() );
     }
 }

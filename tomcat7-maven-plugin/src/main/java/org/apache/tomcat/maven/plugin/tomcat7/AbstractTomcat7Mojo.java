@@ -19,8 +19,10 @@ package org.apache.tomcat.maven.plugin.tomcat7;
  */
 
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.tomcat.maven.common.deployer.TomcatManagerResponse;
 import org.apache.tomcat.maven.common.messages.MessagesProvider;
 
 /**
@@ -48,5 +50,26 @@ public abstract class AbstractTomcat7Mojo
     protected String getPath()
     {
         return path;
+    }
+
+    /**
+     * Check response of Tomcat to know if ok or not.
+     *
+     * @param tomcatResponse response of tomcat return by TomcatManager class
+     * @throws org.apache.maven.plugin.MojoExecutionException if HTTP status code greater than 400 (included)
+     */
+    protected void checkTomcatResponse( TomcatManagerResponse tomcatResponse )
+        throws MojoExecutionException
+    {
+        int statusCode = tomcatResponse.getStatusCode();
+
+        if ( statusCode >= 400 )
+        {
+            getLog().error( messagesProvider.getMessage( "AbstractTomcat7Mojo.tomcatHttStatusError", statusCode ) );
+
+            throw new MojoExecutionException(
+                messagesProvider.getMessage( "AbstractTomcat7Mojo.tomcatHttStatusError", statusCode ) + ": "
+                    + tomcatResponse.getHttpResponseBody() );
+        }
     }
 }

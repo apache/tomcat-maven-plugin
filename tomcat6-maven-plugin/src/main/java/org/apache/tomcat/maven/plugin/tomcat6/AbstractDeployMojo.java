@@ -190,10 +190,11 @@ public abstract class AbstractDeployMojo
         getLog().info( messagesProvider.getMessage( "AbstractDeployMojo.deployingContext", getDeployedURL() ) );
 
         URL contextURL = getContextFile().toURL();
-        
-        TomcatManagerResponse tomcatResponse = getManager().deployContext( getPath(), contextURL, isUpdate(), getTag() ) ;
-        
-        checkTomcatResponse(tomcatResponse) ;  
+
+        TomcatManagerResponse tomcatResponse =
+            getManager().deployContext( getPath(), contextURL, isUpdate(), getTag() );
+
+        checkTomcatResponse( tomcatResponse );
     }
 
     /**
