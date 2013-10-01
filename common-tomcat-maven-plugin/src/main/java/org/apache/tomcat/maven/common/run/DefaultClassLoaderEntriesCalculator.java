@@ -117,7 +117,7 @@ public class DefaultClassLoaderEntriesCalculator
                     // so artifact.getFile is a file not a directory and not added when iterate on project.classPathElements
                     if ( !isInProjectReferences( artifact, request.getMavenProject() ) ||  artifact.getFile().isFile() )
                     {
-                        String fileName = artifact.getFile().getName();
+                        String fileName = artifact.getGroupId() + "-" + artifact.getFile().getName();
                         if ( !fileInClassLoaderEntries.contains( fileName ) )
                         {
                             classLoaderEntries.add( artifact.getFile().toURI().toString() );
