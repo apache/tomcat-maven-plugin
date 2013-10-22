@@ -477,6 +477,7 @@ public abstract class AbstractRunMojo
     /**
      * In case a module in your reactors has some web-fragments they will be read.
      * If you don't need that for performance reasons, you can deactivate it.
+     *
      * @since 2.2
      */
     @Parameter( property = "maven.tomcat.jarScan.allDirectories", defaultValue = "true" )
@@ -643,16 +644,15 @@ public abstract class AbstractRunMojo
             loader.setLoaderClass( classLoaderClass );
         }
 
-
         // https://issues.apache.org/jira/browse/MTOMCAT-239
         // get the jar scanner to configure scanning directories as we can run a jar or a reactor project with a jar so
         // the entries is a directory (target/classes)
         JarScanner jarScanner = context.getJarScanner();
 
         // normally this one only but just in case ...
-        if (jarScanner instanceof StandardJarScanner)
+        if ( jarScanner instanceof StandardJarScanner )
         {
-            ((StandardJarScanner) jarScanner).setScanAllDirectories( jarScanAllDirectories );
+            ( (StandardJarScanner) jarScanner ).setScanAllDirectories( jarScanAllDirectories );
         }
 
         return context;
@@ -810,7 +810,8 @@ public abstract class AbstractRunMojo
      *
      * @return the webapp directory
      */
-    protected abstract File getDocBase();
+    protected abstract File getDocBase()
+        throws IOException;
 
     /**
      * Gets the Tomcat context XML file to use.
