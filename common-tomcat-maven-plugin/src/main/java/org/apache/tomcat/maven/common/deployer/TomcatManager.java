@@ -112,7 +112,7 @@ public class TomcatManager
     /**
      * @since 2.2
      */
-    private boolean interactive;
+    private boolean verbose;
 
     // ----------------------------------------------------------------------
     // Constructors
@@ -174,15 +174,16 @@ public class TomcatManager
      * @param username the username to use when authenticating with Tomcat manager
      * @param password the password to use when authenticating with Tomcat manager
      * @param charset  the URL encoding charset to use when communicating with Tomcat manager
-     * @param interactive if the build is in interactive mode (batch mode otherwise)
+     * @param verbose  if the build is in verbose mode (quiet mode otherwise)
+     * @since 2.2
      */
-    public TomcatManager( URL url, String username, String password, String charset , boolean interactive )
+    public TomcatManager( URL url, String username, String password, String charset, boolean verbose )
     {
         this.url = url;
         this.username = username;
         this.password = password;
         this.charset = charset;
-        this.interactive = interactive;
+        this.verbose = verbose;
 
         PoolingClientConnectionManager poolingClientConnectionManager = new PoolingClientConnectionManager();
         poolingClientConnectionManager.setMaxTotal( 5 );
@@ -727,7 +728,7 @@ public class TomcatManager
         {
             HttpPut httpPut = new HttpPut( url + path );
 
-            httpPut.setEntity( new RequestEntityImplementation( data, length, url + path, interactive ) );
+            httpPut.setEntity( new RequestEntityImplementation( data, length, url + path, verbose ) );
 
             httpRequestBase = httpPut;
 
@@ -809,11 +810,14 @@ public class TomcatManager
 
         private long startTime;
 
-        private RequestEntityImplementation( final File file, long length, String url, boolean interactive )
+        private boolean verbose;
+
+        private RequestEntityImplementation( final File file, long length, String url, boolean verbose )
         {
             this.file = file;
             this.length = length;
             this.url = url;
+            this.verbose = verbose;
         }
 
         public long getContentLength()
@@ -903,7 +907,8 @@ public class TomcatManager
 
         public void transferProgressed( long completedSize, long totalSize )
         {
-            if (!interactive) {
+            if ( !verbose )
+            {
                 return;
             }
 
