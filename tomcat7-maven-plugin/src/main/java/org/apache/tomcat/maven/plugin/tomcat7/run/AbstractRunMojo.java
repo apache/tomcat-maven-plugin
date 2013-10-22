@@ -473,6 +473,15 @@ public abstract class AbstractRunMojo
     @Component( role = MavenFileFilter.class, hint = "default" )
     protected MavenFileFilter mavenFileFilter;
 
+
+    /**
+     * In case a module in your reactors has some web-fragments they will be read.
+     * If you don't need that for performance reasons, you can desactivate it.
+     * @since 2.2
+     */
+    @Parameter( property = "maven.tomcat.jarScan.allDirectories", defaultValue = "true" )
+    protected boolean jarScanAllDirectories = true;
+
     // ----------------------------------------------------------------------
     // Fields
     // ----------------------------------------------------------------------
@@ -643,7 +652,7 @@ public abstract class AbstractRunMojo
         // normally this one only but just in case ...
         if (jarScanner instanceof StandardJarScanner)
         {
-            ((StandardJarScanner) jarScanner).setScanAllDirectories( true );
+            ((StandardJarScanner) jarScanner).setScanAllDirectories( jarScanAllDirectories );
         }
 
         return context;
