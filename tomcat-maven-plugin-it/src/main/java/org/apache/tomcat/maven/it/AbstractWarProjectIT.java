@@ -132,13 +132,18 @@ public abstract class AbstractWarProjectIT
         thread.start();
 
         LOG.info( "Executing verify on " + webappHome.getAbsolutePath() );
-        verifier.executeGoal( "verify" );
+        verifier.executeGoal( getGoal() );
 
         verifier.displayStreamBuffers();
 
         thread.join();
 
         return responseBodies[0];
+    }
+
+    protected String getGoal()
+    {
+        return "verify";
     }
 
     private String getResponseBody( int timeout )
