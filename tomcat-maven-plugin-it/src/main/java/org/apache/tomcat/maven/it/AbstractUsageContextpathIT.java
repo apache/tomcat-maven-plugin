@@ -35,7 +35,6 @@ import static org.junit.Assert.assertNotNull;
 public class AbstractUsageContextpathIT
     extends AbstractWarProjectIT
 {
-    private static final Logger LOG = LoggerFactory.getLogger( AbstractUsageContextpathIT.class );
 
     private static final String WEBAPP_URL = "http://localhost:" + getHttpItPort() + "/lorem/index.html";
 
@@ -64,7 +63,7 @@ public class AbstractUsageContextpathIT
         assertNotNull( "Received message body must not be null.", responseBody );
         assertContains( "Response must match expected content.", "Success!", responseBody );
 
-        LOG.info( "Error Free Log check" );
+        logger.info( "Error Free Log check" );
         verifier.verifyErrorFreeLog();
     }
 

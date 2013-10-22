@@ -38,6 +38,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Base class for all tests which have a war-project using the tomcat-maven-plugin below project-resources.
@@ -46,7 +48,7 @@ import java.io.IOException;
  */
 public abstract class AbstractWarProjectIT
 {
-    private static final Logger LOG = LoggerFactory.getLogger( AbstractWarProjectIT.class );
+    protected Logger logger = LoggerFactory.getLogger( getClass() );
 
     /**
      * This URL will be queried for content. It will also be used to wait for the startup of the webapp.
@@ -131,7 +133,12 @@ public abstract class AbstractWarProjectIT
 
         thread.start();
 
-        LOG.info( "Executing verify on " + webappHome.getAbsolutePath() );
+        logger.info( "Executing verify on " + webappHome.getAbsolutePath() );
+
+        verifier.setCliOptions( getCliOptions() );
+
+        verifier.setLogFileName( "foo.log" );
+
         verifier.executeGoal( getGoal() );
 
         verifier.displayStreamBuffers();
@@ -141,9 +148,15 @@ public abstract class AbstractWarProjectIT
         return responseBodies[0];
     }
 
+
     protected String getGoal()
     {
         return "verify";
+    }
+
+    protected List<String> getCliOptions()
+    {
+        return Collections.emptyList();
     }
 
     private String getResponseBody( int timeout )
@@ -156,27 +169,27 @@ public abstract class AbstractWarProjectIT
         {
             while ( pingUrl() != 200 && currentTime < endTime )
             {
-                LOG.debug( "Ping..." );
+                logger.debug( "Ping..." );
                 Thread.sleep( 500 );
                 currentTime = System.currentTimeMillis();
             }
             if ( currentTime < endTime )
             {
                 responseBody = getResponseBody();
-                LOG.debug( "Received: " + responseBody );
+                logger.debug( "Received: " + responseBody );
             }
             else
             {
-                LOG.error( "Timeout met while trying to access web application." );
+                logger.error( "Timeout met while trying to access web application." );
             }
         }
         catch ( IOException e )
         {
-            LOG.error( "Exception while trying to access web application.", e );
+            logger.error( "Exception while trying to access web application.", e );
         }
         catch ( InterruptedException e )
         {
-            LOG.error( "Exception while trying to access web application.", e );
+            logger.error( "Exception while trying to access web application.", e );
         }
         return responseBody;
     }
@@ -199,7 +212,7 @@ public abstract class AbstractWarProjectIT
         }
         catch ( IOException e )
         {
-            LOG.debug( "Ignoring exception while pinging URL " + httpHead.getURI(), e );
+            logger.debug( "Ignoring exception while pinging URL " + httpHead.getURI(), e );
             return -1;
         }
     }

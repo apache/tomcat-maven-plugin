@@ -37,7 +37,7 @@ import static org.junit.Assert.assertTrue;
 public abstract class AbstractSimpleWarProjectIT
     extends AbstractWarProjectIT
 {
-    private static final Logger LOG = LoggerFactory.getLogger( AbstractSimpleWarProjectIT.class );
+    protected Logger logger = LoggerFactory.getLogger( getClass() );
 
     @Override
     protected String getWebappUrl()
@@ -62,7 +62,7 @@ public abstract class AbstractSimpleWarProjectIT
         assertTrue( "Tomcat folder should exist in target folder of project at " + webappHome,
                     new File( webappHome, "target/tomcat" ).exists() );
 
-        LOG.info( "Error Free Log check" );
+        logger.info( "Error Free Log check" );
         verifier.verifyErrorFreeLog();
         verifyConnectorsStarted();
     }

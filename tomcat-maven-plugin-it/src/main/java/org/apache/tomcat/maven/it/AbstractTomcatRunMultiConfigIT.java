@@ -41,7 +41,6 @@ import static org.junit.Assert.assertTrue;
 public abstract class AbstractTomcatRunMultiConfigIT
     extends AbstractWarProjectIT
 {
-    private static final Logger LOG = LoggerFactory.getLogger( AbstractTomcatRunMultiConfigIT.class );
 
     private static final String URL_QUERY = "\u3053\u3093\u306b\u3061\u306f";
 
@@ -60,7 +59,7 @@ public abstract class AbstractTomcatRunMultiConfigIT
         }
         catch ( URISyntaxException e )
         {
-            LOG.error( "An exception occurred.", e );
+            logger.error( "An exception occurred.", e );
             return "http://localhost:" + getHttpItPort() + "/multi-config";
         }
     }
@@ -89,7 +88,7 @@ public abstract class AbstractTomcatRunMultiConfigIT
             "File \"" + emptyLocation.getAbsolutePath() + "\" should have been copied from tcconf to tomcat/conf",
             emptyLocation.exists() );
 
-        LOG.info( "Error Free Log check" );
+        logger.info( "Error Free Log check" );
         verifier.verifyErrorFreeLog();
         verifyConnectorsStarted();
 
