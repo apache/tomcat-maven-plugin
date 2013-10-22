@@ -216,7 +216,7 @@ public abstract class AbstractCatalinaMojo
                 password = this.password == null ? "" : this.password;
             }
 
-            manager = new TomcatManager( url, userName, password, charset );
+            manager = new TomcatManager( url, userName, password, charset, settings.isInteractiveMode() );
             manager.setUserAgent( name + "/" + version );
         }
 

@@ -22,6 +22,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.settings.Settings;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerResponse;
 import org.apache.tomcat.maven.common.messages.MessagesProvider;
 
@@ -32,6 +33,9 @@ import org.apache.tomcat.maven.common.messages.MessagesProvider;
 public abstract class AbstractTomcat7Mojo
     extends AbstractMojo
 {
+    @Component
+    protected Settings settings;
+
     @Component
     protected MessagesProvider messagesProvider;
 

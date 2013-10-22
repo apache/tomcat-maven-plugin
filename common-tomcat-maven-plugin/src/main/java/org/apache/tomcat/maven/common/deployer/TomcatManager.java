@@ -109,6 +109,11 @@ public class TomcatManager
      */
     private BasicHttpContext localContext;
 
+    /**
+     * @since 2.2
+     */
+    private boolean interactive;
+
     // ----------------------------------------------------------------------
     // Constructors
     // ----------------------------------------------------------------------
@@ -159,10 +164,25 @@ public class TomcatManager
      */
     public TomcatManager( URL url, String username, String password, String charset )
     {
+        this( url, username, password, charset, true );
+    }
+
+    /**
+     * Creates a Tomcat manager wrapper for the specified URL, username, password and URL encoding.
+     *
+     * @param url      the full URL of the Tomcat manager instance to use
+     * @param username the username to use when authenticating with Tomcat manager
+     * @param password the password to use when authenticating with Tomcat manager
+     * @param charset  the URL encoding charset to use when communicating with Tomcat manager
+     * @param interactive if the build is in interactive mode (batch mode otherwise)
+     */
+    public TomcatManager( URL url, String username, String password, String charset , boolean interactive )
+    {
         this.url = url;
         this.username = username;
         this.password = password;
         this.charset = charset;
+        this.interactive = interactive;
 
         PoolingClientConnectionManager poolingClientConnectionManager = new PoolingClientConnectionManager();
         poolingClientConnectionManager.setMaxTotal( 5 );
@@ -707,7 +727,7 @@ public class TomcatManager
         {
             HttpPut httpPut = new HttpPut( url + path );
 
-            httpPut.setEntity( new RequestEntityImplementation( data, length, url + path ) );
+            httpPut.setEntity( new RequestEntityImplementation( data, length, url + path, interactive ) );
 
             httpRequestBase = httpPut;
 
@@ -789,7 +809,7 @@ public class TomcatManager
 
         private long startTime;
 
-        private RequestEntityImplementation( final File file, long length, String url )
+        private RequestEntityImplementation( final File file, long length, String url, boolean interactive )
         {
             this.file = file;
             this.length = length;
@@ -883,6 +903,9 @@ public class TomcatManager
 
         public void transferProgressed( long completedSize, long totalSize )
         {
+            if (!interactive) {
+                return;
+            }
 
             StringBuilder buffer = new StringBuilder( 64 );
 
