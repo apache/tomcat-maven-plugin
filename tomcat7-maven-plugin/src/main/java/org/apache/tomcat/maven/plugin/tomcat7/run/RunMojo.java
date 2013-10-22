@@ -124,11 +124,28 @@ public class RunMojo
     protected File getDocBase()
         throws IOException
     {
-        //
+        // https://issues.apache.org/jira/browse/MTOMCAT-239
+        // when running a jar docBase doesn't exists so create a fake one
         if ( !warSourceDirectory.exists() )
         {
             // we create a temporary file in build.directory
-            return createTempDirectory( new File( project.getBuild().getDirectory() ) );
+            final File tempDocBase = createTempDirectory( new File( project.getBuild().getDirectory() ) );
+            Runtime.getRuntime().addShutdownHook( new Thread()
+            {
+                @Override
+                public void run()
+                {
+                    try
+                    {
+                        FileUtils.deleteDirectory( tempDocBase );
+                    }
+                    catch ( Exception e )
+                    {
+                        // we can consider as safe to ignore as it's located in build directory
+                    }
+                }
+            } );
+            return tempDocBase;
         }
         return warSourceDirectory;
     }
