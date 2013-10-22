@@ -48,7 +48,7 @@
     <mavenPluginPluginVersion>3.2</mavenPluginPluginVersion>
     <!-- Test settings -->
     <maven.test.redirectTestOutputToFile>false</maven.test.redirectTestOutputToFile>
-    <surefire.version>2.13</surefire.version>
+    <surefire.version>2.16</surefire.version>
     <failsafe.version>${surefire.version}</failsafe.version>
 
     <junit.version>4.10</junit.version>

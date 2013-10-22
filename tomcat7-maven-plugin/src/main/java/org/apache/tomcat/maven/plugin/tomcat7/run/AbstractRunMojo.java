@@ -53,10 +53,12 @@ import org.apache.maven.shared.filtering.MavenFileFilterRequest;
 import org.apache.maven.shared.filtering.MavenFilteringException;
 import org.apache.naming.NamingEntry;
 import org.apache.naming.resources.FileDirContext;
+import org.apache.tomcat.JarScanner;
 import org.apache.tomcat.maven.common.config.AbstractWebapp;
 import org.apache.tomcat.maven.common.run.EmbeddedRegistry;
 import org.apache.tomcat.maven.common.run.ExternalRepositoriesReloadableWebappLoader;
 import org.apache.tomcat.maven.plugin.tomcat7.AbstractTomcat7Mojo;
+import org.apache.tomcat.util.scan.StandardJarScanner;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
@@ -630,6 +632,18 @@ public abstract class AbstractRunMojo
         if ( classLoaderClass != null )
         {
             loader.setLoaderClass( classLoaderClass );
+        }
+
+
+        // https://issues.apache.org/jira/browse/MTOMCAT-239
+        // get the jar scanner to configure scanning directories as we can run a jar or a reactor project with a jar so
+        // the entries is a directory (target/classes)
+        JarScanner jarScanner = context.getJarScanner();
+
+        // normally this one only but just in case ...
+        if (jarScanner instanceof StandardJarScanner)
+        {
+            ((StandardJarScanner) jarScanner).setScanAllDirectories( true );
         }
 
         return context;

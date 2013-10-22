@@ -68,7 +68,7 @@ public class DefaultClassLoaderEntriesCalculator
         {
             @SuppressWarnings ("unchecked") List<String> classPathElements = request.isUseTestClassPath()
                 ? request.getMavenProject().getTestClasspathElements()
-                : request.getMavenProject().getRuntimeClasspathElements();//.getCompileClasspathElements();
+                : request.getMavenProject().getRuntimeClasspathElements();
             if ( classPathElements != null )
             {
                 for ( String classPathElement : classPathElements )

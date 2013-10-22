@@ -225,6 +225,7 @@ public class RunMojo
         throws IOException, MojoExecutionException
     {
         WebappLoader loader = super.createWebappLoader();
+
         if ( useSeparateTomcatClassLoader )
         {
             loader.setDelegate( delegate );
