@@ -476,7 +476,7 @@ public abstract class AbstractRunMojo
 
     /**
      * In case a module in your reactors has some web-fragments they will be read.
-     * If you don't need that for performance reasons, you can desactivate it.
+     * If you don't need that for performance reasons, you can deactivate it.
      * @since 2.2
      */
     @Parameter( property = "maven.tomcat.jarScan.allDirectories", defaultValue = "true" )
