@@ -38,9 +38,8 @@
   <properties>
     <archetypeVersion>2.2</archetypeVersion>
     <tomcatPluginVersion>${project.version}</tomcatPluginVersion>
-    <tomcatPluginSeleniumBrowser>firefox</tomcatPluginSeleniumBrowser>
-    <archetypeItGoalsBatch>clean,pre-integration-test,-P${tomcatPluginSeleniumBrowser}</archetypeItGoalsBatch>
-    <archetypeItGoals>clean,install,-P${tomcatPluginSeleniumBrowser}</archetypeItGoals>
+    <archetypeItGoalsBatch>clean,pre-integration-test</archetypeItGoalsBatch>
+    <archetypeItGoals>clean,install</archetypeItGoals>
   </properties>
   <build>
 
@@ -103,7 +102,7 @@
             <version>${archetypeVersion}</version>
             <configuration>
               <settingsFile>${basedir}/src/test/test-settings.xml</settingsFile>
-              <localRepositoryPath>${basedir}/target/local-repo</localRepositoryPath>
+              <localRepository>${basedir}/target/local-repo</localRepository>
             </configuration>
           </plugin>
         </plugins>
@@ -112,8 +111,8 @@
     <profile>
       <id>headless</id>
       <properties>
-        <archetypeItGoalsBatch>clean,pre-integration-test,-Pheadless,-P$(tomcatPluginSeleniumBrowser}</archetypeItGoalsBatch>
-        <archetypeItGoals>clean,install,-Pheadless,,-P$(tomcatPluginSeleniumBrowser}</archetypeItGoals>
+        <archetypeItGoalsBatch>clean,pre-integration-test,-Pheadless</archetypeItGoalsBatch>
+        <archetypeItGoals>clean,install,-Pheadless</archetypeItGoals>
       </properties>
     </profile>
   </profiles>

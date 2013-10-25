@@ -31,11 +31,10 @@
 
   <properties>
     <seleniumPluginVersion>2.3</seleniumPluginVersion>
-    <selenium-server.version>2.35.0</selenium-server.version>
+    <selenium-server.version>2.37.0</selenium-server.version>
     <selenium.port>4444</selenium.port>
     <tomcat.port>9898</tomcat.port>
     <serverUrl>http://localhost:${tomcat.port}/</serverUrl>
-    <seleniumBrowser>*firefox</seleniumBrowser>
   </properties>
 
   <build>
@@ -119,9 +118,7 @@
             </goals>
             <configuration>
               <systemPropertyVariables>
-                <selenium.port>${selenium.port}</selenium.port>
                 <serverUrl>${serverUrl}</serverUrl>
-                <seleniumBrowser>${seleniumBrowser}</seleniumBrowser>
               </systemPropertyVariables>
             </configuration>
           </execution>
@@ -193,38 +190,14 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.seleniumhq.selenium.client-drivers</groupId>
-      <artifactId>selenium-java-client-driver</artifactId>
-      <version>1.0.2</version>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-java</artifactId>
+      <version>${selenium-server.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
 
   <profiles>
-    <profile>
-      <id>firefox</id>
-      <properties>
-        <seleniumBrowser>*firefox</seleniumBrowser>
-      </properties>
-    </profile>
-    <profile>
-      <id>chrome</id>
-      <properties>
-        <seleniumBrowser>*googlechrome</seleniumBrowser>
-      </properties>
-    </profile>
-    <profile>
-      <id>iexplore</id>
-      <properties>
-        <seleniumBrowser>*iexplore</seleniumBrowser>
-      </properties>
-    </profile>
-    <profile>
-      <id>safari</id>
-      <properties>
-        <seleniumBrowser>*safari</seleniumBrowser>
-      </properties>
-    </profile>
     <profile>
       <id>headless</id>
       <build>

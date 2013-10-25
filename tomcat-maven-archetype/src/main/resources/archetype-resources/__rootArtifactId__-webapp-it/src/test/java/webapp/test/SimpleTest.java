@@ -21,32 +21,67 @@ package ${package}.webapp.test;
  * under the License.
  */
 
-import com.thoughtworks.selenium.DefaultSelenium;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * @author Olivier Lamy
  */
+@RunWith(JUnit4.class)
 public class SimpleTest
-    extends TestCase
 {
-    
+    private WebDriver driver;
+    private String serverUrl;
+
+    @Before
+    public void setup() throws Exception
+    {
+        this.serverUrl = System.getProperty("serverUrl", "http://localhost:9898/");
+        if(!this.serverUrl.endsWith("/")) {
+            this.serverUrl += "/";
+        }
+
+        this.driver = new HtmlUnitDriver(true);  // HtmlUnitDriver with JavaScript enabled
+    }
+
+    @After
+    public void teardown() throws Exception
+    {
+        this.driver.close();
+    }
+
+    @Test
     public void testSimple() throws Exception
     {
-        
-        int seleniumPort = Integer.parseInt( System.getProperty( "selenium.port", "4444" ) );
-        String browser = System.getProperty( "seleniumBrowser", "*firefox" );
-        String serverUrl = System.getProperty( "serverUrl", "http://localhost:9090/" );
-        
-        DefaultSelenium s = new DefaultSelenium( "localhost", seleniumPort, browser, serverUrl );
-        s.start(  );
-        s.open( "index.html" );
-        s.type( "who", "foo" );
-        s.click( "send-btn" );
-        // wait a bit ajax response
-        Thread.sleep( 1000 );
-        String text = s.getText( "response" );
-        assertEquals( "Hello foo", text );
+        this.driver.get(this.serverUrl + "index.html");
+
+        String whoToSend = "foo";
+
+        WebElement who = this.driver.findElement(By.id("who"));
+        who.sendKeys(whoToSend);
+
+        WebElement sendBtn = this.driver.findElement(By.id("send-btn"));
+        sendBtn.click();
+
+        // wait 5 secs for ajax response
+        new WebDriverWait(this.driver, 5).until(
+                ExpectedConditions.textToBePresentInElement(By.id("response"), whoToSend)
+        );
+
+        WebElement response = this.driver.findElement(By.id("response"));
+        String text = response.getText();
+
+        Assert.assertEquals("Hello " + whoToSend, text);
 
     }
     
