@@ -403,6 +403,8 @@ public abstract class AbstractRunMojo
     protected boolean skip;
 
     /**
+     * Collection of webapp artifacts to be deployed. Elements are &lt;webapp&gt; and contain
+     * usual GAVC plus contextPath and/or contextFile elements.<p>
      * @see {@link Webapp}
      * @since 2.0
      */
