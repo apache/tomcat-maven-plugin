@@ -200,6 +200,7 @@ public abstract class AbstractRunMojo
     /**
      * overriding the providing web.xml to run tomcat
      * <b>This override the global Tomcat web.xml located in $CATALINA_HOME/conf/</b>
+     *
      * @since 1.0-alpha-2
      */
     @Parameter( property = "maven.tomcat.webXml" )
@@ -292,6 +293,38 @@ public abstract class AbstractRunMojo
     private String keystoreType;
 
     /**
+     * Override the default truststoreFile for the HTTPS connector (if enabled)
+     *
+     * @since 2.2
+     */
+    @Parameter
+    private String truststoreFile;
+
+    /**
+     * Override the default truststorePass for the HTTPS connector (if enabled)
+     *
+     * @since 2.2
+     */
+    @Parameter
+    private String truststorePass;
+
+    /**
+     * Override the default truststoreType for the HTTPS connector (if enabled)
+     *
+     * @since 2.2
+     */
+    @Parameter
+    private String truststoreType;
+
+    /**
+     * Override the default truststoreProvider for the HTTPS connector (if enabled)
+     *
+     * @since 2.2
+     */
+    @Parameter
+    private String truststoreProvider;
+
+    /**
      * <p>
      * Enables or disables naming support for the embedded Tomcat server. By default the embedded Tomcat
      * in Tomcat 6 comes with naming enabled. In contrast to this the embedded Tomcat 7 comes with
@@ -337,6 +370,7 @@ public abstract class AbstractRunMojo
      * By default it's HTTP/1.1.
      * See possible values <a href="http://tomcat.apache.org/tomcat-6.0-doc/config/http.html">HTTP Connector</a>
      * protocol attribute
+     *
      * @since 2.0
      */
     @Parameter( property = "maven.tomcat.protocol", defaultValue = "HTTP/1.1" )
@@ -424,7 +458,6 @@ public abstract class AbstractRunMojo
     protected String classLoaderClass;
 
     /**
-     *
      * @since 2.2
      */
     @Parameter( property = "maven.tomcat.useBodyEncodingForURI", defaultValue = "false" )
@@ -897,6 +930,26 @@ public abstract class AbstractRunMojo
                     if ( keystoreType != null )
                     {
                         httpsConnector.setAttribute( "keystoreType", keystoreType );
+                    }
+
+                    if ( truststoreFile != null )
+                    {
+                        httpsConnector.setAttribute( "truststoreFile", truststoreFile );
+                    }
+
+                    if ( truststorePass != null )
+                    {
+                        httpsConnector.setAttribute( "truststorePass", truststorePass );
+                    }
+
+                    if ( truststoreType != null )
+                    {
+                        httpsConnector.setAttribute( "truststoreType", truststoreType );
+                    }
+
+                    if ( truststoreProvider != null )
+                    {
+                        httpsConnector.setAttribute( "truststoreProvider", truststoreProvider );
                     }
 
                     httpsConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
