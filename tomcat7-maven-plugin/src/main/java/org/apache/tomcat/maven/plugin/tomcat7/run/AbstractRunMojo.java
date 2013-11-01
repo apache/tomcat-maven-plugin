@@ -483,6 +483,10 @@ public abstract class AbstractRunMojo
     @Parameter( property = "maven.tomcat.jarScan.allDirectories", defaultValue = "true" )
     protected boolean jarScanAllDirectories = true;
 
+    /**
+     *
+     * @since 2.2
+     */
     @Parameter( property = "maven.tomcat.useBodyEncodingForURI", defaultValue = "false" )
     protected boolean useBodyEncodingForURI;
 
