@@ -483,6 +483,9 @@ public abstract class AbstractRunMojo
     @Parameter( property = "maven.tomcat.jarScan.allDirectories", defaultValue = "true" )
     protected boolean jarScanAllDirectories = true;
 
+    @Parameter( property = "maven.tomcat.useBodyEncodingForURI", defaultValue = "false" )
+    protected boolean useBodyEncodingForURI;
+
     // ----------------------------------------------------------------------
     // Fields
     // ----------------------------------------------------------------------
@@ -1055,6 +1058,8 @@ public abstract class AbstractRunMojo
 
                 connector.setURIEncoding( uriEncoding );
 
+                connector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
+
                 embeddedTomcat.getService().addConnector( connector );
 
                 embeddedTomcat.setConnector( connector );
@@ -1089,6 +1094,8 @@ public abstract class AbstractRunMojo
 
                     httpsConnector.setAttribute( "clientAuth", clientAuth );
 
+                    httpsConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
+
                     embeddedTomcat.getEngine().getService().addConnector( httpsConnector );
 
                 }
@@ -1100,6 +1107,7 @@ public abstract class AbstractRunMojo
                     ajpConnector = new Connector( ajpProtocol );
                     ajpConnector.setPort( ajpPort );
                     ajpConnector.setURIEncoding( uriEncoding );
+                    ajpConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
                     embeddedTomcat.getEngine().getService().addConnector( ajpConnector );
                 }
 
