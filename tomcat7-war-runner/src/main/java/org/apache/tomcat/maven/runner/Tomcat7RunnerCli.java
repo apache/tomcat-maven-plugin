@@ -138,6 +138,14 @@ public class Tomcat7RunnerCli
         {
             tomcat7Runner.serverXmlPath = line.getOptionValue( serverXmlPath.getOpt() );
         }
+
+        String port = tomcat7Runner.runtimeProperties.getProperty( Tomcat7Runner.HTTP_PORT_KEY );
+        if ( port != null)
+        {
+            tomcat7Runner.httpPort = Integer.parseInt( port );
+        }
+
+        // cli win for the port
         if ( line.hasOption( httpPort.getOpt() ) )
         {
             tomcat7Runner.httpPort = Integer.parseInt( line.getOptionValue( httpPort.getOpt() ) );

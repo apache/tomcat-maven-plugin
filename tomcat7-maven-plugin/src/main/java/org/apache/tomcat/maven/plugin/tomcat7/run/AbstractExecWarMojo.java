@@ -103,11 +103,12 @@ public abstract class AbstractExecWarMojo
                defaultValue = "${project.artifactId}-${project.version}-war-exec.jar", required = true)
     protected String finalName;
 
-	/**
+    /**
      * Skip the execution
+     *
      * @since 2.2
      */
-    @Parameter( property = "maven.tomcat.skip", defaultValue = "false" )
+    @Parameter(property = "maven.tomcat.skip", defaultValue = "false")
     private boolean skip;
 
     /**
@@ -204,6 +205,14 @@ public abstract class AbstractExecWarMojo
     @Parameter(property = "maven.tomcat.exec.war.connectorHttpProtocol", defaultValue = "HTTP/1.1", required = true)
     protected String connectorHttpProtocol;
 
+    /**
+     * configure a default http port for the standalone jar
+     *
+     * @since 2.2
+     */
+    @Parameter( property = "maven.tomcat.exec.war.httpPort" )
+    protected String httpPort;
+
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
@@ -269,6 +278,11 @@ public abstract class AbstractExecWarMojo
             properties.put( Tomcat7Runner.ENABLE_NAMING_KEY, Boolean.toString( enableNaming ) );
             properties.put( Tomcat7Runner.ACCESS_LOG_VALVE_FORMAT_KEY, accessLogValveFormat );
             properties.put( Tomcat7Runner.HTTP_PROTOCOL_KEY, connectorHttpProtocol );
+
+            if ( httpPort != null )
+            {
+                properties.put( Tomcat7Runner.HTTP_PORT_KEY, httpPort );
+            }
 
             os = new ArchiveStreamFactory().createArchiveOutputStream( ArchiveStreamFactory.JAR,
                                                                        execWarJarOutputStream );

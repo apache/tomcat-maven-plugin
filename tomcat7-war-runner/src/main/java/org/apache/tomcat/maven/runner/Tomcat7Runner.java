@@ -78,6 +78,11 @@ public class Tomcat7Runner
      */
     public static final String HTTP_PROTOCOL_KEY = "connectorhttpProtocol";
 
+    /**
+     * key for default http port defined in the plugin
+     */
+    public static final String HTTP_PORT_KEY = "httpPort";
+
 
     public int httpPort;
 
