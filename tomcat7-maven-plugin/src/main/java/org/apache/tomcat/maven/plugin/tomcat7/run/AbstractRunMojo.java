@@ -490,6 +490,20 @@ public abstract class AbstractRunMojo
     @Parameter( property = "maven.tomcat.useBodyEncodingForURI", defaultValue = "false" )
     protected boolean useBodyEncodingForURI;
 
+    protected String trustManagerClassName;
+
+    protected String trustMaxCertLength;
+
+    protected String truststoreAlgorithm;
+
+    protected String truststoreFile;
+
+    protected String  truststorePass;
+
+    protected String truststoreProvider;
+
+    protected String truststoreType;
+
     // ----------------------------------------------------------------------
     // Fields
     // ----------------------------------------------------------------------
@@ -1094,6 +1108,42 @@ public abstract class AbstractRunMojo
                     if ( keystoreType != null )
                     {
                         httpsConnector.setAttribute( "keystoreType", keystoreType );
+                    }
+
+                    if( trustManagerClassName != null )
+                    {
+                        httpsConnector.setAttribute( "trustManagerClassName", trustManagerClassName );
+                    }
+
+                    if( trustMaxCertLength != null )
+                    {
+                        httpsConnector.setAttribute( "trustMaxCertLength", trustMaxCertLength );
+                    }
+
+                    if( truststoreAlgorithm != null )
+                    {
+                        httpsConnector.setAttribute( "truststoreAlgorithm", truststoreAlgorithm );
+                    }
+
+                    if( truststoreFile != null )
+                    {
+                        httpsConnector.setAttribute( "truststoreFile", truststoreFile );
+                    }
+
+                    if( truststorePass != null )
+                    {
+                        httpsConnector.setAttribute( "truststorePass", truststorePass );
+                    }
+
+                    if( truststoreProvider != null )
+                    {
+                        httpsConnector.setAttribute( "truststoreProvider", truststoreProvider );
+                    }
+
+
+                    if( truststoreType != null )
+                    {
+                        httpsConnector.setAttribute( "truststoreType", truststoreType );
                     }
 
                     httpsConnector.setAttribute( "clientAuth", clientAuth );
