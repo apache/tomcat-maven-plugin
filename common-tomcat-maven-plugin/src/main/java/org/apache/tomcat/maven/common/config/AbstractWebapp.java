@@ -27,7 +27,7 @@ import java.io.File;
 /**
  * @since 2.0
  */
-public class AbstractWebapp
+public abstract class AbstractWebapp
 {
 
     /**
