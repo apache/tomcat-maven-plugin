@@ -423,6 +423,13 @@ public abstract class AbstractRunMojo
     @Parameter
     protected String classLoaderClass;
 
+    /**
+     *
+     * @since 2.2
+     */
+    @Parameter( property = "maven.tomcat.useBodyEncodingForURI", defaultValue = "false" )
+    protected boolean useBodyEncodingForURI;
+
     @Parameter( defaultValue = "${session}", readonly = true, required = true )
     protected MavenSession session;
 
@@ -868,6 +875,7 @@ public abstract class AbstractRunMojo
                     httpConnector.setRedirectPort( httpsPort );
                 }
                 httpConnector.setURIEncoding( uriEncoding );
+                httpConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
                 container.addConnector( httpConnector );
 
                 // create https connector
@@ -890,6 +898,9 @@ public abstract class AbstractRunMojo
                     {
                         httpsConnector.setAttribute( "keystoreType", keystoreType );
                     }
+
+                    httpsConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
+
                     container.addConnector( httpsConnector );
 
                 }
@@ -899,6 +910,7 @@ public abstract class AbstractRunMojo
                 {
                     Connector ajpConnector = container.createConnector( (InetAddress) null, ajpPort, ajpProtocol );
                     ajpConnector.setURIEncoding( uriEncoding );
+                    ajpConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
                     container.addConnector( ajpConnector );
                 }
                 if ( useSeparateTomcatClassLoader )
