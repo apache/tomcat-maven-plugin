@@ -490,18 +490,53 @@ public abstract class AbstractRunMojo
     @Parameter( property = "maven.tomcat.useBodyEncodingForURI", defaultValue = "false" )
     protected boolean useBodyEncodingForURI;
 
+    /**
+     *
+     * @since 2.2
+     */
+    @Parameter
     protected String trustManagerClassName;
 
+    /**
+     *
+     * @since 2.2
+     */
+    @Parameter
     protected String trustMaxCertLength;
 
+    /**
+     *
+     * @since 2.2
+     */
+    @Parameter
     protected String truststoreAlgorithm;
 
+    /**
+     *
+     * @since 2.2
+     */
+    @Parameter
     protected String truststoreFile;
 
+    /**
+     *
+     * @since 2.2
+     */
+    @Parameter
     protected String  truststorePass;
 
+    /**
+     *
+     * @since 2.2
+     */
+    @Parameter
     protected String truststoreProvider;
 
+    /**
+     *
+     * @since 2.2
+     */
+    @Parameter
     protected String truststoreType;
 
     // ----------------------------------------------------------------------
