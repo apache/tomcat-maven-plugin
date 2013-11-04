@@ -476,7 +476,7 @@ public abstract class AbstractExecWarMojo
     }
 
     protected void copyDirectoryContentIntoArchive( File sourceFolder, String destinationPath,
-                                                    ArchiveOutputStream archiveOutputSteam )
+                                                    ArchiveOutputStream archiveOutputStream )
         throws IOException
     {
 
@@ -497,9 +497,9 @@ public abstract class AbstractExecWarMojo
             {
                 sourceFileInputStream = new FileInputStream( inputFile );
 
-                archiveOutputSteam.putArchiveEntry( new JarArchiveEntry( destinationPath + includeFileName ) );
-                IOUtils.copy( sourceFileInputStream, archiveOutputSteam );
-                archiveOutputSteam.closeArchiveEntry();
+                archiveOutputStream.putArchiveEntry( new JarArchiveEntry( destinationPath + includeFileName ) );
+                IOUtils.copy( sourceFileInputStream, archiveOutputStream );
+                archiveOutputStream.closeArchiveEntry();
             }
             finally
             {
