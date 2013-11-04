@@ -1412,7 +1412,7 @@ public abstract class AbstractRunMojo
 
     private void addContextFromArtifact( Tomcat container, List<Context> contexts, Artifact artifact,
                                          String contextPath, File contextXml, boolean asWebApp )
-        throws MojoExecutionException, MalformedURLException, ServletException, IOException
+        throws MojoExecutionException, ServletException, IOException
     {
         getLog().info( "Deploy warfile: " + String.valueOf( artifact.getFile() ) + " to contextPath: " + contextPath );
         File webapps = new File( configurationDir, "webapps" );
