@@ -136,6 +136,16 @@ public abstract class AbstractRunMojo
     private int port;
 
     /**
+     *
+     * For servers with more than one IP address, this attribute specifies which address
+     * will be used for listening on the specified port.
+     * By default, this port will be used on all IP addresses associated with the server.
+     * @since 2.2
+     */
+    @Parameter( property = "maven.tomcat.address")
+    private String address;
+
+    /**
      * The AJP port to run the Tomcat server on.
      * By default it's 0 this means won't be started.
      * The ajp connector will be started only for value > 0.
@@ -909,6 +919,13 @@ public abstract class AbstractRunMojo
                 }
                 httpConnector.setURIEncoding( uriEncoding );
                 httpConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
+
+                if ( address !=null)
+                {
+                    //ici
+                    httpConnector.setAttribute( "address", address );
+                }
+
                 container.addConnector( httpConnector );
 
                 // create https connector
