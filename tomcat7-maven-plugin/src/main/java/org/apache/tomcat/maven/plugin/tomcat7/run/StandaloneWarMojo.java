@@ -27,7 +27,7 @@ import org.apache.maven.plugins.annotations.Mojo;
  *
  * @since 2.1
  */
-@Mojo(name = "standalone-war")
+@Mojo(name = "standalone-war", threadSafe = true)
 @Execute(phase = LifecyclePhase.PACKAGE)
 public class StandaloneWarMojo
     extends AbstractStandaloneWarMojo

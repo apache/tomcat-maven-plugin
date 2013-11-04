@@ -31,7 +31,7 @@ import org.apache.maven.plugins.annotations.Mojo;
  * @author Olivier Lamy
  * @since 2.0
  */
-@Mojo( name = "exec-war" )
+@Mojo( name = "exec-war", threadSafe = true )
 @Execute( phase = LifecyclePhase.PACKAGE )
 public class ExecWarMojo
     extends AbstractExecWarMojo

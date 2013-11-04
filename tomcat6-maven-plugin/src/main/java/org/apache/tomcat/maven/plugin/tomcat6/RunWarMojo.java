@@ -31,7 +31,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  * @author Mark Hobson <markhobson@gmail.com>
  * @todo depend on war:exploded when MNG-1649 resolved
  */
-@Mojo( name = "run-war", requiresDependencyResolution = ResolutionScope.RUNTIME )
+@Mojo( name = "run-war", requiresDependencyResolution = ResolutionScope.RUNTIME, threadSafe = true )
 @Execute( phase = LifecyclePhase.PACKAGE )
 public class RunWarMojo
     extends AbstractRunWarMojo

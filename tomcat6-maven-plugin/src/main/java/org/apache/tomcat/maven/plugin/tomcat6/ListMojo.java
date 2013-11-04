@@ -31,7 +31,7 @@ import java.io.IOException;
  *
  * @author Mark Hobson <markhobson@gmail.com>
  */
-@Mojo( name = "list" )
+@Mojo( name = "list", threadSafe = true )
 public class ListMojo
     extends AbstractCatalinaMojo
 {

@@ -27,7 +27,7 @@ import org.apache.maven.plugins.annotations.Mojo;
  *
  * @since 2.1
  */
-@Mojo( name = "redeploy-only" )
+@Mojo( name = "redeploy-only", threadSafe = true )
 public class RedeployOnlyMojo
     extends DeployOnlyMojo
 {

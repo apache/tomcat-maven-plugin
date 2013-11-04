@@ -31,7 +31,7 @@ import java.io.File;
  * @author Mark Hobson <markhobson@gmail.com>
  * @todo depend on war:exploded when MNG-1649 resolved
  */
-@Mojo( name = "exploded" )
+@Mojo( name = "exploded", threadSafe = true )
 public class ExplodedMojo
     extends AbstractDeployMojo
 {

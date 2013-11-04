@@ -31,7 +31,7 @@ import java.io.IOException;
  *
  * @author Mark Hobson <markhobson@gmail.com>
  */
-@Mojo( name = "start" )
+@Mojo( name = "start", threadSafe = true )
 public class StartMojo
     extends AbstractWarCatalinaMojo
 {

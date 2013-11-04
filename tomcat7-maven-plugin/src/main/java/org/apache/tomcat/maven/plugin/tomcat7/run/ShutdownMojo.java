@@ -40,7 +40,7 @@ import org.apache.tomcat.maven.plugin.tomcat7.AbstractTomcat7Mojo;
  * @author Mark Michaelis
  * @since 2.0
  */
-@Mojo( name = "shutdown", requiresDependencyResolution = ResolutionScope.RUNTIME )
+@Mojo( name = "shutdown", requiresDependencyResolution = ResolutionScope.RUNTIME, threadSafe = true )
 public class ShutdownMojo
     extends AbstractTomcat7Mojo
 {

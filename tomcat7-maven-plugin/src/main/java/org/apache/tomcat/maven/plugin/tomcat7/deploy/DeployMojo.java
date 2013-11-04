@@ -28,7 +28,7 @@ import org.apache.maven.plugins.annotations.Mojo;
  *
  * @author Mark Hobson <markhobson@gmail.com>
  */
-@Mojo(name = "deploy")
+@Mojo(name = "deploy", threadSafe = true)
 @Execute(phase = LifecyclePhase.PACKAGE)
 public class DeployMojo
     extends AbstractDeployWarMojo

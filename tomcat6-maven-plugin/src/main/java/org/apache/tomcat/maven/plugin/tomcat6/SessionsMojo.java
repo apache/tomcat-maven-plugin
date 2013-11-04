@@ -31,7 +31,7 @@ import java.io.IOException;
  *
  * @author Mark Hobson <markhobson@gmail.com>
  */
-@Mojo( name = "sessions" )
+@Mojo( name = "sessions", threadSafe = true )
 public class SessionsMojo
     extends AbstractWarCatalinaMojo
 {

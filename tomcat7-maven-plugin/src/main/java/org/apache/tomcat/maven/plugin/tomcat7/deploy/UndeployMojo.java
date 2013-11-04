@@ -33,7 +33,7 @@ import java.io.IOException;
  *
  * @since 2.1
  */
-@Mojo( name = "undeploy" )
+@Mojo( name = "undeploy", threadSafe = true )
 public class UndeployMojo
     extends AbstractWarCatalinaMojo
 {

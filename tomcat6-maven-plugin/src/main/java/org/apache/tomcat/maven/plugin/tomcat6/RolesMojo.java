@@ -31,7 +31,7 @@ import java.io.IOException;
  *
  * @author Mark Hobson <markhobson@gmail.com>
  */
-@Mojo( name = "roles" )
+@Mojo( name = "roles", threadSafe = true )
 public class RolesMojo
     extends AbstractCatalinaMojo
 {

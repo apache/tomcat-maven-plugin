@@ -32,7 +32,7 @@ import java.io.IOException;
  *
  * @author Mark Hobson <markhobson@gmail.com>
  */
-@Mojo( name = "undeploy" )
+@Mojo( name = "undeploy", threadSafe = true )
 public class UndeployMojo
     extends AbstractWarCatalinaMojo
 {

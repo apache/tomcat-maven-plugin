@@ -25,7 +25,7 @@ import org.apache.maven.plugins.annotations.Mojo;
  *
  * @since 2.1
  */
-@Mojo(name = "standalone-war-only")
+@Mojo(name = "standalone-war-only", threadSafe = true)
 public class StandaloneWarOnlyMojo
     extends AbstractStandaloneWarMojo
 {

@@ -39,7 +39,7 @@ import org.apache.tomcat.maven.common.run.EmbeddedRegistry;
  * @author Mark Michaelis
  * @since 1.1
  */
-@Mojo( name = "shutdown", requiresDependencyResolution = ResolutionScope.RUNTIME )
+@Mojo( name = "shutdown", requiresDependencyResolution = ResolutionScope.RUNTIME, threadSafe = true )
 public class ShutdownMojo
     extends AbstractI18NTomcat6Mojo
 {

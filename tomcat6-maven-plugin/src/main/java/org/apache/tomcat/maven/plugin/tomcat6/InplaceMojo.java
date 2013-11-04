@@ -31,7 +31,7 @@ import java.io.File;
  * @author Mark Hobson <markhobson@gmail.com>
  * @todo depend on war:inplace when MNG-1649 resolved
  */
-@Mojo( name = "inplace" )
+@Mojo( name = "inplace", threadSafe = true )
 public class InplaceMojo
     extends AbstractDeployMojo
 {

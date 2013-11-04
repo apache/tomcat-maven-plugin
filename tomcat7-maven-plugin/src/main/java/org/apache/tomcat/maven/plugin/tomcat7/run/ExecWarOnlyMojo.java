@@ -26,7 +26,7 @@ import org.apache.maven.plugins.annotations.Mojo;
  * @author Olivier Lamy
  * @since 2.0
  */
-@Mojo( name = "exec-war-only" )
+@Mojo( name = "exec-war-only", threadSafe = true )
 public class ExecWarOnlyMojo
     extends AbstractExecWarMojo
 {

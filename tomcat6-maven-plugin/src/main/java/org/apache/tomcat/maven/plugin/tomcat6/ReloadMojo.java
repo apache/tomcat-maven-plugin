@@ -31,7 +31,7 @@ import java.io.IOException;
  *
  * @author olamy
  */
-@Mojo( name = "reload" )
+@Mojo( name = "reload", threadSafe = true )
 public class ReloadMojo
     extends AbstractWarCatalinaMojo
 {

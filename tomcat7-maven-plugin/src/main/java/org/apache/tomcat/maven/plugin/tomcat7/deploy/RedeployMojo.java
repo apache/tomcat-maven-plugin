@@ -29,7 +29,7 @@ import org.apache.maven.plugins.annotations.Mojo;
  * @author Olivier Lamy
  * @since 2.1
  */
-@Mojo(name = "redeploy")
+@Mojo(name = "redeploy", threadSafe = true)
 @Execute(phase = LifecyclePhase.PACKAGE)
 public class RedeployMojo
     extends DeployMojo

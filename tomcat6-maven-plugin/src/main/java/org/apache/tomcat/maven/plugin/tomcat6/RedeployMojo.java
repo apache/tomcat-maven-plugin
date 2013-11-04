@@ -29,7 +29,7 @@ import org.apache.maven.plugins.annotations.Mojo;
  * @author Mark Hobson <markhobson@gmail.com>
  * @todo depend on war:war, war:exploded or war:inplace when MNG-1649 resolved
  */
-@Mojo( name = "redeploy" )
+@Mojo( name = "redeploy", threadSafe = true )
 @Execute( phase = LifecyclePhase.PACKAGE )
 public class RedeployMojo
     extends DeployMojo
