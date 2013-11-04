@@ -475,35 +475,35 @@ public abstract class AbstractExecWarMojo
         }
     }
 
-    protected void copyDirectoryContentIntoArchive( File pSourceFolder, String pDestinationPath,
-                                                    ArchiveOutputStream pArchiveOutputSteam )
+    protected void copyDirectoryContentIntoArchive( File sourceFolder, String destinationPath,
+                                                    ArchiveOutputStream archiveOutputSteam )
         throws IOException
     {
 
         // Scan the directory
         DirectoryScanner directoryScanner = new DirectoryScanner();
-        directoryScanner.setBasedir( pSourceFolder );
+        directoryScanner.setBasedir( sourceFolder );
         directoryScanner.addDefaultExcludes();
         directoryScanner.scan();
 
         // Each File
-        for ( String aIncludeFileName : directoryScanner.getIncludedFiles() )
+        for ( String includeFileName : directoryScanner.getIncludedFiles() )
         {
-            getLog().debug( "include configuration file : " + pDestinationPath + aIncludeFileName );
-            File aInputFile = new File( pSourceFolder, aIncludeFileName );
+            getLog().debug( "include configuration file : " + destinationPath + includeFileName );
+            File inputFile = new File( sourceFolder, includeFileName );
 
-            FileInputStream aSourceFileInputStream = null;
+            FileInputStream sourceFileInputStream = null;
             try
             {
-                aSourceFileInputStream = new FileInputStream( aInputFile );
+                sourceFileInputStream = new FileInputStream( inputFile );
 
-                pArchiveOutputSteam.putArchiveEntry( new JarArchiveEntry( pDestinationPath + aIncludeFileName ) );
-                IOUtils.copy( aSourceFileInputStream, pArchiveOutputSteam );
-                pArchiveOutputSteam.closeArchiveEntry();
+                archiveOutputSteam.putArchiveEntry( new JarArchiveEntry( destinationPath + includeFileName ) );
+                IOUtils.copy( sourceFileInputStream, archiveOutputSteam );
+                archiveOutputSteam.closeArchiveEntry();
             }
             finally
             {
-                IOUtils.closeQuietly( aSourceFileInputStream );
+                IOUtils.closeQuietly( sourceFileInputStream );
             }
         }
 
