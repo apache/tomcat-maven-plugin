@@ -210,7 +210,7 @@ public abstract class AbstractExecWarMojo
      *
      * @since 2.2
      */
-    @Parameter( property = "maven.tomcat.exec.war.httpPort" )
+    @Parameter(property = "maven.tomcat.exec.war.httpPort")
     protected String httpPort;
 
     public void execute()
@@ -477,7 +477,7 @@ public abstract class AbstractExecWarMojo
 
     protected void copyDirectoryContentIntoArchive( File pSourceFolder, String pDestinationPath,
                                                     ArchiveOutputStream pArchiveOutputSteam )
-        throws FileNotFoundException, IOException
+        throws IOException
     {
 
         // Scan the directory
@@ -492,12 +492,19 @@ public abstract class AbstractExecWarMojo
             getLog().debug( "include configuration file : " + pDestinationPath + aIncludeFileName );
             File aInputFile = new File( pSourceFolder, aIncludeFileName );
 
-            FileInputStream aSourceFileInputStream = new FileInputStream( aInputFile );
+            FileInputStream aSourceFileInputStream = null;
+            try
+            {
+                aSourceFileInputStream = new FileInputStream( aInputFile );
 
-            pArchiveOutputSteam.putArchiveEntry( new JarArchiveEntry( pDestinationPath + aIncludeFileName ) );
-            IOUtils.copy( aSourceFileInputStream, pArchiveOutputSteam );
-            pArchiveOutputSteam.closeArchiveEntry();
-
+                pArchiveOutputSteam.putArchiveEntry( new JarArchiveEntry( pDestinationPath + aIncludeFileName ) );
+                IOUtils.copy( aSourceFileInputStream, pArchiveOutputSteam );
+                pArchiveOutputSteam.closeArchiveEntry();
+            }
+            finally
+            {
+                IOUtils.closeQuietly( aSourceFileInputStream );
+            }
         }
 
     }
