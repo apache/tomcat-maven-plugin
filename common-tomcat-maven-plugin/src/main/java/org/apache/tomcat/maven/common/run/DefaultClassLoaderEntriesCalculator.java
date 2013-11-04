@@ -88,15 +88,9 @@ public class DefaultClassLoaderEntriesCalculator
             throw new TomcatRunException( e.getMessage(), e );
         }
 
-        // TODO find a solution to use a timestamp marker to not delete/extract all the time
-
         File tmpExtractDatas =
             new File( request.getMavenProject().getBuild().getDirectory(), "apache-tomcat-maven-plugin" );
 
-        if ( tmpExtractDatas.exists() )
-        {
-            deleteDirectory( tmpExtractDatas, request.getLog() );
-        }
         tmpExtractDatas.mkdirs();
 
         // add artifacts to loader
@@ -138,18 +132,44 @@ public class DefaultClassLoaderEntriesCalculator
 
                     File tmpDir = new File( tmpExtractDatas, artifact.getArtifactId() );
 
-                    tmpDir.mkdirs();
+                    boolean existed = !tmpDir.mkdirs();
+                    // does a directory for this artifact already exist?
+                    if (existed)
+                    {
+                        // check timestamp to see if artifact is newer than extracted directory
+                        long dirLastMod = tmpDir.lastModified();
+                        long warLastMod = artifact.getFile().lastModified();
+
+                        if (warLastMod == 0L || warLastMod > dirLastMod)
+                        {
+                            request.getLog().debug(
+                                "re-exploding artifact " + artifact.getArtifactId() + " due to newer WAR");
+
+                            deleteDirectory( tmpDir, request.getLog() );
+                            tmpDir = new File( tmpExtractDatas, artifact.getArtifactId() );
+                            tmpDir.mkdirs();
+                            existed = false;
+                        }
+                        else
+                        {
+                            request.getLog().debug(
+                                "using existing exploded war for artifact " + artifact.getArtifactId());
+                        }
+                    }
 
                     tmpDirectories.add( tmpDir );
 
                     try
                     {
-                        tmpDir.deleteOnExit();
-                        File warFile = artifact.getFile();
-                        UnArchiver unArchiver = archiverManager.getUnArchiver( "jar" );
-                        unArchiver.setSourceFile( warFile );
-                        unArchiver.setDestDirectory( tmpDir );
-                        unArchiver.extract();
+                        // explode the archive if it is not already exploded
+                        if (!existed)
+                        {
+                            File warFile = artifact.getFile();
+                            UnArchiver unArchiver = archiverManager.getUnArchiver( "jar" );
+                            unArchiver.setSourceFile( warFile );
+                            unArchiver.setDestDirectory( tmpDir );
+                            unArchiver.extract();
+                        }
 
                         File libsDirectory = new File( tmpDir, "WEB-INF/lib" );
                         if ( libsDirectory.exists() )
