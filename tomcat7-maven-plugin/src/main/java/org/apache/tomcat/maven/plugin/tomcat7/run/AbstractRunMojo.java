@@ -152,9 +152,7 @@ public abstract class AbstractRunMojo
 
     /**
      *
-     * For servers with more than one IP address, this attribute specifies which address
-     * will be used for listening on the specified port.
-     * By default, this port will be used on all IP addresses associated with the server.
+     * this IP address will be used on all ports
      * @since 2.2
      */
     @Parameter( property = "maven.tomcat.address")
