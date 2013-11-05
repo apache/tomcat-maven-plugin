@@ -1121,7 +1121,7 @@ public abstract class AbstractRunMojo
                     connector.setRedirectPort( httpsPort );
                 }
 
-                if ( address !=null)
+                if ( address != null)
                 {
                     connector.setAttribute( "address", address );
                 }
@@ -1202,6 +1202,11 @@ public abstract class AbstractRunMojo
 
                     httpsConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
 
+                    if ( address != null)
+                    {
+                        httpsConnector.setAttribute( "address", address );
+                    }
+
                     embeddedTomcat.getEngine().getService().addConnector( httpsConnector );
 
                 }
@@ -1214,6 +1219,10 @@ public abstract class AbstractRunMojo
                     ajpConnector.setPort( ajpPort );
                     ajpConnector.setURIEncoding( uriEncoding );
                     ajpConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
+                    if ( address != null)
+                    {
+                        ajpConnector.setAttribute( "address", address );
+                    }
                     embeddedTomcat.getEngine().getService().addConnector( ajpConnector );
                 }
 

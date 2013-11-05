@@ -920,9 +920,8 @@ public abstract class AbstractRunMojo
                 httpConnector.setURIEncoding( uriEncoding );
                 httpConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
 
-                if ( address !=null)
+                if ( address != null)
                 {
-                    //ici
                     httpConnector.setAttribute( "address", address );
                 }
 
@@ -971,6 +970,11 @@ public abstract class AbstractRunMojo
 
                     httpsConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
 
+                    if ( address != null)
+                    {
+                        httpsConnector.setAttribute( "address", address );
+                    }
+
                     container.addConnector( httpsConnector );
 
                 }
@@ -981,6 +985,10 @@ public abstract class AbstractRunMojo
                     Connector ajpConnector = container.createConnector( (InetAddress) null, ajpPort, ajpProtocol );
                     ajpConnector.setURIEncoding( uriEncoding );
                     ajpConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
+                    if ( address != null)
+                    {
+                        ajpConnector.setAttribute( "address", address );
+                    }
                     container.addConnector( ajpConnector );
                 }
                 if ( useSeparateTomcatClassLoader )
