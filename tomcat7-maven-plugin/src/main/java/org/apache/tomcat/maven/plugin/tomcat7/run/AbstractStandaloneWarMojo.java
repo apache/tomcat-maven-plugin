@@ -144,7 +144,7 @@ public abstract class AbstractStandaloneWarMojo
             os = new ArchiveStreamFactory().createArchiveOutputStream( ArchiveStreamFactory.JAR,
                                                                        execWarJarOutputStream );
 
-            extractJarToArchive( new JarFile( projectArtifact.getFile() ), os );
+            extractJarToArchive( new JarFile( projectArtifact.getFile() ), os, null );
 
             if ( serverXml != null && serverXml.exists() )
             {
@@ -181,7 +181,7 @@ public abstract class AbstractStandaloneWarMojo
                     || StringUtils.equals( "tomcat7-war-runner", pluginArtifact.getArtifactId() ) )
                 {
                     JarFile jarFile = new JarFile( pluginArtifact.getFile() );
-                    extractJarToArchive( jarFile, os );
+                    extractJarToArchive( jarFile, os, null );
                 }
             }
 
@@ -198,7 +198,7 @@ public abstract class AbstractStandaloneWarMojo
 
                     artifactResolver.resolve( artifact, this.remoteRepos, this.local );
                     JarFile jarFile = new JarFile( artifact.getFile() );
-                    extractJarToArchive( jarFile, os );
+                    extractJarToArchive( jarFile, os, excludes );
                 }
             }
 
