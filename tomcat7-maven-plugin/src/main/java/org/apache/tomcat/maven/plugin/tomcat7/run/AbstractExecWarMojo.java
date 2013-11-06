@@ -310,9 +310,21 @@ public abstract class AbstractExecWarMojo
                     if ( warRunDependency.dependency != null )
                     {
                         Dependency dependency = warRunDependency.dependency;
+                        String version = dependency.getVersion();
+                        if ( StringUtils.isEmpty( version ) )
+                        {
+                            version = findArtifactVersion( dependency );
+                        }
+
+                        if ( StringUtils.isEmpty( version ) )
+                        {
+                            throw new MojoExecutionException(
+                                "Dependency '" + dependency.getGroupId() + "':'" + dependency.getArtifactId()
+                                    + "' does not have version specified" );
+                        }
                         Artifact artifact = artifactFactory.createArtifactWithClassifier( dependency.getGroupId(),
                                                                                           dependency.getArtifactId(),
-                                                                                          dependency.getVersion(),
+                                                                                          version,
                                                                                           dependency.getType(),
                                                                                           dependency.getClassifier() );
 

@@ -70,9 +70,10 @@ public abstract class AbstractStandaloneWarMojo
 
     /**
      * the type to use for the attached/generated artifact
+     *
      * @since 2.2
      */
-    @Parameter( property = "maven.tomcat.exec.war.attachArtifactType", defaultValue = "war", required = true )
+    @Parameter(property = "maven.tomcat.exec.war.attachArtifactType", defaultValue = "war", required = true)
     protected String attachArtifactClassifierType;
 
     public void execute()
@@ -190,11 +191,22 @@ public abstract class AbstractStandaloneWarMojo
             {
                 for ( Dependency dependency : extraDependencies )
                 {
+                    String version = dependency.getVersion();
+                    if ( StringUtils.isEmpty( version ) )
+                    {
+                        version = findArtifactVersion( dependency );
+                    }
+
+                    if ( StringUtils.isEmpty( version ) )
+                    {
+                        throw new MojoExecutionException(
+                            "Dependency '" + dependency.getGroupId() + "':'" + dependency.getArtifactId()
+                                + "' does not have version specified" );
+                    }
                     // String groupId, String artifactId, String version, String scope, String type
                     Artifact artifact =
-                        artifactFactory.createArtifact( dependency.getGroupId(), dependency.getArtifactId(),
-                                                        dependency.getVersion(), dependency.getScope(),
-                                                        dependency.getType() );
+                        artifactFactory.createArtifact( dependency.getGroupId(), dependency.getArtifactId(), version,
+                                                        dependency.getScope(), dependency.getType() );
 
                     artifactResolver.resolve( artifact, this.remoteRepos, this.local );
                     JarFile jarFile = new JarFile( artifact.getFile() );
