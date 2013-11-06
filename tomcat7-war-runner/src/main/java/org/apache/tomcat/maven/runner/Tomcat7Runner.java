@@ -560,28 +560,35 @@ public class Tomcat7Runner
             InputStream inputStream = null;
             try
             {
+                File expandFile = null;
                 inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( entry.getValue() );
                 if ( !useServerXml() )
                 {
                     if ( entry.getKey().equals( "/" ) )
                     {
-                        File expandFile = new File( extractDirectory, "webapps/ROOT.war" );
-                        debugMessage( "expand to file:" + expandFile.getPath() );
-                        expand( inputStream, expandFile );
+                        expandFile = new File( extractDirectory, "webapps/ROOT.war" );
                     }
                     else
                     {
-                        File expandFile = new File( extractDirectory, "webapps/" + entry.getValue() );
-                        debugMessage( "expand to file:" + expandFile.getPath() );
-                        expand( inputStream, expandFile );
+                        expandFile = new File( extractDirectory, "webapps/" + entry.getValue() );
                     }
                 }
                 else
                 {
-                    File expandFile = new File( extractDirectory, "webapps/" + entry.getValue() );
-                    debugMessage( "expand to file:" + expandFile.getPath() );
-                    expand( inputStream, new File( extractDirectory, "webapps/" + entry.getValue() ) );
+                    expandFile = new File( extractDirectory, "webapps/" + entry.getValue() );
                 }
+
+                debugMessage( "expand to file:" + expandFile.getPath() );
+
+                // MTOMCAT-211 ensure parent directories created
+
+                if ( !expandFile.getParentFile().mkdirs() )
+                {
+                    throw new Exception( "FATAL: impossible to create directories:" + expandFile.getParentFile() );
+                }
+
+                expand( inputStream, expandFile );
+
             }
             finally
             {
