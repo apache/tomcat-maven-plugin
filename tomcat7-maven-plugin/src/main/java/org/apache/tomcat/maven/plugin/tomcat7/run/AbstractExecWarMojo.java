@@ -389,11 +389,23 @@ public abstract class AbstractExecWarMojo
             {
                 for ( Dependency dependency : extraDependencies )
                 {
+                    String version = dependency.getVersion();
+                    if ( StringUtils.isEmpty( version ) )
+                    {
+                        version = findArtifactVersion( dependency );
+                    }
+
+                    if ( StringUtils.isEmpty( version ) )
+                    {
+                        throw new MojoExecutionException(
+                            "Dependency '" + dependency.getGroupId() + "':'" + dependency.getArtifactId()
+                                + "' does not have version specified" );
+                    }
+
                     // String groupId, String artifactId, String version, String scope, String type
                     Artifact artifact =
-                        artifactFactory.createArtifact( dependency.getGroupId(), dependency.getArtifactId(),
-                                                        dependency.getVersion(), dependency.getScope(),
-                                                        dependency.getType() );
+                        artifactFactory.createArtifact( dependency.getGroupId(), dependency.getArtifactId(), version,
+                                                        dependency.getScope(), dependency.getType() );
 
                     artifactResolver.resolve( artifact, this.remoteRepos, this.local );
                     JarFile jarFile = new JarFile( artifact.getFile() );
@@ -480,6 +492,35 @@ public abstract class AbstractExecWarMojo
             IOUtils.closeQuietly( execWarJarOutputStream );
             IOUtils.closeQuietly( tmpPropertiesFileOutputStream );
         }
+    }
+
+    protected String findArtifactVersion( Dependency dependency )
+    {
+        // search in project.dependencies
+        for ( Dependency projectDependency : (List<Dependency>) this.project.getDependencies() )
+        {
+            if ( sameDependencyWithoutVersion( dependency, projectDependency ) )
+            {
+                return projectDependency.getVersion();
+            }
+        }
+
+        // search in project.dependencies
+        for ( Dependency projectDependency : (List<Dependency>) this.project.getDependencyManagement().getDependencies() )
+        {
+            if ( sameDependencyWithoutVersion( dependency, projectDependency ) )
+            {
+                return projectDependency.getVersion();
+            }
+        }
+
+        return null;
+    }
+
+    protected boolean sameDependencyWithoutVersion( Dependency that, Dependency dependency )
+    {
+        return StringUtils.equals( that.getGroupId(), dependency.getGroupId() ) && StringUtils.equals(
+            that.getArtifactId(), dependency.getArtifactId() );
     }
 
     protected void copyDirectoryContentIntoArchive( File sourceFolder, String destinationPath,
