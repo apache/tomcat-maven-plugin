@@ -18,14 +18,6 @@ package org.apache.tomcat.maven.plugin.tomcat7.run;
  * under the License.
  */
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Properties;
-import java.util.jar.JarFile;
-
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
@@ -44,6 +36,14 @@ import org.apache.tomcat.maven.runner.Tomcat7RunnerCli;
 import org.codehaus.plexus.archiver.jar.Manifest;
 import org.codehaus.plexus.archiver.jar.ManifestException;
 import org.codehaus.plexus.util.DirectoryScanner;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Properties;
+import java.util.jar.JarFile;
 
 /**
  * Abstract Mojo for building deployable and executable war files
