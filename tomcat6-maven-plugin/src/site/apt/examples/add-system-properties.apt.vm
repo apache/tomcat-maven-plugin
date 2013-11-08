@@ -28,7 +28,7 @@
 
 Adding System Properties
 
- You can add system properties when running Tomcat (mvn tomcat:run).
+ You can add system properties when running Tomcat (mvn tomcat6:run).
  The syntax has the following format:
 
 +--

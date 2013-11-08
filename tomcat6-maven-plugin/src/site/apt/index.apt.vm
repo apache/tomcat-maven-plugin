@@ -35,9 +35,9 @@ Tomcat Maven Plugin
 
   The goals for this plugin come in two categories:
 
-  * {{{./context-goals.html}Goals to manipulate deployed projects within Tomcat}}
+  * {{{${project.url}/context-goals.html}Goals to manipulate deployed projects within Tomcat}}
 
-  * {{{./container-goals.html}Goals to obtain information from Tomcat}}
+  * {{{${project.url}/container-goals.html}Goals to obtain information from Tomcat}}
 
 * Usage
 
