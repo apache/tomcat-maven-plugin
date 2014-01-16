@@ -86,6 +86,8 @@ public class Tomcat7Runner
     public int httpPort;
 
     public int httpsPort;
+    
+    public int maxPostSize = 2097152;
 
     public int ajpPort;
 
@@ -296,6 +298,7 @@ public class Tomcat7Runner
             {
                 Connector connector = new Connector( connectorHttpProtocol );
                 connector.setPort( httpPort );
+                connector.setMaxPostSize(maxPostSize);
 
                 if ( httpsPort > 0 )
                 {
@@ -319,6 +322,7 @@ public class Tomcat7Runner
             {
                 Connector httpsConnector = new Connector( connectorHttpProtocol );
                 httpsConnector.setPort( httpsPort );
+                httpsConnector.setMaxPostSize(maxPostSize);
                 httpsConnector.setSecure( true );
                 httpsConnector.setProperty( "SSLEnabled", "true" );
                 httpsConnector.setProperty( "sslProtocol", "TLS" );

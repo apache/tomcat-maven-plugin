@@ -164,6 +164,7 @@ usage: java -jar [path to your exec war jar]
                                         org.apache.coyote.http11.Http11Nio
                                         Protocol
  -httpsPort <httpsPort>                 https port to use
+ -maxPostSize <maxPostSize>				max post size in byte to use
  -keyAlias <keyAlias>                   alias from keystore for ssl
  -loggerName <loggerName>               logger to use: slf4j to use slf4j
                                         bridge on top of jul

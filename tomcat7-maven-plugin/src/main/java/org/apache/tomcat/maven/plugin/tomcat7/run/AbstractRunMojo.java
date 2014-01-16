@@ -196,6 +196,16 @@ public abstract class AbstractRunMojo
     private int httpsPort;
 
     /**
+     * The max post size to run the Tomcat server on.
+     * By default it's 2097152 bytes. That's the default Tomcat configuration.
+     * Set this value to 0 or less to disable the post size limit.
+     *
+     * @since 2.3
+     */
+    @Parameter( property = "maven.tomcat.maxPostSize", defaultValue = "2097152" )
+    private int maxPostSize;
+    
+    /**
      * The character encoding to use for decoding URIs.
      *
      * @since 1.0
@@ -1113,6 +1123,7 @@ public abstract class AbstractRunMojo
 
                 Connector connector = new Connector( protocol );
                 connector.setPort( port );
+                connector.setMaxPostSize(maxPostSize);
 
                 if ( httpsPort > 0 )
                 {
@@ -1143,6 +1154,7 @@ public abstract class AbstractRunMojo
                 {
                     httpsConnector = new Connector( protocol );
                     httpsConnector.setPort( httpsPort );
+                    httpsConnector.setMaxPostSize(maxPostSize);
                     httpsConnector.setSecure( true );
                     httpsConnector.setProperty( "SSLEnabled", "true" );
                     // should be default but configure it anyway
