@@ -36,7 +36,7 @@ import java.util.Properties;
  * @author Olivier Lamy
  * @since 2.0
  */
-@SuppressWarnings( "static-access" )
+@SuppressWarnings("static-access")
 public class Tomcat7RunnerCli
 {
 
@@ -47,9 +47,10 @@ public class Tomcat7RunnerCli
 
     static Option httpsPort =
         OptionBuilder.withArgName( "httpsPort" ).hasArg().withDescription( "https port to use" ).create( "httpsPort" );
-    
+
     static Option maxPostSize =
-        OptionBuilder.withArgName( "maxPostSize" ).hasArg().withDescription( "max post size to use" ).create( "maxPostSize" );
+        OptionBuilder.withArgName( "maxPostSize" ).hasArg().withDescription( "max post size to use" ).create(
+            "maxPostSize" );
 
     static Option ajpPort =
         OptionBuilder.withArgName( "ajpPort" ).hasArg().withDescription( "ajp port to use" ).create( "ajpPort" );
@@ -100,7 +101,7 @@ public class Tomcat7RunnerCli
         options.addOption( httpPort ).addOption( httpsPort ).addOption( ajpPort ).addOption( serverXmlPath ).addOption(
             resetExtract ).addOption( help ).addOption( debug ).addOption( sysProps ).addOption(
             httpProtocol ).addOption( clientAuth ).addOption( keyAlias ).addOption( obfuscate ).addOption(
-            extractDirectory ).addOption( loggerName ).addOption( uriEncoding ).addOption(maxPostSize);
+            extractDirectory ).addOption( loggerName ).addOption( uriEncoding ).addOption( maxPostSize );
     }
 
 
@@ -143,7 +144,7 @@ public class Tomcat7RunnerCli
         }
 
         String port = tomcat7Runner.runtimeProperties.getProperty( Tomcat7Runner.HTTP_PORT_KEY );
-        if ( port != null)
+        if ( port != null )
         {
             tomcat7Runner.httpPort = Integer.parseInt( port );
         }
@@ -153,7 +154,7 @@ public class Tomcat7RunnerCli
         {
             tomcat7Runner.httpPort = Integer.parseInt( line.getOptionValue( httpPort.getOpt() ) );
         }
-        
+
         if ( line.hasOption( maxPostSize.getOpt() ) )
         {
             tomcat7Runner.maxPostSize = Integer.parseInt( line.getOptionValue( maxPostSize.getOpt() ) );

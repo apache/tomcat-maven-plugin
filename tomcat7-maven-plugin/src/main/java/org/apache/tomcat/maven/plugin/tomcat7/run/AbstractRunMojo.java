@@ -118,7 +118,7 @@ public abstract class AbstractRunMojo
     /**
      * Location of the local repository.
      */
-    @Parameter( defaultValue = "${localRepository}", required = true, readonly = true )
+    @Parameter(defaultValue = "${localRepository}", required = true, readonly = true)
     private ArtifactRepository local;
 
     /**
@@ -134,28 +134,28 @@ public abstract class AbstractRunMojo
     /**
      * The packaging of the Maven project that this goal operates upon.
      */
-    @Parameter( defaultValue = "${project.packaging}", required = true, readonly = true )
+    @Parameter(defaultValue = "${project.packaging}", required = true, readonly = true)
     private String packaging;
 
     /**
      * The directory to create the Tomcat server configuration under.
      */
-    @Parameter( defaultValue = "${project.build.directory}/tomcat" )
+    @Parameter(defaultValue = "${project.build.directory}/tomcat")
     private File configurationDir;
 
     /**
      * The port to run the Tomcat server on.
      * Will be exposed as System props and session.executionProperties with key tomcat.maven.http.port
      */
-    @Parameter( property = "maven.tomcat.port", defaultValue = "8080" )
+    @Parameter(property = "maven.tomcat.port", defaultValue = "8080")
     private int port;
 
     /**
-     *
      * this IP address will be used on all ports
+     *
      * @since 2.2
      */
-    @Parameter( property = "maven.tomcat.address")
+    @Parameter(property = "maven.tomcat.address")
     private String address;
 
     /**
@@ -166,7 +166,7 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.ajp.port", defaultValue = "0" )
+    @Parameter(property = "maven.tomcat.ajp.port", defaultValue = "0")
     private int ajpPort;
 
     /**
@@ -181,7 +181,7 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.ajp.protocol", defaultValue = "org.apache.coyote.ajp.AjpProtocol" )
+    @Parameter(property = "maven.tomcat.ajp.protocol", defaultValue = "org.apache.coyote.ajp.AjpProtocol")
     private String ajpProtocol;
 
     /**
@@ -192,7 +192,7 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0
      */
-    @Parameter( property = "maven.tomcat.httpsPort", defaultValue = "0" )
+    @Parameter(property = "maven.tomcat.httpsPort", defaultValue = "0")
     private int httpsPort;
 
     /**
@@ -202,15 +202,15 @@ public abstract class AbstractRunMojo
      *
      * @since 2.3
      */
-    @Parameter( property = "maven.tomcat.maxPostSize", defaultValue = "2097152" )
+    @Parameter(property = "maven.tomcat.maxPostSize", defaultValue = "2097152")
     private int maxPostSize;
-    
+
     /**
      * The character encoding to use for decoding URIs.
      *
      * @since 1.0
      */
-    @Parameter( property = "maven.tomcat.uriEncoding", defaultValue = "ISO-8859-1" )
+    @Parameter(property = "maven.tomcat.uriEncoding", defaultValue = "ISO-8859-1")
     private String uriEncoding;
 
     /**
@@ -226,7 +226,7 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0-alpha-2
      */
-    @Parameter( property = "maven.tomcat.additionalConfigFilesDir", defaultValue = "${basedir}/src/main/tomcatconf" )
+    @Parameter(property = "maven.tomcat.additionalConfigFilesDir", defaultValue = "${basedir}/src/main/tomcatconf")
     private File additionalConfigFilesDir;
 
     /**
@@ -234,7 +234,7 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0-alpha-2
      */
-    @Parameter( property = "maven.tomcat.serverXml" )
+    @Parameter(property = "maven.tomcat.serverXml")
     private File serverXml;
 
     /**
@@ -243,7 +243,7 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0-alpha-2
      */
-    @Parameter( property = "maven.tomcat.webXml" )
+    @Parameter(property = "maven.tomcat.webXml")
     private File tomcatWebXml;
 
     /**
@@ -252,7 +252,7 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0
      */
-    @Parameter( property = "maven.tomcat.fork", defaultValue = "false" )
+    @Parameter(property = "maven.tomcat.fork", defaultValue = "false")
     private boolean fork;
 
     /**
@@ -267,7 +267,7 @@ public abstract class AbstractRunMojo
      * @since 1.0
      * @deprecated use webapps instead
      */
-    @Parameter( property = "maven.tomcat.addContextWarDependencies", defaultValue = "false" )
+    @Parameter(property = "maven.tomcat.addContextWarDependencies", defaultValue = "false")
     private boolean addContextWarDependencies;
 
     /**
@@ -291,13 +291,13 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0
      */
-    @Parameter( property = "tomcat.useSeparateTomcatClassLoader", defaultValue = "false" )
+    @Parameter(property = "tomcat.useSeparateTomcatClassLoader", defaultValue = "false")
     protected boolean useSeparateTomcatClassLoader;
 
     /**
      * @since 1.0
      */
-    @Parameter( defaultValue = "${plugin.artifacts}", required = true )
+    @Parameter(defaultValue = "${plugin.artifacts}", required = true)
     private List<Artifact> pluginArtifacts;
 
     /**
@@ -305,7 +305,7 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0
      */
-    @Parameter( property = "tomcat.ignorePackaging", defaultValue = "false" )
+    @Parameter(property = "tomcat.ignorePackaging", defaultValue = "false")
     private boolean ignorePackaging;
 
     /**
@@ -329,7 +329,7 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( defaultValue = "JKS" )
+    @Parameter(defaultValue = "JKS")
     private String keystoreType;
 
     /**
@@ -345,7 +345,7 @@ public abstract class AbstractRunMojo
      * @see <a href="http://tomcat.apache.org/tomcat-7.0-doc/api/org/apache/catalina/startup/Tomcat.html">org.apache.catalina.startup.Tomcat</a>
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.useNaming", defaultValue = "true" )
+    @Parameter(property = "maven.tomcat.useNaming", defaultValue = "true")
     private boolean useNaming;
 
     /**
@@ -355,7 +355,7 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.contextReloadable", defaultValue = "false" )
+    @Parameter(property = "maven.tomcat.contextReloadable", defaultValue = "false")
     protected boolean contextReloadable;
 
     /**
@@ -363,7 +363,7 @@ public abstract class AbstractRunMojo
      *
      * @see <a href="http://tomcat.apache.org/tomcat-7.0-doc/config/context.html">http://tomcat.apache.org/tomcat-7.0-doc/config/context.html</a>
      */
-    @Parameter( property = "maven.tomcat.backgroundProcessorDelay", defaultValue = "-1" )
+    @Parameter(property = "maven.tomcat.backgroundProcessorDelay", defaultValue = "-1")
     protected int backgroundProcessorDelay = -1;
 
 
@@ -372,7 +372,7 @@ public abstract class AbstractRunMojo
      * <p>Since release 2.0, the file is filtered as a maven resource so you can use
      * interpolation tokens ${ }</p>
      */
-    @Parameter( property = "maven.tomcat.contextFile" )
+    @Parameter(property = "maven.tomcat.contextFile")
     protected File contextFile;
 
     /**
@@ -381,8 +381,8 @@ public abstract class AbstractRunMojo
      * contextFile will be sent to Tomcat, resulting in the latter's default
      * context configuration being used instead.
      */
-    @Parameter( defaultValue = "${project.build.directory}/${project.build.finalName}/META-INF/context.xml",
-                readonly = true )
+    @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}/META-INF/context.xml",
+               readonly = true)
     private File defaultContextFile;
 
     /**
@@ -393,7 +393,7 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.protocol", defaultValue = "HTTP/1.1" )
+    @Parameter(property = "maven.tomcat.protocol", defaultValue = "HTTP/1.1")
     private String protocol;
 
     /**
@@ -401,7 +401,7 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.tomcatUsers.file" )
+    @Parameter(property = "maven.tomcat.tomcatUsers.file")
     private File tomcatUsers;
 
     /**
@@ -409,7 +409,7 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.tomcatLogging.file" )
+    @Parameter(property = "maven.tomcat.tomcatLogging.file")
     private File tomcatLoggingFile;
 
     /**
@@ -417,12 +417,13 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.skip", defaultValue = "false" )
+    @Parameter(property = "maven.tomcat.skip", defaultValue = "false")
     protected boolean skip;
 
     /**
      * Collection of webapp artifacts to be deployed. Elements are &lt;webapp&gt; and contain
      * usual GAVC plus contextPath and/or contextFile elements.<p>
+     *
      * @see {@link Webapp}
      * @since 2.0
      */
@@ -434,7 +435,7 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.staticContextPath", defaultValue = "/" )
+    @Parameter(property = "maven.tomcat.staticContextPath", defaultValue = "/")
     private String staticContextPath;
 
     /**
@@ -443,7 +444,7 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.staticContextDocbase" )
+    @Parameter(property = "maven.tomcat.staticContextDocbase")
     private String staticContextDocbase;
 
     /**
@@ -454,14 +455,14 @@ public abstract class AbstractRunMojo
     @Parameter
     protected String classLoaderClass;
 
-    @Parameter( defaultValue = "${session}", readonly = true, required = true )
+    @Parameter(defaultValue = "${session}", readonly = true, required = true)
     protected MavenSession session;
 
     /**
      * Will dump port in a properties file (see ports for property names).
      * If empty no file generated
      */
-    @Parameter( property = "maven.tomcat.propertiesPortFilePath" )
+    @Parameter(property = "maven.tomcat.propertiesPortFilePath")
     protected String propertiesPortFilePath;
 
     /**
@@ -469,7 +470,7 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.hostName", defaultValue = "localhost" )
+    @Parameter(property = "maven.tomcat.hostName", defaultValue = "localhost")
     protected String hostName;
 
     /**
@@ -487,10 +488,10 @@ public abstract class AbstractRunMojo
      *
      * @since 2.1
      */
-    @Parameter( property = "maven.tomcat.https.clientAuth", defaultValue = "false" )
+    @Parameter(property = "maven.tomcat.https.clientAuth", defaultValue = "false")
     protected String clientAuth = "false";
 
-    @Component( role = MavenFileFilter.class, hint = "default" )
+    @Component(role = MavenFileFilter.class, hint = "default")
     protected MavenFileFilter mavenFileFilter;
 
 
@@ -500,60 +501,52 @@ public abstract class AbstractRunMojo
      *
      * @since 2.2
      */
-    @Parameter( property = "maven.tomcat.jarScan.allDirectories", defaultValue = "true" )
+    @Parameter(property = "maven.tomcat.jarScan.allDirectories", defaultValue = "true")
     protected boolean jarScanAllDirectories = true;
 
     /**
-     *
      * @since 2.2
      */
-    @Parameter( property = "maven.tomcat.useBodyEncodingForURI", defaultValue = "false" )
+    @Parameter(property = "maven.tomcat.useBodyEncodingForURI", defaultValue = "false")
     protected boolean useBodyEncodingForURI;
 
     /**
-     *
      * @since 2.2
      */
     @Parameter
     protected String trustManagerClassName;
 
     /**
-     *
      * @since 2.2
      */
     @Parameter
     protected String trustMaxCertLength;
 
     /**
-     *
      * @since 2.2
      */
     @Parameter
     protected String truststoreAlgorithm;
 
     /**
-     *
      * @since 2.2
      */
     @Parameter
     protected String truststoreFile;
 
     /**
-     *
      * @since 2.2
      */
     @Parameter
-    protected String  truststorePass;
+    protected String truststorePass;
 
     /**
-     *
      * @since 2.2
      */
     @Parameter
     protected String truststoreProvider;
 
     /**
-     *
      * @since 2.2
      */
     @Parameter
@@ -1123,14 +1116,14 @@ public abstract class AbstractRunMojo
 
                 Connector connector = new Connector( protocol );
                 connector.setPort( port );
-                connector.setMaxPostSize(maxPostSize);
+                connector.setMaxPostSize( maxPostSize );
 
                 if ( httpsPort > 0 )
                 {
                     connector.setRedirectPort( httpsPort );
                 }
 
-                if ( address != null)
+                if ( address != null )
                 {
                     connector.setAttribute( "address", address );
                 }
@@ -1154,7 +1147,7 @@ public abstract class AbstractRunMojo
                 {
                     httpsConnector = new Connector( protocol );
                     httpsConnector.setPort( httpsPort );
-                    httpsConnector.setMaxPostSize(maxPostSize);
+                    httpsConnector.setMaxPostSize( maxPostSize );
                     httpsConnector.setSecure( true );
                     httpsConnector.setProperty( "SSLEnabled", "true" );
                     // should be default but configure it anyway
@@ -1172,38 +1165,37 @@ public abstract class AbstractRunMojo
                         httpsConnector.setAttribute( "keystoreType", keystoreType );
                     }
 
-                    if( trustManagerClassName != null )
+                    if ( trustManagerClassName != null )
                     {
                         httpsConnector.setAttribute( "trustManagerClassName", trustManagerClassName );
                     }
 
-                    if( trustMaxCertLength != null )
+                    if ( trustMaxCertLength != null )
                     {
                         httpsConnector.setAttribute( "trustMaxCertLength", trustMaxCertLength );
                     }
 
-                    if( truststoreAlgorithm != null )
+                    if ( truststoreAlgorithm != null )
                     {
                         httpsConnector.setAttribute( "truststoreAlgorithm", truststoreAlgorithm );
                     }
 
-                    if( truststoreFile != null )
+                    if ( truststoreFile != null )
                     {
                         httpsConnector.setAttribute( "truststoreFile", truststoreFile );
                     }
 
-                    if( truststorePass != null )
+                    if ( truststorePass != null )
                     {
                         httpsConnector.setAttribute( "truststorePass", truststorePass );
                     }
 
-                    if( truststoreProvider != null )
+                    if ( truststoreProvider != null )
                     {
                         httpsConnector.setAttribute( "truststoreProvider", truststoreProvider );
                     }
 
-
-                    if( truststoreType != null )
+                    if ( truststoreType != null )
                     {
                         httpsConnector.setAttribute( "truststoreType", truststoreType );
                     }
@@ -1212,7 +1204,7 @@ public abstract class AbstractRunMojo
 
                     httpsConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
 
-                    if ( address != null)
+                    if ( address != null )
                     {
                         httpsConnector.setAttribute( "address", address );
                     }
@@ -1229,7 +1221,7 @@ public abstract class AbstractRunMojo
                     ajpConnector.setPort( ajpPort );
                     ajpConnector.setURIEncoding( uriEncoding );
                     ajpConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
-                    if ( address != null)
+                    if ( address != null )
                     {
                         ajpConnector.setAttribute( "address", address );
                     }
@@ -1326,7 +1318,7 @@ public abstract class AbstractRunMojo
             ClassWorld world = new ClassWorld();
             ClassRealm root = world.newRealm( "tomcat", Thread.currentThread().getContextClassLoader() );
 
-            for ( @SuppressWarnings( "rawtypes" ) Iterator i = pluginArtifacts.iterator(); i.hasNext(); )
+            for ( @SuppressWarnings("rawtypes") Iterator i = pluginArtifacts.iterator(); i.hasNext(); )
             {
                 Artifact pluginArtifact = (Artifact) i.next();
                 // add all plugin artifacts see https://issues.apache.org/jira/browse/MTOMCAT-122
@@ -1349,7 +1341,7 @@ public abstract class AbstractRunMojo
         }
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public Set<Artifact> getProjectArtifacts()
     {
         return project.getArtifacts();
@@ -1418,7 +1410,7 @@ public abstract class AbstractRunMojo
         List<Context> contexts = new ArrayList<Context>();
 
         ScopeArtifactFilter filter = new ScopeArtifactFilter( "tomcat" );
-        @SuppressWarnings( "unchecked" ) Set<Artifact> artifacts = project.getArtifacts();
+        @SuppressWarnings("unchecked") Set<Artifact> artifacts = project.getArtifacts();
         for ( Artifact artifact : artifacts )
         {
 

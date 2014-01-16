@@ -98,19 +98,19 @@ public abstract class AbstractRunMojo
     /**
      * Used to look up Artifacts in the remote repository.
      */
-    @Component( role = ArtifactFactory.class )
+    @Component(role = ArtifactFactory.class)
     protected ArtifactFactory artifactFactory;
 
     /**
      * Location of the local repository.
      */
-    @Parameter( defaultValue = "${localRepository}", required = true, readonly = true )
+    @Parameter(defaultValue = "${localRepository}", required = true, readonly = true)
     private ArtifactRepository artifactRepository;
 
     /**
      * Used to look up Artifacts in the remote repository.
      */
-    @Component( role = ArtifactResolver.class )
+    @Component(role = ArtifactResolver.class)
     protected ArtifactResolver artifactResolver;
 
     // ----------------------------------------------------------------------
@@ -120,27 +120,27 @@ public abstract class AbstractRunMojo
     /**
      * The packaging of the Maven project that this goal operates upon.
      */
-    @Parameter( defaultValue = "${project.packaging}", required = true, readonly = true )
+    @Parameter(defaultValue = "${project.packaging}", required = true, readonly = true)
     private String packaging;
 
     /**
      * The directory to create the Tomcat server configuration under.
      */
-    @Parameter( defaultValue = "${project.build.directory}/tomcat" )
+    @Parameter(defaultValue = "${project.build.directory}/tomcat")
     private File configurationDir;
 
     /**
      * The port to run the Tomcat server on.
      */
-    @Parameter( property = "maven.tomcat.port", defaultValue = "8080" )
+    @Parameter(property = "maven.tomcat.port", defaultValue = "8080")
     private int port;
 
     /**
-     *
      * this IP address will be used on all ports.
+     *
      * @since 2.2
      */
-    @Parameter( property = "maven.tomcat.address")
+    @Parameter(property = "maven.tomcat.address")
     private String address;
 
     /**
@@ -150,7 +150,7 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.ajp.port", defaultValue = "0" )
+    @Parameter(property = "maven.tomcat.ajp.port", defaultValue = "0")
     private int ajpPort;
 
     /**
@@ -160,7 +160,7 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.ajp.protocol", defaultValue = "ajp" )
+    @Parameter(property = "maven.tomcat.ajp.protocol", defaultValue = "ajp")
     private String ajpProtocol;
 
     /**
@@ -170,9 +170,9 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0
      */
-    @Parameter( property = "maven.tomcat.httpsPort", defaultValue = "0" )
+    @Parameter(property = "maven.tomcat.httpsPort", defaultValue = "0")
     private int httpsPort;
-    
+
     /**
      * The max post size to run the Tomcat server on.
      * By default it's 2097152 bytes. That's the default Tomcat configuration.
@@ -180,7 +180,7 @@ public abstract class AbstractRunMojo
      *
      * @since 2.3
      */
-    @Parameter( property = "maven.tomcat.maxPostSize", defaultValue = "2097152" )
+    @Parameter(property = "maven.tomcat.maxPostSize", defaultValue = "2097152")
     private int maxPostSize;
 
     /**
@@ -188,7 +188,7 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0
      */
-    @Parameter( property = "maven.tomcat.uriEncoding", defaultValue = "ISO-8859-1" )
+    @Parameter(property = "maven.tomcat.uriEncoding", defaultValue = "ISO-8859-1")
     private String uriEncoding;
 
     /**
@@ -204,7 +204,7 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0-alpha-2
      */
-    @Parameter( property = "maven.tomcat.additionalConfigFilesDir", defaultValue = "${basedir}/src/main/tomcatconf" )
+    @Parameter(property = "maven.tomcat.additionalConfigFilesDir", defaultValue = "${basedir}/src/main/tomcatconf")
     private File additionalConfigFilesDir;
 
     /**
@@ -212,7 +212,7 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0-alpha-2
      */
-    @Parameter( property = "maven.tomcat.serverXml" )
+    @Parameter(property = "maven.tomcat.serverXml")
     private File serverXml;
 
     /**
@@ -221,7 +221,7 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0-alpha-2
      */
-    @Parameter( property = "maven.tomcat.webXml" )
+    @Parameter(property = "maven.tomcat.webXml")
     private File tomcatWebXml;
 
     /**
@@ -230,7 +230,7 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0
      */
-    @Parameter( property = "maven.tomcat.fork", defaultValue = "false" )
+    @Parameter(property = "maven.tomcat.fork", defaultValue = "false")
     private boolean fork;
 
     /**
@@ -245,7 +245,7 @@ public abstract class AbstractRunMojo
      * @since 1.0
      * @deprecated use webapps instead
      */
-    @Parameter( property = "maven.tomcat.addContextWarDependencies", defaultValue = "false" )
+    @Parameter(property = "maven.tomcat.addContextWarDependencies", defaultValue = "false")
     private boolean addContextWarDependencies;
 
     /**
@@ -261,7 +261,7 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0
      */
-    @Component( role = ArchiverManager.class )
+    @Component(role = ArchiverManager.class)
     private ArchiverManager archiverManager;
 
     /**
@@ -269,13 +269,13 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0
      */
-    @Parameter( property = "tomcat.useSeparateTomcatClassLoader", defaultValue = "false" )
+    @Parameter(property = "tomcat.useSeparateTomcatClassLoader", defaultValue = "false")
     protected boolean useSeparateTomcatClassLoader;
 
     /**
      * @since 1.0
      */
-    @Parameter( defaultValue = "${plugin.artifacts}", required = true )
+    @Parameter(defaultValue = "${plugin.artifacts}", required = true)
     private List<Artifact> pluginArtifacts;
 
     /**
@@ -283,7 +283,7 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0
      */
-    @Parameter( property = "tomcat.ignorePackaging", defaultValue = "false" )
+    @Parameter(property = "tomcat.ignorePackaging", defaultValue = "false")
     private boolean ignorePackaging;
 
     /**
@@ -307,7 +307,7 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( defaultValue = "JKS" )
+    @Parameter(defaultValue = "JKS")
     private String keystoreType;
 
     /**
@@ -356,7 +356,7 @@ public abstract class AbstractRunMojo
      * @see <a href="http://tomcat.apache.org/tomcat-6.0-doc/api/org/apache/catalina/startup/Embedded.html">org.apache.catalina.startup.Embedded</a>
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.useNaming", defaultValue = "true" )
+    @Parameter(property = "maven.tomcat.useNaming", defaultValue = "true")
     private boolean useNaming;
 
     /**
@@ -366,7 +366,7 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.contextReloadable", defaultValue = "false" )
+    @Parameter(property = "maven.tomcat.contextReloadable", defaultValue = "false")
     protected boolean contextReloadable;
 
     /**
@@ -374,13 +374,13 @@ public abstract class AbstractRunMojo
      *
      * @see <a href="http://tomcat.apache.org/tomcat-6.0-doc/config/context.html">http://tomcat.apache.org/tomcat-6.0-doc/config/context.html</a>
      */
-    @Parameter( property = "maven.tomcat.backgroundProcessorDelay", defaultValue = "-1" )
+    @Parameter(property = "maven.tomcat.backgroundProcessorDelay", defaultValue = "-1")
     protected int backgroundProcessorDelay = -1;
 
     /**
      * The path of the Tomcat context XML file.
      */
-    @Parameter( defaultValue = "src/main/webapp/META-INF/context.xml" )
+    @Parameter(defaultValue = "src/main/webapp/META-INF/context.xml")
     protected File contextFile;
 
     /**
@@ -391,13 +391,13 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.protocol", defaultValue = "HTTP/1.1" )
+    @Parameter(property = "maven.tomcat.protocol", defaultValue = "HTTP/1.1")
     private String protocol;
 
     /**
      * The path of the Tomcat users XML file.
      */
-    @Parameter( property = "maven.tomcat.tomcatUsers.file" )
+    @Parameter(property = "maven.tomcat.tomcatUsers.file")
     private File tomcatUsers;
 
     /**
@@ -414,7 +414,7 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.skip", defaultValue = "false" )
+    @Parameter(property = "maven.tomcat.skip", defaultValue = "false")
     protected boolean skip;
 
     /**
@@ -429,7 +429,7 @@ public abstract class AbstractRunMojo
      *
      * @since 2.1
      */
-    @Parameter( property = "maven.tomcat.hostName", defaultValue = "localhost" )
+    @Parameter(property = "maven.tomcat.hostName", defaultValue = "localhost")
     protected String hostName;
 
     /**
@@ -455,7 +455,7 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.staticContextPath", defaultValue = "/" )
+    @Parameter(property = "maven.tomcat.staticContextPath", defaultValue = "/")
     private String staticContextPath;
 
     /**
@@ -464,7 +464,7 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.staticContextDocbase" )
+    @Parameter(property = "maven.tomcat.staticContextDocbase")
     private String staticContextDocbase;
 
     /**
@@ -478,13 +478,13 @@ public abstract class AbstractRunMojo
     /**
      * @since 2.2
      */
-    @Parameter( property = "maven.tomcat.useBodyEncodingForURI", defaultValue = "false" )
+    @Parameter(property = "maven.tomcat.useBodyEncodingForURI", defaultValue = "false")
     protected boolean useBodyEncodingForURI;
 
-    @Parameter( defaultValue = "${session}", readonly = true, required = true )
+    @Parameter(defaultValue = "${session}", readonly = true, required = true)
     protected MavenSession session;
 
-    @Component( role = MavenFileFilter.class, hint = "default" )
+    @Component(role = MavenFileFilter.class, hint = "default")
     protected MavenFileFilter mavenFileFilter;
 
     // ----------------------------------------------------------------------
@@ -921,7 +921,7 @@ public abstract class AbstractRunMojo
 
                 // create http connector
                 Connector httpConnector = container.createConnector( (InetAddress) null, port, protocol );
-                httpConnector.setMaxPostSize(maxPostSize);
+                httpConnector.setMaxPostSize( maxPostSize );
                 if ( httpsPort > 0 )
                 {
                     httpConnector.setRedirectPort( httpsPort );
@@ -929,7 +929,7 @@ public abstract class AbstractRunMojo
                 httpConnector.setURIEncoding( uriEncoding );
                 httpConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
 
-                if ( address != null)
+                if ( address != null )
                 {
                     httpConnector.setAttribute( "address", address );
                 }
@@ -941,7 +941,7 @@ public abstract class AbstractRunMojo
                 {
                     Connector httpsConnector = container.createConnector( (InetAddress) null, httpsPort, true );
                     httpsConnector.setSecure( true );
-                    httpsConnector.setMaxPostSize(maxPostSize);
+                    httpsConnector.setMaxPostSize( maxPostSize );
                     httpsConnector.setProperty( "SSLEnabled", "true" );
                     // should be default but configure it anyway
                     httpsConnector.setProperty( "sslProtocol", "TLS" );
@@ -980,7 +980,7 @@ public abstract class AbstractRunMojo
 
                     httpsConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
 
-                    if ( address != null)
+                    if ( address != null )
                     {
                         httpsConnector.setAttribute( "address", address );
                     }
@@ -995,7 +995,7 @@ public abstract class AbstractRunMojo
                     Connector ajpConnector = container.createConnector( (InetAddress) null, ajpPort, ajpProtocol );
                     ajpConnector.setURIEncoding( uriEncoding );
                     ajpConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
-                    if ( address != null)
+                    if ( address != null )
                     {
                         ajpConnector.setAttribute( "address", address );
                     }
@@ -1063,7 +1063,7 @@ public abstract class AbstractRunMojo
         }
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public Set<Artifact> getProjectArtifacts()
     {
         return project.getArtifacts();
@@ -1132,7 +1132,7 @@ public abstract class AbstractRunMojo
         List<Context> contexts = new ArrayList<Context>();
 
         ScopeArtifactFilter filter = new ScopeArtifactFilter( "tomcat" );
-        @SuppressWarnings( "unchecked" ) Set<Artifact> artifacts = project.getArtifacts();
+        @SuppressWarnings("unchecked") Set<Artifact> artifacts = project.getArtifacts();
         for ( Artifact artifact : artifacts )
         {
             // Artifact is not yet registered and it has neither test, nor a

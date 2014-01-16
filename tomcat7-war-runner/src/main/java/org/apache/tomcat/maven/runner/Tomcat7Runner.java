@@ -86,7 +86,7 @@ public class Tomcat7Runner
     public int httpPort;
 
     public int httpsPort;
-    
+
     public int maxPostSize = 2097152;
 
     public int ajpPort;
@@ -298,7 +298,7 @@ public class Tomcat7Runner
             {
                 Connector connector = new Connector( connectorHttpProtocol );
                 connector.setPort( httpPort );
-                connector.setMaxPostSize(maxPostSize);
+                connector.setMaxPostSize( maxPostSize );
 
                 if ( httpsPort > 0 )
                 {
@@ -322,7 +322,7 @@ public class Tomcat7Runner
             {
                 Connector httpsConnector = new Connector( connectorHttpProtocol );
                 httpsConnector.setPort( httpsPort );
-                httpsConnector.setMaxPostSize(maxPostSize);
+                httpsConnector.setMaxPostSize( maxPostSize );
                 httpsConnector.setSecure( true );
                 httpsConnector.setProperty( "SSLEnabled", "true" );
                 httpsConnector.setProperty( "sslProtocol", "TLS" );
@@ -585,7 +585,7 @@ public class Tomcat7Runner
 
                 // MTOMCAT-211 ensure parent directories created
                 File parentFile = expandFile.getParentFile();
-                if ( !parentFile.mkdirs() && !parentFile.isDirectory())
+                if ( !parentFile.mkdirs() && !parentFile.isDirectory() )
                 {
                     throw new Exception( "FATAL: impossible to create directories:" + parentFile );
                 }
