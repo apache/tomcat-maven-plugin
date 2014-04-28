@@ -1502,7 +1502,7 @@ public abstract class AbstractRunMojo
             servlet.setName( "staticContent" );
             staticContext.addChild( servlet );
             staticContext.addServletMapping( "/", "staticContent" );
-            host.addChild( staticContext );
+//            host.addChild( staticContext );
         }
     }
 
