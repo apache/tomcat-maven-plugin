@@ -1502,7 +1502,8 @@ public abstract class AbstractRunMojo
             servlet.setName( "staticContent" );
             staticContext.addChild( servlet );
             staticContext.addServletMapping( "/", "staticContent" );
-//            host.addChild( staticContext );
+            // see https://issues.apache.org/jira/browse/MTOMCAT-238
+            //host.addChild( staticContext );
         }
     }
 
