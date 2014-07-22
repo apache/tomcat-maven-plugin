@@ -48,7 +48,14 @@
             <path>/</path>
           </configuration>
         </plugin>
-
+        <plugin>
+          <groupId>org.apache.tomcat.maven</groupId>
+          <artifactId>tomcat8-maven-plugin</artifactId>
+          <configuration>
+            <port>9090</port>
+            <path>/</path>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
