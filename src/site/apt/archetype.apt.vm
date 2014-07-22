@@ -1,0 +1,123 @@
+ ---
+ Tomcat Maven plugin Archetype
+ ---
+ Oliver Lamy
+ ---
+ 2011-01-13
+ ---
+
+ ~~ Licensed to the Apache Software Foundation (ASF) under one
+ ~~ or more contributor license agreements.  See the NOTICE file
+ ~~ distributed with this work for additional information
+ ~~ regarding copyright ownership.  The ASF licenses this file
+ ~~ to you under the Apache License, Version 2.0 (the
+ ~~ "License"); you may not use this file except in compliance
+ ~~ with the License.  You may obtain a copy of the License at
+ ~~
+ ~~   http://www.apache.org/licenses/LICENSE-2.0
+ ~~
+ ~~ Unless required by applicable law or agreed to in writing,
+ ~~ software distributed under the License is distributed on an
+ ~~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ ~~ KIND, either express or implied.  See the License for the
+ ~~ specific language governing permissions and limitations
+ ~~ under the License.
+
+ ~~ NOTE: For help with the syntax of this file, see:
+ ~~ http://maven.apache.org/doxia/references/apt-format.html
+
+Tomcat Maven plugin Archetype
+
+  There is an archetype for the Tomcat Maven plugin to show various features with concrete samples.
+
+* Using it
+
+  Use a released version:
+
++--------------------
+mvn archetype:generate \
+   -DarchetypeGroupId=org.apache.tomcat.maven \
+   -DarchetypeArtifactId=tomcat-maven-archetype \
+   -DarchetypeVersion=${project.version}
++--------------------
+
+  Use a SNAPSHOT version:
+
++--------------------
+mvn archetype:generate \
+   -DarchetypeGroupId=org.apache.tomcat.maven \
+   -DarchetypeArtifactId=tomcat-maven-archetype \
+   -DarchetypeVersion=${project.version} \
+   -DarchetypeRepository=https://repository.apache.org/content/repositories/snapshots/
++--------------------
+
+  You will have the following output (we will use a project named tomcat-sample)
+
++--------------------
+....
+[INFO] Using property: groupId = org.apache.tomcat.maven
+Define value for property 'artifactId': : tomcat-sample (project will be created in ./tomcat-sample )
+...
+cd tomcat-sample
++--------------------
+
+* Project details
+
+  Note: it's a complex hello world sample :-)
+
+  The goal is to expose a REST service called HelloService and use it in a web application.
+
++------------------
+@Path( "HelloService" )
+public interface HelloService
+{
+    @Path( "sayHello/{who}" )
+    @GET
+    @Produces( { MediaType.TEXT_PLAIN } )
+    String sayHello( @PathParam( "who" ) String who );
+}
++------------------
+
+  The {{{http://cxf.apache.org}Apache Cxf}} will be used to expose the implementation as a REST service.
+
+  Now you have a standard multi module Maven projects layout:
+
+    * basic-api (service interface)
+
+    * basic-api-impl (service default impl). For more details on how cxf works have a look at spring configuration files.
+
+    * basic-webapp (our webapp module)
+
+    * basic-webapp-exec (module to generated executable war)
+
+    * basic-webapp-it (module to run selenium tests with generated war)
+
+    []
+
+* Using the plugin with the project
+
+** Running the webapp
+
+  From the top directory, you can use: mvn tomcat6:run or mvn tomcat7:run (depends on tomcat version you want).
+
+  Now hit your browser http://localhost:9090 and you will use a very complicated hello world webapp sample
+
+** Integration tests with Selenium
+
+  Use mvn clean install. Default browser is firefox but you can use -Pchrome or -Piexplore.
+
+** Using an executable war/jar
+
+  Now you have now an executable jar/war.
+
+  Try it:
+
++------------------
+cd basic-webapp-exec/target/
+java -jar basic-webapp-exec-1.0-SNAPSHOT-war-exec.jar -httpPort 9191
++------------------
+
+
+  And go to http://localhost:9191 with a browser.
+
+  So you now have a Tomcat 7 instance running this fabulous application without needing to install anything!

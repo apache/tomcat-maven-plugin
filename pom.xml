@@ -1,0 +1,972 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <!-- for more information, see the documentation of this POM: http://maven.apache.org/pom/maven/ -->
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>12</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.tomcat.maven</groupId>
+  <artifactId>tomcat-maven-plugin</artifactId>
+  <packaging>pom</packaging>
+  <name>Apache Tomcat Maven Plugin</name>
+  <version>2.3-SNAPSHOT</version>
+  <description>The Tomcat Maven Plugin provides goals to manipulate WAR projects within the Tomcat servlet
+    container.
+  </description>
+
+  <url>${siteUrl}</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.5</maven.compiler.source>
+    <maven.compiler.target>1.5</maven.compiler.target>
+    <mavenVersion>2.2.1</mavenVersion>
+
+    <mavenPluginPluginVersion>3.2</mavenPluginPluginVersion>
+    <!-- Test settings -->
+    <maven.test.redirectTestOutputToFile>false</maven.test.redirectTestOutputToFile>
+    <surefire.version>2.17</surefire.version>
+    <failsafe.version>${surefire.version}</failsafe.version>
+
+    <junit.version>4.10</junit.version>
+    <it.sleep.time>2000</it.sleep.time>
+    <verifier.maven.debug>false</verifier.maven.debug>
+    <verifier.debugJvm>false</verifier.debugJvm>
+    <maven.resources.escapeString>\</maven.resources.escapeString>
+    <distributionReleaseUrl>https://repository.apache.org/service/local/staging/deploy/maven2</distributionReleaseUrl>
+
+    <distributionSnapshotsUrl>https://repository.apache.org/content/repositories/snapshots</distributionSnapshotsUrl>
+    <distributionIdSnapshots>apache.snapshots.https</distributionIdSnapshots>
+
+    <distributionSiteUrl>scp://people.apache.org/www/tomcat.apache.org/maven-plugin-${project.version}</distributionSiteUrl>
+    <sitePath>maven-plugin-trunk</sitePath>
+    <siteUrl>http://tomcat.apache.org/${sitePath}</siteUrl>
+
+    <!-- http port used to run it test -->
+    <its.http.port>1973</its.http.port>
+    <!-- https port used to run it test -->
+    <its.https.port>2003</its.https.port>
+    <!-- ajp port used to run it test -->
+    <its.ajp.port>2001</its.ajp.port>
+    <!-- server port for it tests -->
+    <its.server.port>2008</its.server.port>
+    <tomcat7Version>7.0.54</tomcat7Version>
+
+    <!-- to prevent isssues with last apache parent pom -->
+    <arguments />
+
+    <tomcat-maven.siteFilePath>${user.home}/tomcat-maven-plugin-${project.version}/</tomcat-maven.siteFilePath>
+    <tomcat-maven.siteUrlDeployment>file://${tomcat-maven.siteFilePath}</tomcat-maven.siteUrlDeployment>
+    <tomcat-maven.scmPubCheckoutDirectory>${user.home}/tomcat-maven-plugin-${project.version}-content</tomcat-maven.scmPubCheckoutDirectory>
+
+  </properties>
+
+  <prerequisites>
+    <maven>${mavenVersion}</maven>
+  </prerequisites>
+  <inceptionYear>2005</inceptionYear>
+
+  <developers>
+    <developer>
+      <id>mhobson</id>
+      <name>Mark Hobson</name>
+      <email>markhobson@gmail.com</email>
+      <roles>
+        <role>Lead Developer</role>
+      </roles>
+      <timezone>0</timezone>
+    </developer>
+    <developer>
+      <id>olamy</id>
+      <name>Olivier Lamy</name>
+      <email>olamy@apache.org</email>
+    </developer>
+  </developers>
+
+  <contributors>
+    <contributor>
+      <name>Jurgen Lust</name>
+    </contributor>
+    <contributor>
+      <name>Spike Washburn</name>
+    </contributor>
+    <contributor>
+      <name>Mark Michaelis</name>
+    </contributor>
+    <contributor>
+      <name>Peter Lynch</name>
+    </contributor>
+    <contributor>
+      <name>Neale Upstone</name>
+    </contributor>
+    <contributor>
+      <name>Tony Chemit</name>
+    </contributor>
+    <contributor>
+      <name>Nigel Sim.</name>
+    </contributor>
+    <contributor>
+      <name>Josh Harness</name>
+    </contributor>
+    <contributor>
+      <name>Patrick Garcia</name>
+    </contributor>
+    <contributor>
+      <name>Robin Bohm</name>
+    </contributor>
+    <contributor>
+      <name>Mitch Kyle</name>
+    </contributor>
+    <contributor>
+      <name>Glen Mazza</name>
+    </contributor>
+    <contributor>
+      <name>Ludwig Magnusson</name>
+    </contributor>
+    <contributor>
+      <name>Tim Astle</name>
+    </contributor>
+    <contributor>
+      <name>Eugenio Santoboni</name>
+    </contributor>
+    <contributor>
+      <name>Emeric MARTINEAU</name>
+    </contributor>
+    <contributor>
+      <name>Daniel Cassidy</name>
+    </contributor>
+    <contributor>
+      <name>Petar Tahchiev</name>
+    </contributor>
+    <contributor>
+      <name>Denis Yudin</name>
+    </contributor>
+    <contributor>
+      <name>Ryan Highley</name>
+    </contributor>
+    <contributor>
+      <name>Cedric Dutoit</name>
+    </contributor>
+    <contributor>
+      <name>Robert Hollencamp</name>
+    </contributor>
+    <contributor>
+      <name>Michael Osipov</name>
+    </contributor>
+    <contributor>
+      <name>Matthias Gunther</name>
+    </contributor>
+    <contributor>
+      <name>Sylvain Guillope</name>
+    </contributor>
+  </contributors>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <mailingLists>
+    <mailingList>
+      <name>User List</name>
+      <subscribe>users-subscribe@tomcat.apache.org</subscribe>
+      <unsubscribe>users-unsubscribe@tomcat.apache.org</unsubscribe>
+      <post>users@tomcat.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/tomcat-users/</archive>
+      <otherArchives>
+        <otherArchive>http://marc.info/?l=tomcat-user</otherArchive>
+        <otherArchive>http://markmail.org/list/org.apache.tomcat.user/</otherArchive>
+        <otherArchive>http://old.nabble.com/Tomcat---User-f342.html</otherArchive>
+        <otherArchive>http://www.mail-archive.com/users@tomcat.apache.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+
+    <mailingList>
+      <name>Development List</name>
+      <subscribe>dev-subscribe@tomcat.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@tomcat.apache.org</unsubscribe>
+      <post>dev@tomcat.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/tomcat-dev/</archive>
+      <otherArchives>
+        <otherArchive>http://marc.info/?l=tomcat-dev</otherArchive>
+        <otherArchive>http://markmail.org/list/org.apache.tomcat.dev/</otherArchive>
+        <otherArchive>http://old.nabble.com/Tomcat---Dev-f341.html</otherArchive>
+        <otherArchive>http://www.mail-archive.com/dev@tomcat.apache.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+
+    <mailingList>
+      <name>Announcements List</name>
+      <subscribe>announce-subscribe@tomcat.apache.org</subscribe>
+      <unsubscribe>announce-unsubscribe@tomcat.apache.org</unsubscribe>
+      <post>N/A</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/tomcat-announce/</archive>
+      <otherArchives>
+        <otherArchive>http://marc.info/?l=tomcat-announce</otherArchive>
+        <otherArchive>http://markmail.org/list/org.apache.tomcat.announce/</otherArchive>
+        <otherArchive>http://www.mail-archive.com/announce@tomcat.apache.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+
+
+
+    <!-- old mailing lists from codehaus -->
+    <mailingList>
+      <name>Legacy Development List</name>
+      <subscribe>dev-subscribe@mojo.codehaus.org</subscribe>
+      <unsubscribe>dev-unsubscribe@mojo.codehaus.org</unsubscribe>
+      <post>dev@mojo.codehaus.org</post>
+      <archive>http://archive.codehaus.org/lists/org.codehaus.mojo.dev</archive>
+      <otherArchives>
+        <otherArchive>http://old.nabble.com/mojo---dev-f11981.html</otherArchive>
+        <otherArchive>http://markmail.org/list/org.codehaus.mojo.dev</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Legacy User List</name>
+      <subscribe>user-subscribe@mojo.codehaus.org</subscribe>
+      <unsubscribe>user-unsubscribe@mojo.codehaus.org</unsubscribe>
+      <post>user@mojo.codehaus.org</post>
+      <archive>http://archive.codehaus.org/lists/org.codehaus.mojo.user</archive>
+      <otherArchives>
+        <otherArchive>http://old.nabble.com/mojo---user-f11980.html</otherArchive>
+        <otherArchive>http://markmail.org/list/org.codehaus.mojo.user</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Legacy Commits List</name>
+      <subscribe>scm-subscribe@mojo.codehaus.org</subscribe>
+      <unsubscribe>scm-unsubscribe@mojo.codehaus.org</unsubscribe>
+      <archive>http://archive.codehaus.org/lists/org.codehaus.mojo.scm</archive>
+      <otherArchives>
+        <otherArchive>http://markmail.org/list/org.codehaus.mojo.scm</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Legacy Announcements List</name>
+      <subscribe>announce-subscribe@mojo.codehaus.org</subscribe>
+      <unsubscribe>announce-unsubscribe@mojo.codehaus.org</unsubscribe>
+      <post>announce@mojo.codehaus.org</post>
+      <archive>http://archive.codehaus.org/lists/org.codehaus.mojo.announce</archive>
+      <otherArchives>
+        <otherArchive>http://old.nabble.com/mojo---announce-f11982.html</otherArchive>
+        <otherArchive>http://markmail.org/list/org.codehaus.mojo.announce</otherArchive>
+      </otherArchives>
+    </mailingList>
+  </mailingLists>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/tomcat/maven-plugin/trunk/</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/tomcat/maven-plugin/trunk/</developerConnection>
+    <url>http://svn.apache.org/viewvc/tomcat/maven-plugin/</url>
+  </scm>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>https://issues.apache.org/jira/browse/MTOMCAT</url>
+  </issueManagement>
+
+  <ciManagement>
+    <url>https://builds.apache.org/job/TomcatMavenPlugin/</url>
+  </ciManagement>
+
+  <modules>
+    <module>common-tomcat-maven-plugin</module>
+    <module>tomcat-maven-plugin-it</module>
+    <module>tomcat6-maven-plugin</module>
+    <module>tomcat7-maven-plugin</module>
+    <module>tomcat7-war-runner</module>
+    <module>tomcat-maven-archetype</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- tomcat dependencies -->
+      <dependency>
+        <groupId>org.eclipse.jdt.core.compiler</groupId>
+        <artifactId>ecj</artifactId>
+        <version>4.3.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.tomcat.embed</groupId>
+        <artifactId>tomcat-embed-core</artifactId>
+        <version>${tomcat7Version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-util</artifactId>
+        <version>${tomcat7Version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-coyote</artifactId>
+        <version>${tomcat7Version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-api</artifactId>
+        <version>${tomcat7Version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-jdbc</artifactId>
+        <version>${tomcat7Version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-dbcp</artifactId>
+        <version>${tomcat7Version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-servlet-api</artifactId>
+        <version>${tomcat7Version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-jsp-api</artifactId>
+        <version>${tomcat7Version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-jasper</artifactId>
+        <version>${tomcat7Version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-jasper-el</artifactId>
+        <version>${tomcat7Version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-el-api</artifactId>
+        <version>${tomcat7Version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-catalina</artifactId>
+        <version>${tomcat7Version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-tribes</artifactId>
+        <version>${tomcat7Version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-catalina-ha</artifactId>
+        <version>${tomcat7Version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-annotations-api</artifactId>
+        <version>${tomcat7Version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-i18n-es</artifactId>
+        <version>${tomcat7Version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-i18n-fr</artifactId>
+        <version>${tomcat7Version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-i18n-ja</artifactId>
+        <version>${tomcat7Version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-juli</artifactId>
+        <version>${tomcat7Version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.tomcat.embed</groupId>
+        <artifactId>tomcat-embed-logging-juli</artifactId>
+        <version>${tomcat7Version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.tomcat.embed</groupId>
+        <artifactId>tomcat-embed-logging-log4j</artifactId>
+        <version>${tomcat7Version}</version>
+      </dependency>
+
+
+      <!-- end tomcat dependencies -->
+
+      <dependency>
+        <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat7-war-runner</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven.plugin-tools</groupId>
+        <artifactId>maven-plugin-annotations</artifactId>
+        <version>${mavenPluginPluginVersion}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>common-tomcat-maven-plugin</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat-maven-plugin-it</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-api</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact-manager</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-provider-api</artifactId>
+        <version>2.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-project</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-model</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-core</artifactId>
+        <version>${mavenVersion}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-parameter-documenter</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-repository-metadata</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-error-diagnostics</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-descriptor</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-monitor</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-settings</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-archiver</artifactId>
+        <version>2.4.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-archiver</artifactId>
+        <version>2.1.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>3.0.15</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.shared</groupId>
+        <artifactId>maven-filtering</artifactId>
+        <version>1.0</version>
+        <exclusions>
+          <exclusion>
+            <groupId>nekohtml</groupId>
+            <artifactId>xercesMinimal</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>1.6</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.2</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-lang</groupId>
+        <artifactId>commons-lang</artifactId>
+        <version>2.6</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-cli</groupId>
+        <artifactId>commons-cli</artifactId>
+        <version>1.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>1.4.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-classworlds</artifactId>
+        <version>2.2.2</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>10.0.1</version>
+      </dependency>
+
+      <!-- Test Dependencies -->
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>junit-addons</groupId>
+        <artifactId>junit-addons</artifactId>
+        <version>1.4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.shared</groupId>
+        <artifactId>maven-verifier</artifactId>
+        <version>1.4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>4.3.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>1.7.5</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>1.7.5</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+        <version>2.0-beta9</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
+        <version>2.0-beta9</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <!-- Override settings inherited from parent POM -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>1.6</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.5.1</version>
+          <configuration>
+            <encoding>${project.build.sourceEncoding}</encoding>
+            <source>${maven.compiler.source}</source>
+            <target>${maven.compiler.target}</target>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>2.5.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${surefire.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${failsafe.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>2.3.1</version>
+          <configuration>
+            <createChecksum>true</createChecksum>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-plugin-plugin</artifactId>
+          <version>${mavenPluginPluginVersion}</version>
+          <configuration>
+            <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+          </configuration>
+          <executions>
+            <execution>
+              <id>mojo-descriptor</id>
+              <goals>
+                <goal>descriptor</goal>
+              </goals>
+            </execution>
+            <!-- if you want to generate help goal -->
+            <execution>
+              <id>help-goal</id>
+              <goals>
+                <goal>helpmojo</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>2.5</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.5</version>
+          <configuration>
+            <preparationGoals>clean install</preparationGoals>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>2.6</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.3</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-invoker-plugin</artifactId>
+          <version>1.8</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-component-metadata</artifactId>
+          <version>1.5.5</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <version>0.10</version>
+          <configuration>
+            <excludes>
+              <exclude>.gitignore</exclude>
+              <exclude>DEPENDENCIES</exclude>
+              <exclude>README.txt</exclude>
+              <exclude>*.sh</exclude>
+              <exclude>.git/**</exclude>
+              <exclude>.idea/**</exclude>
+              <exclude>out/**</exclude>
+              <exclude>.extract/**</exclude>
+              <exclude>*.patch</exclude>
+            </excludes>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-scm-publish-plugin</artifactId>
+          <version>1.0</version>
+          <configuration>
+            <pubScmUrl>scm:svn:https://svn.apache.org/repos/asf/tomcat/site/trunk/docs/${sitePath}</pubScmUrl>
+            <checkinComment>Apache Tomcat Maven Plugin site documentation for ${project.version}</checkinComment>
+            <content>${tomcat-maven.siteFilePath}</content>
+            <checkoutDirectory>${tomcat-maven.scmPubCheckoutDirectory}</checkoutDirectory>
+            <tryUpdate>true</tryUpdate>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.9.1</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>rat-verify</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.3.1</version>
+        <executions>
+          <execution>
+            <id>enforce-java</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <version>1.6.0</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <distributionManagement>
+    <repository>
+      <id>apache.releases.https</id>
+      <name>Apache Release Distribution Repository</name>
+      <url>${distributionReleaseUrl}</url>
+    </repository>
+
+    <snapshotRepository>
+      <id>${distributionIdSnapshots}</id>
+      <name>Apache Development Snapshot Repository</name>
+      <url>${distributionSnapshotsUrl}</url>
+    </snapshotRepository>
+    <site>
+      <id>apache.website</id>
+      <url>${tomcat-maven.siteUrlDeployment}</url>
+    </site>
+  </distributionManagement>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.7</version>
+        <configuration>
+          <linkOnly>true</linkOnly>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-plugin-plugin</artifactId>
+        <version>${mavenPluginPluginVersion}</version>
+        <configuration>
+          <requirements>
+            <jdk>${maven.compiler.target}</jdk>
+          </requirements>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.9.1</version>
+        <inherited>false</inherited>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+        <configuration>
+          <links>
+            <link>http://tomcat.apache.org/tomcat-6.0-doc/api/</link>
+            <link>http://tomcat.apache.org/tomcat-7.0-doc/api/</link>
+          </links>
+          <detectLinks>true</detectLinks>
+          <notimestamp>true</notimestamp>
+          <tagletArtifacts>
+            <tagletArtifact>
+              <groupId>org.apache.maven.plugin-tools</groupId>
+              <artifactId>maven-plugin-tools-javadoc</artifactId>
+              <version>3.2</version>
+            </tagletArtifact>
+            <tagletArtifact>
+              <groupId>org.codehaus.plexus</groupId>
+              <artifactId>plexus-javadoc</artifactId>
+              <version>1.0</version>
+            </tagletArtifact>
+          </tagletArtifacts>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changes-plugin</artifactId>
+        <version>2.8</version>
+        <inherited>false</inherited>
+        <configuration>
+          <columnNames>Type,Fix Version,Key,Summary,Assignee,Status,Created</columnNames>
+          <maxEntries>200</maxEntries>
+          <onlyCurrentVersion>true</onlyCurrentVersion>
+          <resolutionIds>Fixed</resolutionIds>
+          <sortColumnNames>Type</sortColumnNames>
+          <!--fixVersionIds>12320767</fixVersionIds-->
+          <useJql>true</useJql>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>jira-report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
+
+  <profiles>
+    <profile>
+      <id>site-release</id>
+      <properties>
+        <sitePath>maven-plugin-${project.version}</sitePath>
+      </properties>
+    </profile>
+    <profile>
+      <id>reporting</id>
+      <reporting>
+        <plugins>
+          <plugin>
+            <artifactId>maven-pmd-plugin</artifactId>
+            <version>2.5</version>
+            <configuration>
+              <targetJdk>${maven.compiler.target}</targetJdk>
+              <rulesets>
+                <ruleset>rulesets/maven.xml</ruleset>
+              </rulesets>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>2.9.1</version>
+            <configuration>
+              <configLocation>config/maven_checks.xml</configLocation>
+              <headerLocation>config/maven-header.txt</headerLocation>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jxr-plugin</artifactId>
+            <version>2.2</version>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.sonar-plugins</groupId>
+            <artifactId>maven-report</artifactId>
+            <version>0.1</version>
+          </plugin>
+        </plugins>
+      </reporting>
+    </profile>
+    <profile>
+      <id>tc-staging</id>
+      <properties>
+        <tcStagedReleaseUrl />
+      </properties>
+
+      <repositories>
+        <repository>
+          <id>tc-staged</id>
+          <url>${tcStagedReleaseUrl}</url>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+
+</project>

@@ -1,0 +1,142 @@
+ ---
+ Run Mojo
+ ---
+ Oliver Lamy
+ ---
+ 2013-02-25
+ ---
+
+ ~~ Licensed to the Apache Software Foundation (ASF) under one
+ ~~ or more contributor license agreements.  See the NOTICE file
+ ~~ distributed with this work for additional information
+ ~~ regarding copyright ownership.  The ASF licenses this file
+ ~~ to you under the Apache License, Version 2.0 (the
+ ~~ "License"); you may not use this file except in compliance
+ ~~ with the License.  You may obtain a copy of the License at
+ ~~
+ ~~   http://www.apache.org/licenses/LICENSE-2.0
+ ~~
+ ~~ Unless required by applicable law or agreed to in writing,
+ ~~ software distributed under the License is distributed on an
+ ~~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ ~~ KIND, either express or implied.  See the License for the
+ ~~ specific language governing permissions and limitations
+ ~~ under the License.
+
+ ~~ NOTE: For help with the syntax of this file, see:
+ ~~ http://maven.apache.org/doxia/references/apt-format.html
+
+Run Mojo: run your Maven war project quickly!
+
+  When developing a war project, you usually build your war and deploy it to an installed Tomcat instance.
+  This is time and resources consuming and also requires a local Tomcat instance.
+
+  The run mojo gives you the opportunity to avoid those efforts by simply running your war inside an embedded Tomcat instance in your Maven build.
+
+  <<<NOTE>>> If you have a multi module Maven project and use Maven3, you don't need to install all modules before using the run goal,
+  just use tomcat6/7:run from the root module and the plugin will auto detect the build output directory from various modules and replace
+  dependencies with those directories in the webapp classloader.
+
+* Running an embedded Tomcat
+
+  Configure your pom with the plugin version (for other mojo parameters see each mojo's documentation).
+
+  And use: mvn tomcat6/7:run
+
++---------------------
+  <plugin>
+    <groupId>org.apache.tomcat.maven</groupId>
+    <artifactId>tomcat7-maven-plugin</artifactId>
+    <!-- or if you want to use tomcat 6.x
+    <artifactId>tomcat6-maven-plugin</artifactId>
+    -->
+    <version>${project.version}</version>
+    <configuration>
+      <!-- http port -->
+      <port>9090</port>
+      <!-- application path always starts with /-->
+      <path>/</path>
+      <!-- optional path to a context file -->
+      <contextFile>\${tomcatContextXml}</contextFile>
+      <!-- optional system propoerties you want to add -->
+      <systemProperties>
+        <appserver.base>\${project.build.directory}/appserver-base</appserver.base>
+        <appserver.home>\${project.build.directory}/appserver-home</appserver.home>
+        <derby.system.home>\${project.build.directory}/appserver-base/logs</derby.system.home>
+        <java.io.tmpdir>\${project.build.directory}</java.io.tmpdir>
+      </systemProperties>
+      <!-- if you want to use test dependencies rather than only runtime -->
+      <useTestClasspath>false</useTestClasspath>
+      <!-- optional if you want to add some extra directories into the classloader -->
+      <additionalClasspathDirs>
+        <additionalClasspathDir></additionalClasspathDir>
+      </additionalClasspathDirs>
+    </configuration>
+    <!-- For any extra dependencies needed when running embedded Tomcat (not WAR dependencies) add them below -->
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.derby</groupId>
+        <artifactId>derby</artifactId>
+        <version>\${derbyVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.mail</groupId>
+        <artifactId>mail</artifactId>
+        <version>1.4</version>
+      </dependency>
+    </dependencies>
+  </plugin>
+
++---------------------
+
+* Maven project structure
+
++---------------------
+  pom.xml             (top level pom with packaging pom)
+  my-api/pom.xml      (API project with packaging jar)
+  my-api-impl/pom.xml (API implementation project with packaging jar)
+  my-webapp/pom.xml   (webapp project with packaging war)
+
++---------------------
+
+  With the structure given above, from the top level directory use mvn tomcat6/7:run -pl :my-webapp -am.
+
+* Use it with selenium mojo
+
+  You can use this mojo to start your application in a Tomcat instance and run your selenium test against this instance.
+
+  The following configuration will start an embedded Tomcat in the pre-integration-test and stop it in the post-integration-test.
+
++---------------------
+
+  <plugin>
+    <groupId>org.apache.tomcat.maven</groupId>
+    <artifactId>tomcat7-maven-plugin</artifactId>
+    <!-- or if you want to use tomcat 6.x
+    <artifactId>tomcat6-maven-plugin</artifactId>
+    -->
+    <version>${project.version}</version>
+    <executions>
+      <execution>
+        <id>tomcat-run</id>
+        <goals>
+          <goal>run-war-only</goal>
+        </goals>
+        <phase>pre-integration-test</phase>
+        <configuration>
+          ....
+          <fork>true</fork>
+          ....
+        </configuration>
+      </execution>
+      <execution>
+        <id>tomcat-shutdown</id>
+        <goals>
+          <goal>shutdown</goal>
+        </goals>
+        <phase>post-integration-test</phase>
+      </execution>
+    </executions>
+  </plugin>
+
++---------------------

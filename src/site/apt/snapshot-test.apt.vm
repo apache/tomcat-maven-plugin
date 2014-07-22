@@ -1,0 +1,102 @@
+ ---
+ Snapshots Tests
+ ---
+ Oliver Lamy
+ ---
+ 2012-11-14
+ ---
+
+ ~~ Licensed to the Apache Software Foundation (ASF) under one
+ ~~ or more contributor license agreements.  See the NOTICE file
+ ~~ distributed with this work for additional information
+ ~~ regarding copyright ownership.  The ASF licenses this file
+ ~~ to you under the Apache License, Version 2.0 (the
+ ~~ "License"); you may not use this file except in compliance
+ ~~ with the License.  You may obtain a copy of the License at
+ ~~
+ ~~   http://www.apache.org/licenses/LICENSE-2.0
+ ~~
+ ~~ Unless required by applicable law or agreed to in writing,
+ ~~ software distributed under the License is distributed on an
+ ~~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ ~~ KIND, either express or implied.  See the License for the
+ ~~ specific language governing permissions and limitations
+ ~~ under the License.
+
+ ~~ NOTE: For help with the syntax of this file, see:
+ ~~ http://maven.apache.org/doxia/references/apt-format.html
+
+Testing SNAPSHOT
+
+  You can test SNAPSHOT versions of the mojos tomcat6 and tomcat7 with the following configuration.
+
+* Declare the SNAPSHOT pluginRepository or repository if using Apache Maven 2.x
+
++--------------------------
+
+  <repositories>
+    <repository>
+      <id>apache.snapshots</id>
+      <url>https://repository.apache.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>apache.snapshots</id>
+      <name>Apache Snapshots</name>
+      <url>https://repository.apache.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
+
++--------------------------
+
+
+* Mojo declaration
+
++--------------------------
+<pluginManagement>
+  <plugins>
+  ...
+    <plugin>
+      <groupId>org.apache.tomcat.maven</groupId>
+      <artifactId>tomcat6-maven-plugin</artifactId>
+      <version>${project.version}</version>
+      <configuration>
+        <path>/</path>
+      </configuration>
+    </plugin>
+    <plugin>
+      <groupId>org.apache.tomcat.maven</groupId>
+      <artifactId>tomcat7-maven-plugin</artifactId>
+      <version>${project.version}</version>
+      <configuration>
+        <path>/</path>
+      </configuration>
+    </plugin>
+  ...
+  </plugins>
+</pluginManagement>
+
++--------------------------
+
+* Running
+
+  Now you can have fun with tomcat6:run or tomcat7:run
+
+
+
+
+
