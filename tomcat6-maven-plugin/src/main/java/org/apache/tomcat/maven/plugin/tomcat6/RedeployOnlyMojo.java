@@ -18,8 +18,6 @@ package org.apache.tomcat.maven.plugin.tomcat6;
  * under the License.
  */
 
-import org.apache.maven.plugins.annotations.Execute;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
 /**
@@ -30,6 +28,14 @@ import org.apache.maven.plugins.annotations.Mojo;
  */
 @Mojo( name = "redeploy-only", threadSafe = true )
 public class RedeployOnlyMojo
+    extends DeployOnlyMojo
 {
-    // no-op : only mojo metadata overriding
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean isUpdate()
+    {
+        return true;
+    }
 }
