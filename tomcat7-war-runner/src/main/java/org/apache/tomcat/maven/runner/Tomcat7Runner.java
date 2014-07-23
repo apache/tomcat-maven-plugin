@@ -26,6 +26,7 @@ import org.apache.catalina.startup.Catalina;
 import org.apache.catalina.startup.ContextConfig;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.valves.AccessLogValve;
+import org.apache.catalina.valves.RemoteIpValve;
 import org.apache.juli.ClassLoaderLogManager;
 import org.apache.tomcat.util.ExceptionUtils;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
@@ -68,6 +69,8 @@ public class Tomcat7Runner
 
     public static final String ENABLE_NAMING_KEY = "enableNaming";
 
+    public static final String ENABLE_REMOTE_IP_VALVE = "enableRemoteIpValve";
+    
     public static final String ACCESS_LOG_VALVE_FORMAT_KEY = "accessLogValveFormat";
 
     public static final String CODE_SOURCE_CONTEXT_PATH = "codeSourceContextPath";
@@ -311,6 +314,15 @@ public class Tomcat7Runner
                 tomcat.setConnector( connector );
             }
 
+            boolean enableRemoteIpValve = 
+                Boolean.parseBoolean(runtimeProperties.getProperty( Tomcat7Runner.ENABLE_REMOTE_IP_VALVE, Boolean.TRUE.toString()));
+            
+            if (enableRemoteIpValve) {
+                debugMessage("Adding RemoteIpValve");
+                RemoteIpValve riv = new RemoteIpValve();
+                tomcat.getHost().getPipeline().addValve(riv);
+            }
+            
             // add a default acces log valve
             AccessLogValve alv = new AccessLogValve();
             alv.setDirectory( new File( extractDirectory, "logs" ).getAbsolutePath() );
