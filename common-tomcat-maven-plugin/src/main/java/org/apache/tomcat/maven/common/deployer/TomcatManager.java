@@ -199,7 +199,6 @@ public class TomcatManager
 
             String host = url.getHost();
             int port = url.getPort() > -1 ? url.getPort() : AuthScope.ANY_PORT;
-
             httpClient.getCredentialsProvider().setCredentials( new AuthScope( host, port ), creds );
 
             AuthCache authCache = new BasicAuthCache();
@@ -293,7 +292,6 @@ public class TomcatManager
      */
     private void applyProxy() {
     	if( this.proxy != null ) {
-    		System.out.println("proxy: " + proxy);
     		HttpHost proxy = new HttpHost(this.proxy.getHost(), this.proxy.getPort(), this.proxy.getProtocol());
     		httpClient.getParams().setParameter( ConnRoutePNames.DEFAULT_PROXY, proxy );
     		if( this.proxy.getUsername() != null ) {
