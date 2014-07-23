@@ -56,7 +56,6 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 /**
- * FIXME http connection tru a proxy
  * A Tomcat manager webapp invocation wrapper.
  *
  * @author Mark Hobson <markhobson@gmail.com>
