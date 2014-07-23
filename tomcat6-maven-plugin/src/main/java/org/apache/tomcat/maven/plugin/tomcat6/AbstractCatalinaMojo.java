@@ -71,7 +71,7 @@ public abstract class AbstractCatalinaMojo
      */
     @Component( role = WagonManager.class )
     private WagonManager wagonManager;
-    
+
     /**
      * The current build session instance. This is used for plugin manager API calls.
      */
@@ -224,11 +224,12 @@ public abstract class AbstractCatalinaMojo
 
             manager = new TomcatManager( url, userName, password, charset, settings.isInteractiveMode() );
             manager.setUserAgent( name + "/" + version );
-            
+
             Proxy proxy = session.getSettings().getActiveProxy();
-            if( proxy != null && proxy.isActive() ) {
-            	getLog().debug("proxy: " + proxy.getHost() + ":" + proxy.getPort());
-            	manager.setProxy(proxy);
+            if ( proxy != null && proxy.isActive() )
+            {
+                getLog().debug( "proxy: " + proxy.getHost() + ":" + proxy.getPort() );
+                manager.setProxy( proxy );
             }
         }
 

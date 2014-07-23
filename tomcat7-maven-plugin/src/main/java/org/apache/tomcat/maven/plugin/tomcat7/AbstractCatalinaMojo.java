@@ -71,7 +71,7 @@ public abstract class AbstractCatalinaMojo
      */
     @Component
     private WagonManager wagonManager;
-    
+
     /**
      * The current build session instance. This is used for plugin manager API calls.
      */
@@ -81,20 +81,20 @@ public abstract class AbstractCatalinaMojo
     /**
      * The full URL of the Tomcat manager instance to use.
      */
-    @Parameter( property = "maven.tomcat.url", defaultValue = "http://localhost:8080/manager/text", required = true )
+    @Parameter(property = "maven.tomcat.url", defaultValue = "http://localhost:8080/manager/text", required = true)
     private URL url;
 
     /**
      * The server id in settings.xml to use when authenticating with Tomcat manager, or <code>null</code> to use
      * defaults of username <code>admin</code> and no password.
      */
-    @Parameter( property = "maven.tomcat.server" )
+    @Parameter(property = "maven.tomcat.server")
     private String server;
 
     /**
      * The URL encoding charset to use when communicating with Tomcat manager.
      */
-    @Parameter( property = "maven.tomcat.charset", defaultValue = "ISO-8859-1", required = true )
+    @Parameter(property = "maven.tomcat.charset", defaultValue = "ISO-8859-1", required = true)
     private String charset;
 
     /**
@@ -102,7 +102,7 @@ public abstract class AbstractCatalinaMojo
      *
      * @since 1.0-alpha-2
      */
-    @Parameter( property = "tomcat.username" )
+    @Parameter(property = "tomcat.username")
     private String username;
 
     /**
@@ -110,10 +110,10 @@ public abstract class AbstractCatalinaMojo
      *
      * @since 1.0-alpha-2
      */
-    @Parameter( property = "tomcat.password" )
+    @Parameter(property = "tomcat.password")
     private String password;
 
-    @Parameter( defaultValue = "${plugin.version}", required = true, readonly = true )
+    @Parameter(defaultValue = "${plugin.version}", required = true, readonly = true)
     private String version;
 
     // ----------------------------------------------------------------------
@@ -158,11 +158,9 @@ public abstract class AbstractCatalinaMojo
     /**
      * Invokes Tomcat manager when this Mojo is executed.
      *
-     * @throws org.apache.maven.plugin.MojoExecutionException
-     *                             if there was a problem executing this goal
-     * @throws org.apache.tomcat.maven.common.deployer.TomcatManagerException
-     *                             if the Tomcat manager request fails
-     * @throws java.io.IOException if an i/o error occurs
+     * @throws org.apache.maven.plugin.MojoExecutionException                 if there was a problem executing this goal
+     * @throws org.apache.tomcat.maven.common.deployer.TomcatManagerException if the Tomcat manager request fails
+     * @throws java.io.IOException                                            if an i/o error occurs
      */
     protected abstract void invokeManager()
         throws MojoExecutionException, TomcatManagerException, IOException;
@@ -171,8 +169,7 @@ public abstract class AbstractCatalinaMojo
      * Gets the Tomcat manager wrapper object configured for this goal.
      *
      * @return the Tomcat manager wrapper object
-     * @throws org.apache.maven.plugin.MojoExecutionException
-     *          if there was a problem obtaining the authentication details
+     * @throws org.apache.maven.plugin.MojoExecutionException if there was a problem obtaining the authentication details
      */
     protected TomcatManager getManager()
         throws MojoExecutionException
@@ -228,9 +225,10 @@ public abstract class AbstractCatalinaMojo
             manager.setUserAgent( name + "/" + version );
 
             Proxy proxy = session.getSettings().getActiveProxy();
-            if( proxy != null && proxy.isActive() ) {
-            	getLog().debug("proxy: " + proxy.getHost() + ":" + proxy.getPort());
-            	manager.setProxy(proxy);
+            if ( proxy != null && proxy.isActive() )
+            {
+                getLog().debug( "proxy: " + proxy.getHost() + ":" + proxy.getPort() );
+                manager.setProxy( proxy );
             }
         }
 

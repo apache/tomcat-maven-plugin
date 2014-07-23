@@ -110,7 +110,7 @@ public class TomcatManager
      * @since 2.0
      */
     private BasicHttpContext localContext;
-    
+
     private Proxy proxy;
 
     /**
@@ -192,7 +192,7 @@ public class TomcatManager
         PoolingClientConnectionManager poolingClientConnectionManager = new PoolingClientConnectionManager();
         poolingClientConnectionManager.setMaxTotal( 5 );
         this.httpClient = new DefaultHttpClient( poolingClientConnectionManager );
-        
+
         if ( StringUtils.isNotEmpty( username ) )
         {
             Credentials creds = new UsernamePasswordCredentials( username, password );
@@ -274,36 +274,44 @@ public class TomcatManager
     {
         this.userAgent = userAgent;
     }
-    
+
     /**
      * @param proxy
      */
-    public void setProxy(Proxy proxy) {
-		if( this.proxy != proxy ) {
-			this.proxy = proxy;
-			if( httpClient != null ) {
-				applyProxy();
-			}
-		}
-	}
-    
+    public void setProxy( Proxy proxy )
+    {
+        if ( this.proxy != proxy )
+        {
+            this.proxy = proxy;
+            if ( httpClient != null )
+            {
+                applyProxy();
+            }
+        }
+    }
+
     /**
      * {@link #setProxy(Proxy)} is called by {@link AbstractCatinalMojo#getManager()} after the constructor
      */
-    private void applyProxy() {
-    	if( this.proxy != null ) {
-    		HttpHost proxy = new HttpHost(this.proxy.getHost(), this.proxy.getPort(), this.proxy.getProtocol());
-    		httpClient.getParams().setParameter( ConnRoutePNames.DEFAULT_PROXY, proxy );
-    		if( this.proxy.getUsername() != null ) {
-    			httpClient.getCredentialsProvider().setCredentials( new AuthScope(this.proxy.getHost(), this.proxy.getPort()),
-    																new UsernamePasswordCredentials(this.proxy.getUsername(), 
-    																								this.proxy.getPassword()) );
-    		}
-		} else {
-			httpClient.getParams().removeParameter( ConnRoutePNames.DEFAULT_PROXY );
-		}
-	}
-    
+    private void applyProxy()
+    {
+        if ( this.proxy != null )
+        {
+            HttpHost proxy = new HttpHost( this.proxy.getHost(), this.proxy.getPort(), this.proxy.getProtocol() );
+            httpClient.getParams().setParameter( ConnRoutePNames.DEFAULT_PROXY, proxy );
+            if ( this.proxy.getUsername() != null )
+            {
+                httpClient.getCredentialsProvider().setCredentials(
+                    new AuthScope( this.proxy.getHost(), this.proxy.getPort() ),
+                    new UsernamePasswordCredentials( this.proxy.getUsername(), this.proxy.getPassword() ) );
+            }
+        }
+        else
+        {
+            httpClient.getParams().removeParameter( ConnRoutePNames.DEFAULT_PROXY );
+        }
+    }
+
 
     /**
      * Deploys the specified WAR as a URL to the specified context path.
