@@ -175,15 +175,15 @@ public abstract class AbstractExecWarMojo
      * see http://tomcat.apache.org/tomcat-7.0-doc/config/valve.html
      * @since 2.3
      */
-    @Parameter(property = "maven.tomcat.exec.war.enableRemoteIpValve", defaultValue = "true",
-               required = true)
+    @Parameter( property = "maven.tomcat.exec.war.enableRemoteIpValve", defaultValue = "true",
+                required = true )
     protected String enableRemoteIpValve;
 
     /**
      * see http://tomcat.apache.org/tomcat-7.0-doc/config/valve.html
      */
-    @Parameter(property = "maven.tomcat.exec.war.accessLogValveFormat", defaultValue = "%h %l %u %t %r %s %b %I %D",
-               required = true)
+    @Parameter( property = "maven.tomcat.exec.war.accessLogValveFormat", defaultValue = "%h %l %u %t %r %s %b %I %D",
+                required = true )
     protected String accessLogValveFormat;
 
     /**
