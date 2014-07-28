@@ -18,25 +18,38 @@ package org.apache.tomcat.maven.runner;
  * under the License.
  */
 
-import java.io.*;
+import org.apache.catalina.Context;
+import org.apache.catalina.Host;
+import org.apache.catalina.Manager;
+import org.apache.catalina.connector.Connector;
+import org.apache.catalina.core.StandardContext;
+import org.apache.catalina.startup.Catalina;
+import org.apache.catalina.startup.ContextConfig;
+import org.apache.catalina.startup.Tomcat;
+import org.apache.catalina.valves.AccessLogValve;
+import org.apache.catalina.valves.RemoteIpValve;
+import org.apache.juli.ClassLoaderLogManager;
+import org.apache.tomcat.util.ExceptionUtils;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.StringTokenizer;
 import java.util.logging.LogManager;
-
-import org.apache.catalina.*;
-import org.apache.catalina.connector.Connector;
-import org.apache.catalina.core.StandardContext;
-import org.apache.catalina.startup.*;
-import org.apache.catalina.valves.AccessLogValve;
-import org.apache.catalina.valves.RemoteIpValve;
-import org.apache.juli.ClassLoaderLogManager;
-import org.apache.tomcat.util.ExceptionUtils;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 
 /**
  * FIXME add junit for that but when https://issues.apache.org/bugzilla/show_bug.cgi?id=52028 fixed
