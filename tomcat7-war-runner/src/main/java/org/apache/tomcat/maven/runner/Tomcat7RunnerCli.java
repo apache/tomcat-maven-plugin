@@ -117,7 +117,8 @@ public class Tomcat7RunnerCli
             .addOption( extractDirectory ) //
             .addOption( sessionManagerFactoryClassName ) //
             .addOption( loggerName ) //
-            .addOption( uriEncoding );
+            .addOption( uriEncoding ) //
+            .addOption( maxPostSize );
     }
 
 
