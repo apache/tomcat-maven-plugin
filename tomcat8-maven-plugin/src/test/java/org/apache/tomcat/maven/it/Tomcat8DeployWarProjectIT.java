@@ -18,21 +18,13 @@ package org.apache.tomcat.maven.it;
  * under the License.
  */
 
-import org.apache.maven.it.VerificationException;
-import org.apache.tomcat.maven.it.AbstractTomcatRunMultiConfigIT;
+import org.apache.tomcat.maven.it.AbstractDeployWarProjectIT;
 
 /**
  * @author Olivier Lamy
  */
-public class Tomcat7RunMultiConfigIT
-    extends AbstractTomcatRunMultiConfigIT
+public class Tomcat8DeployWarProjectIT
+    extends AbstractDeployWarProjectIT
 {
-    @Override
-    protected void verifyConnectorsStarted()
-        throws VerificationException
-    {
-        verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"http-bio-" + getHttpItPort() + "\"]");
-        verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"http-bio-" + getHttpsItPort() + "\"]");
-        verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"ajp-bio-" + getAjpItPort() + "\"]");
-    }
+    // no op
 }
