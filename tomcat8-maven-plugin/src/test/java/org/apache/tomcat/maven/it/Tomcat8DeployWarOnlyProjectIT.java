@@ -23,7 +23,7 @@ import org.apache.tomcat.maven.it.AbstractDeployWarOnlyProjectIT;
 /**
  * @author Olivier Lamy
  */
-public class Tomcat7DeployWarOnlyProjectIT
+public class Tomcat8DeployWarOnlyProjectIT
     extends AbstractDeployWarOnlyProjectIT
 {
     // no op

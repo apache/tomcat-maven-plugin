@@ -59,7 +59,7 @@ import org.apache.tomcat.JarScanner;
 import org.apache.tomcat.maven.common.config.AbstractWebapp;
 import org.apache.tomcat.maven.common.run.EmbeddedRegistry;
 import org.apache.tomcat.maven.common.run.ExternalRepositoriesReloadableWebappLoader;
-import org.apache.tomcat.maven.plugin.tomcat8.AbstractTomcat7Mojo;
+import org.apache.tomcat.maven.plugin.tomcat8.AbstractTomcat8Mojo;
 import org.apache.tomcat.util.scan.StandardJarScanner;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.UnArchiver;
@@ -104,7 +104,7 @@ import java.util.Set;
  * @since 2.0
  */
 public abstract class AbstractRunMojo
-    extends AbstractTomcat7Mojo
+    extends AbstractTomcat8Mojo
 {
     // ---------------------------------------------------------------------
     // Mojo Components
@@ -967,7 +967,7 @@ public abstract class AbstractRunMojo
     }
 
     /**
-     * FIXME not sure we need all of those files with tomcat7
+     * FIXME not sure we need all of those files with tomcat8
      * Creates the Tomcat configuration directory with the necessary resources.
      *
      * @throws IOException            if the Tomcat configuration could not be created

@@ -30,7 +30,7 @@ import org.apache.tomcat.maven.common.messages.MessagesProvider;
  * @author Olivier Lamy
  * @since 2.0
  */
-public abstract class AbstractTomcat7Mojo
+public abstract class AbstractTomcat8Mojo
     extends AbstractMojo
 {
     @Component

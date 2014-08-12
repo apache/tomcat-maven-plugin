@@ -44,7 +44,7 @@ Adjust Tomcat Version
       <plugins>
         <plugin>
           <groupId>org.apache.tomcat.maven</groupId>
-          <artifactId>tomcat7-maven-plugin</artifactId>
+          <artifactId>tomcat8-maven-plugin</artifactId>
           <version>${project.version}</version>
           <dependencies>
           <dependency>
