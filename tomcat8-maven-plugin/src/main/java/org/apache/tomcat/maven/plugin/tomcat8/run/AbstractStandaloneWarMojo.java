@@ -57,15 +57,15 @@ public abstract class AbstractStandaloneWarMojo
     /**
      * Name of the generated WAR.
      */
-    @Parameter(property = "tomcat.jar.finalName",
-               defaultValue = "${project.artifactId}-${project.version}-standalone.war", required = true)
+    @Parameter( property = "tomcat.jar.finalName",
+                defaultValue = "${project.artifactId}-${project.version}-standalone.war", required = true )
     protected String finalName;
 
     /**
      * the classifier to use for the attached/generated artifact
      */
-    @Parameter(property = "maven.tomcat.exec.war.attachArtifactClassifier", defaultValue = "standalone",
-               required = true)
+    @Parameter( property = "maven.tomcat.exec.war.attachArtifactClassifier", defaultValue = "standalone",
+                required = true )
     protected String attachArtifactClassifier;
 
     /**
@@ -73,7 +73,7 @@ public abstract class AbstractStandaloneWarMojo
      *
      * @since 2.2
      */
-    @Parameter(property = "maven.tomcat.exec.war.attachArtifactType", defaultValue = "war", required = true)
+    @Parameter( property = "maven.tomcat.exec.war.attachArtifactType", defaultValue = "war", required = true )
     protected String attachArtifactClassifierType;
 
     public void execute()
@@ -175,10 +175,10 @@ public abstract class AbstractStandaloneWarMojo
             // add tomcat classes
             for ( Artifact pluginArtifact : pluginArtifacts )
             {
-                if ( StringUtils.equals( "org.apache.tomcat", pluginArtifact.getGroupId() ) || StringUtils.equals(
-                    "org.apache.tomcat.embed", pluginArtifact.getGroupId() ) || StringUtils.equals(
-                    "org.eclipse.jdt.core.compiler", pluginArtifact.getGroupId() ) || StringUtils.equals( "commons-cli",
-                                                                                                          pluginArtifact.getArtifactId() )
+                if ( StringUtils.equals( "org.apache.tomcat", pluginArtifact.getGroupId() ) //
+                    || StringUtils.equals( "org.apache.tomcat.embed", pluginArtifact.getGroupId() ) //
+                    || StringUtils.equals( "org.eclipse.jdt.core.compiler", pluginArtifact.getGroupId() ) //
+                    || StringUtils.equals( "commons-cli", pluginArtifact.getArtifactId() ) //
                     || StringUtils.equals( "tomcat8-war-runner", pluginArtifact.getArtifactId() ) )
                 {
                     JarFile jarFile = new JarFile( pluginArtifact.getFile() );
@@ -204,9 +204,11 @@ public abstract class AbstractStandaloneWarMojo
                                 + "' does not have version specified" );
                     }
                     // String groupId, String artifactId, String version, String scope, String type
-                    Artifact artifact =
-                        artifactFactory.createArtifact( dependency.getGroupId(), dependency.getArtifactId(), version,
-                                                        dependency.getScope(), dependency.getType() );
+                    Artifact artifact = artifactFactory.createArtifact( dependency.getGroupId(), //
+                                                                        dependency.getArtifactId(), //
+                                                                        version, //
+                                                                        dependency.getScope(), //
+                                                                        dependency.getType() );
 
                     artifactResolver.resolve( artifact, this.remoteRepos, this.local );
                     JarFile jarFile = new JarFile( artifact.getFile() );

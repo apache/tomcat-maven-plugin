@@ -322,10 +322,10 @@ public abstract class AbstractExecWarMojo
                                 "Dependency '" + dependency.getGroupId() + "':'" + dependency.getArtifactId()
                                     + "' does not have version specified" );
                         }
-                        Artifact artifact = artifactFactory.createArtifactWithClassifier( dependency.getGroupId(),
-                                                                                          dependency.getArtifactId(),
-                                                                                          version,
-                                                                                          dependency.getType(),
+                        Artifact artifact = artifactFactory.createArtifactWithClassifier( dependency.getGroupId(), //
+                                                                                          dependency.getArtifactId(), //
+                                                                                          version, //
+                                                                                          dependency.getType(), //
                                                                                           dependency.getClassifier() );
 
                         artifactResolver.resolve( artifact, this.remoteRepos, this.local );
@@ -385,10 +385,10 @@ public abstract class AbstractExecWarMojo
             // add tomcat classes
             for ( Artifact pluginArtifact : pluginArtifacts )
             {
-                if ( StringUtils.equals( "org.apache.tomcat", pluginArtifact.getGroupId() ) || StringUtils.equals(
-                    "org.apache.tomcat.embed", pluginArtifact.getGroupId() ) || StringUtils.equals(
-                    "org.eclipse.jdt.core.compiler", pluginArtifact.getGroupId() ) || StringUtils.equals( "commons-cli",
-                                                                                                          pluginArtifact.getArtifactId() )
+                if ( StringUtils.equals( "org.apache.tomcat", pluginArtifact.getGroupId() ) //
+                    || StringUtils.equals( "org.apache.tomcat.embed", pluginArtifact.getGroupId() ) //
+                    || StringUtils.equals( "org.eclipse.jdt.core.compiler", pluginArtifact.getGroupId() ) //
+                    || StringUtils.equals( "commons-cli", pluginArtifact.getArtifactId() ) //
                     || StringUtils.equals( "tomcat8-war-runner", pluginArtifact.getArtifactId() ) )
                 {
                     JarFile jarFile = new JarFile( pluginArtifact.getFile() );
@@ -415,9 +415,11 @@ public abstract class AbstractExecWarMojo
                     }
 
                     // String groupId, String artifactId, String version, String scope, String type
-                    Artifact artifact =
-                        artifactFactory.createArtifact( dependency.getGroupId(), dependency.getArtifactId(), version,
-                                                        dependency.getScope(), dependency.getType() );
+                    Artifact artifact = artifactFactory.createArtifact( dependency.getGroupId(), //
+                                                                        dependency.getArtifactId(), //
+                                                                        version, //
+                                                                        dependency.getScope(), //
+                                                                        dependency.getType() );
 
                     artifactResolver.resolve( artifact, this.remoteRepos, this.local );
                     JarFile jarFile = new JarFile( artifact.getFile() );
@@ -518,7 +520,7 @@ public abstract class AbstractExecWarMojo
         }
 
         // search in project.dependencies
-        for ( Dependency projectDependency : (List<Dependency>) this.project.getDependencyManagement().getDependencies() )
+        for ( Dependency projectDependency : this.project.getDependencyManagement().getDependencies() )
         {
             if ( sameDependencyWithoutVersion( dependency, projectDependency ) )
             {
