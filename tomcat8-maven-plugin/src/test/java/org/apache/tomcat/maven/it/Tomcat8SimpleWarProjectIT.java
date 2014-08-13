@@ -24,7 +24,7 @@ import org.apache.tomcat.maven.it.AbstractSimpleWarProjectIT;
 /**
  * @author Olivier Lamy
  */
-public class Tomcat7SimpleWarProjectIT
+public class Tomcat8SimpleWarProjectIT
     extends AbstractSimpleWarProjectIT
 {
     protected int getTimeout()

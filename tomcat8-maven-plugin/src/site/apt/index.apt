@@ -28,7 +28,7 @@
 
 Tomcat Maven Plugin
 
- The Tomcat7 Maven Plugin provides goals to manipulate WAR projects within the {{{http://tomcat.apache.org/}Tomcat}} servlet container version 7.x
+ The Tomcat8 Maven Plugin provides goals to manipulate WAR projects within the {{{http://tomcat.apache.org/}Tomcat}} servlet container version 7.x
 
 * Goals Overview
 

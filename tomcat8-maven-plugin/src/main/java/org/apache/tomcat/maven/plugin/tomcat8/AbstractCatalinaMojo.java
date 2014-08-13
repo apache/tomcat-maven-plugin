@@ -26,7 +26,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
 import org.apache.tomcat.maven.common.deployer.TomcatManager;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
-import org.apache.tomcat.maven.plugin.tomcat8.AbstractTomcat7Mojo;
+import org.apache.tomcat.maven.plugin.tomcat8.AbstractTomcat8Mojo;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.io.IOException;
@@ -40,7 +40,7 @@ import java.util.StringTokenizer;
  * @author Mark Hobson <markhobson@gmail.com>
  */
 public abstract class AbstractCatalinaMojo
-    extends AbstractTomcat7Mojo
+    extends AbstractTomcat8Mojo
 {
     // ----------------------------------------------------------------------
     // Constants
