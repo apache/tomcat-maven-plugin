@@ -18,6 +18,22 @@ package org.apache.tomcat.maven.plugin.tomcat8.run;
  * under the License.
  */
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+
 import org.apache.catalina.Context;
 import org.apache.catalina.WebResource;
 import org.apache.catalina.WebResourceSet;
@@ -25,6 +41,7 @@ import org.apache.catalina.loader.WebappLoader;
 import org.apache.catalina.webresources.EmptyResource;
 import org.apache.catalina.webresources.FileResource;
 import org.apache.catalina.webresources.FileResourceSet;
+import org.apache.catalina.webresources.JarResource;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
@@ -46,21 +63,6 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.codehaus.plexus.util.xml.Xpp3DomWriter;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.jar.JarFile;
 
 /**
  * Runs the current project as a dynamic web application using an embedded Tomcat server.
@@ -359,7 +361,7 @@ public class RunMojo
                             return new FileResource( context.getResources(), getPath(), file, true );
                         }
 
-                        if ( StringUtils.endsWith( path, ".class" ) )
+                        //if ( StringUtils.endsWith( path, ".class" ) )
                         {
                             // so we search the class file in the jars
                             for ( String jarPath : jarPaths )
@@ -373,10 +375,10 @@ public class RunMojo
                                 try
                                 {
                                     JarFile jarFile = new JarFile( jar );
-
-                                    if ( jarFile.getEntry( StringUtils.removeStart( path, "/" ) ) != null )
+                                    JarEntry jarEntry = (JarEntry) jarFile.getEntry( StringUtils.removeStart( path, "/" ) );
+                                    if ( jarEntry != null )
                                     {
-                                        return new FileResource( context.getResources(), getPath(), jar, true );
+                                        return new JarResource( context.getResources(), getPath(), jarFile.getName(), jar.toURI().toASCIIString(), jarEntry, path, jarFile.getManifest());
                                     }
                                 }
                                 catch ( IOException e )
