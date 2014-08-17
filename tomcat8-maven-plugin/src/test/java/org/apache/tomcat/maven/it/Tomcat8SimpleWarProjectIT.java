@@ -19,7 +19,6 @@ package org.apache.tomcat.maven.it;
  */
 
 import org.apache.maven.it.VerificationException;
-import org.apache.tomcat.maven.it.AbstractSimpleWarProjectIT;
 
 /**
  * @author Olivier Lamy
@@ -36,7 +35,7 @@ public class Tomcat8SimpleWarProjectIT
     protected void verifyConnectorsStarted()
         throws VerificationException
     {
-        verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"http-bio-" + getHttpItPort() + "\"]");
+        verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"http-nio-" + getHttpItPort() + "\"]");
 
         verifier.verifyTextInLog( "INFO: Starting ProtocolHandler [\"ajp-bio-"+ getAjpItPort() +"\"]" );
     }
