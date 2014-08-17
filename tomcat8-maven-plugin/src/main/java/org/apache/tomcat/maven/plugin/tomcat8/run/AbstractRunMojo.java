@@ -800,12 +800,6 @@ public abstract class AbstractRunMojo
         }
 
         @Override
-        public String[] list( String path )
-        {
-            return super.list( path );
-        }
-
-        @Override
         public WebResource getResource( String path )
         {
             File file = new File( path );
@@ -817,23 +811,6 @@ public abstract class AbstractRunMojo
             return webResource;
         }
 
-        @Override
-        public WebResource getClassLoaderResource( String path )
-        {
-            if ( this.webResourceSet != null )
-            {
-                WebResource webResource = this.webResourceSet.getResource( path );
-                return webResource;
-            }
-
-            return super.getClassLoaderResource( path );
-        }
-
-        @Override
-        public void addJarResources( WebResourceSet webResourceSet )
-        {
-            this.webResourceSet = webResourceSet;
-        }
     }
 
     /**
