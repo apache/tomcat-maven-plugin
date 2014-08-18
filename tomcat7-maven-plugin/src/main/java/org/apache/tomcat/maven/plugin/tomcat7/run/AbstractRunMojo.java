@@ -1496,6 +1496,7 @@ public abstract class AbstractRunMojo
         if ( staticContextDocbase != null )
         {
             Context staticContext = container.addContext( staticContextPath, staticContextDocbase );
+            Tomcat.initWebappDefaults(staticContext);
             staticContext.setPrivileged( true );
             Wrapper servlet = context.createWrapper();
             servlet.setServletClass( DefaultServlet.class.getName() );
