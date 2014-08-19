@@ -49,6 +49,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
+        <version>2.4</version>
         <configuration>
           <webXml>src/main/webapp/web.xml</webXml>
         </configuration>
