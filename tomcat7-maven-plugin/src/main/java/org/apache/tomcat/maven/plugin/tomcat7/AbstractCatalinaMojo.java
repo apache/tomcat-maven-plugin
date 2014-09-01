@@ -116,6 +116,14 @@ public abstract class AbstractCatalinaMojo
     @Parameter(defaultValue = "${plugin.version}", required = true, readonly = true)
     private String version;
 
+    /**
+     * Skip the execution
+     *
+     * @since 2.3
+     */
+    @Parameter( property = "maven.tomcat.skip", defaultValue = "false" )
+    private boolean skip;
+
     // ----------------------------------------------------------------------
     // Fields
     // ----------------------------------------------------------------------
@@ -135,6 +143,12 @@ public abstract class AbstractCatalinaMojo
     public void execute()
         throws MojoExecutionException
     {
+        if ( this.skip )
+        {
+            getLog().info( "skip execution" );
+            return;
+        }
+
         try
         {
             invokeManager();
