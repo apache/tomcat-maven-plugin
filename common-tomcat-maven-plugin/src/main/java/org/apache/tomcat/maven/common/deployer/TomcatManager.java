@@ -42,6 +42,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.maven.settings.Proxy;
+import org.apache.maven.wagon.proxy.ProxyInfo;
+import org.apache.maven.wagon.proxy.ProxyUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -294,15 +296,19 @@ public class TomcatManager
      */
     private void applyProxy()
     {
-        if ( this.proxy != null )
-        {
-            HttpHost proxy = new HttpHost( this.proxy.getHost(), this.proxy.getPort(), this.proxy.getProtocol() );
-            httpClient.getParams().setParameter( ConnRoutePNames.DEFAULT_PROXY, proxy );
-            if ( this.proxy.getUsername() != null )
-            {
-                httpClient.getCredentialsProvider().setCredentials(
-                    new AuthScope( this.proxy.getHost(), this.proxy.getPort() ),
-                    new UsernamePasswordCredentials( this.proxy.getUsername(), this.proxy.getPassword() ) );
+        if ( this.proxy != null ) {
+
+            ProxyInfo proxyInfo = new ProxyInfo();
+            proxyInfo.setNonProxyHosts(this.proxy.getNonProxyHosts());
+
+            if (!ProxyUtils.validateNonProxyHosts(proxyInfo, url.getHost())) {
+                HttpHost proxy = new HttpHost(this.proxy.getHost(), this.proxy.getPort(), this.proxy.getProtocol());
+                httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+                if (this.proxy.getUsername() != null) {
+                    httpClient.getCredentialsProvider().setCredentials(
+                            new AuthScope(this.proxy.getHost(), this.proxy.getPort()),
+                            new UsernamePasswordCredentials(this.proxy.getUsername(), this.proxy.getPassword()));
+                }
             }
         }
         else
