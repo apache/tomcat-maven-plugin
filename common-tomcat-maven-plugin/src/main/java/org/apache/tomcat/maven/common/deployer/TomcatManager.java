@@ -296,18 +296,21 @@ public class TomcatManager
      */
     private void applyProxy()
     {
-        if ( this.proxy != null ) {
+        if ( this.proxy != null )
+        {
 
             ProxyInfo proxyInfo = new ProxyInfo();
-            proxyInfo.setNonProxyHosts(this.proxy.getNonProxyHosts());
+            proxyInfo.setNonProxyHosts( this.proxy.getNonProxyHosts() );
 
-            if (!ProxyUtils.validateNonProxyHosts(proxyInfo, url.getHost())) {
-                HttpHost proxy = new HttpHost(this.proxy.getHost(), this.proxy.getPort(), this.proxy.getProtocol());
-                httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
-                if (this.proxy.getUsername() != null) {
+            if ( !ProxyUtils.validateNonProxyHosts( proxyInfo, url.getHost() ) )
+            {
+                HttpHost proxy = new HttpHost( this.proxy.getHost(), this.proxy.getPort(), this.proxy.getProtocol() );
+                httpClient.getParams().setParameter( ConnRoutePNames.DEFAULT_PROXY, proxy );
+                if ( this.proxy.getUsername() != null )
+                {
                     httpClient.getCredentialsProvider().setCredentials(
-                            new AuthScope(this.proxy.getHost(), this.proxy.getPort()),
-                            new UsernamePasswordCredentials(this.proxy.getUsername(), this.proxy.getPassword()));
+                        new AuthScope( this.proxy.getHost(), this.proxy.getPort() ),
+                        new UsernamePasswordCredentials( this.proxy.getUsername(), this.proxy.getPassword() ) );
                 }
             }
         }
