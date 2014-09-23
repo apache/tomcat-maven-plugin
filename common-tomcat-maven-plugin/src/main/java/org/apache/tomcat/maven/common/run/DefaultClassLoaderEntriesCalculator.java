@@ -45,7 +45,7 @@ import java.util.Set;
  * @author Olivier Lamy
  * @since 2.0
  */
-@Component (role = ClassLoaderEntriesCalculator.class)
+@Component( role = ClassLoaderEntriesCalculator.class )
 public class DefaultClassLoaderEntriesCalculator
     implements ClassLoaderEntriesCalculator
 {
@@ -63,10 +63,12 @@ public class DefaultClassLoaderEntriesCalculator
 
         List<File> tmpDirectories = new ArrayList<File>();
 
+        List<String> buildDirectories = new ArrayList<String>();
+
         // add classes directories to loader
         try
         {
-            @SuppressWarnings ("unchecked") List<String> classPathElements = request.isUseTestClassPath()
+            @SuppressWarnings( "unchecked" ) List<String> classPathElements = request.isUseTestClassPath()
                 ? request.getMavenProject().getTestClasspathElements()
                 : request.getMavenProject().getRuntimeClasspathElements();
             if ( classPathElements != null )
@@ -79,6 +81,7 @@ public class DefaultClassLoaderEntriesCalculator
                         request.getLog().debug(
                             "adding classPathElementFile " + classPathElementFile.toURI().toString() );
                         classLoaderEntries.add( classPathElementFile.toURI().toString() );
+                        buildDirectories.add( classPathElement );
                     }
                 }
             }
@@ -101,15 +104,15 @@ public class DefaultClassLoaderEntriesCalculator
                 String scope = artifact.getScope();
 
                 // skip provided and test scoped artifacts
-                if ( !Artifact.SCOPE_PROVIDED.equals( scope ) && ( !Artifact.SCOPE_TEST.equals( scope )
-                    || request.isUseTestClassPath() ) )
+                if ( !Artifact.SCOPE_PROVIDED.equals( scope ) //
+                    && ( !Artifact.SCOPE_TEST.equals( scope ) || request.isUseTestClassPath() ) )
                 {
                     request.getLog().debug(
                         "add dependency to webapploader " + artifact.getGroupId() + ":" + artifact.getArtifactId() + ":"
                             + artifact.getVersion() + ":" + artifact.getScope() );
                     // we add artifact dependencies and projects from reactor if file (ie jar) as users can go to install/package phase
                     // so artifact.getFile is a file not a directory and not added when iterate on project.classPathElements
-                    if ( !isInProjectReferences( artifact, request.getMavenProject() ) ||  artifact.getFile().isFile() )
+                    if ( !isInProjectReferences( artifact, request.getMavenProject() ) || artifact.getFile().isFile() )
                     {
                         String fileName = artifact.getGroupId() + "-" + artifact.getFile().getName();
                         if ( !fileInClassLoaderEntries.contains( fileName ) )
@@ -134,16 +137,16 @@ public class DefaultClassLoaderEntriesCalculator
 
                     boolean existed = !tmpDir.mkdirs();
                     // does a directory for this artifact already exist?
-                    if (existed)
+                    if ( existed )
                     {
                         // check timestamp to see if artifact is newer than extracted directory
                         long dirLastMod = tmpDir.lastModified();
                         long warLastMod = artifact.getFile().lastModified();
 
-                        if (warLastMod == 0L || warLastMod > dirLastMod)
+                        if ( warLastMod == 0L || warLastMod > dirLastMod )
                         {
                             request.getLog().debug(
-                                "re-exploding artifact " + artifact.getArtifactId() + " due to newer WAR");
+                                "re-exploding artifact " + artifact.getArtifactId() + " due to newer WAR" );
 
                             deleteDirectory( tmpDir, request.getLog() );
                             tmpDir = new File( tmpExtractDatas, artifact.getArtifactId() );
@@ -153,7 +156,7 @@ public class DefaultClassLoaderEntriesCalculator
                         else
                         {
                             request.getLog().debug(
-                                "using existing exploded war for artifact " + artifact.getArtifactId());
+                                "using existing exploded war for artifact " + artifact.getArtifactId() );
                         }
                     }
 
@@ -162,7 +165,7 @@ public class DefaultClassLoaderEntriesCalculator
                     try
                     {
                         // explode the archive if it is not already exploded
-                        if (!existed)
+                        if ( !existed )
                         {
                             File warFile = artifact.getFile();
                             UnArchiver unArchiver = archiverManager.getUnArchiver( "jar" );
@@ -216,7 +219,9 @@ public class DefaultClassLoaderEntriesCalculator
             }
         }
 
-        return new ClassLoaderEntriesCalculatorResult( new ArrayList<String>( classLoaderEntries ), tmpDirectories );
+        return new ClassLoaderEntriesCalculatorResult( new ArrayList<String>( classLoaderEntries ), //
+                                                       tmpDirectories, //
+                                                       buildDirectories );
 
     }
 
@@ -240,7 +245,7 @@ public class DefaultClassLoaderEntriesCalculator
         {
             return false;
         }
-        @SuppressWarnings ("unchecked") Collection<MavenProject> mavenProjects =
+        @SuppressWarnings( "unchecked" ) Collection<MavenProject> mavenProjects =
             project.getProjectReferences().values();
         for ( MavenProject mavenProject : mavenProjects )
         {

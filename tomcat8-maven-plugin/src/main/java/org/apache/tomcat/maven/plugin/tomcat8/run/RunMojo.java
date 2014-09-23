@@ -63,6 +63,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -315,7 +316,7 @@ public class RunMojo
                 .setMavenProject( project ) //
                 .setAddWarDependenciesInClassloader( addWarDependenciesInClassloader ) //
                 .setUseTestClassPath( useTestClasspath );
-            ClassLoaderEntriesCalculatorResult classLoaderEntriesCalculatorResult =
+            final ClassLoaderEntriesCalculatorResult classLoaderEntriesCalculatorResult =
                 classLoaderEntriesCalculator.calculateClassPathEntries( request );
             final List<String> classLoaderEntries = classLoaderEntriesCalculatorResult.getClassPathEntries();
             final List<File> tmpDirectories = classLoaderEntriesCalculatorResult.getTmpDirectories();
@@ -336,16 +337,21 @@ public class RunMojo
                 }
             }
 
+            getLog().debug( "classLoaderEntriesCalculator urls: " + urls );
+
             final URLClassLoader urlClassLoader = new URLClassLoader( urls.toArray( new URL[urls.size()] ) );
 
             final ClassRealm pluginRealm = getTomcatClassLoader();
 
             context.setResources(
-                new MyDirContext( new File( project.getBuild().getOutputDirectory() ).getAbsolutePath(), getPath() )
+                new MyDirContext( new File( project.getBuild().getOutputDirectory() ).getAbsolutePath(), //
+                                  getPath(), //
+                                  getLog() )
                 {
                     @Override
                     public WebResource getClassLoaderResource( String path )
                     {
+                        log.debug( "RunMojo#getClassLoaderResource: " + path );
                         URL url = urlClassLoader.getResource( StringUtils.removeStart( path, "/" ) );
                         // search in parent (plugin) classloader
                         if ( url == null )
@@ -358,6 +364,89 @@ public class RunMojo
                             return new EmptyResource( this, getPath() );
                         }
 
+                        return urlToWebResource( url, path );
+                    }
+
+                    @Override
+                    public WebResource getResource( String path )
+                    {
+                        log.debug( "RunMojo#getResource: " + path );
+                        return super.getResource( path );
+                    }
+
+                    @Override
+                    public WebResource[] getResources( String path )
+                    {
+                        log.debug( "RunMojo#getResources: " + path );
+                        return super.getResources( path );
+                    }
+
+                    @Override
+                    protected WebResource[] getResourcesInternal( String path, boolean useClassLoaderResources )
+                    {
+                        log.debug( "RunMojo#getResourcesInternal: " + path );
+                        return super.getResourcesInternal( path, useClassLoaderResources );
+                    }
+
+                    @Override
+                    public WebResource[] getClassLoaderResources( String path )
+                    {
+                        try
+                        {
+                            Enumeration<URL> enumeration =
+                                urlClassLoader.findResources( StringUtils.removeStart( path, "/" ) );
+                            List<URL> urlsFound = new ArrayList<URL>();
+                            List<WebResource> webResources = new ArrayList<WebResource>();
+                            while ( enumeration.hasMoreElements() )
+                            {
+                                URL url = enumeration.nextElement();
+                                urlsFound.add( url );
+                                webResources.add( urlToWebResource( url, path ) );
+                            }
+                            log.debug(
+                                "RunMojo#getClassLoaderResources: " + path + " found : " + urlsFound.toString() );
+
+                            webResources.addAll( findResourcesInDirectories( path,
+                                                                             classLoaderEntriesCalculatorResult.getBuildDirectories() ) );
+
+                            return webResources.toArray( new WebResource[webResources.size()] );
+
+                        }
+                        catch ( IOException e )
+                        {
+                            throw new RuntimeException( e.getMessage(), e );
+                        }
+                    }
+
+
+                    private List<WebResource> findResourcesInDirectories( String path, List<String> directories )
+                    {
+                        try
+                        {
+                            List<WebResource> webResources = new ArrayList<WebResource>();
+
+                            for ( String directory : directories )
+                            {
+
+                                File file = new File( directory, path );
+                                if ( file.exists() )
+                                {
+                                    webResources.add( urlToWebResource( file.toURI().toURL(), path ) );
+                                }
+
+                            }
+
+                            return webResources;
+                        }
+                        catch ( MalformedURLException e )
+                        {
+                            throw new RuntimeException( e.getMessage(), e );
+                        }
+                    }
+
+
+                    private WebResource urlToWebResource( URL url, String path )
+                    {
                         JarFile jarFile = null;
 
                         try
@@ -367,19 +456,27 @@ public class RunMojo
 
                             int idx = url.getFile().indexOf( '!' );
 
-                            String filePath = StringUtils.removeStart( url.getFile().substring( 0, idx ), "file:" );
+                            if ( idx >= 0 )
+                            {
+                                String filePath = StringUtils.removeStart( url.getFile().substring( 0, idx ), "file:" );
 
-                            jarFile = new JarFile( filePath );
+                                jarFile = new JarFile( filePath );
 
-                            JarEntry jarEntry = jarFile.getJarEntry( StringUtils.removeStart( path, "/" ) );
+                                JarEntry jarEntry = jarFile.getJarEntry( StringUtils.removeStart( path, "/" ) );
 
-                            return new JarResource( this, //
-                                                    getPath(), //
-                                                    filePath, //
-                                                    url.getPath().substring( 0, idx ), //
-                                                    jarEntry, //
-                                                    "", //
-                                                    null );
+                                return new JarResource( this, //
+                                                        getPath(), //
+                                                        filePath, //
+                                                        url.getPath().substring( 0, idx ), //
+                                                        jarEntry, //
+                                                        "", //
+                                                        null );
+                            }
+                            else
+                            {
+                                return new FileResource( this, webAppPath, new File( url.getFile() ), true );
+                            }
+
                         }
                         catch ( IOException e )
                         {
@@ -389,9 +486,9 @@ public class RunMojo
                         {
                             IOUtils.closeQuietly( jarFile );
                         }
-
-
                     }
+
+
                 } );
 
             Runtime.getRuntime().addShutdownHook( new Thread()
