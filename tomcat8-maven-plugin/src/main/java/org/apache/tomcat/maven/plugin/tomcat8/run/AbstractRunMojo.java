@@ -734,7 +734,7 @@ public abstract class AbstractRunMojo
         // normally this one only but just in case ...
         if ( jarScanner instanceof StandardJarScanner )
         {
-            ( (StandardJarScanner) jarScanner ).setScanAllDirectories( jarScanAllDirectories );
+            ( StandardJarScanner.class.cast( jarScanner ) ).setScanAllDirectories( jarScanAllDirectories );
         }
 
         return context;
@@ -886,7 +886,6 @@ public abstract class AbstractRunMojo
             else
             {
                 webappLoader = new WebappLoader( getTomcatClassLoader() );
-                //webappLoader.setLoaderClass( MavenWebappClassLoader.class.getName() );
             }
         }
         else
@@ -900,7 +899,6 @@ public abstract class AbstractRunMojo
             else
             {
                 webappLoader = new WebappLoader( Thread.currentThread().getContextClassLoader() );
-                //webappLoader.setLoaderClass( MavenWebappClassLoader.class.getName() );
             }
         }
         return webappLoader;

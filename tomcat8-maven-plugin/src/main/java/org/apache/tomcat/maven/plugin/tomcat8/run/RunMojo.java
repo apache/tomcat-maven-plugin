@@ -372,8 +372,6 @@ public class RunMojo
                             }
                         }
 
-
-
                         if ( url == null )
                         {
                             return new EmptyResource( this, getPath() );
