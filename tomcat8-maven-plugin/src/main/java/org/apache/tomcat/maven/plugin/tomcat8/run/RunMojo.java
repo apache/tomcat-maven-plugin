@@ -20,6 +20,7 @@ package org.apache.tomcat.maven.plugin.tomcat8.run;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.WebResource;
+import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.WebResourceSet;
 import org.apache.catalina.loader.WebappLoader;
 import org.apache.catalina.webresources.EmptyResource;
@@ -339,9 +340,12 @@ public class RunMojo
 
             getLog().debug( "classLoaderEntriesCalculator urls: " + urls );
 
-            final URLClassLoader urlClassLoader = new URLClassLoader( urls.toArray( new URL[urls.size()] ) );
+            final URLClassLoader urlClassLoader = new URLClassLoader( urls.toArray( new URL[urls.size()] ), //
+                                                                      Thread.currentThread().getContextClassLoader() );
 
             final ClassRealm pluginRealm = getTomcatClassLoader();
+
+            final WebResourceRoot previous = context.getResources();
 
             context.setResources(
                 new MyDirContext( new File( project.getBuild().getOutputDirectory() ).getAbsolutePath(), //
@@ -351,6 +355,13 @@ public class RunMojo
                     @Override
                     public WebResource getClassLoaderResource( String path )
                     {
+
+                        if (previous.getState().isAvailable())
+                        {
+                            WebResource webResource = previous.getClassLoaderResource( path );
+                            log.debug( "foo" );
+                        }
+
                         log.debug( "RunMojo#getClassLoaderResource: " + path );
                         URL url = urlClassLoader.getResource( StringUtils.removeStart( path, "/" ) );
                         // search in parent (plugin) classloader
