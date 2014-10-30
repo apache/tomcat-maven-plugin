@@ -41,7 +41,7 @@ public class AbstractDeployWarMojo
     /**
      * The path of the WAR file to deploy.
      */
-    @Parameter( defaultValue = "${project.build.directory}/${project.build.finalName}.war", required = true )
+    @Parameter( defaultValue = "${project.build.directory}/${project.build.finalName}.war", property = "maven.tomcat.warFile", required = true )
     private File warFile;
 
     // ----------------------------------------------------------------------
