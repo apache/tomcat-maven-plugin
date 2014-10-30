@@ -565,7 +565,8 @@ public abstract class AbstractExecWarMojo
             {
                 sourceFileInputStream = new FileInputStream( inputFile );
 
-                archiveOutputStream.putArchiveEntry( new JarArchiveEntry( destinationPath + includeFileName ) );
+                // MTOMCAT-286 Need to replace \ with / in includeFileName
+                archiveOutputStream.putArchiveEntry( new JarArchiveEntry( destinationPath + StringUtils.replace( includeFileName, "\\", "/" ) ) );
                 IOUtils.copy( sourceFileInputStream, archiveOutputStream );
                 archiveOutputStream.closeArchiveEntry();
             }
