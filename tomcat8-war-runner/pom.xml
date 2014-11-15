@@ -27,7 +27,7 @@
   </parent>
   <artifactId>tomcat8-war-runner</artifactId>
   <version>3.0-SNAPSHOT</version>
-  <name>Apache Tomcat Maven Plugin :: Tomcat 8.x War Runner</name>
+  <name>Apache Tomcat Maven Plugin - Tomcat 8.x War Runner</name>
 
   <dependencies>
     <dependency>

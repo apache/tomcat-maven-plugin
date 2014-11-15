@@ -27,7 +27,7 @@
   </parent>
   <artifactId>tomcat8-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <name>Apache Tomcat Maven Plugin :: Tomcat 8.x</name>
+  <name>Apache Tomcat Maven Plugin - Tomcat 8.x</name>
   <description>The Tomcat Maven Plugin provides goals to manipulate WAR projects within the Tomcat 8.x servlet container.
   </description>
 

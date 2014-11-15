@@ -33,7 +33,7 @@
 
   <packaging>maven-archetype</packaging>
 
-  <name>Apache Tomcat Maven Plugin :: Archetype</name>
+  <name>Apache Tomcat Maven Plugin - Archetype</name>
 
   <properties>
     <archetypeVersion>2.2</archetypeVersion>
