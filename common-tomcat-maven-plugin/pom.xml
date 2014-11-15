@@ -27,7 +27,7 @@
     <version>2.3-SNAPSHOT</version>
   </parent>
   <artifactId>common-tomcat-maven-plugin</artifactId>
-  <name>Apache Tomcat Maven Plugin :: Common API</name>
+  <name>Apache Tomcat Maven Plugin - Common API</name>
 
   <dependencies>
     <dependency>
