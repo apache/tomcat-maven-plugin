@@ -636,11 +636,11 @@ public abstract class AbstractRunMojo
     protected String getPath()
     {
     	String versionSeparator = "##";
-		if (path.contains(versionSeparator)) {
-			return path.substring(0, path.indexOf(versionSeparator));
-		} else {
-			return path;
-		}
+	if (path.contains(versionSeparator)) {
+		return path.substring(0, path.indexOf(versionSeparator));
+	} else {
+		return path;
+	}
     }
 
     /**
