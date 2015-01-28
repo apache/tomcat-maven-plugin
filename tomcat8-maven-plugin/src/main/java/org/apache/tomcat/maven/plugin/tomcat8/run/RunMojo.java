@@ -22,6 +22,7 @@ import org.apache.catalina.Context;
 import org.apache.catalina.WebResource;
 import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.WebResourceSet;
+import org.apache.catalina.loader.WebappClassLoaderBase;
 import org.apache.catalina.loader.WebappLoader;
 import org.apache.catalina.webresources.EmptyResource;
 import org.apache.catalina.webresources.FileResource;
@@ -343,8 +344,6 @@ public class RunMojo
             final URLClassLoader urlClassLoader = new URLClassLoader( urls.toArray( new URL[urls.size()] ) );
 
             final ClassRealm pluginRealm = getTomcatClassLoader();
-
-            final WebResourceRoot previous = context.getResources();
 
             context.setResources(
                 new MyDirContext( new File( project.getBuild().getOutputDirectory() ).getAbsolutePath(), //

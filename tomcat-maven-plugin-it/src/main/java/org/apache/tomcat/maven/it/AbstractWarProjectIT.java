@@ -134,8 +134,6 @@ public abstract class AbstractWarProjectIT
 
         verifier.setCliOptions( getCliOptions() );
 
-        verifier.setLogFileName( "foo.log" );
-
         verifier.executeGoal( getGoal() );
 
         verifier.displayStreamBuffers();
