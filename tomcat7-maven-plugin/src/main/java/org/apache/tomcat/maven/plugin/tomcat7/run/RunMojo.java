@@ -213,6 +213,11 @@ public class RunMojo
             }
             else
             {
+                if (contextFile != null)
+                {
+                    getLog().warn("Could not find the configured context file: " + contextFile.getAbsolutePath() +
+                            " . Going to proceed with default configuration.");
+                }
                 if ( contextReloadable )
                 {
                     // don't care about using a complicated xml api to create one xml line :-)
