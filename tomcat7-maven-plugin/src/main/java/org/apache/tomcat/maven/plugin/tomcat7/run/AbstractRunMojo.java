@@ -1202,6 +1202,8 @@ public abstract class AbstractRunMojo
 
                     httpsConnector.setAttribute( "clientAuth", clientAuth );
 
+                    httpsConnector.setURIEncoding( uriEncoding );
+
                     httpsConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
 
                     if ( address != null )
