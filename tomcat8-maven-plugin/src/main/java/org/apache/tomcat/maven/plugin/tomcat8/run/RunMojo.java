@@ -627,7 +627,7 @@ public class RunMojo
 
                             for ( String file : files )
                             {
-                                paths.add( file );
+                                paths.add( path + file );
                             }
 
                             return paths;
