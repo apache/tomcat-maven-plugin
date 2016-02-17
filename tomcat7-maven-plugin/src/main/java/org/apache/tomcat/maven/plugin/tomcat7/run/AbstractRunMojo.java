@@ -724,6 +724,13 @@ public abstract class AbstractRunMojo
             ( (StandardJarScanner) jarScanner ).setScanAllDirectories( jarScanAllDirectories );
         }
 
+        // https://issues.apache.org/jira/browse/MTOMCAT-255
+        if(context instanceof StandardContext)
+        { 
+            ((StandardContext) context).setAddWebinfClassesResources(true); 
+            ((StandardContext) context).setAliases( "/WEB-INF/classes=" + project.getBuild().getOutputDirectory());     
+        }         
+
         return context;
 
     }
