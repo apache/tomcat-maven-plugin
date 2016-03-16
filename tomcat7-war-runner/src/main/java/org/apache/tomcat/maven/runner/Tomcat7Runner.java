@@ -95,6 +95,8 @@ public class Tomcat7Runner
 
     public int ajpPort;
 
+    public String wars;
+
     public String serverXmlPath;
 
     public Properties runtimeProperties;
@@ -599,7 +601,6 @@ public class Tomcat7Runner
 
         }
 
-        String wars = runtimeProperties.getProperty( WARS_KEY );
         populateWebAppWarPerContext( wars );
 
         for ( Map.Entry<String, String> entry : webappWarPerContext.entrySet() )

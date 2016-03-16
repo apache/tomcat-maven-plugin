@@ -59,6 +59,10 @@ public class Tomcat7RunnerCli
         OptionBuilder.withArgName( "serverXmlPath" ).hasArg().withDescription( "server.xml to use, optional" ).create(
             "serverXmlPath" );
 
+    static Option path =
+            OptionBuilder.withArgName( "contextPath" ).hasArg().withDescription( "custom deployment context path, optional" ).create(
+                    "path" );
+
     static Option resetExtract =
         OptionBuilder.withArgName( "resetExtract" ).withDescription( "clean previous extract directory" ).create(
             "resetExtract" );
@@ -110,6 +114,7 @@ public class Tomcat7RunnerCli
             .addOption( help ) //
             .addOption( debug ) //
             .addOption( sysProps ) //
+            .addOption( path ) //
             .addOption( httpProtocol ) //
             .addOption( clientAuth ) //
             .addOption( keyAlias ) //
@@ -197,6 +202,19 @@ public class Tomcat7RunnerCli
         if ( line.hasOption( httpProtocol.getOpt() ) )
         {
             tomcat7Runner.httpProtocol = line.getOptionValue( httpProtocol.getOpt() );
+        }
+
+        tomcat7Runner.wars = tomcat7Runner.runtimeProperties.getProperty( Tomcat7Runner.WARS_KEY );
+        if( line.hasOption( path.getOpt() ) ) {
+            String pathOption = line.getOptionValue( path.getOpt() );
+            if ( pathOption != null && !pathOption.isEmpty() ) {
+                String[] split = tomcat7Runner.wars.split("\\|");
+                if(split.length != 2) {
+                    System.err.println( "JAR contains more than one WAR to deploy. Cannot set custom deploy path." );
+                    System.exit( 1 );
+                }
+                tomcat7Runner.wars = split[0] + "|" + pathOption;
+            }
         }
 
         if ( line.hasOption( sysProps.getOpt() ) )
