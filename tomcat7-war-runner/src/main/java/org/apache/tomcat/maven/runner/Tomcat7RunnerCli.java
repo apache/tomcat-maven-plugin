@@ -42,6 +42,9 @@ public class Tomcat7RunnerCli
 
     public static final String STAND_ALONE_PROPERTIES_FILENAME = "tomcat.standalone.properties";
 
+    static Option httpAddress  =
+        OptionBuilder.withArgName( "httpAddress" ).hasArg().withDescription( "http address to use" ).create( "httpAddress" );
+
     static Option httpPort =
         OptionBuilder.withArgName( "httpPort" ).hasArg().withDescription( "http port to use" ).create( "httpPort" );
 
@@ -102,7 +105,8 @@ public class Tomcat7RunnerCli
 
     static
     {
-        options.addOption( httpPort ) //
+        options.addOption( httpAddress ) //
+            .addOption( httpPort ) //
             .addOption( httpsPort ) //
             .addOption( ajpPort ) //
             .addOption( serverXmlPath ) //
@@ -158,6 +162,11 @@ public class Tomcat7RunnerCli
         if ( line.hasOption( serverXmlPath.getOpt() ) )
         {
             tomcat7Runner.serverXmlPath = line.getOptionValue( serverXmlPath.getOpt() );
+        }
+
+        if ( line.hasOption( httpAddress.getOpt() ) )
+        {
+            tomcat7Runner.httpAddress = line.getOptionValue( httpAddress.getOpt() );
         }
 
         String port = tomcat7Runner.runtimeProperties.getProperty( Tomcat7Runner.HTTP_PORT_KEY );
