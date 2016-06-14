@@ -74,7 +74,7 @@
     <!-- server port for it tests -->
     <its.server.port>2008</its.server.port>
     <tomcat7Version>7.0.54</tomcat7Version>
-    <tomcat8Version>8.0.14</tomcat8Version>
+    <tomcat8Version>8.5.3</tomcat8Version>
 
     <!-- to prevent isssues with last apache parent pom -->
     <arguments />
@@ -188,6 +188,9 @@
     </contributor>
     <contributor>
       <name>Rupert Madden-Abbott</name>
+    </contributor>
+    <contributor>
+      <name>Sergio Fernández</name>
     </contributor>
   </contributors>
 
