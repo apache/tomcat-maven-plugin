@@ -470,11 +470,13 @@ public class RunMojo
                             // url.getFile is
                             // file:/Users/olamy/mvn-repo/org/springframework/spring-web/4.0.0.RELEASE/spring-web-4.0.0.RELEASE.jar!/org/springframework/web/context/ContextLoaderListener.class
 
-                            int idx = url.getFile().indexOf( '!' );
+                            URI uri = new URI(url.getFile());
+                            String filePath = uri.getPath();
+                            int idx = filePath.indexOf( '!' );
 
                             if ( idx >= 0 )
                             {
-                                String filePath = StringUtils.removeStart( url.getFile().substring( 0, idx ), "file:" );
+                                filePath = filePath.substring( 0, idx);
 
                                 jarFile = new JarFile( filePath );
 
@@ -483,16 +485,20 @@ public class RunMojo
                                 return new JarResource( this, //
                                                         getPath(), //
                                                         filePath, //
-                                                        url.getPath().substring( 0, idx ), //
+                                                        "file:"+filePath, //
                                                         jarEntry, //
                                                         "", //
                                                         null );
                             }
                             else
                             {
-                                return new FileResource( this, webAppPath, new File( url.getFile() ), true );
+                                return new FileResource( this, webAppPath, new File( filePath ), true );
                             }
 
+                        }
+                        catch (URISyntaxException e)
+                        {
+                            throw new RuntimeException( e.getMessage(), e );
                         }
                         catch ( IOException e )
                         {
