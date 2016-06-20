@@ -475,6 +475,8 @@ public class RunMojo
                             if ( idx >= 0 )
                             {
                                 String filePath = StringUtils.removeStart( url.getFile().substring( 0, idx ), "file:" );
+				// Restore spaces which might be available under windows
+				filePath = filePath.replaceAll("%20", " ");
 
                                 jarFile = new JarFile( filePath );
 
