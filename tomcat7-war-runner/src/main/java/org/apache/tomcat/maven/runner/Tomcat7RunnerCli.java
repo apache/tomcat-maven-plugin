@@ -221,7 +221,7 @@ public class Tomcat7RunnerCli
         }
         if ( line.hasOption( clientAuth.getOpt() ) )
         {
-            tomcat7Runner.clientAuth = clientAuth.getOpt();
+            tomcat7Runner.clientAuth = "true";
         }
         if ( line.hasOption( keyAlias.getOpt() ) )
         {
