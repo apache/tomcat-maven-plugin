@@ -292,9 +292,10 @@
 
       <build>
         <plugins>
+          <!-- For integration tests the plugin needs to be installed before
+               the integration tests are executed -->
+          <!--
           <plugin>
-            <!-- For integration tests the plugin needs to be installed before
-                 the integration tests are executed -->
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-install-plugin</artifactId>
             <executions>
@@ -334,6 +335,7 @@
               </execution>
             </executions>
           </plugin>
+          -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
