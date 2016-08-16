@@ -18,22 +18,6 @@ package org.apache.tomcat.maven.plugin.tomcat8.run;
  * under the License.
  */
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-
 import org.apache.catalina.Context;
 import org.apache.catalina.WebResource;
 import org.apache.catalina.WebResourceSet;
@@ -43,6 +27,7 @@ import org.apache.catalina.webresources.FileResource;
 import org.apache.catalina.webresources.FileResourceSet;
 import org.apache.catalina.webresources.JarResource;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -58,11 +43,31 @@ import org.apache.tomcat.maven.common.run.ClassLoaderEntriesCalculator;
 import org.apache.tomcat.maven.common.run.ClassLoaderEntriesCalculatorRequest;
 import org.apache.tomcat.maven.common.run.ClassLoaderEntriesCalculatorResult;
 import org.apache.tomcat.maven.common.run.TomcatRunException;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.codehaus.plexus.util.xml.Xpp3DomWriter;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
  * Runs the current project as a dynamic web application using an embedded Tomcat server.
@@ -70,8 +75,8 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
  * @author Olivier Lamy
  * @since 2.0
  */
-@Mojo(name = "run", requiresDependencyResolution = ResolutionScope.TEST, threadSafe = true)
-@Execute(phase = LifecyclePhase.PROCESS_CLASSES)
+@Mojo( name = "run", requiresDependencyResolution = ResolutionScope.TEST, threadSafe = true )
+@Execute( phase = LifecyclePhase.PROCESS_CLASSES )
 public class RunMojo
     extends AbstractRunMojo
 {
@@ -83,13 +88,13 @@ public class RunMojo
     /**
      * The set of dependencies for the web application being run.
      */
-    @Parameter(defaultValue = "${project.artifacts}", required = true, readonly = true)
+    @Parameter( defaultValue = "${project.artifacts}", required = true, readonly = true )
     private Set<Artifact> dependencies;
 
     /**
      * The web resources directory for the web application being run.
      */
-    @Parameter(defaultValue = "${basedir}/src/main/webapp", property = "tomcat.warSourceDirectory")
+    @Parameter( defaultValue = "${basedir}/src/main/webapp", property = "tomcat.warSourceDirectory" )
     private File warSourceDirectory;
 
 
@@ -99,7 +104,7 @@ public class RunMojo
      * @see http://tomcat.apache.org/tomcat-7.0-doc/api/org/apache/catalina/loader/WebappLoader.html#setDelegate(boolean)
      * @since 1.0
      */
-    @Parameter(property = "tomcat.delegate", defaultValue = "true")
+    @Parameter( property = "tomcat.delegate", defaultValue = "true" )
     private boolean delegate = true;
 
     /**
@@ -113,7 +118,7 @@ public class RunMojo
      *
      * @since 2.0
      */
-    @Parameter(property = "maven.tomcat.addWarDependenciesInClassloader", defaultValue = "true")
+    @Parameter( property = "maven.tomcat.addWarDependenciesInClassloader", defaultValue = "true" )
     private boolean addWarDependenciesInClassloader;
 
     /**
@@ -121,7 +126,7 @@ public class RunMojo
      *
      * @since 2.0
      */
-    @Parameter(property = "maven.tomcat.useTestClasspath", defaultValue = "false")
+    @Parameter( property = "maven.tomcat.useTestClasspath", defaultValue = "false" )
     private boolean useTestClasspath;
 
     /**
@@ -129,7 +134,7 @@ public class RunMojo
      *
      * @since 2.0
      */
-    @Parameter(alias = "additionalClassesDirs")
+    @Parameter( alias = "additionalClassesDirs" )
     private List<String> additionalClasspathDirs;
 
 
@@ -317,6 +322,78 @@ public class RunMojo
 
             final List<String> jarPaths = extractJars( classLoaderEntries );
 
+            List<URL> urls = new ArrayList<URL>( jarPaths.size() );
+
+            for ( String jarPath : jarPaths )
+            {
+                try
+                {
+                    urls.add( new File( jarPath ).toURI().toURL() );
+                }
+                catch ( MalformedURLException e )
+                {
+                    throw new MojoExecutionException( e.getMessage(), e );
+                }
+            }
+
+            final URLClassLoader urlClassLoader = new URLClassLoader( urls.toArray( new URL[urls.size()] ) );
+
+            final ClassRealm pluginRealm = getTomcatClassLoader();
+
+            context.setResources(
+                new MyDirContext( new File( project.getBuild().getOutputDirectory() ).getAbsolutePath(), getPath() )
+                {
+                    @Override
+                    public WebResource getClassLoaderResource( String path )
+                    {
+                        URL url = urlClassLoader.getResource( StringUtils.removeStart( path, "/" ) );
+                        // search in parent (plugin) classloader
+                        if ( url == null )
+                        {
+                            url = pluginRealm.getResource( StringUtils.removeStart( path, "/" ) );
+                        }
+
+                        if ( url == null )
+                        {
+                            return new EmptyResource( this, getPath() );
+                        }
+
+                        JarFile jarFile = null;
+
+                        try
+                        {
+                            // url.getFile is
+                            // file:/Users/olamy/mvn-repo/org/springframework/spring-web/4.0.0.RELEASE/spring-web-4.0.0.RELEASE.jar!/org/springframework/web/context/ContextLoaderListener.class
+
+                            int idx = url.getFile().indexOf( '!' );
+
+                            String filePath = StringUtils.removeStart( url.getFile().substring( 0, idx ), "file:" );
+
+                            jarFile = new JarFile( filePath );
+
+                            JarEntry jarEntry = jarFile.getJarEntry( StringUtils.removeStart( path, "/" ) );
+
+                            return new JarResource( this, //
+                                                    getPath(), //
+                                                    filePath, //
+                                                    url.getPath().substring( 0, idx ), //
+                                                    jarEntry, //
+                                                    "", //
+                                                    null );
+                        }
+                        catch ( IOException e )
+                        {
+                            throw new RuntimeException( e.getMessage(), e );
+                        }
+                        finally
+                        {
+                            IOUtils.closeQuietly( jarFile );
+                        }
+
+
+                    }
+                } );
+
             Runtime.getRuntime().addShutdownHook( new Thread()
             {
                 @Override
@@ -375,10 +452,17 @@ public class RunMojo
                                 try
                                 {
                                     JarFile jarFile = new JarFile( jar );
-                                    JarEntry jarEntry = (JarEntry) jarFile.getEntry( StringUtils.removeStart( path, "/" ) );
+                                    JarEntry jarEntry =
+                                        (JarEntry) jarFile.getEntry( StringUtils.removeStart( path, "/" ) );
                                     if ( jarEntry != null )
                                     {
-                                        return new JarResource( context.getResources(), getPath(), jarFile.getName(), jar.toURI().toASCIIString(), jarEntry, path, jarFile.getManifest());
+                                        return new JarResource( context.getResources(), //
+                                                                getPath(),  //
+                                                                jarFile.getName(), //
+                                                                jar.toURI().toString(), //
+                                                                jarEntry, //
+                                                                path, //
+                                                                jarFile.getManifest() );
                                     }
                                 }
                                 catch ( IOException e )

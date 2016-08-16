@@ -86,7 +86,9 @@ public class MavenWebappClassLoader
         {
             // go to top
         }
-        return super.loadClass( name );
+
+        Class<?> clazz = super.loadClass( name );
+        return clazz;
     }
 
     @Override
@@ -101,7 +103,8 @@ public class MavenWebappClassLoader
         {
             // go to top
         }
-        return super.loadClass( name, resolve );
+        Class<?> clazz = super.loadClass( name, resolve );
+        return clazz;
     }
 
     @Override
@@ -112,7 +115,6 @@ public class MavenWebappClassLoader
 
     @Override
     protected Class<?> findClassInternal( String name )
-        throws ClassNotFoundException
     {
         return super.findClassInternal( name );
     }

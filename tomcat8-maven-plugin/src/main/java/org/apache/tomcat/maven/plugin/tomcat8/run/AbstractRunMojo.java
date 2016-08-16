@@ -784,7 +784,7 @@ public abstract class AbstractRunMojo
     }
 
 
-    private static class MyDirContext
+    protected static class MyDirContext
         extends StandardRoot
     {
         String buildOutputDirectory;
@@ -802,6 +802,12 @@ public abstract class AbstractRunMojo
         @Override
         public WebResource getResource( String path )
         {
+
+            if ( "/WEB-INF/classes".equals( path ) )
+            {
+                return new FileResource( this, this.webAppPath, new File( this.buildOutputDirectory ), true );
+            }
+
             File file = new File( path );
             if ( file.exists() )
             {
@@ -811,6 +817,20 @@ public abstract class AbstractRunMojo
             return webResource;
         }
 
+
+        @Override
+        public WebResource getClassLoaderResource( String path )
+        {
+            // here get resources from various pathsss
+            return super.getClassLoaderResource( path );
+        }
+
+
+        @Override
+        public WebResource[] listResources( String path )
+        {
+            return super.listResources( path );
+        }
     }
 
     /**
@@ -833,7 +853,7 @@ public abstract class AbstractRunMojo
             else
             {
                 webappLoader = new WebappLoader( getTomcatClassLoader() );
-                webappLoader.setLoaderClass( MavenWebappClassLoader.class.getName() );
+                //webappLoader.setLoaderClass( MavenWebappClassLoader.class.getName() );
             }
         }
         else
@@ -847,7 +867,7 @@ public abstract class AbstractRunMojo
             else
             {
                 webappLoader = new WebappLoader( Thread.currentThread().getContextClassLoader() );
-                webappLoader.setLoaderClass( MavenWebappClassLoader.class.getName() );
+                //webappLoader.setLoaderClass( MavenWebappClassLoader.class.getName() );
             }
         }
         return webappLoader;
@@ -1345,9 +1365,9 @@ public abstract class AbstractRunMojo
             ClassWorld world = new ClassWorld();
             ClassRealm root = world.newRealm( "tomcat", Thread.currentThread().getContextClassLoader() );
 
-            for ( @SuppressWarnings( "rawtypes" ) Iterator i = pluginArtifacts.iterator(); i.hasNext(); )
+            for ( Iterator<Artifact> i = pluginArtifacts.iterator(); i.hasNext(); )
             {
-                Artifact pluginArtifact = (Artifact) i.next();
+                Artifact pluginArtifact = i.next();
                 // add all plugin artifacts see https://issues.apache.org/jira/browse/MTOMCAT-122
                 if ( pluginArtifact.getFile() != null )
                 {
