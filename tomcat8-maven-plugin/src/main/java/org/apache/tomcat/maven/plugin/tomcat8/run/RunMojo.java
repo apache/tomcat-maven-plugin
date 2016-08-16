@@ -340,8 +340,7 @@ public class RunMojo
 
             getLog().debug( "classLoaderEntriesCalculator urls: " + urls );
 
-            final URLClassLoader urlClassLoader = new URLClassLoader( urls.toArray( new URL[urls.size()] ), //
-                                                                      Thread.currentThread().getContextClassLoader() );
+            final URLClassLoader urlClassLoader = new URLClassLoader( urls.toArray( new URL[urls.size()] ) );
 
             final ClassRealm pluginRealm = getTomcatClassLoader();
 
@@ -356,12 +355,6 @@ public class RunMojo
                     public WebResource getClassLoaderResource( String path )
                     {
 
-                        if (previous.getState().isAvailable())
-                        {
-                            WebResource webResource = previous.getClassLoaderResource( path );
-                            log.debug( "foo" );
-                        }
-
                         log.debug( "RunMojo#getClassLoaderResource: " + path );
                         URL url = urlClassLoader.getResource( StringUtils.removeStart( path, "/" ) );
                         // search in parent (plugin) classloader
@@ -370,7 +363,7 @@ public class RunMojo
                             url = pluginRealm.getResource( StringUtils.removeStart( path, "/" ) );
                         }
 
-                        if (url == null)
+                        if ( url == null )
                         {
                             // try in reactors
                             List<WebResource> webResources = findResourcesInDirectories( path, //
