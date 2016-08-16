@@ -782,6 +782,7 @@
               <exclude>out/**</exclude>
               <exclude>.extract/**</exclude>
               <exclude>*.patch</exclude>
+              <exclude>**/access_log.*</exclude>
             </excludes>
           </configuration>
         </plugin>
