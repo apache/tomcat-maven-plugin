@@ -31,8 +31,8 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.tomcat.maven.runner.Tomcat7Runner;
-import org.apache.tomcat.maven.runner.Tomcat7RunnerCli;
+import org.apache.tomcat.maven.runner.Tomcat8Runner;
+import org.apache.tomcat.maven.runner.Tomcat8RunnerCli;
 import org.codehaus.plexus.archiver.jar.Manifest;
 import org.codehaus.plexus.archiver.jar.ManifestException;
 import org.codehaus.plexus.util.DirectoryScanner;
@@ -135,12 +135,12 @@ public abstract class AbstractStandaloneWarMojo
 
             Properties properties = new Properties();
 
-            properties.put( Tomcat7Runner.ARCHIVE_GENERATION_TIMESTAMP_KEY,
+            properties.put( Tomcat8Runner.ARCHIVE_GENERATION_TIMESTAMP_KEY,
                             Long.toString( System.currentTimeMillis() ) );
-            properties.put( Tomcat7Runner.ENABLE_NAMING_KEY, Boolean.toString( enableNaming ) );
-            properties.put( Tomcat7Runner.ACCESS_LOG_VALVE_FORMAT_KEY, accessLogValveFormat );
-            properties.put( Tomcat7Runner.HTTP_PROTOCOL_KEY, connectorHttpProtocol );
-            properties.put( Tomcat7Runner.CODE_SOURCE_CONTEXT_PATH, path );
+            properties.put( Tomcat8Runner.ENABLE_NAMING_KEY, Boolean.toString( enableNaming ) );
+            properties.put( Tomcat8Runner.ACCESS_LOG_VALVE_FORMAT_KEY, accessLogValveFormat );
+            properties.put( Tomcat8Runner.HTTP_PROTOCOL_KEY, connectorHttpProtocol );
+            properties.put( Tomcat8Runner.CODE_SOURCE_CONTEXT_PATH, path );
 
             os = new ArchiveStreamFactory().createArchiveOutputStream( ArchiveStreamFactory.JAR,
                                                                        execWarJarOutputStream );
@@ -152,11 +152,11 @@ public abstract class AbstractStandaloneWarMojo
                 os.putArchiveEntry( new JarArchiveEntry( "conf/server.xml" ) );
                 IOUtils.copy( new FileInputStream( serverXml ), os );
                 os.closeArchiveEntry();
-                properties.put( Tomcat7Runner.USE_SERVER_XML_KEY, Boolean.TRUE.toString() );
+                properties.put( Tomcat8Runner.USE_SERVER_XML_KEY, Boolean.TRUE.toString() );
             }
             else
             {
-                properties.put( Tomcat7Runner.USE_SERVER_XML_KEY, Boolean.FALSE.toString() );
+                properties.put( Tomcat8Runner.USE_SERVER_XML_KEY, Boolean.FALSE.toString() );
             }
 
             os.putArchiveEntry( new JarArchiveEntry( "conf/web.xml" ) );
@@ -168,7 +168,7 @@ public abstract class AbstractStandaloneWarMojo
             tmpPropertiesFileOutputStream.flush();
             tmpPropertiesFileOutputStream.close();
 
-            os.putArchiveEntry( new JarArchiveEntry( Tomcat7RunnerCli.STAND_ALONE_PROPERTIES_FILENAME ) );
+            os.putArchiveEntry( new JarArchiveEntry( Tomcat8RunnerCli.STAND_ALONE_PROPERTIES_FILENAME ) );
             IOUtils.copy( new FileInputStream( tmpPropertiesFile ), os );
             os.closeArchiveEntry();
 
@@ -179,7 +179,7 @@ public abstract class AbstractStandaloneWarMojo
                     "org.apache.tomcat.embed", pluginArtifact.getGroupId() ) || StringUtils.equals(
                     "org.eclipse.jdt.core.compiler", pluginArtifact.getGroupId() ) || StringUtils.equals( "commons-cli",
                                                                                                           pluginArtifact.getArtifactId() )
-                    || StringUtils.equals( "tomcat7-war-runner", pluginArtifact.getArtifactId() ) )
+                    || StringUtils.equals( "tomcat8-war-runner", pluginArtifact.getArtifactId() ) )
                 {
                     JarFile jarFile = new JarFile( pluginArtifact.getFile() );
                     extractJarToArchive( jarFile, os, null );

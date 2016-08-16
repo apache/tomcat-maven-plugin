@@ -159,7 +159,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat.maven</groupId>
-      <artifactId>tomcat7-war-runner</artifactId>
+      <artifactId>tomcat8-war-runner</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>

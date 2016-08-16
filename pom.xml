@@ -317,6 +317,7 @@
     <module>tomcat6-maven-plugin</module>
     <module>tomcat7-war-runner</module>
     <module>tomcat7-maven-plugin</module>
+	<module>tomcat8-war-runner</module>
     <module>tomcat8-maven-plugin</module>
     <module>tomcat-maven-archetype</module>
   </modules>
@@ -458,6 +459,12 @@
       <dependency>
         <groupId>org.apache.tomcat.maven</groupId>
         <artifactId>tomcat7-war-runner</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+	  
+	  <dependency>
+        <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat8-war-runner</artifactId>
         <version>${project.version}</version>
       </dependency>
 

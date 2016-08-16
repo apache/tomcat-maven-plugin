@@ -24,7 +24,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.tomcat.maven.common.run.EmbeddedRegistry;
-import org.apache.tomcat.maven.plugin.tomcat8.AbstractTomcat7Mojo;
+import org.apache.tomcat.maven.plugin.tomcat8.AbstractTomcat8Mojo;
 
 
 /**
@@ -42,7 +42,7 @@ import org.apache.tomcat.maven.plugin.tomcat8.AbstractTomcat7Mojo;
  */
 @Mojo( name = "shutdown", requiresDependencyResolution = ResolutionScope.RUNTIME, threadSafe = true )
 public class ShutdownMojo
-    extends AbstractTomcat7Mojo
+    extends AbstractTomcat8Mojo
 {
 
     /**
