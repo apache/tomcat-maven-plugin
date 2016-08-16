@@ -359,6 +359,16 @@ public class RunMojo
                             url = pluginRealm.getResource( StringUtils.removeStart( path, "/" ) );
                         }
 
+                        // try in reactors
+                        List<WebResource> webResources = findResourcesInDirectories( path, //
+                                                                                     classLoaderEntriesCalculatorResult.getBuildDirectories() );
+
+                        // so we return the first one
+                        if ( !webResources.isEmpty() )
+                        {
+                            return webResources.get( 0 );
+                        }
+
                         if ( url == null )
                         {
                             return new EmptyResource( this, getPath() );

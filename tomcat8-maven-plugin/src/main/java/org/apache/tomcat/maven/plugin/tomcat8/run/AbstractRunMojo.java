@@ -806,8 +806,6 @@ public abstract class AbstractRunMojo
             this.log = log;
         }
 
-
-
         @Override
         public WebResource getResource( String path )
         {
@@ -864,6 +862,8 @@ public abstract class AbstractRunMojo
             log.debug( "MyDirContext#getResourcesInternal: " + path );
             return super.getResourcesInternal( path, useClassLoaderResources );
         }
+
+
     }
 
     /**
