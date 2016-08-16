@@ -48,7 +48,7 @@
     <mavenPluginPluginVersion>3.2</mavenPluginPluginVersion>
     <!-- Test settings -->
     <maven.test.redirectTestOutputToFile>false</maven.test.redirectTestOutputToFile>
-    <surefire.version>2.18</surefire.version>
+    <surefire.version>2.18.1</surefire.version>
     <failsafe.version>${surefire.version}</failsafe.version>
 
     <junit.version>4.10</junit.version>
@@ -73,11 +73,7 @@
     <its.ajp.port>2001</its.ajp.port>
     <!-- server port for it tests -->
     <its.server.port>2008</its.server.port>
-<<<<<<< 401716e461ee04de5d0dd9c584a1f5074d66d455
     <tomcat7Version>7.0.59</tomcat7Version>
-=======
-    <tomcat7Version>7.0.54</tomcat7Version>
->>>>>>> use last tomcat8 version
     <tomcat8Version>8.0.14</tomcat8Version>
 
     <!-- to prevent isssues with last apache parent pom -->
