@@ -36,7 +36,7 @@ import java.util.Properties;
  * @author Olivier Lamy
  * @since 2.0
  */
-@SuppressWarnings("static-access")
+@SuppressWarnings( "static-access" )
 public class Tomcat8RunnerCli
 {
 
@@ -98,10 +98,22 @@ public class Tomcat8RunnerCli
 
     static
     {
-        options.addOption( httpPort ).addOption( httpsPort ).addOption( ajpPort ).addOption( serverXmlPath ).addOption(
-            resetExtract ).addOption( help ).addOption( debug ).addOption( sysProps ).addOption(
-            httpProtocol ).addOption( clientAuth ).addOption( keyAlias ).addOption( obfuscate ).addOption(
-            extractDirectory ).addOption( loggerName ).addOption( uriEncoding ).addOption( maxPostSize );
+        options.addOption( httpPort ) //
+            .addOption( httpsPort ) //
+            .addOption( ajpPort ) //
+            .addOption( serverXmlPath ) //
+            .addOption( resetExtract ) //
+            .addOption( help ) //
+            .addOption( debug ) //
+            .addOption( sysProps ) //
+            .addOption( httpProtocol ) //
+            .addOption( clientAuth ) //
+            .addOption( keyAlias ) //
+            .addOption( obfuscate ) //
+            .addOption( extractDirectory ) //
+            .addOption( loggerName ) //
+            .addOption( uriEncoding ) //
+            .addOption( maxPostSize );
     }
 
 
