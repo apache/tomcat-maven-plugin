@@ -734,7 +734,7 @@ public abstract class AbstractRunMojo
         // normally this one only but just in case ...
         if ( jarScanner instanceof StandardJarScanner )
         {
-            ( StandardJarScanner.class.cast( jarScanner ) ).setScanAllDirectories( jarScanAllDirectories );
+            ( (StandardJarScanner) jarScanner ).setScanAllDirectories( jarScanAllDirectories );
         }
 
         return context;
