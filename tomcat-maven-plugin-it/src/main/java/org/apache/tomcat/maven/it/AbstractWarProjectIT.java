@@ -195,8 +195,10 @@ public abstract class AbstractWarProjectIT
         throws IOException
     {
         HttpGet httpGet = new HttpGet( getWebappUrl() );
-        httpGet.setConfig(
-            RequestConfig.custom().setSocketTimeout( getTimeout() ).setConnectTimeout( getTimeout() ).build() );
+        httpGet.setConfig( RequestConfig.custom() //
+                               .setSocketTimeout( getTimeout() ) //
+                               .setConnectTimeout( getTimeout() ) //
+                               .build() );
         ResponseHandler<String> responseHandler = new BasicResponseHandler();
         return httpClient.execute( httpGet, responseHandler );
     }
