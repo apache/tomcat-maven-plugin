@@ -89,3 +89,4 @@ public abstract class AbstractI18NTomcat6Mojo
             }
     }
 }
+}

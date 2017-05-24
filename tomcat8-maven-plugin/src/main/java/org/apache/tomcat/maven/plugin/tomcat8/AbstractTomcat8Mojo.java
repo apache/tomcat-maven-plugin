@@ -87,3 +87,4 @@ public abstract class AbstractTomcat8Mojo
             }
     }
 }
+}
