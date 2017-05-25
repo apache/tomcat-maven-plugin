@@ -79,6 +79,14 @@ public abstract class AbstractI18NTomcat6Mojo
                 messagesProvider.getMessage( "tomcatHttpStatusError", statusCode,
                                              tomcatResponse.getReasonPhrase() ) + ": "
                     + tomcatResponse.getHttpResponseBody() );
-        }
+        } else if(tomcatResponse.getHttpResponseBody().startsWith(messagesProvider.getMessage("tomcatHttpDeployBodyError"))) {
+            {
+                getLog().error( messagesProvider.getMessage( "tomcatHttpBodyError",
+                        tomcatResponse.getHttpResponseBody() ) );
+                throw new MojoExecutionException(
+                        messagesProvider.getMessage( "tomcatHttpBodyError",
+                                tomcatResponse.getHttpResponseBody() ));
+            }
     }
+}
 }
