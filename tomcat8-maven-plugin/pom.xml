@@ -41,7 +41,7 @@
     <dependency>
       <groupId>org.apache.tomcat.embed</groupId>
       <artifactId>tomcat-embed-core</artifactId>
-      <version>${tomcat8Version}</version>
+      <version>${tomcatEmbed8Version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
@@ -134,16 +134,6 @@
       <version>${tomcat8Version}</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.tomcat.embed</groupId>
-      <artifactId>tomcat-embed-logging-juli</artifactId>
-      <version>${tomcat8Version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.tomcat.embed</groupId>
-      <artifactId>tomcat-embed-logging-log4j</artifactId>
-      <version>${tomcat8Version}</version>
-    </dependency>
 
     <dependency>
       <groupId>org.eclipse.jdt.core.compiler</groupId>

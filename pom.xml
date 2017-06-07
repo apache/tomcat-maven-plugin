@@ -74,7 +74,7 @@
     <!-- server port for it tests -->
     <its.server.port>2008</its.server.port>
     <tomcat7Version>7.0.59</tomcat7Version>
-    <tomcat8Version>8.0.14</tomcat8Version>
+    <tomcat8Version>8.5.14</tomcat8Version>
 
     <!-- to prevent isssues with last apache parent pom -->
     <arguments />
@@ -83,6 +83,7 @@
     <tomcat-maven.siteUrlDeployment>file://${tomcat-maven.siteFilePath}</tomcat-maven.siteUrlDeployment>
     <tomcat-maven.scmPubCheckoutDirectory>${user.home}/tomcat-maven-plugin-${project.version}-content</tomcat-maven.scmPubCheckoutDirectory>
 
+    <tomcatEmbed8Version>8.5.14</tomcatEmbed8Version>
   </properties>
 
   <prerequisites>
@@ -325,7 +326,7 @@
     <module>tomcat7-maven-plugin</module>
     <module>tomcat8-war-runner</module>
     <module>tomcat8-maven-plugin</module>
-    <module>tomcat-maven-archetype</module>
+    <!-- <module>tomcat-maven-archetype</module>-->
   </modules>
 
   <dependencyManagement>
@@ -785,7 +786,8 @@
               <exclude>out/**</exclude>
               <exclude>.extract/**</exclude>
               <exclude>*.patch</exclude>
-              <exclude>**/access_log.*</exclude>
+              <exclude>**/access_log.*</exclude>              
+              <exclude>tomcat-maven-archetype/**</exclude>              
             </excludes>
           </configuration>
         </plugin>
@@ -847,6 +849,7 @@
   </build>
 
   <distributionManagement>
+  <!-- 
     <repository>
       <id>apache.releases.https</id>
       <name>Apache Release Distribution Repository</name>
@@ -862,6 +865,17 @@
       <id>apache.website</id>
       <url>${tomcat-maven.siteUrlDeployment}</url>
     </site>
+    -->
+    <repository>
+		<id>central</id>
+		<name>plugins-release</name>
+		<url>http://poisson.jalios.net:8081/artifactory/plugins-release-local</url>
+	</repository>
+	<snapshotRepository>
+		<id>snapshots</id>
+		<name>plugins-snapshot</name>
+		<url>http://poisson.jalios.net:8081/artifactory/plugins-snapshot-local</url>
+	</snapshotRepository>    
   </distributionManagement>
 
   <reporting>
