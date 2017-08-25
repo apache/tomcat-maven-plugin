@@ -24,10 +24,12 @@ import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.WebResourceSet;
 import org.apache.catalina.loader.WebappClassLoaderBase;
 import org.apache.catalina.loader.WebappLoader;
+import org.apache.catalina.webresources.AbstractArchiveResourceSet;
 import org.apache.catalina.webresources.EmptyResource;
 import org.apache.catalina.webresources.FileResource;
 import org.apache.catalina.webresources.FileResourceSet;
 import org.apache.catalina.webresources.JarResource;
+import org.apache.catalina.webresources.JarResourceSet;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -476,25 +478,15 @@ public class RunMojo
                             {
                                 String filePath = StringUtils.removeStart( url.getFile().substring( 0, idx ), "file:" );
 
-                                jarFile = new JarFile( filePath );
-
-                                JarEntry jarEntry = jarFile.getJarEntry( StringUtils.removeStart( path, "/" ) );
-
-                                return new JarResource( this, //
-                                                        getPath(), //
-                                                        filePath, //
-                                                        url.getPath().substring( 0, idx ), //
-                                                        jarEntry, //
-                                                        "", //
-                                                        null );
+                                return new JarResourceSet(this,webAppPath,filePath, null).getResource(StringUtils.removeStart( path, "/" ));
                             }
                             else
                             {
-                                return new FileResource( this, webAppPath, new File( url.getFile() ), true );
+                                return new FileResource( this, webAppPath, new File( url.getFile() ), true, null );
                             }
 
                         }
-                        catch ( IOException e )
+                        catch ( IllegalArgumentException e )
                         {
                             throw new RuntimeException( e.getMessage(), e );
                         }
@@ -537,18 +529,18 @@ public class RunMojo
                         if ( StringUtils.startsWithIgnoreCase( path, "/WEB-INF/LIB" ) )
                         {
                             File file = new File( StringUtils.removeStartIgnoreCase( path, "/WEB-INF/LIB" ) );
-                            return new FileResource( context.getResources(), getPath(), file, true );
+                            return new FileResource( context.getResources(), getPath(), file, true, null);
                         }
                         if ( StringUtils.equalsIgnoreCase( path, "/WEB-INF/classes" ) )
                         {
                             return new FileResource( context.getResources(), getPath(),
-                                                     new File( project.getBuild().getOutputDirectory() ), true );
+                                                     new File( project.getBuild().getOutputDirectory() ), true, null );
                         }
 
                         File file = new File( project.getBuild().getOutputDirectory(), path );
                         if ( file.exists() )
                         {
-                            return new FileResource( context.getResources(), getPath(), file, true );
+                            return new FileResource( context.getResources(), getPath(), file, true, null );
                         }
 
                         //if ( StringUtils.endsWith( path, ".class" ) )
@@ -564,21 +556,9 @@ public class RunMojo
 
                                 try
                                 {
-                                    JarFile jarFile = new JarFile( jar );
-                                    JarEntry jarEntry =
-                                        (JarEntry) jarFile.getEntry( StringUtils.removeStart( path, "/" ) );
-                                    if ( jarEntry != null )
-                                    {
-                                        return new JarResource( context.getResources(), //
-                                                                getPath(),  //
-                                                                jarFile.getName(), //
-                                                                jar.toURI().toString(), //
-                                                                jarEntry, //
-                                                                path, //
-                                                                jarFile.getManifest() );
-                                    }
+                                    return new JarResourceSet(context.getResources(),getPath(),jar.toURI().toString(), null).getResource(StringUtils.removeStart( path, "/" ));
                                 }
-                                catch ( IOException e )
+                                catch ( IllegalArgumentException	 e )
                                 {
                                     getLog().debug( "skip error building jar file: " + e.getMessage(), e );
                                 }
