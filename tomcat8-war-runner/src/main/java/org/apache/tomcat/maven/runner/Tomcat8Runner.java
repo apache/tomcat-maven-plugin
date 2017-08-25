@@ -216,7 +216,6 @@ public class Tomcat8Runner
             }
             else
             {
-                String wars = runtimeProperties.getProperty( WARS_KEY );
                 populateWebAppWarPerContext( wars );
             }
         }
