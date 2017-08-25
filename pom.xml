@@ -32,7 +32,7 @@
   <artifactId>tomcat-maven-plugin</artifactId>
   <packaging>pom</packaging>
   <name>Apache Tomcat Maven Plugin</name>
-  <version>3.0-SNAPSHOT</version>
+  <version>3.0-SNAPSHOT-context</version>
   <description>The Tomcat Maven Plugin provides goals to manipulate WAR projects within the Tomcat servlet
     container.
   </description>
@@ -41,8 +41,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.5</maven.compiler.source>
-    <maven.compiler.target>1.5</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
     <mavenVersion>2.2.1</mavenVersion>
 
     <mavenPluginPluginVersion>3.2</mavenPluginPluginVersion>
