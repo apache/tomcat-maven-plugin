@@ -287,6 +287,15 @@ public abstract class AbstractRunMojo
     private boolean ignorePackaging;
 
     /**
+     * enable client authentication for https (if configured)
+     * see <a href="http://tomcat.apache.org/tomcat-6.0-doc/config/http.html#SSL_Support">http://tomcat.apache.org/tomcat-6.0-doc/config/http.html#SSL_Support</a>
+     *
+     * @since 2.3
+     */
+    @Parameter(property = "maven.tomcat.https.clientAuth", defaultValue = "false")
+    private String clientAuth;
+
+    /**
      * Override the default keystoreFile for the HTTPS connector (if enabled)
      *
      * @since 1.1
@@ -978,6 +987,7 @@ public abstract class AbstractRunMojo
                         httpsConnector.setAttribute( "truststoreProvider", truststoreProvider );
                     }
 
+                    httpsConnector.setAttribute("clientAuth", clientAuth);
                     httpsConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
 
                     if ( address != null )

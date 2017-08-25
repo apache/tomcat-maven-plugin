@@ -87,6 +87,8 @@ public class Tomcat7Runner
     public static final String HTTP_PORT_KEY = "httpPort";
 
 
+    public String httpAddress;
+
     public int httpPort;
 
     public int httpsPort;
@@ -307,15 +309,24 @@ public class Tomcat7Runner
 
             debugMessage( "use connectorHttpProtocol:" + connectorHttpProtocol );
 
-            if ( httpPort > 0 )
+            if ( httpPort > 0  || httpAddress != null)
             {
                 Connector connector = new Connector( connectorHttpProtocol );
-                connector.setPort( httpPort );
                 connector.setMaxPostSize( maxPostSize );
 
-                if ( httpsPort > 0 )
+                if(httpPort > 0)
                 {
-                    connector.setRedirectPort( httpsPort );
+                    connector.setPort( httpPort );
+
+                    if ( httpsPort > 0 )
+                    {
+                        connector.setRedirectPort( httpsPort );
+                    }
+                }
+
+                if( httpAddress != null)
+                {
+                    connector.setProperty("address", httpAddress);
                 }
                 connector.setURIEncoding( uriEncoding );
 

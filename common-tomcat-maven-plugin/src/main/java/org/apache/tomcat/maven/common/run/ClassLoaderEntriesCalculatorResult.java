@@ -37,10 +37,23 @@ public class ClassLoaderEntriesCalculatorResult
      */
     private List<File> tmpDirectories;
 
-    public ClassLoaderEntriesCalculatorResult( List<String> classPathEntries, List<File> tmpDirectories )
+
+    /**
+     * directory part of webapp classpath (project.build.directory and reactor projects)
+     */
+    private List<String> buildDirectories;
+
+    /**
+     * @param classPathEntries
+     * @param tmpDirectories
+     * @param buildDirectories
+     */
+    public ClassLoaderEntriesCalculatorResult( List<String> classPathEntries, List<File> tmpDirectories,
+                                               List<String> buildDirectories )
     {
         this.classPathEntries = classPathEntries;
         this.tmpDirectories = tmpDirectories;
+        this.buildDirectories = buildDirectories;
     }
 
     public List<String> getClassPathEntries()
@@ -61,5 +74,10 @@ public class ClassLoaderEntriesCalculatorResult
     public void setTmpDirectories( List<File> tmpDirectories )
     {
         this.tmpDirectories = tmpDirectories;
+    }
+
+    public List<String> getBuildDirectories()
+    {
+        return buildDirectories;
     }
 }

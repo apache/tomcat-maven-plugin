@@ -22,12 +22,12 @@ package org.apache.tomcat.maven.it;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.maven.it.VerificationException;
 import org.apache.maven.it.Verifier;
 import org.apache.maven.it.util.ResourceExtractor;
@@ -67,7 +67,7 @@ public abstract class AbstractWarProjectIT
     /**
      * HttpClient to use to connect to the deployed web-application.
      */
-    private DefaultHttpClient httpClient;
+    private CloseableHttpClient httpClient;
 
     /**
      * Helper for Maven-Integration-Tests.
@@ -83,11 +83,8 @@ public abstract class AbstractWarProjectIT
     public void setUp()
         throws Exception
     {
-        httpClient = new DefaultHttpClient();
 
-        final HttpParams params = httpClient.getParams();
-        HttpConnectionParams.setConnectionTimeout( params, getTimeout() );
-        HttpConnectionParams.setSoTimeout( params, getTimeout() );
+        httpClient = HttpClientBuilder.create().build();
 
         webappHome = ResourceExtractor.simpleExtractResources( getClass(), "/" + getWarArtifactId() );
         verifier = new Verifier( webappHome.getAbsolutePath() );
@@ -105,7 +102,7 @@ public abstract class AbstractWarProjectIT
     public void tearDown()
         throws Exception
     {
-        httpClient.getConnectionManager().shutdown();
+        httpClient.close();
         verifier.resetStreams();
         verifier.deleteArtifact( "org.apache.tomcat.maven.it", getWarArtifactId(), "1.0-SNAPSHOT", "war" );
     }
@@ -136,8 +133,6 @@ public abstract class AbstractWarProjectIT
         logger.info( "Executing verify on " + webappHome.getAbsolutePath() );
 
         verifier.setCliOptions( getCliOptions() );
-
-        verifier.setLogFileName( "foo.log" );
 
         verifier.executeGoal( getGoal() );
 
@@ -198,6 +193,10 @@ public abstract class AbstractWarProjectIT
         throws IOException
     {
         HttpGet httpGet = new HttpGet( getWebappUrl() );
+        httpGet.setConfig( RequestConfig.custom() //
+                               .setSocketTimeout( getTimeout() ) //
+                               .setConnectTimeout( getTimeout() ) //
+                               .build() );
         ResponseHandler<String> responseHandler = new BasicResponseHandler();
         return httpClient.execute( httpGet, responseHandler );
     }

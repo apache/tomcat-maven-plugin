@@ -32,7 +32,7 @@
   <artifactId>tomcat-maven-plugin</artifactId>
   <packaging>pom</packaging>
   <name>Apache Tomcat Maven Plugin</name>
-  <version>2.3-SNAPSHOT</version>
+  <version>3.0-SNAPSHOT</version>
   <description>The Tomcat Maven Plugin provides goals to manipulate WAR projects within the Tomcat servlet
     container.
   </description>
@@ -48,7 +48,7 @@
     <mavenPluginPluginVersion>3.2</mavenPluginPluginVersion>
     <!-- Test settings -->
     <maven.test.redirectTestOutputToFile>false</maven.test.redirectTestOutputToFile>
-    <surefire.version>2.18</surefire.version>
+    <surefire.version>2.18.1</surefire.version>
     <failsafe.version>${surefire.version}</failsafe.version>
 
     <junit.version>4.10</junit.version>
@@ -74,6 +74,7 @@
     <!-- server port for it tests -->
     <its.server.port>2008</its.server.port>
     <tomcat7Version>7.0.59</tomcat7Version>
+    <tomcat8Version>8.0.14</tomcat8Version>
 
     <!-- to prevent isssues with last apache parent pom -->
     <arguments />
@@ -197,6 +198,12 @@
     <contributor>
       <name>John Gregg</name>
     </contributor>
+    <contributor>
+      <name>Xavier Dury</name>
+    </contributor>
+    <contributor>
+      <name>Rupert Madden-Abbott</name>
+    </contributor>
   </contributors>
 
   <licenses>
@@ -314,8 +321,10 @@
     <module>common-tomcat-maven-plugin</module>
     <module>tomcat-maven-plugin-it</module>
     <module>tomcat6-maven-plugin</module>
-    <module>tomcat7-maven-plugin</module>
     <module>tomcat7-war-runner</module>
+    <module>tomcat7-maven-plugin</module>
+    <module>tomcat8-war-runner</module>
+    <module>tomcat8-maven-plugin</module>
     <module>tomcat-maven-archetype</module>
   </modules>
 
@@ -456,6 +465,12 @@
       <dependency>
         <groupId>org.apache.tomcat.maven</groupId>
         <artifactId>tomcat7-war-runner</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+	  
+	  <dependency>
+        <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat8-war-runner</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -628,12 +643,12 @@
       <dependency>
         <groupId>org.apache.maven.shared</groupId>
         <artifactId>maven-verifier</artifactId>
-        <version>1.4</version>
+        <version>1.5</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
-        <version>4.3.1</version>
+        <version>4.3.5</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
@@ -648,12 +663,12 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-core</artifactId>
-        <version>2.0-beta9</version>
+        <version>2.0.1</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-slf4j-impl</artifactId>
-        <version>2.0-beta9</version>
+        <version>2.0.1</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -770,6 +785,7 @@
               <exclude>out/**</exclude>
               <exclude>.extract/**</exclude>
               <exclude>*.patch</exclude>
+              <exclude>**/access_log.*</exclude>
             </excludes>
           </configuration>
         </plugin>
