@@ -32,7 +32,7 @@
   <artifactId>tomcat-maven-plugin</artifactId>
   <packaging>pom</packaging>
   <name>Apache Tomcat Maven Plugin</name>
-  <version>3.0-SNAPSHOT</version>
+  <version>3.0-SNAPSHOT-context</version>
   <description>The Tomcat Maven Plugin provides goals to manipulate WAR projects within the Tomcat servlet
     container.
   </description>
@@ -41,8 +41,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.5</maven.compiler.source>
-    <maven.compiler.target>1.5</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
     <mavenVersion>2.2.1</mavenVersion>
 
     <mavenPluginPluginVersion>3.2</mavenPluginPluginVersion>
@@ -73,8 +73,8 @@
     <its.ajp.port>2001</its.ajp.port>
     <!-- server port for it tests -->
     <its.server.port>2008</its.server.port>
-    <tomcat7Version>7.0.59</tomcat7Version>
-    <tomcat8Version>8.0.14</tomcat8Version>
+    <tomcat7Version>7.0.62</tomcat7Version>
+    <tomcat8Version>8.5.20</tomcat8Version>
 
     <!-- to prevent isssues with last apache parent pom -->
     <arguments />
@@ -83,6 +83,7 @@
     <tomcat-maven.siteUrlDeployment>file://${tomcat-maven.siteFilePath}</tomcat-maven.siteUrlDeployment>
     <tomcat-maven.scmPubCheckoutDirectory>${user.home}/tomcat-maven-plugin-${project.version}-content</tomcat-maven.scmPubCheckoutDirectory>
 
+    <tomcatEmbed8Version>8.5.20</tomcatEmbed8Version>
   </properties>
 
   <prerequisites>
@@ -325,7 +326,7 @@
     <module>tomcat7-maven-plugin</module>
     <module>tomcat8-war-runner</module>
     <module>tomcat8-maven-plugin</module>
-    <module>tomcat-maven-archetype</module>
+    <!-- <module>tomcat-maven-archetype</module>-->
   </modules>
 
   <dependencyManagement>
@@ -467,7 +468,7 @@
         <artifactId>tomcat7-war-runner</artifactId>
         <version>${project.version}</version>
       </dependency>
-	  
+
 	  <dependency>
         <groupId>org.apache.tomcat.maven</groupId>
         <artifactId>tomcat8-war-runner</artifactId>
@@ -786,6 +787,7 @@
               <exclude>.extract/**</exclude>
               <exclude>*.patch</exclude>
               <exclude>**/access_log.*</exclude>
+              <exclude>tomcat-maven-archetype/**</exclude>
             </excludes>
           </configuration>
         </plugin>
@@ -847,6 +849,7 @@
   </build>
 
   <distributionManagement>
+  <!--
     <repository>
       <id>apache.releases.https</id>
       <name>Apache Release Distribution Repository</name>
@@ -862,6 +865,17 @@
       <id>apache.website</id>
       <url>${tomcat-maven.siteUrlDeployment}</url>
     </site>
+    -->
+    <repository>
+		<id>central</id>
+		<name>plugins-release</name>
+		<url>http://poisson.jalios.net:8081/artifactory/plugins-release-local</url>
+	</repository>
+	<snapshotRepository>
+		<id>snapshots</id>
+		<name>plugins-snapshot</name>
+		<url>http://poisson.jalios.net:8081/artifactory/plugins-snapshot-local</url>
+	</snapshotRepository>
   </distributionManagement>
 
   <reporting>

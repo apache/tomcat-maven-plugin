@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.apache.tomcat.maven</groupId>
     <artifactId>tomcat-maven-plugin</artifactId>
-    <version>3.0-SNAPSHOT</version>
+    <version>3.0-SNAPSHOT-context</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
