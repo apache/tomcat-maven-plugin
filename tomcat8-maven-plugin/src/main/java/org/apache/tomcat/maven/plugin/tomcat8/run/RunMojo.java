@@ -28,6 +28,7 @@ import org.apache.catalina.webresources.EmptyResource;
 import org.apache.catalina.webresources.FileResource;
 import org.apache.catalina.webresources.FileResourceSet;
 import org.apache.catalina.webresources.JarResource;
+import org.apache.catalina.webresources.JarResourceSet;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -63,6 +64,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -474,23 +476,18 @@ public class RunMojo
 
                             if ( idx >= 0 )
                             {
-                                String filePath = StringUtils.removeStart( url.getFile().substring( 0, idx ), "file:" );
+                                String urlFilePath = url.getFile().substring(0, idx);
+                                String jarFilePath = StringUtils.removeStart( urlFilePath, "file:" );
 
-                                jarFile = new JarFile( filePath );
+                                jarFile = new JarFile( jarFilePath );
 
                                 JarEntry jarEntry = jarFile.getJarEntry( StringUtils.removeStart( path, "/" ) );
-
-                                return new JarResource( this, //
-                                                        getPath(), //
-                                                        filePath, //
-                                                        url.getPath().substring( 0, idx ), //
-                                                        jarEntry, //
-                                                        "", //
-                                                        null );
+                                JarResourceSet jarResourceSet = new JarResourceSet(this, getPath(), jarFilePath, "/WEB-INF/lib");
+                                return new JarResource(jarResourceSet, getPath(), urlFilePath, jarEntry);
                             }
                             else
                             {
-                                return new FileResource( this, webAppPath, new File( url.getFile() ), true );
+                                return new FileResource( this, webAppPath, new File( url.getFile() ), true, null );
                             }
 
                         }
@@ -537,18 +534,18 @@ public class RunMojo
                         if ( StringUtils.startsWithIgnoreCase( path, "/WEB-INF/LIB" ) )
                         {
                             File file = new File( StringUtils.removeStartIgnoreCase( path, "/WEB-INF/LIB" ) );
-                            return new FileResource( context.getResources(), getPath(), file, true );
+                            return new FileResource( context.getResources(), getPath(), file, true, null );
                         }
                         if ( StringUtils.equalsIgnoreCase( path, "/WEB-INF/classes" ) )
                         {
                             return new FileResource( context.getResources(), getPath(),
-                                                     new File( project.getBuild().getOutputDirectory() ), true );
+                                                     new File( project.getBuild().getOutputDirectory() ), true , null);
                         }
 
                         File file = new File( project.getBuild().getOutputDirectory(), path );
                         if ( file.exists() )
                         {
-                            return new FileResource( context.getResources(), getPath(), file, true );
+                            return new FileResource( context.getResources(), getPath(), file, true, null );
                         }
 
                         //if ( StringUtils.endsWith( path, ".class" ) )
@@ -569,13 +566,8 @@ public class RunMojo
                                         (JarEntry) jarFile.getEntry( StringUtils.removeStart( path, "/" ) );
                                     if ( jarEntry != null )
                                     {
-                                        return new JarResource( context.getResources(), //
-                                                                getPath(),  //
-                                                                jarFile.getName(), //
-                                                                jar.toURI().toString(), //
-                                                                jarEntry, //
-                                                                path, //
-                                                                jarFile.getManifest() );
+                                        JarResourceSet jarResourceSet = new JarResourceSet(context.getResources(), getPath(), jarPath, "/WEB-INF/lib");
+                                        return new JarResource(jarResourceSet, getPath(), jarPath, jarEntry);
                                     }
                                 }
                                 catch ( IOException e )
@@ -659,6 +651,8 @@ public class RunMojo
 
 
                 };
+
+                ((FileResourceSet) webResourceSet).setWebAppMount(getPath());
 
                 context.getResources().addJarResources( webResourceSet );
             }

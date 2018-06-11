@@ -67,7 +67,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-catalina</artifactId>
-      <version>${tomcat7Version}</version>
+      <version>${tomcat8Version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -79,11 +79,6 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-juli</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.tomcat.embed</groupId>
-      <artifactId>tomcat-embed-logging-juli</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
