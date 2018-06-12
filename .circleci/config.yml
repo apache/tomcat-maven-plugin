@@ -1,0 +1,104 @@
+build_image: &build_image
+  circleci/openjdk:8u171-jdk-node-browsers
+
+test_results_dir: &test_results_dir
+  /tmp/circleci-test-results
+
+artifacts_dir: &artifacts_dir
+  /tmp/circleci-artifacts
+
+build_container: &build_container
+  docker:
+    - image: *build_image
+  environment:
+    CIRCLE_TEST_REPORTS: *test_results_dir
+    CIRCLE_ARTIFACTS: *artifacts_dir
+    _JAVA_OPTIONS: '-Xms512m -Xmx1024m'
+    TERM: dumb
+
+setup_infusionsoft_build_defaults: &setup_infusionsoft_build_defaults
+  run:
+    name: "Setup Build Defaults"
+    command: |
+      echo 'export PATH=$HOME/bin:$PATH' >> $BASH_ENV
+      source $HOME/.bashrc
+
+      echo "install circle-scripts, see https://github.com/infusionsoft/circle-scripts#circle-scripts"
+      curl "https://storage.googleapis.com/circle-scripts/latest/init.sh" | bash
+
+restore_maven_cache: &restore_maven_cache
+  restore_cache:
+    keys:
+      - v1-maven-{{ .Branch }}-{{ checksum "pom.xml" }}
+      - v1-maven-{{ .Branch }}
+      - v1-maven
+
+save_maven_cache: &save_maven_cache
+  save_cache:
+    key: v1-maven-{{ .Branch }}-{{ checksum "pom.xml" }}-{{ epoch }}
+    paths:
+      - ~/.m2/repository
+
+save_test_results: &save_test_results
+  store_test_results:
+    path: *test_results_dir
+
+save_artifacts: &save_artifacts
+  store_artifacts:
+    path: *artifacts_dir
+
+
+collect_test_artifacts: &collect_test_artifacts
+  run:
+    name: "Collect Test Output"
+    command: |
+      mkdir -p ${CIRCLE_TEST_REPORTS}
+      mkdir -p ${CIRCLE_ARTIFACTS}
+
+      find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ${CIRCLE_TEST_REPORTS} \;
+
+      # package surfire reports so they can be exported via 'store_artifacts' step
+      tar -czf "${CIRCLE_ARTIFACTS}/junit.tgz" ${CIRCLE_TEST_REPORTS}
+    when: always
+
+version: 2
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build_and_test:
+          filters:
+            branches:
+              ignore: /trunk/
+      - publish:
+          filters:
+            branches:
+              only: /trunk/
+
+jobs:
+  build_and_test:
+    <<: *build_container
+    steps:
+      - checkout
+      - *restore_maven_cache
+      - *setup_infusionsoft_build_defaults
+      - run: mvn test -Prun-its
+      - *collect_test_artifacts
+      - *save_maven_cache
+      - *save_test_results
+      - *save_artifacts
+
+  publish:
+    <<: *build_container
+    steps:
+      - checkout
+      - *restore_maven_cache
+      - *setup_infusionsoft_build_defaults
+      - add_ssh_keys:
+         fingerprints:
+           - "a2:1c:cf:8d:a6:d5:02:c6:8b:2c:9a:55:ef:df:ee:ef"
+      - run: mvn release:prepare release:perform
+      - *collect_test_artifacts
+      - *save_maven_cache
+      - *save_artifacts

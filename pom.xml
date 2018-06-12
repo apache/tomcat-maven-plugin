@@ -56,10 +56,7 @@
     <verifier.maven.debug>false</verifier.maven.debug>
     <verifier.debugJvm>false</verifier.debugJvm>
     <maven.resources.escapeString>\</maven.resources.escapeString>
-    <distributionReleaseUrl>https://repository.apache.org/service/local/staging/deploy/maven2</distributionReleaseUrl>
-
-    <distributionSnapshotsUrl>https://repository.apache.org/content/repositories/snapshots</distributionSnapshotsUrl>
-    <distributionIdSnapshots>apache.snapshots.https</distributionIdSnapshots>
+    <distributionReleaseUrl>https://infusionsoft.jfrog.io/infusionsoft/third-party-builds/</distributionReleaseUrl>
 
     <distributionSiteUrl>scp://people.apache.org/www/tomcat.apache.org/maven-plugin-${project.version}</distributionSiteUrl>
     <sitePath>maven-plugin-trunk</sitePath>
@@ -302,9 +299,9 @@
   </mailingLists>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/tomcat/maven-plugin/trunk/</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/tomcat/maven-plugin/trunk/</developerConnection>
-    <url>http://svn.apache.org/viewvc/tomcat/maven-plugin/</url>
+    <connection>scm:git:ssh://github.com/infusionsoft/tomcat-maven-plugin.git</connection>
+    <developerConnection>scm:git:ssh://github.com/infusionsoft/tomcat-maven-plugin.git</developerConnection>
+    <url>https://github.com/infusionsoft/tomcat-maven-plugin.git</url>
   </scm>
 
   <issueManagement>
@@ -837,16 +834,11 @@
 
   <distributionManagement>
     <repository>
-      <id>apache.releases.https</id>
-      <name>Apache Release Distribution Repository</name>
+      <id>builds</id>
+      <name>Artifactory Third Party Builds</name>
       <url>${distributionReleaseUrl}</url>
     </repository>
 
-    <snapshotRepository>
-      <id>${distributionIdSnapshots}</id>
-      <name>Apache Development Snapshot Repository</name>
-      <url>${distributionSnapshotsUrl}</url>
-    </snapshotRepository>
     <site>
       <id>apache.website</id>
       <url>${tomcat-maven.siteUrlDeployment}</url>
