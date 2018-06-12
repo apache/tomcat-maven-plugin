@@ -300,7 +300,7 @@
 
   <scm>
     <connection>scm:git:ssh://github.com/infusionsoft/tomcat-maven-plugin.git</connection>
-    <developerConnection>scm:git:ssh://github.com/infusionsoft/tomcat-maven-plugin.git</developerConnection>
+    <developerConnection>scm:git:ssh://git@github.com/infusionsoft/tomcat-maven-plugin.git</developerConnection>
     <url>https://github.com/infusionsoft/tomcat-maven-plugin.git</url>
   </scm>
 
