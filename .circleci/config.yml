@@ -98,6 +98,11 @@ jobs:
       - add_ssh_keys:
          fingerprints:
            - "a2:1c:cf:8d:a6:d5:02:c6:8b:2c:9a:55:ef:df:ee:ef"
+      - run:
+          name: "Setup Git user for release commits"
+          command: |
+            git config --global user.email "sre@infusionsoft.com"
+            git config --global user.name "SRE"
       - run: mvn release:prepare release:perform --batch-mode
       - *collect_test_artifacts
       - *save_maven_cache
