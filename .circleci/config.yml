@@ -95,9 +95,6 @@ jobs:
       - checkout
       - *restore_maven_cache
       - *setup_infusionsoft_build_defaults
-      - add_ssh_keys:
-         fingerprints:
-           - "c1:46:49:6b:2a:be:3a:85:72:5b:96:46:83:09:30:5b"
       - run:
           name: "Setup Git user for release commits"
           command: |
