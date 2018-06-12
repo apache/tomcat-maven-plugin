@@ -101,6 +101,7 @@ jobs:
       - run:
           name: "Setup Git user for release commits"
           command: |
+            sed -i -E -e '/IdentitiesOnly/d' ~/.ssh/config
             git config --global user.email "sre@infusionsoft.com"
             git config --global user.name "SRE"
       - run: mvn release:prepare release:perform --batch-mode
