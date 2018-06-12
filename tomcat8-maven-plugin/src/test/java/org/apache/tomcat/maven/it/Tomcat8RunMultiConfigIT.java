@@ -31,7 +31,7 @@ public class Tomcat8RunMultiConfigIT
         throws VerificationException
     {
         verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"http-nio-" + getHttpItPort() + "\"]");
-        verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"http-nio-" + getHttpsItPort() + "\"]");
-        verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"ajp-bio-" + getAjpItPort() + "\"]");
+        verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"https-jsse-nio-" + getHttpsItPort() + "\"]");
+        verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"ajp-nio-" + getAjpItPort() + "\"]");
     }
 }

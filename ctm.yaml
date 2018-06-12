@@ -1,0 +1,3 @@
+ctm:
+ - type: artifactory-maven
+   output: ~/.m2/settings.xml

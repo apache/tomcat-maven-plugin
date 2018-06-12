@@ -32,7 +32,7 @@
   <artifactId>tomcat-maven-plugin</artifactId>
   <packaging>pom</packaging>
   <name>Apache Tomcat Maven Plugin</name>
-  <version>3.0-SNAPSHOT</version>
+  <version>3.0-forked-1-SNAPSHOT</version>
   <description>The Tomcat Maven Plugin provides goals to manipulate WAR projects within the Tomcat servlet
     container.
   </description>
@@ -41,8 +41,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.5</maven.compiler.source>
-    <maven.compiler.target>1.5</maven.compiler.target>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
     <mavenVersion>2.2.1</mavenVersion>
 
     <mavenPluginPluginVersion>3.2</mavenPluginPluginVersion>
@@ -56,10 +56,7 @@
     <verifier.maven.debug>false</verifier.maven.debug>
     <verifier.debugJvm>false</verifier.debugJvm>
     <maven.resources.escapeString>\</maven.resources.escapeString>
-    <distributionReleaseUrl>https://repository.apache.org/service/local/staging/deploy/maven2</distributionReleaseUrl>
-
-    <distributionSnapshotsUrl>https://repository.apache.org/content/repositories/snapshots</distributionSnapshotsUrl>
-    <distributionIdSnapshots>apache.snapshots.https</distributionIdSnapshots>
+    <distributionReleaseUrl>https://infusionsoft.jfrog.io/infusionsoft/third-party-builds/</distributionReleaseUrl>
 
     <distributionSiteUrl>scp://people.apache.org/www/tomcat.apache.org/maven-plugin-${project.version}</distributionSiteUrl>
     <sitePath>maven-plugin-trunk</sitePath>
@@ -73,8 +70,7 @@
     <its.ajp.port>2001</its.ajp.port>
     <!-- server port for it tests -->
     <its.server.port>2008</its.server.port>
-    <tomcat7Version>7.0.59</tomcat7Version>
-    <tomcat8Version>8.0.14</tomcat8Version>
+    <tomcat8Version>8.5.24</tomcat8Version>
 
     <!-- to prevent isssues with last apache parent pom -->
     <arguments />
@@ -303,9 +299,9 @@
   </mailingLists>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/tomcat/maven-plugin/trunk/</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/tomcat/maven-plugin/trunk/</developerConnection>
-    <url>http://svn.apache.org/viewvc/tomcat/maven-plugin/</url>
+    <connection>scm:git:ssh://github.com/infusionsoft/tomcat-maven-plugin.git</connection>
+    <developerConnection>scm:git:ssh://github.com/infusionsoft/tomcat-maven-plugin.git</developerConnection>
+    <url>https://github.com/infusionsoft/tomcat-maven-plugin.git</url>
   </scm>
 
   <issueManagement>
@@ -320,12 +316,8 @@
   <modules>
     <module>common-tomcat-maven-plugin</module>
     <module>tomcat-maven-plugin-it</module>
-    <module>tomcat6-maven-plugin</module>
-    <module>tomcat7-war-runner</module>
-    <module>tomcat7-maven-plugin</module>
     <module>tomcat8-war-runner</module>
     <module>tomcat8-maven-plugin</module>
-    <module>tomcat-maven-archetype</module>
   </modules>
 
   <dependencyManagement>
@@ -340,134 +332,128 @@
       <dependency>
         <groupId>org.apache.tomcat.embed</groupId>
         <artifactId>tomcat-embed-core</artifactId>
-        <version>${tomcat7Version}</version>
+        <version>${tomcat8Version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-util</artifactId>
-        <version>${tomcat7Version}</version>
+        <version>${tomcat8Version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-coyote</artifactId>
-        <version>${tomcat7Version}</version>
+        <version>${tomcat8Version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-api</artifactId>
-        <version>${tomcat7Version}</version>
+        <version>${tomcat8Version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-jdbc</artifactId>
-        <version>${tomcat7Version}</version>
+        <version>${tomcat8Version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-dbcp</artifactId>
-        <version>${tomcat7Version}</version>
+        <version>${tomcat8Version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-servlet-api</artifactId>
-        <version>${tomcat7Version}</version>
+        <version>${tomcat8Version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-jsp-api</artifactId>
-        <version>${tomcat7Version}</version>
+        <version>${tomcat8Version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-jasper</artifactId>
-        <version>${tomcat7Version}</version>
+        <version>${tomcat8Version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-jasper-el</artifactId>
-        <version>${tomcat7Version}</version>
+        <version>${tomcat8Version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-el-api</artifactId>
-        <version>${tomcat7Version}</version>
+        <version>${tomcat8Version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-catalina</artifactId>
-        <version>${tomcat7Version}</version>
+        <version>${tomcat8Version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-tribes</artifactId>
-        <version>${tomcat7Version}</version>
+        <version>${tomcat8Version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-catalina-ha</artifactId>
-        <version>${tomcat7Version}</version>
+        <version>${tomcat8Version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-annotations-api</artifactId>
-        <version>${tomcat7Version}</version>
+        <version>${tomcat8Version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-i18n-es</artifactId>
-        <version>${tomcat7Version}</version>
+        <version>${tomcat8Version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-i18n-fr</artifactId>
-        <version>${tomcat7Version}</version>
+        <version>${tomcat8Version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-i18n-ja</artifactId>
-        <version>${tomcat7Version}</version>
+        <version>${tomcat8Version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-juli</artifactId>
-        <version>${tomcat7Version}</version>
+        <version>${tomcat8Version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat.embed</groupId>
         <artifactId>tomcat-embed-logging-juli</artifactId>
-        <version>${tomcat7Version}</version>
+        <version>${tomcat8Version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.tomcat.embed</groupId>
         <artifactId>tomcat-embed-logging-log4j</artifactId>
-        <version>${tomcat7Version}</version>
+        <version>${tomcat8Version}</version>
       </dependency>
 
 
       <!-- end tomcat dependencies -->
 
-      <dependency>
-        <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat7-war-runner</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-	  
 	  <dependency>
         <groupId>org.apache.tomcat.maven</groupId>
         <artifactId>tomcat8-war-runner</artifactId>
@@ -848,16 +834,11 @@
 
   <distributionManagement>
     <repository>
-      <id>apache.releases.https</id>
-      <name>Apache Release Distribution Repository</name>
+      <id>builds</id>
+      <name>Artifactory Third Party Builds</name>
       <url>${distributionReleaseUrl}</url>
     </repository>
 
-    <snapshotRepository>
-      <id>${distributionIdSnapshots}</id>
-      <name>Apache Development Snapshot Repository</name>
-      <url>${distributionSnapshotsUrl}</url>
-    </snapshotRepository>
     <site>
       <id>apache.website</id>
       <url>${tomcat-maven.siteUrlDeployment}</url>

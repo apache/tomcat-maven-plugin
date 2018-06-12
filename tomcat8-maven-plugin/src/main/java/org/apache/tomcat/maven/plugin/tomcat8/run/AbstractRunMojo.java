@@ -813,13 +813,13 @@ public abstract class AbstractRunMojo
             log.debug( "MyDirContext#getResource: " + path );
             if ( "/WEB-INF/classes".equals( path ) )
             {
-                return new FileResource( this, this.webAppPath, new File( this.buildOutputDirectory ), true );
+                return new FileResource(this, this.webAppPath, new File(this.buildOutputDirectory), true, null);
             }
 
             File file = new File( path );
             if ( file.exists() )
             {
-                return new FileResource( this, this.webAppPath, file, true );
+                return new FileResource( this, this.webAppPath, file, true, null);
             }
             WebResource webResource = super.getResource( path );
             return webResource;
