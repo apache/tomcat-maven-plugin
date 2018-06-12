@@ -108,7 +108,11 @@ public final class EmbeddedRegistry
             {
                 Method method = embedded.getClass().getMethod( "stop", null );
                 method.invoke( embedded, null );
-                embedded.getClass().getMethod( "destroy", null ).invoke( embedded, null );
+                try {
+                    embedded.getClass().getMethod("destroy", null).invoke(embedded, null);
+                } catch (Exception e){
+                    log.warn("Container doesn't have a destroy method, this could cause a resource leak");
+                }
                 iterator.remove();
             }
             catch ( NoSuchMethodException e )

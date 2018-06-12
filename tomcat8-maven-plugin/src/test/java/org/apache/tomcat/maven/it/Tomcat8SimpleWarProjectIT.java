@@ -37,6 +37,6 @@ public class Tomcat8SimpleWarProjectIT
     {
         verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"http-nio-" + getHttpItPort() + "\"]");
 
-        verifier.verifyTextInLog( "INFO: Starting ProtocolHandler [\"ajp-bio-"+ getAjpItPort() +"\"]" );
+        verifier.verifyTextInLog( "INFO: Starting ProtocolHandler [\"ajp-nio-"+ getAjpItPort() +"\"]" );
     }
 }
