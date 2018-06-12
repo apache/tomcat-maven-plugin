@@ -102,8 +102,16 @@ jobs:
           name: "Setup Git user for release commits"
           command: |
             sed -i -E -e '/IdentitiesOnly/d' ~/.ssh/config
+
             git config --global user.email "sre@infusionsoft.com"
             git config --global user.name "SRE"
+
+            # Make sure we can push tags to origin
+            declare -r tag="test-tag-$(date '+%Y%m%d%H%M')"
+            git tag --annotate --message "Test Tag" "${tag}"
+            git push origin "refs/tags/${tag}"
+            git push origin ":refs/tags/${tag}"
+            git tag --delete "${tag}"
       - run: mvn release:prepare release:perform --batch-mode
       - *collect_test_artifacts
       - *save_maven_cache
