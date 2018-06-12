@@ -97,7 +97,7 @@ jobs:
       - *setup_infusionsoft_build_defaults
       - add_ssh_keys:
          fingerprints:
-           - "a2:1c:cf:8d:a6:d5:02:c6:8b:2c:9a:55:ef:df:ee:ef"
+           - "79:00:c3:9c:d6:3d:50:29:10:46:84:87:06:1a:93:83"
       - run:
           name: "Setup Git user for release commits"
           command: |
