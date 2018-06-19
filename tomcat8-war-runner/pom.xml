@@ -23,7 +23,7 @@
   <parent>
     <artifactId>tomcat-maven-plugin</artifactId>
     <groupId>org.apache.tomcat.maven</groupId>
-    <version>3.0-forked-3-SNAPSHOT</version>
+    <version>3.0-forked-3</version>
   </parent>
   <artifactId>tomcat8-war-runner</artifactId>
   <name>Apache Tomcat Maven Plugin :: Tomcat 8.x War Runner</name>

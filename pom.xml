@@ -32,7 +32,7 @@
   <artifactId>tomcat-maven-plugin</artifactId>
   <packaging>pom</packaging>
   <name>Apache Tomcat Maven Plugin</name>
-  <version>3.0-forked-3-SNAPSHOT</version>
+  <version>3.0-forked-3</version>
   <description>The Tomcat Maven Plugin provides goals to manipulate WAR projects within the Tomcat servlet
     container.
   </description>
@@ -302,7 +302,7 @@
     <connection>scm:git:ssh://github.com/infusionsoft/tomcat-maven-plugin.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/infusionsoft/tomcat-maven-plugin.git</developerConnection>
     <url>https://github.com/infusionsoft/tomcat-maven-plugin.git</url>
-    <tag>HEAD</tag>
+    <tag>tomcat-maven-plugin-3.0-forked-3</tag>
   </scm>
 
   <issueManagement>
