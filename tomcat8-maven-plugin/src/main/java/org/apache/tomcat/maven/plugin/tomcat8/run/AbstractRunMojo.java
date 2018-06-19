@@ -61,6 +61,7 @@ import org.apache.tomcat.maven.common.config.AbstractWebapp;
 import org.apache.tomcat.maven.common.run.EmbeddedRegistry;
 import org.apache.tomcat.maven.common.run.ExternalRepositoriesReloadableWebappLoader;
 import org.apache.tomcat.maven.plugin.tomcat8.AbstractTomcat8Mojo;
+import org.apache.tomcat.util.net.SSLHostConfig;
 import org.apache.tomcat.util.scan.StandardJarScanner;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.UnArchiver;
@@ -309,6 +310,14 @@ public abstract class AbstractRunMojo
      */
     @Parameter( property = "tomcat.ignorePackaging", defaultValue = "false" )
     private boolean ignorePackaging;
+
+    /**
+     * If set, configure to use Server Name Indication (SNI)
+     *
+     * @since 3.0-forked
+     */
+    @Parameter
+    private List<HostConfig> sslHostConfigs;
 
     /**
      * Override the default keystoreFile for the HTTPS connector (if enabled)
@@ -1228,63 +1237,65 @@ public abstract class AbstractRunMojo
                     httpsConnector.setMaxPostSize( maxPostSize );
                     httpsConnector.setSecure( true );
                     httpsConnector.setProperty( "SSLEnabled", "true" );
-                    // should be default but configure it anyway
-                    httpsConnector.setProperty( "sslProtocol", "TLS" );
-                    if ( keystoreFile != null )
-                    {
-                        httpsConnector.setAttribute( "keystoreFile", keystoreFile );
-                    }
-                    if ( keystorePass != null )
-                    {
-                        httpsConnector.setAttribute( "keystorePass", keystorePass );
-                    }
-                    if ( keystoreType != null )
-                    {
-                        httpsConnector.setAttribute( "keystoreType", keystoreType );
-                    }
 
-                    if ( trustManagerClassName != null )
-                    {
-                        httpsConnector.setAttribute( "trustManagerClassName", trustManagerClassName );
-                    }
+                    if (sslHostConfigs.size() > 0) {
+                        for (HostConfig sslHostConfig : sslHostConfigs) {
+                            SSLHostConfig newHostConfig = new SSLHostConfig();
+                            newHostConfig.setHostName(sslHostConfig.getHostname());
+                            newHostConfig.setCertificateKeystoreFile(sslHostConfig.getKeystoreFile());
+                            newHostConfig.setCertificateKeystorePassword(sslHostConfig.getKeystorePassword());
+                            httpsConnector.addSslHostConfig(newHostConfig);
+                        }
+                    } else {
 
-                    if ( trustMaxCertLength != null )
-                    {
-                        httpsConnector.setAttribute( "trustMaxCertLength", trustMaxCertLength );
-                    }
 
-                    if ( truststoreAlgorithm != null )
-                    {
-                        httpsConnector.setAttribute( "truststoreAlgorithm", truststoreAlgorithm );
-                    }
+                        // should be default but configure it anyway
+                        httpsConnector.setProperty("sslProtocol", "TLS");
+                        if (keystoreFile != null) {
+                            httpsConnector.setAttribute("keystoreFile", keystoreFile);
+                        }
+                        if (keystorePass != null) {
+                            httpsConnector.setAttribute("keystorePass", keystorePass);
+                        }
+                        if (keystoreType != null) {
+                            httpsConnector.setAttribute("keystoreType", keystoreType);
+                        }
 
-                    if ( truststoreFile != null )
-                    {
-                        httpsConnector.setAttribute( "truststoreFile", truststoreFile );
-                    }
+                        if (trustManagerClassName != null) {
+                            httpsConnector.setAttribute("trustManagerClassName", trustManagerClassName);
+                        }
 
-                    if ( truststorePass != null )
-                    {
-                        httpsConnector.setAttribute( "truststorePass", truststorePass );
-                    }
+                        if (trustMaxCertLength != null) {
+                            httpsConnector.setAttribute("trustMaxCertLength", trustMaxCertLength);
+                        }
 
-                    if ( truststoreProvider != null )
-                    {
-                        httpsConnector.setAttribute( "truststoreProvider", truststoreProvider );
-                    }
+                        if (truststoreAlgorithm != null) {
+                            httpsConnector.setAttribute("truststoreAlgorithm", truststoreAlgorithm);
+                        }
 
-                    if ( truststoreType != null )
-                    {
-                        httpsConnector.setAttribute( "truststoreType", truststoreType );
-                    }
+                        if (truststoreFile != null) {
+                            httpsConnector.setAttribute("truststoreFile", truststoreFile);
+                        }
 
-                    httpsConnector.setAttribute( "clientAuth", clientAuth );
+                        if (truststorePass != null) {
+                            httpsConnector.setAttribute("truststorePass", truststorePass);
+                        }
 
-                    httpsConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
+                        if (truststoreProvider != null) {
+                            httpsConnector.setAttribute("truststoreProvider", truststoreProvider);
+                        }
 
-                    if ( address != null )
-                    {
-                        httpsConnector.setAttribute( "address", address );
+                        if (truststoreType != null) {
+                            httpsConnector.setAttribute("truststoreType", truststoreType);
+                        }
+
+                        httpsConnector.setAttribute("clientAuth", clientAuth);
+
+                        httpsConnector.setUseBodyEncodingForURI(this.useBodyEncodingForURI);
+
+                        if (address != null) {
+                            httpsConnector.setAttribute("address", address);
+                        }
                     }
 
                     embeddedTomcat.getEngine().getService().addConnector( httpsConnector );

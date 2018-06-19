@@ -472,18 +472,20 @@ public class RunMojo
                             // url.getFile is
                             // file:/Users/olamy/mvn-repo/org/springframework/spring-web/4.0.0.RELEASE/spring-web-4.0.0.RELEASE.jar!/org/springframework/web/context/ContextLoaderListener.class
 
-                            int idx = url.getFile().indexOf( '!' );
+                            URI uri = new URI(url.getFile());
+                            String uriString = uri.toString();
+                            int idx = uriString.indexOf( '!' );
 
                             if ( idx >= 0 )
                             {
-                                String urlFilePath = url.getFile().substring(0, idx);
-                                String jarFilePath = StringUtils.removeStart( urlFilePath, "file:" );
+                                URI jarOnlyUri = new URI(uriString.substring(0, idx));
+                                File file = new File(jarOnlyUri);
 
-                                jarFile = new JarFile( jarFilePath );
+                                jarFile = new JarFile( file );
 
                                 JarEntry jarEntry = jarFile.getJarEntry( StringUtils.removeStart( path, "/" ) );
-                                JarResourceSet jarResourceSet = new JarResourceSet(this, getPath(), jarFilePath, "/WEB-INF/lib");
-                                return new JarResource(jarResourceSet, getPath(), urlFilePath, jarEntry);
+                                JarResourceSet jarResourceSet = new JarResourceSet(this, getPath(), jarOnlyUri.getPath(), "/WEB-INF/lib");
+                                return new JarResource(jarResourceSet, getPath(), jarOnlyUri.toString(), jarEntry);
                             }
                             else
                             {
@@ -494,8 +496,9 @@ public class RunMojo
                         catch ( IOException e )
                         {
                             throw new RuntimeException( e.getMessage(), e );
-                        }
-                        finally
+                        } catch (URISyntaxException e) {
+                            throw new RuntimeException("Resource URL is malformed", e);
+                        } finally
                         {
                             IOUtils.closeQuietly( jarFile );
                         }
