@@ -1238,7 +1238,7 @@ public abstract class AbstractRunMojo
                     httpsConnector.setSecure( true );
                     httpsConnector.setProperty( "SSLEnabled", "true" );
 
-                    if (sslHostConfigs.size() > 0) {
+                    if (sslHostConfigs != null && sslHostConfigs.size() > 0) {
                         for (HostConfig sslHostConfig : sslHostConfigs) {
                             SSLHostConfig newHostConfig = new SSLHostConfig();
                             newHostConfig.setHostName(sslHostConfig.getHostname());
