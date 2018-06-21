@@ -689,7 +689,7 @@ public class RunMojo
                 File file = new File( uri );
                 if ( !file.isDirectory() )
                 {
-                    jarPaths.add( file.getAbsolutePath() );
+                    jarPaths.add( uri.getPath() );
                 }
             }
         }
