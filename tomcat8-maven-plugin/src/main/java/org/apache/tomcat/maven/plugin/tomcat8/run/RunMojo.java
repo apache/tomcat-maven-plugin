@@ -319,6 +319,7 @@ public class RunMojo
                 .setLog( getLog() ) //
                 .setMavenProject( project ) //
                 .setAddWarDependenciesInClassloader( addWarDependenciesInClassloader ) //
+                .setAdditionalClasspathDirs( additionalClasspathDirs )
                 .setUseTestClassPath( useTestClasspath );
             final ClassLoaderEntriesCalculatorResult classLoaderEntriesCalculatorResult =
                 classLoaderEntriesCalculator.calculateClassPathEntries( request );

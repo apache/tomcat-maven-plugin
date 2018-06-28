@@ -218,6 +218,15 @@ public class DefaultClassLoaderEntriesCalculator
                 }
             }
         }
+        if (request.getAdditionalClasspathDirs() != null) {
+            for (String additionalClasspathDir : request.getAdditionalClasspathDirs()) {
+                File file = new File(additionalClasspathDir);
+                if (file.exists() && file.isDirectory()) {
+                    buildDirectories.add(additionalClasspathDir);
+                    classLoaderEntries.add(file.toURI().toString());
+                }
+            }
+        }
 
         return new ClassLoaderEntriesCalculatorResult( new ArrayList<String>( classLoaderEntries ), //
                                                        tmpDirectories, //
