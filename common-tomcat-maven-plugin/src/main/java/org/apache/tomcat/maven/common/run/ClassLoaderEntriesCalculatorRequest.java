@@ -22,6 +22,7 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -33,6 +34,8 @@ public class ClassLoaderEntriesCalculatorRequest
     private MavenProject mavenProject;
 
     private Set<Artifact> dependencies;
+
+    private List<String> additionalClasspathDirs;
 
     private Log log;
 
@@ -59,6 +62,15 @@ public class ClassLoaderEntriesCalculatorRequest
     public ClassLoaderEntriesCalculatorRequest setDependencies( Set<Artifact> dependencies )
     {
         this.dependencies = dependencies;
+        return this;
+    }
+
+    public List<String> getAdditionalClasspathDirs() {
+        return additionalClasspathDirs;
+    }
+
+    public ClassLoaderEntriesCalculatorRequest setAdditionalClasspathDirs(List<String> additionalClasspathDirs) {
+        this.additionalClasspathDirs = additionalClasspathDirs;
         return this;
     }
 
