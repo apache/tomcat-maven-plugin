@@ -35,7 +35,7 @@ Adjust Tomcat Version
 <project>
    [...]
   <properties>
-   <tomcat.version>7.0.50</tomcat.version>
+   <tomcat.version>9.0.0</tomcat.version>
    [...]
   </properties>
    [...]
@@ -44,7 +44,7 @@ Adjust Tomcat Version
       <plugins>
         <plugin>
           <groupId>org.apache.tomcat.maven</groupId>
-          <artifactId>tomcat8-maven-plugin</artifactId>
+          <artifactId>tomcat9-maven-plugin</artifactId>
           <version>${project.version}</version>
           <dependencies>
           <dependency>

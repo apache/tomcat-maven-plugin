@@ -28,7 +28,7 @@
 
 Usage
 
- If no explicit configuration is provided then the Tomcat8 Maven Plugin defaults to
+ If no explicit configuration is provided then the Tomcat9 Maven Plugin defaults to
  the following:
 
  * Tomcat manager URL of <<<http://localhost:8080/manager>>>
@@ -55,7 +55,7 @@ Usage
       ...
       <plugin>
         <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat8-maven-plugin</artifactId>
+        <artifactId>tomcat9-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
           <url>http://www.mydomain.com:1234/mymanager</url>
@@ -87,7 +87,7 @@ Usage
       ...
       <plugin>
         <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat8-maven-plugin</artifactId>
+        <artifactId>tomcat9-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
           <server>myserver</server>
@@ -138,7 +138,7 @@ Usage
       ...
       <plugin>
         <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat8-maven-plugin</artifactId>
+        <artifactId>tomcat9-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
           <path>/mycontext</path>
@@ -167,7 +167,7 @@ Usage
       ...
       <plugin>
         <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat8-maven-plugin</artifactId>
+        <artifactId>tomcat9-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
           <path>/\${project.build.finalName}</path>
