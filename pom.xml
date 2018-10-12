@@ -45,7 +45,7 @@
     <maven.compiler.target>1.5</maven.compiler.target>
     <mavenVersion>2.2.1</mavenVersion>
 
-    <mavenPluginPluginVersion>3.2</mavenPluginPluginVersion>
+    <mavenPluginPluginVersion>3.5.2</mavenPluginPluginVersion>
     <!-- Test settings -->
     <maven.test.redirectTestOutputToFile>false</maven.test.redirectTestOutputToFile>
     <surefire.version>2.18.1</surefire.version>
@@ -326,6 +326,8 @@
     <module>tomcat8-war-runner</module>
     <module>tomcat8-maven-plugin</module>
     <module>tomcat-maven-archetype</module>
+    <module>tomcat9-war-runner</module>
+    <module>tomcat9-maven-plugin</module>
   </modules>
 
   <dependencyManagement>
