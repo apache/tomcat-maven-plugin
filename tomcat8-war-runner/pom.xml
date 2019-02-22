@@ -23,10 +23,10 @@
   <parent>
     <artifactId>tomcat-maven-plugin</artifactId>
     <groupId>org.apache.tomcat.maven</groupId>
-    <version>3.0-SNAPSHOT</version>
+    <version>3.0</version>
   </parent>
   <artifactId>tomcat8-war-runner</artifactId>
-  <version>3.0-SNAPSHOT</version>
+  <version>3.0</version>
   <name>Apache Tomcat Maven Plugin :: Tomcat 8.x War Runner</name>
 
   <dependencies>
