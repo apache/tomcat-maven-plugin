@@ -847,21 +847,18 @@
   </build>
 
   <distributionManagement>
-    <repository>
-      <id>apache.releases.https</id>
-      <name>Apache Release Distribution Repository</name>
-      <url>${distributionReleaseUrl}</url>
-    </repository>
-
-    <snapshotRepository>
-      <id>${distributionIdSnapshots}</id>
-      <name>Apache Development Snapshot Repository</name>
-      <url>${distributionSnapshotsUrl}</url>
-    </snapshotRepository>
-    <site>
-      <id>apache.website</id>
-      <url>${tomcat-maven.siteUrlDeployment}</url>
-    </site>
+	<repository>
+		<id>ifactory-releases</id>
+		<url>
+			http://nexus.pubfactory.com/nexus/content/repositories/releases
+		</url>
+	</repository>
+	<snapshotRepository>
+		<id>ifactory-snapshots</id>
+		<url>
+			http://nexus.pubfactory.com/nexus/content/repositories/snapshots
+		</url>
+	</snapshotRepository>
   </distributionManagement>
 
   <reporting>
