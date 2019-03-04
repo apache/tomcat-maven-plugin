@@ -320,7 +320,6 @@
   <modules>
     <module>common-tomcat-maven-plugin</module>
     <module>tomcat-maven-plugin-it</module>
-    <module>tomcat6-maven-plugin</module>
     <module>tomcat7-war-runner</module>
     <module>tomcat7-maven-plugin</module>
     <module>tomcat8-war-runner</module>
@@ -898,8 +897,8 @@
         </reportSets>
         <configuration>
           <links>
-            <link>http://tomcat.apache.org/tomcat-6.0-doc/api/</link>
             <link>http://tomcat.apache.org/tomcat-7.0-doc/api/</link>
+            <link>http://tomcat.apache.org/tomcat-8.0-doc/api/</link>
           </links>
           <detectLinks>true</detectLinks>
           <notimestamp>true</notimestamp>

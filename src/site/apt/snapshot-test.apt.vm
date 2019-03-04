@@ -28,7 +28,7 @@
 
 Testing SNAPSHOT
 
-  You can test SNAPSHOT versions of the mojos tomcat6 and tomcat7 with the following configuration.
+  You can test SNAPSHOT versions of the mojos tomcat7 and tomcat8 with the following configuration.
 
 * Declare the SNAPSHOT pluginRepository or repository if using Apache Maven 2.x
 
@@ -72,7 +72,7 @@ Testing SNAPSHOT
   ...
     <plugin>
       <groupId>org.apache.tomcat.maven</groupId>
-      <artifactId>tomcat6-maven-plugin</artifactId>
+      <artifactId>tomcat7-maven-plugin</artifactId>
       <version>${project.version}</version>
       <configuration>
         <path>/</path>
@@ -80,7 +80,7 @@ Testing SNAPSHOT
     </plugin>
     <plugin>
       <groupId>org.apache.tomcat.maven</groupId>
-      <artifactId>tomcat7-maven-plugin</artifactId>
+      <artifactId>tomcat8-maven-plugin</artifactId>
       <version>${project.version}</version>
       <configuration>
         <path>/</path>
@@ -94,7 +94,7 @@ Testing SNAPSHOT
 
 * Running
 
-  Now you can have fun with tomcat6:run or tomcat7:run
+  Now you can have fun with tomcat7:run or tomcat8:run
 
 
 

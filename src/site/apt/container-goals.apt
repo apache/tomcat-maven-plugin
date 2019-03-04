@@ -49,7 +49,7 @@ Container Goals
  To list all the currently deployed applications in Tomcat you can type:
 
 +--
-mvn tomcat6:list
+mvn tomcat7/8:list
 +--
 
 * {Listing server information}
@@ -58,7 +58,7 @@ mvn tomcat6:list
  type:
 
 +--
-mvn tomcat6:info
+mvn tomcat7/8:info
 +--
 
 * {Listing JNDI resources}
@@ -66,13 +66,13 @@ mvn tomcat6:info
  To list all the JNDI resources available within Tomcat you can type:
 
 +--
-mvn tomcat6:resources
+mvn tomcat7/8:resources
 +--
 
  Alternatively, to list only JNDI resources of a specific type you can type:
 
 +--
-mvn -Dmaven.tomcat.type=my.class.name tomcat6:resources
+mvn -Dmaven.tomcat.type=my.class.name tomcat7/8:resources
 +--
 
 * {Listing security roles}
@@ -80,5 +80,5 @@ mvn -Dmaven.tomcat.type=my.class.name tomcat6:resources
  To list the available security roles available within Tomcat you can type:
 
 +--
-mvn tomcat6:roles
+mvn tomcat7/8:roles
 +--
