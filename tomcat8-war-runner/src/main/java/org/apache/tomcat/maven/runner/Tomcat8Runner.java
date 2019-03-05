@@ -124,7 +124,7 @@ public class Tomcat8Runner
     /**
      * key = context of the webapp, value = war path on file system
      */
-    Map<String, String> webappWarPerContext = new HashMap<String, String>();
+    Map<String, String> webappWarPerContext = new HashMap<>();
 
     public Tomcat8Runner()
     {
@@ -789,38 +789,25 @@ public class Tomcat8Runner
         }
     }
 
-    private Properties loadProperties( File file )
-        throws FileNotFoundException, IOException
+    private Properties loadProperties( File file ) throws IOException
     {
         Properties properties = new Properties();
         if ( file.exists() )
         {
-
-            FileInputStream fileInputStream = new FileInputStream( file );
-            try
+            try (FileInputStream fileInputStream = new FileInputStream(file))
             {
-                properties.load( fileInputStream );
-            }
-            finally
-            {
-                fileInputStream.close();
+                properties.load(fileInputStream);
             }
 
         }
         return properties;
     }
 
-    private void saveProperties( Properties properties, File file )
-        throws FileNotFoundException, IOException
+    private void saveProperties( Properties properties, File file ) throws IOException
     {
-        FileOutputStream fileOutputStream = new FileOutputStream( file );
-        try
+        try (FileOutputStream fileOutputStream = new FileOutputStream(file))
         {
-            properties.store( fileOutputStream, "Timestamp file for executable war/jar" );
-        }
-        finally
-        {
-            fileOutputStream.close();
+            properties.store(fileOutputStream, "Timestamp file for executable war/jar");
         }
     }
 }

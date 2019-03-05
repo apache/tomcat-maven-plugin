@@ -107,7 +107,7 @@ public class PasswordUtil
             if ( obj instanceof String )
             {
                 String key = (String) obj;
-                String value = (String) props.getProperty( key );
+                String value = props.getProperty( key );
                 if ( value != null && value.startsWith( __OBFUSCATE ) )
                 {
                     System.setProperty( key, deobfuscate( value ) );

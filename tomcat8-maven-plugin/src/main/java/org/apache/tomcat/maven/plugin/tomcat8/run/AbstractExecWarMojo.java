@@ -590,17 +590,17 @@ public abstract class AbstractExecWarMojo
 
     }
 
-    protected String[] toStringArray( List list )
+    protected String[] toStringArray( List<String> list )
     {
         if ( list == null || list.isEmpty() )
         {
             return new String[0];
         }
-        List<String> res = new ArrayList<String>( list.size() );
+        List<String> res = new ArrayList<>( list.size() );
 
-        for ( Iterator ite = list.iterator(); ite.hasNext(); )
+        for ( String s : list )
         {
-            res.add( (String) ite.next() );
+            res.add( s );
         }
         return res.toArray( new String[res.size()] );
     }
