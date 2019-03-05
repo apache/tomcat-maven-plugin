@@ -75,7 +75,7 @@ public abstract class AbstractCatalinaMojo
     /**
      * The current build session instance. This is used for plugin manager API calls.
      */
-    @Component
+    @Parameter( defaultValue = "${session}", readonly = true )
     private MavenSession session;
 
     /**

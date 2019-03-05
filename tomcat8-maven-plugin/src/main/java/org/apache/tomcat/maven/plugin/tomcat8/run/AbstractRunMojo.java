@@ -277,7 +277,7 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0
      */
-    @Component
+    @Parameter( defaultValue = "${project}", readonly = true )
     protected MavenProject project;
 
     /**
