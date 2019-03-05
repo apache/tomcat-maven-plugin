@@ -41,8 +41,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.5</maven.compiler.source>
-    <maven.compiler.target>1.5</maven.compiler.target>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
     <mavenVersion>2.2.1</mavenVersion>
 
     <mavenPluginPluginVersion>3.6.0</mavenPluginPluginVersion>
@@ -830,7 +830,7 @@
             <configuration>
               <rules>
                 <requireJavaVersion>
-                  <version>1.6.0</version>
+                  <version>1.7.0</version>
                 </requireJavaVersion>
               </rules>
             </configuration>
