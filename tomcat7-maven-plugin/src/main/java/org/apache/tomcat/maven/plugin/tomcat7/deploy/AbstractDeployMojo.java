@@ -32,7 +32,7 @@ import java.net.URL;
 /**
  * Deploy a WAR to Tomcat.
  *
- * @author Mark Hobson <markhobson@gmail.com>
+ * @author Mark Hobson (markhobson@gmail.com)
  */
 public abstract class AbstractDeployMojo
     extends AbstractWarCatalinaMojo

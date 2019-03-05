@@ -60,7 +60,7 @@ import java.util.Locale;
 /**
  * A Tomcat manager webapp invocation wrapper.
  *
- * @author Mark Hobson <markhobson@gmail.com>
+ * @author Mark Hobson (markhobson@gmail.com)
  */
 public class TomcatManager
 {
@@ -277,7 +277,9 @@ public class TomcatManager
     }
 
     /**
-     * @param proxy
+     * Sets the proxy to use when communicating with Tomcat manager.
+     * 
+     * @param proxy the proxy to use when communicating with Tomcat manager
      */
     public void setProxy( Proxy proxy )
     {
@@ -422,14 +424,17 @@ public class TomcatManager
     }
 
     /**
-     * @param path
-     * @param war
-     * @param update
-     * @param tag
-     * @param length
-     * @return
-     * @throws TomcatManagerException
-     * @throws IOException
+     * Deploys the specified WAR as a HTTP PUT to the specified context path, optionally undeploying the webapp if it
+     * already exists and using the specified tag name.
+     *
+     * @param path   the webapp context path to deploy to
+     * @param war    an input stream to the WAR to deploy
+     * @param update whether to first undeploy the webapp if it already exists
+     * @param tag    the tag name to use
+     * @param length the size of the war deployed
+     * @return the Tomcat manager response
+     * @throws TomcatManagerException if the Tomcat manager request fails
+     * @throws IOException            if an i/o error occurs
      * @since 2.0
      */
     public TomcatManagerResponse deploy( String path, File war, boolean update, String tag, long length )
