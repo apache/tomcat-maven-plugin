@@ -635,7 +635,12 @@ public abstract class AbstractRunMojo
      */
     protected String getPath()
     {
-        return path;
+    	String versionSeparator = "##";
+	if (path.contains(versionSeparator)) {
+		return path.substring(0, path.indexOf(versionSeparator));
+	} else {
+		return path;
+	}
     }
 
     /**
