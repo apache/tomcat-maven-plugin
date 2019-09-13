@@ -50,7 +50,7 @@ public class ExtendedTomcat
         ctx.setPath( url );
         ctx.setDocBase( path );
 
-        ContextConfig ctxCfg = new ContextConfig();
+        ContextConfig ctxCfg = new CustomRunContextConfig();
         ctx.addLifecycleListener( ctxCfg );
 
         ctxCfg.setDefaultWebXml( new File( configurationDir, "conf/web.xml" ).getAbsolutePath() );
