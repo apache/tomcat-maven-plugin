@@ -22,7 +22,7 @@ package org.apache.tomcat.maven.common.deployer;
 /**
  * Indicates an error received from Tomcat manager.
  *
- * @author Mark Hobson <markhobson@gmail.com>
+ * @author Mark Hobson (markhobson@gmail.com)
  */
 public class TomcatManagerException
     extends Exception

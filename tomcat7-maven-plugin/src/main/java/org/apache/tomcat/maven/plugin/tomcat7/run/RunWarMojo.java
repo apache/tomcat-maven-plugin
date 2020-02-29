@@ -28,8 +28,8 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 /**
  * Runs the current project as a packaged web application using an embedded Tomcat server.
  *
- * @author Mark Hobson <markhobson@gmail.com>
- * @todo depend on war:exploded when MNG-1649 resolved
+ * @author Mark Hobson (markhobson@gmail.com)
+ * TODO depend on war:exploded when MNG-1649 resolved
  */
 @Mojo( name = "run-war", requiresDependencyResolution = ResolutionScope.RUNTIME, threadSafe = true )
 @Execute( phase = LifecyclePhase.PACKAGE )

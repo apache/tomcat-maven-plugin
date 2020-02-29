@@ -55,11 +55,6 @@
         </plugin>
         <plugin>
           <groupId>org.apache.tomcat.maven</groupId>
-          <artifactId>tomcat6-maven-plugin</artifactId>
-          <version>${tomcatPluginVersion}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.tomcat.maven</groupId>
           <artifactId>tomcat7-maven-plugin</artifactId>
           <version>${tomcatPluginVersion}</version>
         </plugin>

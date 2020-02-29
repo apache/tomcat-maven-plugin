@@ -33,7 +33,7 @@ import org.apache.tomcat.maven.common.messages.MessagesProvider;
 public abstract class AbstractTomcat7Mojo
     extends AbstractMojo
 {
-    @Component
+    @Parameter( defaultValue = "${settings}", readonly = true )
     protected Settings settings;
 
     @Component

@@ -325,7 +325,7 @@ public class RunMojo
 
             final List<String> jarPaths = extractJars( classLoaderEntries );
 
-            List<URL> urls = new ArrayList<URL>( jarPaths.size() );
+            List<URL> urls = new ArrayList<>( jarPaths.size() );
 
             for ( String jarPath : jarPaths )
             {
@@ -411,8 +411,8 @@ public class RunMojo
                         {
                             Enumeration<URL> enumeration =
                                 urlClassLoader.findResources( StringUtils.removeStart( path, "/" ) );
-                            List<URL> urlsFound = new ArrayList<URL>();
-                            List<WebResource> webResources = new ArrayList<WebResource>();
+                            List<URL> urlsFound = new ArrayList<>();
+                            List<WebResource> webResources = new ArrayList<>();
                             while ( enumeration.hasMoreElements() )
                             {
                                 URL url = enumeration.nextElement();
@@ -439,7 +439,7 @@ public class RunMojo
                     {
                         try
                         {
-                            List<WebResource> webResources = new ArrayList<WebResource>();
+                            List<WebResource> webResources = new ArrayList<>();
 
                             for ( String directory : directories )
                             {
@@ -610,14 +610,14 @@ public class RunMojo
                         if ( StringUtils.equalsIgnoreCase( "/WEB-INF/lib/", path ) )
                         {
                             // adding outputDirectory as well?
-                            return new HashSet<String>( jarPaths );
+                            return new HashSet<>( jarPaths );
                         }
 
                         File filePath = new File( getWarSourceDirectory(), path );
 
                         if ( filePath.isDirectory() )
                         {
-                            Set<String> paths = new HashSet<String>();
+                            Set<String> paths = new HashSet<>();
 
                             String[] files = filePath.list();
                             if ( files == null )
@@ -682,7 +682,7 @@ public class RunMojo
         throws MojoExecutionException
     {
 
-        List<String> jarPaths = new ArrayList<String>();
+        List<String> jarPaths = new ArrayList<>();
 
         try
         {

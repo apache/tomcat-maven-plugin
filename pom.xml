@@ -41,14 +41,16 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.5</maven.compiler.source>
-    <maven.compiler.target>1.5</maven.compiler.target>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
     <mavenVersion>2.2.1</mavenVersion>
 
-    <mavenPluginPluginVersion>3.5.2</mavenPluginPluginVersion>
+
+    <mavenPluginPluginVersion>3.6.0</mavenPluginPluginVersion>
+    
     <!-- Test settings -->
     <maven.test.redirectTestOutputToFile>false</maven.test.redirectTestOutputToFile>
-    <surefire.version>2.18.1</surefire.version>
+    <surefire.version>2.22.1</surefire.version>
     <failsafe.version>${surefire.version}</failsafe.version>
 
     <junit.version>4.10</junit.version>
@@ -320,7 +322,6 @@
   <modules>
     <module>common-tomcat-maven-plugin</module>
     <module>tomcat-maven-plugin-it</module>
-    <module>tomcat6-maven-plugin</module>
     <module>tomcat7-war-runner</module>
     <module>tomcat7-maven-plugin</module>
     <module>tomcat8-war-runner</module>
@@ -624,11 +625,6 @@
         <artifactId>plexus-classworlds</artifactId>
         <version>2.2.2</version>
       </dependency>
-      <dependency>
-        <groupId>com.google.guava</groupId>
-        <artifactId>guava</artifactId>
-        <version>10.0.1</version>
-      </dependency>
 
       <!-- Test Dependencies -->
 
@@ -682,11 +678,11 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-antrun-plugin</artifactId>
-          <version>1.6</version>
+          <version>1.8</version>
         </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>2.5.1</version>
+          <version>3.8.0</version>
           <configuration>
             <encoding>${project.build.sourceEncoding}</encoding>
             <source>${maven.compiler.source}</source>
@@ -696,7 +692,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
-          <version>2.5.1</version>
+          <version>3.1.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -711,7 +707,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-install-plugin</artifactId>
-          <version>2.3.1</version>
+          <version>2.5.2</version>
           <configuration>
             <createChecksum>true</createChecksum>
           </configuration>
@@ -742,12 +738,12 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.5</version>
+          <version>2.8.2</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
-          <version>2.5</version>
+          <version>2.5.3</version>
           <configuration>
             <preparationGoals>clean install</preparationGoals>
           </configuration>
@@ -755,27 +751,27 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>2.6</version>
+          <version>3.1.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
-          <version>3.3</version>
+          <version>3.7.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-invoker-plugin</artifactId>
-          <version>1.8</version>
+          <version>3.2.0</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.plexus</groupId>
           <artifactId>plexus-component-metadata</artifactId>
-          <version>1.5.5</version>
+          <version>2.0.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
-          <version>0.11</version>
+          <version>0.13</version>
           <configuration>
             <excludes>
               <exclude>.gitignore</exclude>
@@ -795,7 +791,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-scm-publish-plugin</artifactId>
-          <version>1.0</version>
+          <version>3.0.0</version>
           <configuration>
             <pubScmUrl>scm:svn:https://svn.apache.org/repos/asf/tomcat/site/trunk/docs/${sitePath}</pubScmUrl>
             <checkinComment>Apache Tomcat Maven Plugin site documentation for ${project.version}</checkinComment>
@@ -807,7 +803,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.9.1</version>
+          <version>3.1.0</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -828,7 +824,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>1.3.1</version>
+        <version>1.4.1</version>
         <executions>
           <execution>
             <id>enforce-java</id>
@@ -838,7 +834,7 @@
             <configuration>
               <rules>
                 <requireJavaVersion>
-                  <version>1.6.0</version>
+                  <version>1.7.0</version>
                 </requireJavaVersion>
               </rules>
             </configuration>
@@ -871,7 +867,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>2.7</version>
+        <version>2.9</version>
         <configuration>
           <linkOnly>true</linkOnly>
         </configuration>
@@ -889,7 +885,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.9.1</version>
+        <version>3.1.0</version>
         <inherited>false</inherited>
         <reportSets>
           <reportSet>
@@ -900,8 +896,8 @@
         </reportSets>
         <configuration>
           <links>
-            <link>http://tomcat.apache.org/tomcat-6.0-doc/api/</link>
             <link>http://tomcat.apache.org/tomcat-7.0-doc/api/</link>
+            <link>http://tomcat.apache.org/tomcat-8.0-doc/api/</link>
           </links>
           <detectLinks>true</detectLinks>
           <notimestamp>true</notimestamp>
@@ -922,7 +918,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-changes-plugin</artifactId>
-        <version>2.8</version>
+        <version>2.12.1</version>
         <inherited>false</inherited>
         <configuration>
           <columnNames>Type,Fix Version,Key,Summary,Assignee,Status,Created</columnNames>
@@ -957,7 +953,7 @@
         <plugins>
           <plugin>
             <artifactId>maven-pmd-plugin</artifactId>
-            <version>2.5</version>
+            <version>3.11.0</version>
             <configuration>
               <targetJdk>${maven.compiler.target}</targetJdk>
               <rulesets>
@@ -968,7 +964,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-checkstyle-plugin</artifactId>
-            <version>2.9.1</version>
+            <version>3.0.0</version>
             <configuration>
               <configLocation>config/maven_checks.xml</configLocation>
               <headerLocation>config/maven-header.txt</headerLocation>
@@ -977,7 +973,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-jxr-plugin</artifactId>
-            <version>2.2</version>
+            <version>3.0.0</version>
           </plugin>
           <plugin>
             <groupId>org.codehaus.sonar-plugins</groupId>

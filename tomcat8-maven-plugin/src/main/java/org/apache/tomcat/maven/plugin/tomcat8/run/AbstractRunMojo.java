@@ -277,7 +277,7 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0
      */
-    @Component
+    @Parameter( defaultValue = "${project}", readonly = true )
     protected MavenProject project;
 
     /**
@@ -343,8 +343,8 @@ public abstract class AbstractRunMojo
      * Tomcat. Instead please configure naming in the <code>server.xml</code>.
      * </p>
      *
-     * @see <a href="http://tomcat.apache.org/tomcat-6.0-doc/api/org/apache/catalina/startup/Embedded.html">org.apache.catalina.startup.Embedded</a>
-     * @see <a href="http://tomcat.apache.org/tomcat-7.0-doc/api/org/apache/catalina/startup/Tomcat.html">org.apache.catalina.startup.Tomcat</a>
+     * @see <a href="http://tomcat.apache.org/tomcat-7.0-doc/api/org/apache/catalina/startup/Embedded.html">org.apache.catalina.startup.Embedded</a>
+     * @see <a href="http://tomcat.apache.org/tomcat-8.0-doc/api/org/apache/catalina/startup/Tomcat.html">org.apache.catalina.startup.Tomcat</a>
      * @since 2.0
      */
     @Parameter( property = "maven.tomcat.useNaming", defaultValue = "true" )

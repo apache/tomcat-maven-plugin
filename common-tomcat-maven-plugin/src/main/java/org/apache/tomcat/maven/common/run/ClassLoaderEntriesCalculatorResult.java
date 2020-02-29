@@ -44,9 +44,9 @@ public class ClassLoaderEntriesCalculatorResult
     private List<String> buildDirectories;
 
     /**
-     * @param classPathEntries
-     * @param tmpDirectories
-     * @param buildDirectories
+     * @param classPathEntries  Classpath entries File .toURI().toString()
+     * @param tmpDirectories    List of files to cleanup after execution
+     * @param buildDirectories  Directory part of webapp classpath (project.build.directory and reactor projects)
      */
     public ClassLoaderEntriesCalculatorResult( List<String> classPathEntries, List<File> tmpDirectories,
                                                List<String> buildDirectories )

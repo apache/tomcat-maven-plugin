@@ -34,21 +34,21 @@ Run Mojo: run your Maven war project quickly!
   The run mojo gives you the opportunity to avoid those efforts by simply running your war inside an embedded Tomcat instance in your Maven build.
 
   <<<NOTE>>> If you have a multi module Maven project and use Maven3, you don't need to install all modules before using the run goal,
-  just use tomcat6/7:run from the root module and the plugin will auto detect the build output directory from various modules and replace
+  just use tomcat7/8:run from the root module and the plugin will auto detect the build output directory from various modules and replace
   dependencies with those directories in the webapp classloader.
 
 * Running an embedded Tomcat
 
   Configure your pom with the plugin version (for other mojo parameters see each mojo's documentation).
 
-  And use: mvn tomcat6/7:run
+  And use: mvn tomcat7/8:run
 
 +---------------------
   <plugin>
     <groupId>org.apache.tomcat.maven</groupId>
+    <artifactId>tomcat8-maven-plugin</artifactId>
+    <!-- or if you want to use tomcat 7.x
     <artifactId>tomcat7-maven-plugin</artifactId>
-    <!-- or if you want to use tomcat 6.x
-    <artifactId>tomcat6-maven-plugin</artifactId>
     -->
     <version>${project.version}</version>
     <configuration>
@@ -99,7 +99,7 @@ Run Mojo: run your Maven war project quickly!
 
 +---------------------
 
-  With the structure given above, from the top level directory use mvn tomcat6/7:run -pl :my-webapp -am.
+  With the structure given above, from the top level directory use mvn tomcat7/8:run -pl :my-webapp -am.
 
 * Use it with selenium mojo
 
@@ -111,9 +111,9 @@ Run Mojo: run your Maven war project quickly!
 
   <plugin>
     <groupId>org.apache.tomcat.maven</groupId>
+    <artifactId>tomcat8-maven-plugin</artifactId>
+    <!-- or if you want to use tomcat 7.x
     <artifactId>tomcat7-maven-plugin</artifactId>
-    <!-- or if you want to use tomcat 6.x
-    <artifactId>tomcat6-maven-plugin</artifactId>
     -->
     <version>${project.version}</version>
     <executions>
