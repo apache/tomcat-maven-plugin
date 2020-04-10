@@ -68,7 +68,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-dbcp</artifactId>
-      <version>${tomcat8Version}</version>
+      <version>${tomcatDbcpVersion}</version>
     </dependency>
 
     <dependency>

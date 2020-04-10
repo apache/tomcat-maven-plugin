@@ -71,7 +71,7 @@
     <!-- server port for it tests -->
     <its.server.port>2008</its.server.port>
     <tomcat8Version>8.5.24</tomcat8Version>
-
+    <tomcatDbcpVersion>8.5.53</tomcatDbcpVersion>
     <!-- to prevent isssues with last apache parent pom -->
     <arguments />
 
@@ -360,7 +360,7 @@
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-dbcp</artifactId>
-        <version>${tomcat8Version}</version>
+        <version>${tomcatDbcpVersion}</version>
       </dependency>
 
       <dependency>
