@@ -77,7 +77,7 @@ Adjust Tomcat Version
           <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-dbcp</artifactId>
-            <version>${tomcat.version}</version>
+            <version>8.5.53</version>
           </dependency>
 
           <dependency>
