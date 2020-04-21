@@ -23,7 +23,7 @@
   <parent>
     <artifactId>tomcat-maven-plugin</artifactId>
     <groupId>org.apache.tomcat.maven</groupId>
-    <version>3.0-forked-6</version>
+    <version>3.0-forked-7-SNAPSHOT</version>
   </parent>
   <artifactId>tomcat8-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
