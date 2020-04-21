@@ -18,11 +18,34 @@ package org.apache.tomcat.maven.plugin.tomcat9.run;
  * under the License.
  */
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
+import javax.servlet.ServletException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
 import org.apache.catalina.Context;
 import org.apache.catalina.Host;
 import org.apache.catalina.LifecycleException;
-import org.apache.catalina.WebResource;
-import org.apache.catalina.WebResourceSet;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardContext;
@@ -33,7 +56,6 @@ import org.apache.catalina.startup.Catalina;
 import org.apache.catalina.startup.CatalinaProperties;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.valves.AccessLogValve;
-import org.apache.catalina.webresources.FileResource;
 import org.apache.catalina.webresources.StandardRoot;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -49,7 +71,6 @@ import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -75,30 +96,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
-
-import javax.servlet.ServletException;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
 
 /**
  * @author Olivier Lamy
@@ -694,10 +691,8 @@ public abstract class AbstractRunMojo
 
         Context context = container.addWebapp( contextPath, baseDir );
 
-        context.setResources(
-            new MyDirContext( new File( project.getBuild().getOutputDirectory() ).getAbsolutePath(), //
-                              getPath(), //
-                              getLog() ) );
+        StandardRoot root = new StandardRoot(context);
+        context.setResources(root);
 
         if ( useSeparateTomcatClassLoader )
         {
@@ -785,86 +780,6 @@ public abstract class AbstractRunMojo
         {
             throw new MojoExecutionException( e.getMessage(), e );
         }
-    }
-
-
-    protected static class MyDirContext
-        extends StandardRoot
-    {
-        String buildOutputDirectory;
-
-        String webAppPath;
-
-        WebResourceSet webResourceSet;
-
-        Log log;
-
-        MyDirContext( String buildOutputDirectory, String webAppPath, Log log )
-        {
-
-            this.buildOutputDirectory = buildOutputDirectory;
-            this.webAppPath = webAppPath;
-            this.log = log;
-        }
-
-        @Override
-        public WebResource getResource( String path )
-        {
-
-            log.debug( "MyDirContext#getResource: " + path );
-            if ( "/WEB-INF/classes".equals( path ) )
-            {
-                return new FileResource( this, this.webAppPath, new File( this.buildOutputDirectory ), true,null );
-            }
-
-            File file = new File( path );
-            if ( file.exists() )
-            {
-                return new FileResource( this, this.webAppPath, file, true,null );
-            }
-            WebResource webResource = super.getResource( path );
-            return webResource;
-        }
-
-
-        @Override
-        public WebResource getClassLoaderResource( String path )
-        {
-            log.debug( "MyDirContext#getClassLoaderResource: " + path );
-            // here get resources from various paths
-            return super.getClassLoaderResource( path );
-        }
-
-
-        @Override
-        public WebResource[] listResources( String path )
-        {
-            log.debug( "MyDirContext#listResources: " + path );
-            return super.listResources( path );
-        }
-
-        @Override
-        public WebResource[] getClassLoaderResources( String path )
-        {
-            log.debug( "MyDirContext#getClassLoaderResources: " + path );
-            return super.getClassLoaderResources( path );
-        }
-
-        @Override
-        public WebResource[] getResources( String path )
-        {
-            log.debug( "MyDirContext#getResources: " + path );
-            return super.getResources( path );
-        }
-
-        @Override
-        protected WebResource[] getResourcesInternal( String path, boolean useClassLoaderResources )
-        {
-            log.debug( "MyDirContext#getResourcesInternal: " + path );
-            return super.getResourcesInternal( path, useClassLoaderResources );
-        }
-
-
     }
 
     /**
