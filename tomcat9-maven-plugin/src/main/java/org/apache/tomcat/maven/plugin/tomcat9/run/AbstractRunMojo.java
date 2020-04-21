@@ -666,10 +666,12 @@ public abstract class AbstractRunMojo
 
         if ( overriddenContextFile != null && overriddenContextFile.exists() )
         {
+            getLog().info("Using dynamic context configuration file: " + overriddenContextFile.getAbsolutePath());
             standardContext = parseContextFile( overriddenContextFile );
         }
         else if ( defaultContextFile.exists() )
         {
+            getLog().info("Using default context configuration file: " + defaultContextFile.getAbsolutePath());
             standardContext = parseContextFile( defaultContextFile );
         }
 
