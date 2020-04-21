@@ -329,9 +329,6 @@ public class RunMojo
 
                 @Override
                 public WebResource getResource(String path) {
-                    if (path.contains("META-INF")) {
-                        getLog().warn(path);
-                    }
                     /* We need to juggle with /META-INF/beans.xml as Weld's WebAppBeanArchiveScanner has special handling
                     for /WEB-INF/classes that doesn't work with this.
                     That is because it first finds _all_ resources /META-INF/beans.xml and it ends up with the URLs to those
