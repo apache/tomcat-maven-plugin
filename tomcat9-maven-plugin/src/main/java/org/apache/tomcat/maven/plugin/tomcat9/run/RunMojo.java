@@ -317,12 +317,14 @@ public class RunMojo
                     /* We add the jar as a file under /WEB-INF/lib and Tomcat takes care of creating a JarResourceSet for its classes and
                        for its resources in /META-INF/resources as appropriate. Basically it hooks into Tomcat's usual handling.
                      */
+                    getLog().debug("Adding jar resource: " + f.getAbsolutePath());
                     FileResourceSet fileResourceSet = new FileResourceSet(context.getResources(), "/WEB-INF/lib/" + f.getName(), f.getAbsolutePath(), "/");
                     context.getResources().addPostResources(fileResourceSet);
                 }
             }
 
             /* Add build directories */
+            getLog().debug("Adding classes resource: " + new File(project.getBuild().getOutputDirectory()).getAbsolutePath());
             DirResourceSet webinfClassesResources = new DirResourceSet(context.getResources(), "/WEB-INF/classes", new File(project.getBuild().getOutputDirectory()).getAbsolutePath(), "/") {
 
                 @Override
@@ -362,6 +364,7 @@ public class RunMojo
                 }
 
                 final File buildDirectoryFile = new File(buildDirectory);
+                getLog().debug("Adding additional classes resource: " + buildDirectoryFile.getAbsolutePath());
                 DirResourceSet otherClassesResources = new DirResourceSet(context.getResources(), "/WEB-INF/classes", buildDirectoryFile.getAbsolutePath(), "/");
                 context.getResources().addPostResources(otherClassesResources);
             }
