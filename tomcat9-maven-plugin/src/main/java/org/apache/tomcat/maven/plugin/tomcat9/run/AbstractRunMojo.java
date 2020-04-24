@@ -1034,7 +1034,9 @@ public abstract class AbstractRunMojo
 
         try
         {
-
+            // Default to headless
+            System.setProperty("java.awt.headless", "true");
+            
             // Set the system properties
             setupSystemProperties();
 
