@@ -353,7 +353,7 @@ public class RunMojo
                 }
     
             };
-            context.getResources().addPostResources(webinfClassesResources);
+            context.getResources().addPreResources(webinfClassesResources);
 
             for (final String buildDirectory : classLoaderEntriesCalculatorResult.getBuildDirectories()) {
                 if (buildDirectory.equals(project.getBuild().getOutputDirectory())) {
@@ -363,7 +363,7 @@ public class RunMojo
                 final File buildDirectoryFile = new File(buildDirectory);
                 getLog().debug("Adding additional classes resource: " + buildDirectoryFile.getAbsolutePath());
                 DirResourceSet otherClassesResources = new DirResourceSet(context.getResources(), "/WEB-INF/classes", buildDirectoryFile.getAbsolutePath(), "/");
-                context.getResources().addPostResources(otherClassesResources);
+                context.getResources().addPreResources(otherClassesResources);
             }
 
             /* Support the maven-war-plugin's webResources configuration to add resources */
