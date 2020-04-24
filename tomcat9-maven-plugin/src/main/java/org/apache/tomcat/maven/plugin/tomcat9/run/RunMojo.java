@@ -392,7 +392,10 @@ public class RunMojo
 
                         File directoryFile = directory.startsWith(File.separator) ? new File(directory) : new File(project.getBasedir(), directory);
                         DirResourceSet dirResourceSet = new DirResourceSet(context.getResources(), targetPath, directoryFile.getAbsolutePath(), "/");
+                        dirResourceSet.setStaticOnly(true);
                         context.getResources().addPostResources(dirResourceSet);
+
+                        getLog().debug("Adding additional static resources at \"" + targetPath + "\": " + directoryFile.getAbsolutePath());
                     }
                 }
             }
