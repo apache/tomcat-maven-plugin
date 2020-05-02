@@ -18,20 +18,27 @@ package org.apache.tomcat.maven.plugin.tomcat9.run;
  * under the License.
  */
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.catalina.Context;
 import org.apache.catalina.WebResource;
-import org.apache.catalina.WebResourceRoot;
-import org.apache.catalina.WebResourceSet;
-import org.apache.catalina.loader.WebappClassLoaderBase;
 import org.apache.catalina.loader.WebappLoader;
+import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.EmptyResource;
-import org.apache.catalina.webresources.FileResource;
 import org.apache.catalina.webresources.FileResourceSet;
-import org.apache.catalina.webresources.JarResource;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Execute;
@@ -45,33 +52,11 @@ import org.apache.tomcat.maven.common.run.ClassLoaderEntriesCalculator;
 import org.apache.tomcat.maven.common.run.ClassLoaderEntriesCalculatorRequest;
 import org.apache.tomcat.maven.common.run.ClassLoaderEntriesCalculatorResult;
 import org.apache.tomcat.maven.common.run.TomcatRunException;
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.codehaus.plexus.util.xml.Xpp3DomWriter;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import org.apache.catalina.webresources.JarResourceSet;
 
 /**
  * Runs the current project as a dynamic web application using an embedded Tomcat server.
@@ -324,194 +309,96 @@ public class RunMojo
             final List<String> classLoaderEntries = classLoaderEntriesCalculatorResult.getClassPathEntries();
             final List<File> tmpDirectories = classLoaderEntriesCalculatorResult.getTmpDirectories();
 
+            /* Add jars */
             final List<String> jarPaths = extractJars( classLoaderEntries );
-
-            List<URL> urls = new ArrayList<URL>( jarPaths.size() );
-
-            for ( String jarPath : jarPaths )
-            {
-                try
-                {
-                    urls.add( new File( jarPath ).toURI().toURL() );
-                }
-                catch ( MalformedURLException e )
-                {
-                    throw new MojoExecutionException( e.getMessage(), e );
+            for (String jarPath : jarPaths) {
+                File f = new File(jarPath);
+                if (f.exists()) {
+                    /* We add the jar as a file under /WEB-INF/lib and Tomcat takes care of creating a JarResourceSet for its classes and
+                       for its resources in /META-INF/resources as appropriate. Basically it hooks into Tomcat's usual handling.
+                     */
+                    getLog().debug("Adding jar resource: " + f.getAbsolutePath());
+                    FileResourceSet fileResourceSet = new FileResourceSet(context.getResources(), "/WEB-INF/lib/" + f.getName(), f.getAbsolutePath(), "/");
+                    context.getResources().addPostResources(fileResourceSet);
                 }
             }
 
-            getLog().debug( "classLoaderEntriesCalculator urls: " + urls );
+            /* Add build directories */
+            getLog().debug("Adding classes resource: " + new File(project.getBuild().getOutputDirectory()).getAbsolutePath());
+            DirResourceSet webinfClassesResources = new DirResourceSet(context.getResources(), "/WEB-INF/classes", new File(project.getBuild().getOutputDirectory()).getAbsolutePath(), "/") {
 
-            final URLClassLoader urlClassLoader = new URLClassLoader( urls.toArray( new URL[urls.size()] ) );
-
-            final ClassRealm pluginRealm = getTomcatClassLoader();
-
-            context.setResources(
-                new MyDirContext( new File( project.getBuild().getOutputDirectory() ).getAbsolutePath(), //
-                                  getPath(), //
-                                  getLog() )
-                {
-                    @Override
-                    public WebResource getClassLoaderResource( String path )
-                    {
-
-                        log.debug( "RunMojo#getClassLoaderResource: " + path );
-                        URL url = urlClassLoader.getResource( StringUtils.removeStart( path, "/" ) );
-                        // search in parent (plugin) classloader
-                        if ( url == null )
-                        {
-                            url = pluginRealm.getResource( StringUtils.removeStart( path, "/" ) );
-                        }
-
-                        if ( url == null )
-                        {
-                            // try in reactors
-                            List<WebResource> webResources = findResourcesInDirectories( path, //
-                                                                                         classLoaderEntriesCalculatorResult.getBuildDirectories() );
-
-                            // so we return the first one
-                            if ( !webResources.isEmpty() )
-                            {
-                                return webResources.get( 0 );
+                @Override
+                public WebResource getResource(String path) {
+                    /* We need to juggle with /META-INF/beans.xml as Weld's WebAppBeanArchiveScanner has special handling
+                    for /WEB-INF/classes that doesn't work with this.
+                    That is because it first finds _all_ resources /META-INF/beans.xml and it ends up with the URLs to those
+                    resources, which are all file-system URLs, and then looks for /WEB-INF/classes in the URL, which we don't
+                    have as our files are in the Maven target directory.
+                    */
+                    if ("/WEB-INF/classes/META-INF/beans.xml".equals(path)) {
+                        getLog().info("Rejecting request for /WEB-INF/classes/META-INF/beans.xml for Weld compatibility. beans.xml can be found at /WEB-INF/beans.xml");
+                        return new EmptyResource(getRoot(), path);
+                    } else if ("/WEB-INF/beans.xml".equals(path)) {
+                        WebResource beans = super.getResource(path);
+                        if (!beans.exists()) {
+                            beans = super.getResource("/WEB-INF/classes/META-INF/beans.xml");
+                            if (beans.exists()) {
+                                getLog().info("Returning /WEB-INF/classes/META-INF/beans.xml for request of /WEB-INF/beans.xml for Weld compatibility");
                             }
                         }
-
-                        if ( url == null )
-                        {
-                            return new EmptyResource( this, getPath() );
-                        }
-
-                        return urlToWebResource( url, path );
+                        return beans;
+                    } else {
+                        return super.getResource(path);
                     }
+                }
+    
+            };
+            context.getResources().addPreResources(webinfClassesResources);
 
-                    @Override
-                    public WebResource getResource( String path )
-                    {
-                        log.debug( "RunMojo#getResource: " + path );
-                        return super.getResource( path );
+            for (final String buildDirectory : classLoaderEntriesCalculatorResult.getBuildDirectories()) {
+                if (buildDirectory.equals(project.getBuild().getOutputDirectory())) {
+                    continue;
+                }
+
+                final File buildDirectoryFile = new File(buildDirectory);
+                getLog().debug("Adding additional classes resource: " + buildDirectoryFile.getAbsolutePath());
+                DirResourceSet otherClassesResources = new DirResourceSet(context.getResources(), "/WEB-INF/classes", buildDirectoryFile.getAbsolutePath(), "/");
+                context.getResources().addPreResources(otherClassesResources);
+            }
+
+            /* Support the maven-war-plugin's webResources configuration to add resources */
+            final Plugin warPlugin = (Plugin) project.getBuild().getPluginsAsMap().get("org.apache.maven.plugins:maven-war-plugin");
+            if (warPlugin != null && warPlugin.getConfiguration() instanceof Xpp3Dom) {
+                final Xpp3Dom cfg = (Xpp3Dom) warPlugin.getConfiguration();
+                Xpp3Dom webResources = cfg.getChild("webResources");
+                if (webResources != null) {
+                    Xpp3Dom[] resources = webResources.getChildren("resource");
+                    for (Xpp3Dom resource : resources) {
+                        Xpp3Dom directoryNode = resource.getChild("directory");
+                        if (directoryNode == null) {
+                            continue;
+                        }
+                        final String directory = directoryNode.getValue();
+
+                        Xpp3Dom targetPathNode = resource.getChild("targetPath");
+                        final String targetPath = targetPathNode != null ? "/" + targetPathNode.getValue() : "/";
+
+                        Xpp3Dom filtering = resource.getChild("filtering");
+                        if (filtering != null && "true".equals(filtering.getValue())) {
+                            /* We don't support filtered resources */
+                            getLog().warn("Cannot support filtered web-resource, not adding: " + directory);
+                            continue;
+                        }
+
+                        File directoryFile = directory.startsWith(File.separator) ? new File(directory) : new File(project.getBasedir(), directory);
+                        DirResourceSet dirResourceSet = new DirResourceSet(context.getResources(), targetPath, directoryFile.getAbsolutePath(), "/");
+                        dirResourceSet.setStaticOnly(true);
+                        context.getResources().addPostResources(dirResourceSet);
+
+                        getLog().debug("Adding additional static resources at \"" + targetPath + "\": " + directoryFile.getAbsolutePath());
                     }
-
-                    @Override
-                    public WebResource[] getResources( String path )
-                    {
-                        log.debug( "RunMojo#getResources: " + path );
-                        return super.getResources( path );
-                    }
-
-                    @Override
-                    protected WebResource[] getResourcesInternal( String path, boolean useClassLoaderResources )
-                    {
-                        log.debug( "RunMojo#getResourcesInternal: " + path );
-                        return super.getResourcesInternal( path, useClassLoaderResources );
-                    }
-
-                    @Override
-                    public WebResource[] getClassLoaderResources( String path )
-                    {
-                        try
-                        {
-                            Enumeration<URL> enumeration =
-                                urlClassLoader.findResources( StringUtils.removeStart( path, "/" ) );
-                            List<URL> urlsFound = new ArrayList<URL>();
-                            List<WebResource> webResources = new ArrayList<WebResource>();
-                            while ( enumeration.hasMoreElements() )
-                            {
-                                URL url = enumeration.nextElement();
-                                urlsFound.add( url );
-                                webResources.add( urlToWebResource( url, path ) );
-                            }
-                            log.debug(
-                                "RunMojo#getClassLoaderResources: " + path + " found : " + urlsFound.toString() );
-
-                            webResources.addAll( findResourcesInDirectories( path,
-                                                                             classLoaderEntriesCalculatorResult.getBuildDirectories() ) );
-
-                            return webResources.toArray( new WebResource[webResources.size()] );
-
-                        }
-                        catch ( IOException e )
-                        {
-                            throw new RuntimeException( e.getMessage(), e );
-                        }
-                    }
-
-
-                    private List<WebResource> findResourcesInDirectories( String path, List<String> directories )
-                    {
-                        try
-                        {
-                            List<WebResource> webResources = new ArrayList<WebResource>();
-
-                            for ( String directory : directories )
-                            {
-
-                                File file = new File( directory, path );
-                                if ( file.exists() )
-                                {
-                                    webResources.add( urlToWebResource( file.toURI().toURL(), path ) );
-                                }
-
-                            }
-
-                            return webResources;
-                        }
-                        catch ( MalformedURLException e )
-                        {
-                            throw new RuntimeException( e.getMessage(), e );
-                        }
-                    }
-
-
-                    private WebResource urlToWebResource( URL url, String path )
-                    {
-                        JarFile jarFile = null;
-
-                        try
-                        {
-                            // url.getFile is
-                            // file:/Users/olamy/mvn-repo/org/springframework/spring-web/4.0.0.RELEASE/spring-web-4.0.0.RELEASE.jar!/org/springframework/web/context/ContextLoaderListener.class
-
-                            int idx = url.getFile().indexOf( '!' );
-
-                            if ( idx >= 0 )
-                            {
-                                String filePath = StringUtils.removeStart( url.getFile().substring( 0, idx ), "file:" );
-
-                                jarFile = new JarFile( filePath );
-
-                                JarEntry jarEntry = jarFile.getJarEntry( StringUtils.removeStart( path, "/" ) );
-/*
-                                return new JarResource( this, //
-                                                        getPath(), //
-                                                        filePath, //
-                                                        url.getPath().substring( 0, idx ), //
-                                                        jarEntry, //
-                                                        "", //
-                                                        null );
-                                */
-                                
-                                JarResourceSet jr = new JarResourceSet(context.getResources(), getPath(), filePath, getPath());
-                                getLog().debug( "*************** BB : " + getPath());
-                                return new JarResource (jr, getPath(), filePath, jarEntry);
-                            }
-                            else
-                            {
-                                return new FileResource( this, webAppPath, new File( url.getFile() ), true,null );
-                            }
-
-                        }
-                        catch ( IOException e )
-                        {
-                            throw new RuntimeException( e.getMessage(), e );
-                        }
-                        finally
-                        {
-                            IOUtils.closeQuietly( jarFile );
-                        }
-                    }
-
-
-                } );
+                }
+            }
 
             Runtime.getRuntime().addShutdownHook( new Thread()
             {
@@ -531,150 +418,6 @@ public class RunMojo
                     }
                 }
             } );
-
-            if ( classLoaderEntries != null )
-            {
-                WebResourceSet webResourceSet = new FileResourceSet()
-                {
-                    @Override
-                    public WebResource getResource( String path )
-                    {
-
-                        if ( StringUtils.startsWithIgnoreCase( path, "/WEB-INF/LIB" ) )
-                        {
-                            File file = new File( StringUtils.removeStartIgnoreCase( path, "/WEB-INF/LIB" ) );
-                            return new FileResource( context.getResources(), getPath(), file, true,null );
-                        }
-                        if ( StringUtils.equalsIgnoreCase( path, "/WEB-INF/classes" ) )
-                        {
-                            return new FileResource( context.getResources(), getPath(),
-                                                     new File( project.getBuild().getOutputDirectory() ), true,null );
-                        }
-
-                        File file = new File( project.getBuild().getOutputDirectory(), path );
-                        if ( file.exists() )
-                        {
-                            return new FileResource( context.getResources(), getPath(), file, true,null );
-                        }
-
-                        //if ( StringUtils.endsWith( path, ".class" ) )
-                        {
-                            // so we search the class file in the jars
-                            for ( String jarPath : jarPaths )
-                            {
-                                File jar = new File( jarPath );
-                                if ( !jar.exists() )
-                                {
-                                    continue;
-                                }
-
-                                try
-                                {
-                                    JarFile jarFile = new JarFile( jar );
-                                    JarEntry jarEntry =
-                                        (JarEntry) jarFile.getEntry( StringUtils.removeStart( path, "/" ) );
-                                    if ( jarEntry != null )
-                                    {/*
-                                        new JarResource( context.getResources(), //
-                                                                getPath(),  //
-                                                                jarFile.getName(), //
-                                                                jar.toURI().toString(), //
-                                                                jarEntry, //
-                                                                path, //
-                                                                jarFile.getManifest() );
-                                        */
-                                        JarResourceSet jr = new JarResourceSet(context.getResources(), getPath(), jar.toURI().toString(), getPath());
-                                        getLog().debug( "*************** AA : " + getPath());
-                                       return new JarResource (jr, getPath(), jar.toURI().toString(), jarEntry);
-                                       
-                                       
-                                    }
-                                }
-                                catch ( IOException e )
-                                {
-                                    getLog().debug( "skip error building jar file: " + e.getMessage(), e );
-                                }
-
-                            }
-                        }
-
-                        return new EmptyResource( null, path );
-                    }
-
-                    @Override
-                    public String[] list( String path )
-                    {
-                        if ( StringUtils.startsWithIgnoreCase( path, "/WEB-INF/LIB" ) )
-                        {
-                            return jarPaths.toArray( new String[jarPaths.size()] );
-                        }
-                        if ( StringUtils.equalsIgnoreCase( path, "/WEB-INF/classes" ) )
-                        {
-                            return new String[]{ new File( project.getBuild().getOutputDirectory() ).getPath() };
-                        }
-                        return super.list( path );
-                    }
-
-                    @Override
-                    public Set<String> listWebAppPaths( String path )
-                    {
-
-                        if ( StringUtils.equalsIgnoreCase( "/WEB-INF/lib/", path ) )
-                        {
-                            // adding outputDirectory as well?
-                            return new HashSet<String>( jarPaths );
-                        }
-
-                        File filePath = new File( getWarSourceDirectory(), path );
-
-                        if ( filePath.isDirectory() )
-                        {
-                            Set<String> paths = new HashSet<String>();
-
-                            String[] files = filePath.list();
-                            if ( files == null )
-                            {
-                                return paths;
-                            }
-
-                            for ( String file : files )
-                            {
-                                paths.add( path + file );
-                            }
-
-                            return paths;
-
-                        }
-                        else
-                        {
-                            return Collections.emptySet();
-                        }
-                    }
-
-                    @Override
-                    public boolean mkdir( String path )
-                    {
-                        return super.mkdir( path );
-                    }
-
-                    @Override
-                    public boolean write( String path, InputStream is, boolean overwrite )
-                    {
-                        return super.write( path, is, overwrite );
-                    }
-
-                    @Override
-                    protected void checkType( File file )
-                    {
-                        //super.checkType( file );
-                    }
-
-
-                };
-
-                context.getResources().addJarResources( webResourceSet );
-            }
-
         }
         catch ( TomcatRunException e )
         {
@@ -685,7 +428,7 @@ public class RunMojo
 
 
     /**
-     * extract List of path which are files (removing directories from the initial list)
+     * extract List of path which are jar files
      *
      * @param classLoaderEntries
      * @return
@@ -702,7 +445,7 @@ public class RunMojo
             {
                 URI uri = new URI( classLoaderEntry );
                 File file = new File( uri );
-                if ( !file.isDirectory() )
+                if ( !file.isDirectory() && StringUtils.endsWithIgnoreCase(file.getName(), ".jar"))
                 {
                     jarPaths.add( file.getAbsolutePath() );
                 }
