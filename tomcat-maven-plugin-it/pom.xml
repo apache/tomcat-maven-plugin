@@ -34,7 +34,6 @@
     <!-- The time to wait between startup and shutdown of tomcat. Realized by a test which waits for the specified
          time. -->
     <it.sleep.time>2000</it.sleep.time>
-    <maven.resources.escapeString>\</maven.resources.escapeString>
   </properties>
 
   <dependencies>

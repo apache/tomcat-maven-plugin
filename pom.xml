@@ -45,7 +45,9 @@
     <maven.compiler.target>1.7</maven.compiler.target>
     <mavenVersion>2.2.1</mavenVersion>
 
+
     <mavenPluginPluginVersion>3.6.0</mavenPluginPluginVersion>
+    
     <!-- Test settings -->
     <maven.test.redirectTestOutputToFile>false</maven.test.redirectTestOutputToFile>
     <surefire.version>2.22.1</surefire.version>
@@ -55,7 +57,6 @@
     <it.sleep.time>2000</it.sleep.time>
     <verifier.maven.debug>false</verifier.maven.debug>
     <verifier.debugJvm>false</verifier.debugJvm>
-    <maven.resources.escapeString>\</maven.resources.escapeString>
     <distributionReleaseUrl>https://repository.apache.org/service/local/staging/deploy/maven2</distributionReleaseUrl>
 
     <distributionSnapshotsUrl>https://repository.apache.org/content/repositories/snapshots</distributionSnapshotsUrl>
@@ -325,6 +326,8 @@
     <module>tomcat8-war-runner</module>
     <module>tomcat8-maven-plugin</module>
     <module>tomcat-maven-archetype</module>
+    <module>tomcat9-war-runner</module>
+    <module>tomcat9-maven-plugin</module>
   </modules>
 
   <dependencyManagement>
@@ -748,6 +751,9 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
           <version>3.1.0</version>
+          <configuration>
+            <escapeString>\</escapeString>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
