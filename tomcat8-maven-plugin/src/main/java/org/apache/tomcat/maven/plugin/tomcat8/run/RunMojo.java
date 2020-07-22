@@ -28,6 +28,7 @@ import org.apache.catalina.webresources.EmptyResource;
 import org.apache.catalina.webresources.FileResource;
 import org.apache.catalina.webresources.FileResourceSet;
 import org.apache.catalina.webresources.JarResource;
+import org.apache.catalina.webresources.JarResourceSet;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -479,18 +480,18 @@ public class RunMojo
                                 jarFile = new JarFile( filePath );
 
                                 JarEntry jarEntry = jarFile.getJarEntry( StringUtils.removeStart( path, "/" ) );
-
-                                return new JarResource( this, //
-                                                        getPath(), //
-                                                        filePath, //
-                                                        url.getPath().substring( 0, idx ), //
-                                                        jarEntry, //
-                                                        "", //
-                                                        null );
+                                JarResourceSet resourceSet = new JarResourceSet( this,
+                                        getPath(), //
+                                        filePath, //
+                                        "/" );
+                                return new JarResource( resourceSet, //
+                                        getPath(), //
+                                        url.getPath().substring( 0, idx ), //
+                                        jarEntry );
                             }
                             else
                             {
-                                return new FileResource( this, webAppPath, new File( url.getFile() ), true );
+                                return new FileResource( this, webAppPath, new File( url.getFile() ), true, null );
                             }
 
                         }
@@ -537,18 +538,18 @@ public class RunMojo
                         if ( StringUtils.startsWithIgnoreCase( path, "/WEB-INF/LIB" ) )
                         {
                             File file = new File( StringUtils.removeStartIgnoreCase( path, "/WEB-INF/LIB" ) );
-                            return new FileResource( context.getResources(), getPath(), file, true );
+                            return new FileResource( context.getResources(), getPath(), file, true, getManifest() );
                         }
                         if ( StringUtils.equalsIgnoreCase( path, "/WEB-INF/classes" ) )
                         {
                             return new FileResource( context.getResources(), getPath(),
-                                                     new File( project.getBuild().getOutputDirectory() ), true );
+                                                     new File( project.getBuild().getOutputDirectory() ), true, getManifest() );
                         }
 
                         File file = new File( project.getBuild().getOutputDirectory(), path );
                         if ( file.exists() )
                         {
-                            return new FileResource( context.getResources(), getPath(), file, true );
+                            return new FileResource( context.getResources(), getPath(), file, true, getManifest() );
                         }
 
                         //if ( StringUtils.endsWith( path, ".class" ) )
@@ -569,13 +570,14 @@ public class RunMojo
                                         (JarEntry) jarFile.getEntry( StringUtils.removeStart( path, "/" ) );
                                     if ( jarEntry != null )
                                     {
-                                        return new JarResource( context.getResources(), //
-                                                                getPath(),  //
-                                                                jarFile.getName(), //
-                                                                jar.toURI().toString(), //
-                                                                jarEntry, //
-                                                                path, //
-                                                                jarFile.getManifest() );
+                                        JarResourceSet resourceSet = new JarResourceSet( context.getResources(),
+                                                getPath(), //
+                                                jarFile.getName(), //
+                                                path );
+                                        return new JarResource( resourceSet, //
+                                                getPath(),  //
+                                                jar.toURI().toString(), //
+                                                jarEntry );
                                     }
                                 }
                                 catch ( IOException e )
