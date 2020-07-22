@@ -108,7 +108,11 @@ public final class EmbeddedRegistry
             {
                 Method method = embedded.getClass().getMethod( "stop", null );
                 method.invoke( embedded, null );
-                embedded.getClass().getMethod( "destroy", null ).invoke( embedded, null );
+                try {
+                    embedded.getClass().getMethod("destroy", null).invoke(embedded, null);
+                } catch ( NoSuchMethodException ignore ) {
+                    // there is no destroy in org.apache.catalina.startup.Catalina anymore, make it optional
+                }
                 iterator.remove();
             }
             catch ( NoSuchMethodException e )
@@ -116,7 +120,7 @@ public final class EmbeddedRegistry
                 if ( firstException == null )
                 {
                     firstException = e;
-                    error( log, e, "no stop/destroy method in class " + embedded.getClass().getName() );
+                    error( log, e, "no stop method in class " + embedded.getClass().getName() );
                 }
                 else
                 {
