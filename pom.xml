@@ -75,7 +75,6 @@
     <its.server.port>2008</its.server.port>
     <tomcat7Version>7.0.59</tomcat7Version>
     <tomcat8Version>8.5.51</tomcat8Version>
-    <tomcat8LoggingVersion>8.5.2</tomcat8LoggingVersion>
 
     <!-- to prevent isssues with last apache parent pom -->
     <arguments />
