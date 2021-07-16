@@ -26,6 +26,8 @@ import org.apache.catalina.startup.Catalina;
 import org.apache.catalina.startup.ContextConfig;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.valves.AccessLogValve;
+import org.apache.coyote.ajp.AbstractAjpProtocol;
+import org.apache.coyote.ajp.AjpNioProtocol;
 import org.apache.juli.ClassLoaderLogManager;
 import org.apache.tomcat.util.ExceptionUtils;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
@@ -82,7 +84,6 @@ public class Tomcat8Runner
      */
     public static final String HTTP_PORT_KEY = "httpPort";
 
-
     public int httpPort;
 
     public int httpsPort;
@@ -90,6 +91,8 @@ public class Tomcat8Runner
     public int maxPostSize = 2097152;
 
     public int ajpPort;
+
+    public String ajpSecret;
 
     public String serverXmlPath;
 
@@ -372,6 +375,10 @@ public class Tomcat8Runner
                 Connector ajpConnector = new Connector( "org.apache.coyote.ajp.AjpProtocol" );
                 ajpConnector.setPort( ajpPort );
                 ajpConnector.setURIEncoding( uriEncoding );
+                ajpConnector.setSecure( true );
+                AjpNioProtocol protocol= (AjpNioProtocol)ajpConnector.getProtocolHandler();
+                protocol.setSecret( ajpSecret );
+                protocol.setSecretRequired(true);
                 tomcat.getService().addConnector( ajpConnector );
             }
 

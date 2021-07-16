@@ -55,6 +55,9 @@ public class Tomcat8RunnerCli
     static Option ajpPort =
         OptionBuilder.withArgName( "ajpPort" ).hasArg().withDescription( "ajp port to use" ).create( "ajpPort" );
 
+    static Option ajpSecret =
+        OptionBuilder.withArgName("ajpSecret").hasArg().withDescription("ajp secret to use").create("ajpSecret");
+
     static Option serverXmlPath =
         OptionBuilder.withArgName( "serverXmlPath" ).hasArg().withDescription( "server.xml to use, optional" ).create(
             "serverXmlPath" );
@@ -101,6 +104,7 @@ public class Tomcat8RunnerCli
         options.addOption( httpPort ) //
             .addOption( httpsPort ) //
             .addOption( ajpPort ) //
+            .addOption(ajpSecret) //
             .addOption( serverXmlPath ) //
             .addOption( resetExtract ) //
             .addOption( help ) //
@@ -179,6 +183,10 @@ public class Tomcat8RunnerCli
         if ( line.hasOption( ajpPort.getOpt() ) )
         {
             tomcat8Runner.ajpPort = Integer.parseInt( line.getOptionValue( ajpPort.getOpt() ) );
+        }
+        if ( line.hasOption( ajpSecret.getOpt() ))
+        {
+            tomcat8Runner.ajpSecret = line.getOptionValue( ajpSecret.getOpt() );
         }
         if ( line.hasOption( resetExtract.getOpt() ) )
         {

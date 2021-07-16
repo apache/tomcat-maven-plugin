@@ -37,6 +37,7 @@ import org.apache.catalina.webresources.FileResource;
 import org.apache.catalina.webresources.StandardRoot;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.coyote.ajp.AjpNioProtocol;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
@@ -1310,6 +1311,12 @@ public abstract class AbstractRunMojo
                     ajpConnector.setPort( ajpPort );
                     ajpConnector.setURIEncoding( uriEncoding );
                     ajpConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
+
+                    ajpConnector.setSecure( true );
+                    AjpNioProtocol protocol= (AjpNioProtocol)ajpConnector.getProtocolHandler();
+                    protocol.setSecret("myapjsecret");
+                    protocol.setSecretRequired(true);
+
                     if ( address != null )
                     {
                         ajpConnector.setAttribute( "address", address );

@@ -342,6 +342,7 @@
                     <its.http.port>${its.http.port}</its.http.port>
                     <its.https.port>${its.https.port}</its.https.port>
                     <its.ajp.port>${its.ajp.port}</its.ajp.port>
+                    <its.ajp.secret>${its.ajp.secret}</its.ajp.secret>
                     <java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
                   </systemPropertyVariables>
                   <redirectTestOutputToFile>false</redirectTestOutputToFile>
