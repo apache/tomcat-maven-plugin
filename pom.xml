@@ -68,10 +68,12 @@
     <its.https.port>2003</its.https.port>
     <!-- ajp port used to run it test -->
     <its.ajp.port>2001</its.ajp.port>
+    <!-- ajp protocol secret for it tests -->
+    <its.ajp.secret>myajpsecret</its.ajp.secret>
     <!-- server port for it tests -->
     <its.server.port>2008</its.server.port>
-    <tomcat8Version>8.5.24</tomcat8Version>
-    <tomcatDbcpVersion>8.5.53</tomcatDbcpVersion>
+    <tomcat8Version>8.5.69</tomcat8Version>
+    <tomcatDbcpVersion>8.5.69</tomcatDbcpVersion>
     <!-- to prevent isssues with last apache parent pom -->
     <arguments />
 
