@@ -93,6 +93,9 @@ jobs:
     <<: *build_container
     steps:
       - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "b4:17:9d:b5:96:7f:ad:56:0f:3c:7a:fc:26:1a:60:4f"
       - *restore_maven_cache
       - *setup_infusionsoft_build_defaults
       - run:
