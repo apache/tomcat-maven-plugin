@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.tomcat.maven</groupId>
     <artifactId>tomcat-maven-plugin</artifactId>
-    <version>3.0-forked-9</version>
+    <version>3.0-forked-10-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
