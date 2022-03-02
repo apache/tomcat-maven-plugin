@@ -70,11 +70,15 @@ workflows:
       - build_and_test:
           filters:
             branches:
-              ignore: /trunk/
+              ignore:
+                - /trunk/
+                - 8.x
       - publish:
           filters:
             branches:
-              only: /trunk/
+              only:
+                - /trunk/
+                - 8.x
 
 jobs:
   build_and_test:
