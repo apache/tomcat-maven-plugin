@@ -67,14 +67,14 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-catalina</artifactId>
-      <version>${tomcat9Version}</version>
+      <version>${tomcatVersion}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.tomcat.embed</groupId>
       <artifactId>tomcat-embed-core</artifactId>
-      <version>${tomcat9Version}</version>
+      <version>${tomcatVersion}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
