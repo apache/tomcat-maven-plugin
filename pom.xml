@@ -32,7 +32,7 @@
   <artifactId>tomcat-maven-plugin</artifactId>
   <packaging>pom</packaging>
   <name>Apache Tomcat Maven Plugin</name>
-  <version>3.0-forked-10-SNAPSHOT</version>
+  <version>4.0-forked-1-SNAPSHOT</version>
   <description>The Tomcat Maven Plugin provides goals to manipulate WAR projects within the Tomcat servlet
     container.
   </description>
@@ -45,7 +45,7 @@
     <maven.compiler.target>1.7</maven.compiler.target>
     <mavenVersion>2.2.1</mavenVersion>
 
-    <mavenPluginPluginVersion>3.2</mavenPluginPluginVersion>
+    <mavenPluginPluginVersion>3.6.4</mavenPluginPluginVersion>
     <!-- Test settings -->
     <maven.test.redirectTestOutputToFile>false</maven.test.redirectTestOutputToFile>
     <surefire.version>2.18.1</surefire.version>
@@ -72,8 +72,8 @@
     <its.ajp.secret>myajpsecret</its.ajp.secret>
     <!-- server port for it tests -->
     <its.server.port>2008</its.server.port>
-    <tomcat8Version>8.5.69</tomcat8Version>
-    <tomcatDbcpVersion>8.5.69</tomcatDbcpVersion>
+    <tomcatVersion>9.0.56</tomcatVersion>
+    <tomcatDbcpVersion>9.0.56</tomcatDbcpVersion>
     <!-- to prevent isssues with last apache parent pom -->
     <arguments />
 
@@ -319,8 +319,8 @@
   <modules>
     <module>common-tomcat-maven-plugin</module>
     <module>tomcat-maven-plugin-it</module>
-    <module>tomcat8-war-runner</module>
-    <module>tomcat8-maven-plugin</module>
+    <module>tomcat9-war-runner</module>
+    <module>tomcat9-maven-plugin</module>
   </modules>
 
   <dependencyManagement>
@@ -335,28 +335,28 @@
       <dependency>
         <groupId>org.apache.tomcat.embed</groupId>
         <artifactId>tomcat-embed-core</artifactId>
-        <version>${tomcat8Version}</version>
+        <version>${tomcatVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-util</artifactId>
-        <version>${tomcat8Version}</version>
+        <version>${tomcatVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-coyote</artifactId>
-        <version>${tomcat8Version}</version>
+        <version>${tomcatVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-api</artifactId>
-        <version>${tomcat8Version}</version>
+        <version>${tomcatVersion}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-jdbc</artifactId>
-        <version>${tomcat8Version}</version>
+        <version>${tomcatVersion}</version>
       </dependency>
 
       <dependency>
@@ -368,90 +368,90 @@
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-servlet-api</artifactId>
-        <version>${tomcat8Version}</version>
+        <version>${tomcatVersion}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-jsp-api</artifactId>
-        <version>${tomcat8Version}</version>
+        <version>${tomcatVersion}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-jasper</artifactId>
-        <version>${tomcat8Version}</version>
+        <version>${tomcatVersion}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-jasper-el</artifactId>
-        <version>${tomcat8Version}</version>
+        <version>${tomcatVersion}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-el-api</artifactId>
-        <version>${tomcat8Version}</version>
+        <version>${tomcatVersion}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-catalina</artifactId>
-        <version>${tomcat8Version}</version>
+        <version>${tomcatVersion}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-tribes</artifactId>
-        <version>${tomcat8Version}</version>
+        <version>${tomcatVersion}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-catalina-ha</artifactId>
-        <version>${tomcat8Version}</version>
+        <version>${tomcatVersion}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-annotations-api</artifactId>
-        <version>${tomcat8Version}</version>
+        <version>${tomcatVersion}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-i18n-es</artifactId>
-        <version>${tomcat8Version}</version>
+        <version>${tomcatVersion}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-i18n-fr</artifactId>
-        <version>${tomcat8Version}</version>
+        <version>${tomcatVersion}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-i18n-ja</artifactId>
-        <version>${tomcat8Version}</version>
+        <version>${tomcatVersion}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-juli</artifactId>
-        <version>${tomcat8Version}</version>
+        <version>${tomcatVersion}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.tomcat.embed</groupId>
         <artifactId>tomcat-embed-logging-juli</artifactId>
-        <version>${tomcat8Version}</version>
+        <version>${tomcatVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.tomcat.embed</groupId>
         <artifactId>tomcat-embed-logging-log4j</artifactId>
-        <version>${tomcat8Version}</version>
+        <version>${tomcatVersion}</version>
       </dependency>
 
 
@@ -459,7 +459,7 @@
 
 	  <dependency>
         <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat8-war-runner</artifactId>
+        <artifactId>tomcat9-war-runner</artifactId>
         <version>${project.version}</version>
       </dependency>
 

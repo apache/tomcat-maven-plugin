@@ -74,7 +74,7 @@ public class TomcatManagerTest
         Context context = tomcat.addContext( "", System.getProperty( "java.io.tmpdir" ) );
         uploadServlet = new UploadServlet();
         tomcat.addServlet( context, "foo", uploadServlet );
-        context.addServletMapping( "/*", "foo" );
+        context.addServletMappingDecoded( "/*", "foo" );
 
         tomcat.start();
 
@@ -88,7 +88,7 @@ public class TomcatManagerTest
         context = redirectTomcat.addContext( "", System.getProperty( "java.io.tmpdir" ) );
         redirectServlet = new RedirectServlet();
         redirectTomcat.addServlet( context, "foo", redirectServlet );
-        context.addServletMapping( "/*", "foo" );
+        context.addServletMappingDecoded( "/*", "foo" );
         redirectTomcat.start();
         redirectPort = redirectTomcat.getConnector().getLocalPort();
 

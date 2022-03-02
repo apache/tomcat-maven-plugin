@@ -31,7 +31,7 @@ When releasing deploy with -Psite-release
 
 Releasing
 ----------
-For release your ~/.m2/settings.xml must contains :
+For release your ~/.m2/settings.xml must contain:
 
     <server>
       <id>apache.releases.https</id>
