@@ -24,7 +24,7 @@
   <parent>
     <artifactId>tomcat-maven-plugin</artifactId>
     <groupId>org.apache.tomcat.maven</groupId>
-    <version>4.0-forked-2-SNAPSHOT</version>
+    <version>4.0-forked-2</version>
   </parent>
   <artifactId>common-tomcat-maven-plugin</artifactId>
   <name>Apache Tomcat Maven Plugin :: Common API</name>
