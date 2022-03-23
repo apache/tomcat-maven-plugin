@@ -37,7 +37,10 @@ import org.apache.catalina.webresources.FileResource;
 import org.apache.catalina.webresources.StandardRoot;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.coyote.ProtocolHandler;
 import org.apache.coyote.ajp.AjpNioProtocol;
+import org.apache.coyote.http11.AbstractHttp11JsseProtocol;
+import org.apache.coyote.http11.AbstractHttp11Protocol;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
@@ -1206,6 +1209,11 @@ public abstract class AbstractRunMojo
                 connector.setPort( port );
                 connector.setMaxPostSize( maxPostSize );
 
+                ProtocolHandler protocolHandler = connector.getProtocolHandler();
+                if (protocolHandler instanceof AbstractHttp11Protocol) {
+                    ((AbstractHttp11Protocol)protocolHandler).setRelaxedQueryChars("|{}");
+                }
+
                 if ( httpsPort > 0 )
                 {
                     connector.setRedirectPort( httpsPort );
@@ -1238,6 +1246,11 @@ public abstract class AbstractRunMojo
                     httpsConnector.setMaxPostSize( maxPostSize );
                     httpsConnector.setSecure( true );
                     httpsConnector.setProperty( "SSLEnabled", "true" );
+
+                    ProtocolHandler httpsConnectorProtocolHandler = httpsConnector.getProtocolHandler();
+                    if (httpsConnectorProtocolHandler instanceof AbstractHttp11Protocol) {
+                        ((AbstractHttp11Protocol)httpsConnectorProtocolHandler).setRelaxedQueryChars("|{}");
+                    }
 
                     if (sslHostConfigs != null && sslHostConfigs.size() > 0) {
                         for (HostConfig sslHostConfig : sslHostConfigs) {
