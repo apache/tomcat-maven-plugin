@@ -35,8 +35,8 @@ Adjust Tomcat Version
 <project>
    [...]
   <properties>
-   <tomcat.version>9.0.56</tomcat.version>
-   <tomcat.dbcp.version>9.0.56</tomcat.dbcp.version>
+   <tomcat.version>9.0.62</tomcat.version>
+   <tomcat.dbcp.version>9.0.62</tomcat.dbcp.version>
    [...]
   </properties>
    [...]
