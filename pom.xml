@@ -73,8 +73,8 @@
     <its.ajp.port>2001</its.ajp.port>
     <!-- server port for it tests -->
     <its.server.port>2008</its.server.port>
-    <tomcat7Version>7.0.59</tomcat7Version>
-    <tomcat8Version>8.0.14</tomcat8Version>
+    <tomcat7Version>7.0.81</tomcat7Version>
+    <tomcat8Version>7.0.81</tomcat8Version>
 
     <!-- to prevent isssues with last apache parent pom -->
     <arguments />
