@@ -63,6 +63,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -182,17 +183,7 @@ public class RunMojo
     private static File createTempDirectory( File baseTmpDirectory )
         throws IOException
     {
-        final File temp = File.createTempFile( "temp", Long.toString( System.nanoTime() ), baseTmpDirectory );
-
-        if ( !( temp.delete() ) )
-        {
-            throw new IOException( "Could not delete temp file: " + temp.getAbsolutePath() );
-        }
-
-        if ( !( temp.mkdir() ) )
-        {
-            throw new IOException( "Could not create temp directory: " + temp.getAbsolutePath() );
-        }
+        final File temp = Files.createTempDirectory(baseTmpDirectory.toPath(), "temp" + Long.toString(System.nanoTime())).toFile();
 
         return temp;
     }

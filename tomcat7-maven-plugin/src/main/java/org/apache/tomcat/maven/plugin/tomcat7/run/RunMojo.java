@@ -46,6 +46,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Set;
 
@@ -153,17 +154,7 @@ public class RunMojo
     private static File createTempDirectory( File baseTmpDirectory )
         throws IOException
     {
-        final File temp = File.createTempFile( "temp", Long.toString( System.nanoTime() ), baseTmpDirectory );
-
-        if ( !( temp.delete() ) )
-        {
-            throw new IOException( "Could not delete temp file: " + temp.getAbsolutePath() );
-        }
-
-        if ( !( temp.mkdir() ) )
-        {
-            throw new IOException( "Could not create temp directory: " + temp.getAbsolutePath() );
-        }
+        final File temp = Files.createTempDirectory(baseTmpDirectory.toPath(), "temp" + Long.toString(System.nanoTime())).toFile();
 
         return temp;
     }
