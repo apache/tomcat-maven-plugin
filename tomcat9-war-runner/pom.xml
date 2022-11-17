@@ -23,7 +23,7 @@
   <parent>
     <artifactId>tomcat-maven-plugin</artifactId>
     <groupId>org.apache.tomcat.maven</groupId>
-    <version>4.0-forked-8</version>
+    <version>4.0-forked-9-SNAPSHOT</version>
   </parent>
   <artifactId>tomcat9-war-runner</artifactId>
   <name>Apache Tomcat Maven Plugin :: Tomcat 9.x War Runner</name>
