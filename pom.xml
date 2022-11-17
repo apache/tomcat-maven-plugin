@@ -72,9 +72,9 @@
     <its.ajp.secret>myajpsecret</its.ajp.secret>
     <!-- server port for it tests -->
     <its.server.port>2008</its.server.port>
-    <tomcatVersion>9.0.62</tomcatVersion>
-    <tomcatDbcpVersion>9.0.62</tomcatDbcpVersion>
-    <!-- to prevent isssues with last apache parent pom -->
+    <tomcatVersion>9.0.69</tomcatVersion>
+    <tomcatDbcpVersion>9.0.69</tomcatDbcpVersion>
+    <!-- to prevent issues with last apache parent pom -->
     <arguments />
 
     <tomcat-maven.siteFilePath>${user.home}/tomcat-maven-plugin-${project.version}/</tomcat-maven.siteFilePath>
