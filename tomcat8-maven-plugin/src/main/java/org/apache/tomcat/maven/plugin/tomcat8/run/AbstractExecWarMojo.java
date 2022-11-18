@@ -52,6 +52,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -614,7 +615,7 @@ public abstract class AbstractExecWarMojo
     {
         ArchiveOutputStream os = null;
         OutputStream warOutputStream = null;
-        File tmpWar = File.createTempFile( "tomcat", "war-exec" );
+        File tmpWar = Files.createTempFile( "tomcat", "war-exec" ).toFile();
         tmpWar.deleteOnExit();
 
         try
