@@ -98,8 +98,6 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints:
-            - "f1:e4:ca:69:5d:a7:44:87:05:ee:e7:74:71:a4:b8:1c"
       - *restore_maven_cache
       - *setup_infusionsoft_build_defaults
       - run:
