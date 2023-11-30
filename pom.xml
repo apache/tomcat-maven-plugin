@@ -803,19 +803,6 @@
       </plugins>
     </pluginManagement>
     <plugins>
-<!--      <plugin>-->
-<!--        <groupId>org.apache.rat</groupId>-->
-<!--        <artifactId>apache-rat-plugin</artifactId>-->
-<!--        <executions>-->
-<!--          <execution>-->
-<!--            <id>rat-verify</id>-->
-<!--            <phase>verify</phase>-->
-<!--            <goals>-->
-<!--              <goal>check</goal>-->
-<!--            </goals>-->
-<!--          </execution>-->
-<!--        </executions>-->
-<!--      </plugin>-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
