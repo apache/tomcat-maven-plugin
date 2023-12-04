@@ -72,8 +72,8 @@
     <its.ajp.secret>myajpsecret</its.ajp.secret>
     <!-- server port for it tests -->
     <its.server.port>2008</its.server.port>
-    <tomcatVersion>9.0.69</tomcatVersion>
-    <tomcatDbcpVersion>9.0.69</tomcatDbcpVersion>
+    <tomcatVersion>9.0.83</tomcatVersion>
+    <tomcatDbcpVersion>9.0.83</tomcatDbcpVersion>
     <!-- to prevent issues with last apache parent pom -->
     <arguments />
 
