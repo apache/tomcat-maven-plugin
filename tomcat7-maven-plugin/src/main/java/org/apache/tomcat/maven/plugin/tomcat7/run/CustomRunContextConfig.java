@@ -33,7 +33,7 @@ public class CustomRunContextConfig extends ContextConfig {
     protected void processServletContainerInitializers(ServletContext servletContext) {
         List saveOrderedLib = (List) servletContext.getAttribute(ServletContext.ORDERED_LIBS);
         servletContext.setAttribute(ServletContext.ORDERED_LIBS, null);
-        super.processServletContainerInitializers(servletContext);
+        super.processServletContainerInitializers();
         servletContext.setAttribute(ServletContext.ORDERED_LIBS, saveOrderedLib);
     }
 
