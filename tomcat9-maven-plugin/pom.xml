@@ -216,18 +216,24 @@
     </dependency>
 
     <dependency>
+      <!-- SLF4J bridge for 3rd party libraries built using java util logging -->
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
+    </dependency>
+    <dependency>
+      <!-- SLF4J bridge for 3rd party libraries built using Jakarta commons logging -->
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
-      <scope>test</scope>
+      <!-- SLF4J bridge for 3rd party libraries built using Log4J v1 -->
+      <groupId>org.slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-slf4j-impl</artifactId>
-      <scope>test</scope>
+      <!-- includes the configurator that pulls it all together -->
+      <groupId>com.infusionsoft</groupId>
+      <artifactId>logging</artifactId>
     </dependency>
   </dependencies>
 
