@@ -18,7 +18,9 @@ package org.apache.tomcat.maven.common;
  * under the License.
  */
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.commons.io.IOUtils;
@@ -37,13 +39,14 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author Olivier Lamy
  */
-public class TomcatManagerTest
-    extends TestCase
-{
+public class TomcatManagerTest {
 
     Tomcat tomcat;
 
@@ -62,11 +65,10 @@ public class TomcatManagerTest
         return System.getProperty( "basedir" );
     }
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
         throws Exception
     {
-        super.setUp();
         tomcat = new Tomcat();
         tomcat.setBaseDir( System.getProperty( "java.io.tmpdir" ) );
         tomcat.setPort( 0 );
@@ -95,15 +97,15 @@ public class TomcatManagerTest
         System.out.println( "redirect Tomcat started on port:" + redirectPort );
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
         throws Exception
     {
-        super.tearDown();
         tomcat.stop();
     }
 
 
+    @Test
     public void testDeployWar()
         throws Exception
     {
@@ -129,6 +131,7 @@ public class TomcatManagerTest
         }
     }
 
+    @Test
     public void testDeployWarWithRedirect()
         throws Exception
     {
@@ -160,6 +163,7 @@ public class TomcatManagerTest
         }
     }
 
+    @Test
     public void testDeployWarWithRedirectRelative()
         throws Exception
     {

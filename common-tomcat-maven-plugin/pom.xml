@@ -110,6 +110,18 @@
       <artifactId>commons-lang</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>com.infusionsoft</groupId>
+      <artifactId>logging</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <build>

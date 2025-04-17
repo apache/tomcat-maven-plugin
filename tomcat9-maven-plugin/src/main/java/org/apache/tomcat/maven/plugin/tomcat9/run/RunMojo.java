@@ -485,6 +485,9 @@ public class RunMojo
                                 jarFile = new JarFile( file );
 
                                 JarEntry jarEntry = jarFile.getJarEntry( StringUtils.removeStart( path, "/" ) );
+                                if (jarEntry == null) {
+                                    return new EmptyResource(this, webAppPath, new File(url.getFile()));
+                                }
                                 JarResourceSet jarResourceSet = new JarResourceSet(this, getPath(), jarOnlyUri.getPath(), "/WEB-INF/lib");
                                 return new JarResource(jarResourceSet, getPath(), jarOnlyUri.toString(), jarEntry);
                             }
