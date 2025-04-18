@@ -26,7 +26,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 /**
  * Deploy a WAR to Tomcat.
  *
- * @author Mark Hobson <markhobson@gmail.com>
+ * @author Mark Hobson &lt;markhobson@gmail.com&gt;
  */
 @Mojo(name = "deploy", threadSafe = true)
 @Execute(phase = LifecyclePhase.PACKAGE)

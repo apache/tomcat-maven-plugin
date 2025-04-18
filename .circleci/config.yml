@@ -109,7 +109,7 @@ jobs:
             git push origin "refs/tags/${tag}"
             git push origin ":refs/tags/${tag}"
             git tag --delete "${tag}"
-      - run: mvn release:prepare release:perform --batch-mode
+      - run: mvn release:prepare release:perform --batch-mode -e
       - *collect_test_artifacts
       - *save_maven_cache
       - *save_artifacts

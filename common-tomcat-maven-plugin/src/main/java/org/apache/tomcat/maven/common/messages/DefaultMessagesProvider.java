@@ -27,7 +27,6 @@ import java.util.ResourceBundle;
 
 /**
  * @author Olivier Lamy
- * @component role="org.apache.tomcat.maven.common.messages.MessagesProvider" role-hint="default"
  * @since 2.0
  */
 @Component( role = MessagesProvider.class )

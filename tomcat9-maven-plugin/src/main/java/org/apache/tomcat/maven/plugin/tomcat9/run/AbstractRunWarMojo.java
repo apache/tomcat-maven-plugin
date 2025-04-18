@@ -26,7 +26,7 @@ import java.io.File;
 /**
  * Runs the current project as a packaged web application using an embedded Tomcat server.
  *
- * @author Mark Hobson <markhobson@gmail.com>
+ * @author Mark Hobson &lt;markhobson@gmail.com&gt;
  * @todo depend on war:exploded when MNG-1649 resolved
  */
 public abstract class AbstractRunWarMojo

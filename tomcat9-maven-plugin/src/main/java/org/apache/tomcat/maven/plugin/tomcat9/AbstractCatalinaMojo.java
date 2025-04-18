@@ -37,7 +37,7 @@ import java.util.StringTokenizer;
 /**
  * Abstract goal that provides common configuration for Catalina-based goals.
  *
- * @author Mark Hobson <markhobson@gmail.com>
+ * @author Mark Hobson &lt;markhobson@gmail.com&gt;
  */
 public abstract class AbstractCatalinaMojo
     extends AbstractTomcat8Mojo

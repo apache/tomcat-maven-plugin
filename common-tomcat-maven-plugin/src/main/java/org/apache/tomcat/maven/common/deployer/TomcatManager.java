@@ -60,7 +60,7 @@ import java.util.Locale;
 /**
  * A Tomcat manager webapp invocation wrapper.
  *
- * @author Mark Hobson <markhobson@gmail.com>
+ * @author Mark Hobson &lt;markhobson@gmail.com&gt;
  */
 public class TomcatManager
 {
