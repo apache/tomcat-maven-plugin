@@ -207,7 +207,7 @@ public class Tomcat8RunnerCli
         }
         if ( line.hasOption( clientAuth.getOpt() ) )
         {
-            tomcat8Runner.clientAuth = clientAuth.getOpt();
+            tomcat8Runner.clientAuth = "true";
         }
         if ( line.hasOption( keyAlias.getOpt() ) )
         {
