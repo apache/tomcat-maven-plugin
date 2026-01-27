@@ -13,8 +13,9 @@ updates:
       - "**/archetype-resources/**"
     schedule:
       interval: "weekly"
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      # Check for updates to GitHub Actions every week
-      interval: "weekly"
+# Disable chekcing GitHub actions until we have some
+#  - package-ecosystem: "github-actions"
+#    directory: "/"
+#    schedule:
+#      # Check for updates to GitHub Actions every week
+#      interval: "weekly"
