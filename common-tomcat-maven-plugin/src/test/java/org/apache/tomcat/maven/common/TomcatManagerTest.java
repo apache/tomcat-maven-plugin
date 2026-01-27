@@ -35,6 +35,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -220,7 +221,7 @@ public class TomcatManagerTest
             throws ServletException, IOException
         {
             System.out.println( "put ok:" + req.getRequestURI() );
-            File file = File.createTempFile( "tomcat-unit-test", "tmp" );
+            File file = Files.createTempFile( "tomcat-unit-test", "tmp" ).toFile();
             uploadedResources.add( new UploadedResource( req.getRequestURI(), file ) );
             IOUtils.copy( req.getInputStream(), new FileOutputStream( file ) );
         }
@@ -242,7 +243,7 @@ public class TomcatManagerTest
             System.out.println( "RedirectServlet put ok:" + req.getRequestURI() );
             if ( req.getRequestURI().contains( "redirectrelative" ) )
             {
-                File file = File.createTempFile( "tomcat-unit-test", "tmp" );
+                File file = Files.createTempFile( "tomcat-unit-test", "tmp" ).toFile();
                 uploadedResources.add( new UploadedResource( req.getRequestURI(), file ) );
                 IOUtils.copy( req.getInputStream(), new FileOutputStream( file ) );
                 return;
