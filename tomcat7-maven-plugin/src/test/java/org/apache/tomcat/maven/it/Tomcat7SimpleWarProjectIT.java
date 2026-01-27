@@ -19,7 +19,6 @@ package org.apache.tomcat.maven.it;
  */
 
 import org.apache.maven.it.VerificationException;
-import org.apache.tomcat.maven.it.AbstractSimpleWarProjectIT;
 
 /**
  * @author Olivier Lamy

@@ -21,9 +21,6 @@ package org.apache.tomcat.maven.it;
 
 
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 
 import static junitx.framework.StringAssert.assertContains;

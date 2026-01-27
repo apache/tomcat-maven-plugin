@@ -19,7 +19,7 @@ package org.apache.tomcat.maven.common.run;
  * under the License.
  */
 
-import java.util.List;
+
 
 /**
  * @author Olivier Lamy

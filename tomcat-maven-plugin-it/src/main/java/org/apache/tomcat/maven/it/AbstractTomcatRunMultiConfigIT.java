@@ -22,9 +22,6 @@ package org.apache.tomcat.maven.it;
 
 import org.apache.maven.it.VerificationException;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;

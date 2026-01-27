@@ -20,9 +20,7 @@ package org.apache.tomcat.maven.plugin.tomcat8.run;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.WebResource;
-import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.WebResourceSet;
-import org.apache.catalina.loader.WebappClassLoaderBase;
 import org.apache.catalina.loader.WebappLoader;
 import org.apache.catalina.webresources.EmptyResource;
 import org.apache.catalina.webresources.FileResource;

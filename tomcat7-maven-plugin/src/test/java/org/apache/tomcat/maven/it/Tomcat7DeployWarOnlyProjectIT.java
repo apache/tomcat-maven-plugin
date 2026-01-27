@@ -18,8 +18,6 @@ package org.apache.tomcat.maven.it;
  * under the License.
  */
 
-import org.apache.tomcat.maven.it.AbstractDeployWarOnlyProjectIT;
-
 /**
  * @author Olivier Lamy
  */
