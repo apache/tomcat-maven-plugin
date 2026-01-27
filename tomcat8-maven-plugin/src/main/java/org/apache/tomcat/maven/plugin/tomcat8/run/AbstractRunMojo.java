@@ -426,7 +426,7 @@ public abstract class AbstractRunMojo
      * Collection of webapp artifacts to be deployed. Elements are &lt;webapp&gt; and contain
      * usual GAVC plus contextPath and/or contextFile elements.<p>
      *
-     * @see {@link Webapp}
+     * @see Webapp
      * @since 2.0
      */
     @Parameter

@@ -102,7 +102,8 @@ public class RunMojo
     /**
      * Set the "follow standard delegation model" flag used to configure our ClassLoader.
      *
-     * @see http://tomcat.apache.org/tomcat-7.0-doc/api/org/apache/catalina/loader/WebappLoader.html#setDelegate(boolean)
+     * @see <a href="http://tomcat.apache.org/tomcat-7.0-doc/api/org/apache/catalina/loader/WebappLoader.html#setDelegate(boolean)">
+     *      http://tomcat.apache.org/tomcat-7.0-doc/api/org/apache/catalina/loader/WebappLoader.html#setDelegate(boolean)</a>
      * @since 1.0
      */
     @Parameter( property = "tomcat.delegate", defaultValue = "true" )
