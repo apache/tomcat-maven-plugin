@@ -58,6 +58,7 @@ public class DefaultMessagesProvider
      * @param key the key for the required message
      * @return the message
      */
+    @Override
     public String getMessage( String key )
     {
         try
@@ -85,6 +86,7 @@ public class DefaultMessagesProvider
      * @param params the parameters to be used to format the message with
      * @return the formatted message
      */
+    @Override
     public String getMessage( String key, Object... params )
     {
         return MessageFormat.format( getMessage( key ), params );

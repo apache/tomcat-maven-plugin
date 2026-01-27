@@ -875,24 +875,28 @@ public class TomcatManager
             this.verbose = verbose;
         }
 
+        @Override
         public long getContentLength()
         {
             return length >= 0 ? length : ( file.length() >= 0 ? file.length() : -1 );
         }
 
 
+        @Override
         public InputStream getContent()
             throws IOException, IllegalStateException
         {
             return new FileInputStream( this.file );
         }
 
+        @Override
         public boolean isRepeatable()
         {
             return true;
         }
 
 
+        @Override
         public void writeTo( final OutputStream outstream )
             throws IOException
         {
@@ -947,6 +951,7 @@ public class TomcatManager
             // end transfer
         }
 
+        @Override
         public boolean isStreaming()
         {
             return true;

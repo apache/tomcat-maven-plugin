@@ -67,6 +67,7 @@ public class ShutdownMojo
      * @throws org.apache.maven.plugin.MojoExecutionException
      *          if shutting down one or all servers failed
      */
+    @Override
     public void execute()
         throws MojoExecutionException
     {

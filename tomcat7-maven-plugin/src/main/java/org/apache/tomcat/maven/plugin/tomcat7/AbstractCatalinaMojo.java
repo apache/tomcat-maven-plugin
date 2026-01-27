@@ -140,6 +140,7 @@ public abstract class AbstractCatalinaMojo
     /**
      * {@inheritDoc}
      */
+    @Override
     public void execute()
         throws MojoExecutionException
     {
@@ -264,6 +265,7 @@ public abstract class AbstractCatalinaMojo
      *
      * @return the webapp context path to use
      */
+    @Override
     protected String getPath()
     {
         return path;

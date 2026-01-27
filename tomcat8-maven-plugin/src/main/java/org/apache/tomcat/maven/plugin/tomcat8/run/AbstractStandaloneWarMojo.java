@@ -76,6 +76,7 @@ public abstract class AbstractStandaloneWarMojo
     @Parameter( property = "maven.tomcat.exec.war.attachArtifactType", defaultValue = "war", required = true )
     protected String attachArtifactClassifierType;
 
+    @Override
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {

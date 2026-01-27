@@ -54,6 +54,7 @@ public class DefaultClassLoaderEntriesCalculator
     private ArchiverManager archiverManager;
 
 
+    @Override
     public ClassLoaderEntriesCalculatorResult calculateClassPathEntries( ClassLoaderEntriesCalculatorRequest request )
         throws TomcatRunException
     {
@@ -179,6 +180,7 @@ public class DefaultClassLoaderEntriesCalculator
                         {
                             String[] jars = libsDirectory.list( new FilenameFilter()
                             {
+                                @Override
                                 public boolean accept( File file, String s )
                                 {
                                     return s.endsWith( ".jar" );

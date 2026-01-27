@@ -568,6 +568,7 @@ public abstract class AbstractRunMojo
     /**
      * {@inheritDoc}
      */
+    @Override
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
@@ -633,6 +634,7 @@ public abstract class AbstractRunMojo
      *
      * @return the webapp context path
      */
+    @Override
     protected String getPath()
     {
         return path;

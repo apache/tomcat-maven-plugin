@@ -228,6 +228,7 @@ public abstract class AbstractExecWarMojo
     @Parameter
     protected String[] excludes;
 
+    @Override
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {

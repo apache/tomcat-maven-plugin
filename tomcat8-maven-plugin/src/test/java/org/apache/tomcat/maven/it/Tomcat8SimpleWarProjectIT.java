@@ -26,6 +26,7 @@ import org.apache.maven.it.VerificationException;
 public class Tomcat8SimpleWarProjectIT
     extends AbstractSimpleWarProjectIT
 {
+    @Override
     protected int getTimeout()
     {
         return 20000;

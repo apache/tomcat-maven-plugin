@@ -174,6 +174,7 @@ public class Tomcat8Runner
         {
             codeSourceWar = AccessController.doPrivileged( new PrivilegedAction<File>()
             {
+                @Override
                 public File run()
                 {
                     try
@@ -251,6 +252,7 @@ public class Tomcat8Runner
         {
             tomcat = new Tomcat()
             {
+                @Override
                 public Context addWebapp( Host host, String url, String name, String path )
                 {
 
