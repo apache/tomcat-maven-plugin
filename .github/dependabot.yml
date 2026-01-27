@@ -7,6 +7,10 @@ version: 2
 updates:
   - package-ecosystem: "maven"
     directory: "/" # Location of package manifests
+    # Disable scanning of archetype POMs for now
+    # Hopefully fixed by https://github.com/dependabot/dependabot-core/issues/13988
+    exclude-paths:
+      - "**/archetype-resources/**"
     schedule:
       interval: "weekly"
   - package-ecosystem: "github-actions"
