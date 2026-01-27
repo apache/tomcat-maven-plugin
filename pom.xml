@@ -51,7 +51,7 @@
     <surefire.version>3.5.4</surefire.version>
     <failsafe.version>${surefire.version}</failsafe.version>
 
-    <junit.version>4.10</junit.version>
+    <junit.version>4.13.2</junit.version>
     <it.sleep.time>2000</it.sleep.time>
     <verifier.maven.debug>false</verifier.maven.debug>
     <verifier.debugJvm>false</verifier.debugJvm>
