@@ -18,7 +18,6 @@ package org.apache.tomcat.maven.plugin.tomcat8.run;
  * under the License.
  */
 
-import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
@@ -273,10 +272,6 @@ public abstract class AbstractStandaloneWarMojo
             throw new MojoExecutionException( e.getMessage(), e );
         }
         catch ( IOException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
-        }
-        catch ( ArchiveException e )
         {
             throw new MojoExecutionException( e.getMessage(), e );
         }

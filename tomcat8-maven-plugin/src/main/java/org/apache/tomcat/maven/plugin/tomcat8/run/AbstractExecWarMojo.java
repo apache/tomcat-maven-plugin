@@ -487,10 +487,6 @@ public abstract class AbstractExecWarMojo
         {
             throw new MojoExecutionException( e.getMessage(), e );
         }
-        catch ( ArchiveException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
-        }
         catch ( ArtifactNotFoundException e )
         {
             throw new MojoExecutionException( e.getMessage(), e );
