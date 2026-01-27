@@ -953,7 +953,7 @@
         <plugins>
           <plugin>
             <artifactId>maven-pmd-plugin</artifactId>
-            <version>3.11.0</version>
+            <version>3.28.0</version>
             <configuration>
               <targetJdk>${maven.compiler.target}</targetJdk>
               <rulesets>
