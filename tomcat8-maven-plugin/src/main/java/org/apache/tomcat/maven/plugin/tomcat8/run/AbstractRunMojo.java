@@ -1303,6 +1303,7 @@ public abstract class AbstractRunMojo
                     {
                         ajpConnector.setAttribute( "address", address );
                     }
+                    ajpConnector.setProperty("secretRequired", "false");
                     embeddedTomcat.getEngine().getService().addConnector( ajpConnector );
                 }
 

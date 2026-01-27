@@ -71,7 +71,7 @@ public class Tomcat7Runner
     public static final String ENABLE_NAMING_KEY = "enableNaming";
 
     public static final String ENABLE_REMOTE_IP_VALVE = "enableRemoteIpValve";
-    
+
     public static final String ACCESS_LOG_VALVE_FORMAT_KEY = "accessLogValveFormat";
 
     public static final String CODE_SOURCE_CONTEXT_PATH = "codeSourceContextPath";
@@ -114,7 +114,7 @@ public class Tomcat7Runner
     public String extractDirectory = ".extract";
 
     public File extractDirectoryFile;
-    
+
     public String sessionManagerFactoryClassName = null;
 
     public String codeSourceContextPath = null;
@@ -280,7 +280,7 @@ public class Tomcat7Runner
                     {
                         host.addChild( ctx );
                     }
-                    
+
                     if (sessionManagerFactoryClassName != null) {
                         boolean cookies = true;
                         constructSessionManager(ctx, sessionManagerFactoryClassName, cookies);
@@ -333,15 +333,15 @@ public class Tomcat7Runner
                 tomcat.setConnector( connector );
             }
 
-            boolean enableRemoteIpValve = 
+            boolean enableRemoteIpValve =
                 Boolean.parseBoolean(runtimeProperties.getProperty( Tomcat7Runner.ENABLE_REMOTE_IP_VALVE, Boolean.TRUE.toString()));
-            
+
             if (enableRemoteIpValve) {
                 debugMessage("Adding RemoteIpValve");
                 RemoteIpValve riv = new RemoteIpValve();
                 tomcat.getHost().getPipeline().addValve(riv);
             }
-            
+
             // add a default access log valve
             AccessLogValve alv = new AccessLogValve();
             alv.setDirectory( new File( extractDirectory, "logs" ).getAbsolutePath() );
@@ -403,6 +403,7 @@ public class Tomcat7Runner
                 Connector ajpConnector = new Connector( "org.apache.coyote.ajp.AjpProtocol" );
                 ajpConnector.setPort( ajpPort );
                 ajpConnector.setURIEncoding( uriEncoding );
+                ajpConnector.setProperty("secretRequired", "false");
                 tomcat.getService().addConnector( ajpConnector );
             }
 
@@ -483,26 +484,26 @@ public class Tomcat7Runner
             }
         }
     }
-    
+
     private void constructSessionManager(Context ctx, String sessionManagerFactoryClassName, boolean cookies) {
         try {
             debugMessage("Constructing session manager with factory " + sessionManagerFactoryClassName);
             Class sessionManagerClass = Class.forName(sessionManagerFactoryClassName);
-        
+
             Object managerFactory = (Object) sessionManagerClass.newInstance();
-            
+
             Method method = managerFactory.getClass().getMethod("createSessionManager");
             if (method != null) {
                 Manager manager = (Manager) method.invoke(managerFactory, null);
-            
+
                 ctx.setManager(manager);
                 ctx.setCookies(cookies);
-                    
+
             } else {
                 System.out.print(sessionManagerFactoryClassName + " does not have a method createSessionManager()");
             }
         } catch (Exception e) {
-            System.err.println("Unable to construct specified session manager '" + 
+            System.err.println("Unable to construct specified session manager '" +
                     sessionManagerFactoryClassName + "': " + e.getLocalizedMessage());
             e.printStackTrace();
         }

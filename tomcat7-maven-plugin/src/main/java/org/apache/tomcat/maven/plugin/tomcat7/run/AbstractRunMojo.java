@@ -33,7 +33,6 @@ import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.valves.AccessLogValve;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.coyote.ajp.AbstractAjpProtocol;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
@@ -727,10 +726,10 @@ public abstract class AbstractRunMojo
 
         // https://issues.apache.org/jira/browse/MTOMCAT-255
         if(context instanceof StandardContext)
-        { 
-            ((StandardContext) context).setAddWebinfClassesResources(true); 
-            ((StandardContext) context).setAliases( "/WEB-INF/classes=" + project.getBuild().getOutputDirectory());     
-        }         
+        {
+            ((StandardContext) context).setAddWebinfClassesResources(true);
+            ((StandardContext) context).setAliases( "/WEB-INF/classes=" + project.getBuild().getOutputDirectory());
+        }
 
         return context;
 
@@ -1233,7 +1232,7 @@ public abstract class AbstractRunMojo
                     {
                         ajpConnector.setAttribute( "address", address );
                     }
-                    ((AbstractAjpProtocol<?>) ajpConnector.getProtocolHandler()).setSecretRequired(false);
+                    ajpConnector.setProperty("secretRequired", "false");
                     embeddedTomcat.getEngine().getService().addConnector( ajpConnector );
                 }
 

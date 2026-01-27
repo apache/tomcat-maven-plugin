@@ -372,6 +372,7 @@ public class Tomcat8Runner
                 Connector ajpConnector = new Connector( "org.apache.coyote.ajp.AjpProtocol" );
                 ajpConnector.setPort( ajpPort );
                 ajpConnector.setURIEncoding( uriEncoding );
+                ajpConnector.setProperty("secretRequired", "false");
                 tomcat.getService().addConnector( ajpConnector );
             }
 
