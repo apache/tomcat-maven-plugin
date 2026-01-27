@@ -492,11 +492,11 @@ public class Tomcat7Runner
             debugMessage("Constructing session manager with factory " + sessionManagerFactoryClassName);
             Class sessionManagerClass = Class.forName(sessionManagerFactoryClassName);
 
-            Object managerFactory = (Object) sessionManagerClass.newInstance();
+            Object managerFactory = sessionManagerClass.newInstance();
 
             Method method = managerFactory.getClass().getMethod("createSessionManager");
             if (method != null) {
-                Manager manager = (Manager) method.invoke(managerFactory, null);
+                Manager manager = (Manager) method.invoke(managerFactory);
 
                 ctx.setManager(manager);
                 ctx.setCookies(cookies);
@@ -834,7 +834,7 @@ public class Tomcat7Runner
                 java.util.logging.LogManager.getLogManager().reset();
 
                 // Install slf4j bridge handler
-                final Method method = clazz.getMethod( "install", null );
+                final Method method = clazz.getMethod( "install" );
                 method.invoke( null );
             }
             catch ( ClassNotFoundException e )

@@ -39,7 +39,7 @@ public final class EmbeddedRegistry
 {
     private static EmbeddedRegistry instance;
 
-    private Set<Object> containers = new HashSet<Object>( 1 );
+    private Set<Object> containers = new HashSet<>( 1 );
 
     /**
      * Don't instantiate - use the instance through {@link #getInstance()}.
@@ -106,9 +106,9 @@ public final class EmbeddedRegistry
             Object embedded = iterator.next();
             try
             {
-                Method method = embedded.getClass().getMethod( "stop", null );
-                method.invoke( embedded, null );
-                embedded.getClass().getMethod( "destroy", null ).invoke( embedded, null );
+                Method method = embedded.getClass().getMethod( "stop" );
+                method.invoke( embedded );
+                embedded.getClass().getMethod( "destroy" ).invoke( embedded );
                 iterator.remove();
             }
             catch ( NoSuchMethodException e )
