@@ -786,6 +786,8 @@
               <exclude>.extract/**</exclude>
               <exclude>*.patch</exclude>
               <exclude>**/access_log.*</exclude>
+              <exclude>**/src/test/resources/**/goal.txt</exclude>
+              <exclude>**/src/test/resources/**/archetype.properties</exclude>
             </excludes>
           </configuration>
         </plugin>
