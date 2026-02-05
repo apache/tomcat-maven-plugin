@@ -68,15 +68,16 @@ public abstract class AbstractTomcatMojo
     {
         int statusCode = tomcatResponse.getStatusCode();
 
-        if ( statusCode >= 400 )
-        {
-            getLog().error( messagesProvider.getMessage( "tomcatHttpStatusError", statusCode,
-                                                         tomcatResponse.getReasonPhrase() ) );
-
+        if (statusCode >= 400) {
+            getLog().error(
+                    messagesProvider.getMessage("tomcatHttpStatusError", statusCode, tomcatResponse.getReasonPhrase()));
             throw new MojoExecutionException(
-                messagesProvider.getMessage( "tomcatHttpStatusError", statusCode,
-                                             tomcatResponse.getReasonPhrase() ) + ": "
-                    + tomcatResponse.getHttpResponseBody() );
+                    messagesProvider.getMessage("tomcatHttpStatusError", statusCode, tomcatResponse.getReasonPhrase()) +
+                            ": " + tomcatResponse.getHttpResponseBody());
+        } else if (!tomcatResponse.getHttpResponseBody().startsWith("OK -")) {
+            getLog().error(messagesProvider.getMessage("tomcatHttpBodyError", tomcatResponse.getHttpResponseBody()));
+            throw new MojoExecutionException(
+                    messagesProvider.getMessage("tomcatHttpBodyError", tomcatResponse.getHttpResponseBody()));
         }
     }
 }
