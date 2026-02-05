@@ -73,8 +73,11 @@
     <its.ajp.port>2001</its.ajp.port>
     <!-- server port for it tests -->
     <its.server.port>2008</its.server.port>
+    <!-- Tomcat versions non API compatible with main branch -->
     <tomcat7Version>7.0.109</tomcat7Version>
     <tomcat8Version>8.0.18</tomcat8Version>
+    <!-- Any Tomcat version API compatible with main branch -->
+    <tomcatVersion>11.0.18</tomcatVersion>
 
     <!-- to prevent isssues with last apache parent pom -->
     <arguments />
@@ -324,6 +327,7 @@
     <module>tomcat7-maven-plugin</module>
     <module>tomcat8-war-runner</module>
     <module>tomcat8-maven-plugin</module>
+    <module>tomcat-war-runner</module>
     <module>tomcat-maven-archetype</module>
   </modules>
 
