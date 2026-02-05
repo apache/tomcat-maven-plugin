@@ -695,11 +695,6 @@ public abstract class AbstractRunMojo
 
         Context context = container.addWebapp( contextPath, baseDir );
 
-        context.setResources(
-            new MyDirContext( new File( project.getBuild().getOutputDirectory() ).getAbsolutePath(), //
-                              getPath(), //
-                              getLog() ) );
-
         if ( useSeparateTomcatClassLoader )
         {
             context.setParentClassLoader( getTomcatClassLoader() );
@@ -789,85 +784,6 @@ public abstract class AbstractRunMojo
         }
     }
 
-
-    protected static class MyDirContext
-        extends StandardRoot
-    {
-        String buildOutputDirectory;
-
-        String webAppPath;
-
-        WebResourceSet webResourceSet;
-
-        Log log;
-
-        MyDirContext( String buildOutputDirectory, String webAppPath, Log log )
-        {
-
-            this.buildOutputDirectory = buildOutputDirectory;
-            this.webAppPath = webAppPath;
-            this.log = log;
-        }
-
-        @Override
-        public WebResource getResource( String path )
-        {
-
-            log.debug( "MyDirContext#getResource: " + path );
-            if ( "/WEB-INF/classes".equals( path ) )
-            {
-                return new FileResource( this, this.webAppPath, new File( this.buildOutputDirectory ), true, null);
-            }
-
-            File file = new File( path );
-            if ( file.exists() )
-            {
-                return new FileResource( this, this.webAppPath, file, true, null);
-            }
-            WebResource webResource = super.getResource( path );
-            return webResource;
-        }
-
-
-        @Override
-        public WebResource getClassLoaderResource( String path )
-        {
-            log.debug( "MyDirContext#getClassLoaderResource: " + path );
-            // here get resources from various paths
-            return super.getClassLoaderResource( path );
-        }
-
-
-        @Override
-        public WebResource[] listResources( String path )
-        {
-            log.debug( "MyDirContext#listResources: " + path );
-            return super.listResources( path );
-        }
-
-        @Override
-        public WebResource[] getClassLoaderResources( String path )
-        {
-            log.debug( "MyDirContext#getClassLoaderResources: " + path );
-            return super.getClassLoaderResources( path );
-        }
-
-        @Override
-        public WebResource[] getResources( String path )
-        {
-            log.debug( "MyDirContext#getResources: " + path );
-            return super.getResources( path );
-        }
-
-        @Override
-        protected WebResource[] getResourcesInternal( String path, boolean useClassLoaderResources )
-        {
-            log.debug( "MyDirContext#getResourcesInternal: " + path );
-            return super.getResourcesInternal( path, useClassLoaderResources );
-        }
-
-
-    }
 
     /**
      * Gets the webapp loader to run this web application under.
