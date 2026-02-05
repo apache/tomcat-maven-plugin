@@ -327,7 +327,8 @@
     <module>tomcat7-maven-plugin</module>
     <module>tomcat8-war-runner</module>
     <module>tomcat8-maven-plugin</module>
-    <module>tomcat-war-runner</module>
+    <!--<module>tomcat-war-runner</module>-->
+    <!--<module>tomcat-maven-plugin</module>-->
     <module>tomcat-maven-archetype</module>
   </modules>
 
