@@ -59,7 +59,6 @@ import org.apache.maven.shared.filtering.MavenFilteringException;
 import org.apache.tomcat.JarScanner;
 import org.apache.tomcat.maven.common.config.AbstractWebapp;
 import org.apache.tomcat.maven.common.run.EmbeddedRegistry;
-import org.apache.tomcat.maven.common.run.ExternalRepositoriesReloadableWebappLoader;
 import org.apache.tomcat.maven.plugin.tomcat8.AbstractTomcat8Mojo;
 import org.apache.tomcat.util.scan.StandardJarScanner;
 import org.codehaus.plexus.archiver.ArchiverException;

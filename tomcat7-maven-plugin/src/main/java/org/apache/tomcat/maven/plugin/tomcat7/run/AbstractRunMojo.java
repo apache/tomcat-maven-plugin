@@ -56,7 +56,6 @@ import org.apache.naming.resources.FileDirContext;
 import org.apache.tomcat.JarScanner;
 import org.apache.tomcat.maven.common.config.AbstractWebapp;
 import org.apache.tomcat.maven.common.run.EmbeddedRegistry;
-import org.apache.tomcat.maven.common.run.ExternalRepositoriesReloadableWebappLoader;
 import org.apache.tomcat.maven.plugin.tomcat7.AbstractTomcat7Mojo;
 import org.apache.tomcat.util.scan.StandardJarScanner;
 import org.codehaus.plexus.archiver.ArchiverException;

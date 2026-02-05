@@ -1,4 +1,4 @@
-package org.apache.tomcat.maven.common.run;
+package org.apache.tomcat.maven.plugin.tomcat8.run;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -65,31 +65,6 @@ public class ExternalRepositoriesReloadableWebappLoader
     {
         super( parent );
         this.log = log;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void addRepository( String repository )
-    {
-        super.addRepository( repository );
-        try
-        {
-            File file = new File( new URL( repository ).getPath().replaceAll( "%20", " " ) );
-            if ( file.isDirectory() )
-            {
-                addClassDirectory( file );
-            }
-            else if ( file.isFile() && file.getName().endsWith( ".jar" ) )
-            {
-                addFile( file );
-            }
-        }
-        catch ( MalformedURLException muex )
-        {
-            throw new RuntimeException( muex );
-        }
     }
 
     /**
