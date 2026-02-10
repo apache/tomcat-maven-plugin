@@ -76,7 +76,7 @@
     <!-- Tomcat versions non API compatible with main branch -->
     <tomcat7Version>7.0.109</tomcat7Version>
     <tomcat8Version>8.0.18</tomcat8Version>
-    <tomcat9Version>9.0.115</tomcat9Version>
+    <tomcat9Version>11.0.18</tomcat9Version>
     <!-- Any Tomcat version API compatible with main branch -->
     <tomcatVersion>11.0.18</tomcatVersion>
 
