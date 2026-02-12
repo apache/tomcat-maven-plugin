@@ -259,57 +259,12 @@
       </otherArchives>
     </mailingList>
 
-
-
-    <!-- old mailing lists from codehaus -->
-    <mailingList>
-      <name>Legacy Development List</name>
-      <subscribe>dev-subscribe@mojo.codehaus.org</subscribe>
-      <unsubscribe>dev-unsubscribe@mojo.codehaus.org</unsubscribe>
-      <post>dev@mojo.codehaus.org</post>
-      <archive>http://archive.codehaus.org/lists/org.codehaus.mojo.dev</archive>
-      <otherArchives>
-        <otherArchive>http://old.nabble.com/mojo---dev-f11981.html</otherArchive>
-        <otherArchive>http://markmail.org/list/org.codehaus.mojo.dev</otherArchive>
-      </otherArchives>
-    </mailingList>
-    <mailingList>
-      <name>Legacy User List</name>
-      <subscribe>user-subscribe@mojo.codehaus.org</subscribe>
-      <unsubscribe>user-unsubscribe@mojo.codehaus.org</unsubscribe>
-      <post>user@mojo.codehaus.org</post>
-      <archive>http://archive.codehaus.org/lists/org.codehaus.mojo.user</archive>
-      <otherArchives>
-        <otherArchive>http://old.nabble.com/mojo---user-f11980.html</otherArchive>
-        <otherArchive>http://markmail.org/list/org.codehaus.mojo.user</otherArchive>
-      </otherArchives>
-    </mailingList>
-    <mailingList>
-      <name>Legacy Commits List</name>
-      <subscribe>scm-subscribe@mojo.codehaus.org</subscribe>
-      <unsubscribe>scm-unsubscribe@mojo.codehaus.org</unsubscribe>
-      <archive>http://archive.codehaus.org/lists/org.codehaus.mojo.scm</archive>
-      <otherArchives>
-        <otherArchive>http://markmail.org/list/org.codehaus.mojo.scm</otherArchive>
-      </otherArchives>
-    </mailingList>
-    <mailingList>
-      <name>Legacy Announcements List</name>
-      <subscribe>announce-subscribe@mojo.codehaus.org</subscribe>
-      <unsubscribe>announce-unsubscribe@mojo.codehaus.org</unsubscribe>
-      <post>announce@mojo.codehaus.org</post>
-      <archive>http://archive.codehaus.org/lists/org.codehaus.mojo.announce</archive>
-      <otherArchives>
-        <otherArchive>http://old.nabble.com/mojo---announce-f11982.html</otherArchive>
-        <otherArchive>http://markmail.org/list/org.codehaus.mojo.announce</otherArchive>
-      </otherArchives>
-    </mailingList>
   </mailingLists>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/tomcat/maven-plugin/trunk/</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/tomcat/maven-plugin/trunk/</developerConnection>
-    <url>http://svn.apache.org/viewvc/tomcat/maven-plugin/</url>
+    <connection>scm:git:https://github.com/apache/tomcat-maven-plugin.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com:apache/tomcat-maven-plugin.git</developerConnection>
+    <url>https://github.com/apache/tomcat-maven-plugin</url>
   </scm>
 
   <issueManagement>
@@ -324,10 +279,13 @@
   <modules>
     <module>common-tomcat-maven-plugin</module>
     <module>tomcat-maven-plugin-it</module>
+    <!-- EOL Tomcat branches -->
+    <!--
     <module>tomcat7-war-runner</module>
     <module>tomcat7-maven-plugin</module>
     <module>tomcat8-war-runner</module>
     <module>tomcat8-maven-plugin</module>
+    -->
     <module>tomcat-main-war-runner</module>
     <module>tomcat-main-maven-plugin</module>
     <module>tomcat-maven-archetype</module>
@@ -779,8 +737,7 @@
         </reportSets>
         <configuration>
           <links>
-            <link>http://tomcat.apache.org/tomcat-7.0-doc/api/</link>
-            <link>http://tomcat.apache.org/tomcat-8.0-doc/api/</link>
+            <link>http://tomcat.apache.org/tomcat-9.0-doc/api/</link>
           </links>
           <detectLinks>true</detectLinks>
           <notimestamp>true</notimestamp>
