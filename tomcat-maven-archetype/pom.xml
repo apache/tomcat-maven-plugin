@@ -74,16 +74,16 @@
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
           <configuration>
-            <excludes>
-              <exclude>.gitignore</exclude>
-              <exclude>DEPENDENCIES</exclude>
-              <exclude>README.txt</exclude>
-              <exclude>*.sh</exclude>
-              <exclude>.git/**</exclude>
-              <exclude>.extract/**</exclude>
-              <exclude>src/main/resources/archetype-resources/*/src/main/webapp/js/jquery-1.7.js</exclude>
-              <exclude>src/test/**</exclude>
-            </excludes>
+            <inputExcludes>
+              <inputExclude>.gitignore</inputExclude>
+              <inputExclude>DEPENDENCIES</inputExclude>
+              <inputExclude>README.txt</inputExclude>
+              <inputExclude>*.sh</inputExclude>
+              <inputExclude>.git/**</inputExclude>
+              <inputExclude>.extract/**</inputExclude>
+              <inputExclude>src/main/resources/archetype-resources/*/src/main/webapp/js/jquery-1.7.js</inputExclude>
+              <inputExclude>src/test/**</inputExclude>
+            </inputExcludes>S
           </configuration>
         </plugin>
       </plugins>
