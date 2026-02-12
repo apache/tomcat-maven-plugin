@@ -593,9 +593,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-install-plugin</artifactId>
           <version>3.1.4</version>
-          <configuration>
-            <createChecksum>true</createChecksum>
-          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -658,20 +655,20 @@
           <artifactId>apache-rat-plugin</artifactId>
           <version>0.17</version>
           <configuration>
-            <excludes>
-              <exclude>.gitignore</exclude>
-              <exclude>DEPENDENCIES</exclude>
-              <exclude>README.txt</exclude>
-              <exclude>*.sh</exclude>
-              <exclude>.git/**</exclude>
-              <exclude>.idea/**</exclude>
-              <exclude>out/**</exclude>
-              <exclude>.extract/**</exclude>
-              <exclude>*.patch</exclude>
-              <exclude>**/access_log.*</exclude>
-              <exclude>**/src/test/resources/**/goal.txt</exclude>
-              <exclude>**/src/test/resources/**/archetype.properties</exclude>
-            </excludes>
+            <inputExcludes>
+              <inputExclude>.gitignore</inputExclude>
+              <inputExclude>DEPENDENCIES</inputExclude>
+              <inputExclude>README.txt</inputExclude>
+              <inputExclude>*.sh</inputExclude>
+              <inputExclude>.git/**</inputExclude>
+              <inputExclude>.idea/**</inputExclude>
+              <inputExclude>out/**</inputExclude>
+              <inputExclude>.extract/**</inputExclude>
+              <inputExclude>*.patch</inputExclude>
+              <inputExclude>**/access_log.*</inputExclude>
+              <inputExclude>**/src/test/resources/**/goal.txt</inputExclude>
+              <inputExclude>**/src/test/resources/**/archetype.properties</inputExclude>
+            </inputExcludes>
           </configuration>
         </plugin>
 
