@@ -49,7 +49,7 @@
     <!-- Test settings -->
     <maven.test.redirectTestOutputToFile>false</maven.test.redirectTestOutputToFile>
     <surefire.version>3.5.4</surefire.version>
-    <failsafe.version>${surefire.version}</failsafe.version>
+    <failsafe.version>3.5.5</failsafe.version>
 
     <junit.version>4.13.2</junit.version>
     <it.sleep.time>2000</it.sleep.time>
