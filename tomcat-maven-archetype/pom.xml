@@ -83,7 +83,7 @@
               <inputExclude>.extract/**</inputExclude>
               <inputExclude>src/main/resources/archetype-resources/*/src/main/webapp/js/jquery-1.7.js</inputExclude>
               <inputExclude>src/test/**</inputExclude>
-            </inputExcludes>S
+            </inputExcludes>
           </configuration>
         </plugin>
       </plugins>
