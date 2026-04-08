@@ -887,7 +887,6 @@ public abstract class AbstractRunMojo
     }
 
     /**
-     * FIXME not sure we need all of those files with tomcat8
      * Creates the Tomcat configuration directory with the necessary resources.
      *
      * @throws IOException            if the Tomcat configuration could not be created
