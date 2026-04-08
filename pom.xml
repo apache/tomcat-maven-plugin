@@ -74,11 +74,9 @@
     <!-- server port for it tests -->
     <its.server.port>2008</its.server.port>
     <!-- Tomcat versions non API compatible with main branch -->
-    <tomcat7Version>7.0.109</tomcat7Version>
-    <tomcat8Version>8.0.18</tomcat8Version>
-    <tomcat9Version>9.0.115</tomcat9Version>
+    <tomcat9Version>9.0.117</tomcat9Version>
     <!-- Any Tomcat version API compatible with main branch -->
-    <tomcatVersion>11.0.18</tomcatVersion>
+    <tomcatVersion>11.0.21</tomcatVersion>
 
     <!-- to prevent isssues with last apache parent pom -->
     <arguments />
@@ -294,18 +292,6 @@
       </dependency>
 
       <!-- end tomcat dependencies -->
-
-      <dependency>
-        <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat7-war-runner</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-	  
-	  <dependency>
-        <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat8-war-runner</artifactId>
-        <version>${project.version}</version>
-      </dependency>
 
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
