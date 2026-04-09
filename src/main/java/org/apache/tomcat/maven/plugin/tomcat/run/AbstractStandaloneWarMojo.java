@@ -179,7 +179,7 @@ public abstract class AbstractStandaloneWarMojo
                     || StringUtils.equals( "org.apache.tomcat.embed", pluginArtifact.getGroupId() ) //
                     || StringUtils.equals( "org.eclipse.jdt.core.compiler", pluginArtifact.getGroupId() ) //
                     || StringUtils.equals( "commons-cli", pluginArtifact.getArtifactId() ) //
-                    || StringUtils.equals( "tomcat-war-runner", pluginArtifact.getArtifactId() ) )
+                    || StringUtils.equals( "tomcat-maven-plugin", pluginArtifact.getArtifactId() ) )
                 {
                     JarFile jarFile = new JarFile( pluginArtifact.getFile() );
                     extractJarToArchive( jarFile, os, null );
