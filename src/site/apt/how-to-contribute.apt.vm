@@ -32,14 +32,12 @@ How To Contribute
 
 * Get the sources from scm
 
-  See {{{./source-repository.html}Source repository}}
+  The source code is available at:
 
-  Or you can use git mirrors:
-
-  * git clone {{{git://git.apache.org/tomcat-maven-plugin.git}git://git.apache.org/tomcat-maven-plugin.git}}
+  * {{{git://git.apache.org/tomcat-maven-plugin.git}git://git.apache.org/tomcat-maven-plugin.git}}
   or {{{http://git.apache.org/tomcat-maven-plugin.git}http://git.apache.org/tomcat-maven-plugin.git}}
 
-  * github: {{{https://github.com/apache/tomcat-maven-plugin}https://github.com/apache/tomcat-maven-plugin}}
+  * GitHub: {{{https://github.com/apache/tomcat-maven-plugin}https://github.com/apache/tomcat-maven-plugin}}
 
   []
 

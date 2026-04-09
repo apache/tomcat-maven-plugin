@@ -28,11 +28,12 @@
 
 Build an Executable War/Jar
 
- Starting with Version 2.0 of the plugin you can build an executable war/jar with an embedded Apache Tomcat7.
+The Apache Tomcat Maven Plugin allows you to build executable WAR/JAR files with an embedded Tomcat container.
 
- This is only supported with the tomcat7 plugin.
+  * The {{{./context-goals.html}context goals}}} support deploying web applications
+  * The {{{./executable-war-jar.html}executable WAR goals}}} create self-contained WAR/JAR files
 
- <<Note>> Your project must have a packaging value of <<<pom>>> or <<<war>>>.
+  Note: Your project must have a packaging value of <<<pom>>> or <<<war>>>.
 
 * Artifact to add to your war module:
 
@@ -47,13 +48,13 @@ Build an Executable War/Jar
       ...
       <plugin>
         <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat7-maven-plugin</artifactId>
+        <artifactId>tomcat-maven-plugin</artifactId>
         <version>${project.version}</version>
         <executions>
           <execution>
             <id>tomcat-run</id>
             <goals>
-              <goal>exec-war-only</goal>
+              <goal>standalone-war-only</goal>
             </goals>
             <phase>package</phase>
             <configuration>
@@ -61,7 +62,7 @@ Build an Executable War/Jar
               <!-- optional, needed only if you want to use a preconfigured server.xml file -->
               <serverXml>src/main/tomcatconf/server.xml</serverXml>
               <!-- optional values which can be configurable -->
-              <attachArtifactClassifier>default value is exec-war but you can customize</attachArtifactClassifier>
+              <attachArtifactClassifier>default value is standalone-war but you can customize</attachArtifactClassifier>
               <attachArtifactClassifierType>default value is jar</attachArtifactClassifierType>
             </configuration>
           </execution>
@@ -88,13 +89,13 @@ Build an Executable War/Jar
       ...
       <plugin>
         <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat7-maven-plugin</artifactId>
+        <artifactId>tomcat-maven-plugin</artifactId>
         <version>${project.version}</version>
         <executions>
           <execution>
             <id>tomcat-run</id>
             <goals>
-              <goal>exec-war-only</goal>
+              <goal>standalone-war-only</goal>
             </goals>
             <phase>package</phase>
             <configuration>
