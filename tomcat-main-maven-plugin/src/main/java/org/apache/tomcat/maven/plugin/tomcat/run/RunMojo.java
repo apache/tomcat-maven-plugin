@@ -319,6 +319,7 @@ public class RunMojo
             final List<String> classLoaderEntries = classLoaderEntriesCalculatorResult.getClassPathEntries();
             final List<File> tmpDirectories = classLoaderEntriesCalculatorResult.getTmpDirectories();
 
+            context.setParentClassLoader(this.getClass().getClassLoader());
             context.setResources(new StandardRoot(context));
 
             /* Add jars */
