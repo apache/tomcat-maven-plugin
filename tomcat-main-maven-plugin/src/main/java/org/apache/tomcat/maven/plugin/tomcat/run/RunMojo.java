@@ -320,6 +320,7 @@ public class RunMojo
             final List<File> tmpDirectories = classLoaderEntriesCalculatorResult.getTmpDirectories();
 
             context.setParentClassLoader(this.getClass().getClassLoader());
+            getLog().debug("Context doc base: " + context.getDocBase());
             context.setResources(new StandardRoot(context));
 
             /* Add jars */
@@ -337,36 +338,39 @@ public class RunMojo
             }
 
             /* Add build directories */
-            getLog().debug("Adding classes resource: " + new File(project.getBuild().getOutputDirectory()).getAbsolutePath());
-            DirResourceSet webinfClassesResources = new DirResourceSet(context.getResources(), "/WEB-INF/classes", new File(project.getBuild().getOutputDirectory()).getAbsolutePath(), "/") {
+            File classesDir = new File(project.getBuild().getOutputDirectory());
+            if (classesDir.exists() && classesDir.isDirectory()) {
+                getLog().debug("Adding classes resource: " + classesDir.getAbsolutePath());
+                DirResourceSet webinfClassesResources = new DirResourceSet(context.getResources(), "/WEB-INF/classes", classesDir.getAbsolutePath(), "/") {
 
-                @Override
-                public WebResource getResource(String path) {
-                    /* We need to juggle with /META-INF/beans.xml as Weld's WebAppBeanArchiveScanner has special handling
+                    @Override
+                    public WebResource getResource(String path) {
+                        /* We need to juggle with /META-INF/beans.xml as Weld's WebAppBeanArchiveScanner has special handling
                     for /WEB-INF/classes that doesn't work with this.
                     That is because it first finds _all_ resources /META-INF/beans.xml and it ends up with the URLs to those
                     resources, which are all file-system URLs, and then looks for /WEB-INF/classes in the URL, which we don't
                     have as our files are in the Maven target directory.
-                    */
-                    if ("/WEB-INF/classes/META-INF/beans.xml".equals(path)) {
-                        getLog().info("Rejecting request for /WEB-INF/classes/META-INF/beans.xml for Weld compatibility. beans.xml can be found at /WEB-INF/beans.xml");
-                        return new EmptyResource(getRoot(), path);
-                    } else if ("/WEB-INF/beans.xml".equals(path)) {
-                        WebResource beans = super.getResource(path);
-                        if (!beans.exists()) {
-                            beans = super.getResource("/WEB-INF/classes/META-INF/beans.xml");
-                            if (beans.exists()) {
-                                getLog().info("Returning /WEB-INF/classes/META-INF/beans.xml for request of /WEB-INF/beans.xml for Weld compatibility");
+                         */
+                        if ("/WEB-INF/classes/META-INF/beans.xml".equals(path)) {
+                            getLog().info("Rejecting request for /WEB-INF/classes/META-INF/beans.xml for Weld compatibility. beans.xml can be found at /WEB-INF/beans.xml");
+                            return new EmptyResource(getRoot(), path);
+                        } else if ("/WEB-INF/beans.xml".equals(path)) {
+                            WebResource beans = super.getResource(path);
+                            if (!beans.exists()) {
+                                beans = super.getResource("/WEB-INF/classes/META-INF/beans.xml");
+                                if (beans.exists()) {
+                                    getLog().info("Returning /WEB-INF/classes/META-INF/beans.xml for request of /WEB-INF/beans.xml for Weld compatibility");
+                                }
                             }
+                            return beans;
+                        } else {
+                            return super.getResource(path);
                         }
-                        return beans;
-                    } else {
-                        return super.getResource(path);
                     }
-                }
-    
-            };
-            context.getResources().addPreResources(webinfClassesResources);
+
+                };
+                context.getResources().addPreResources(webinfClassesResources);
+            }
 
             for (final String buildDirectory : classLoaderEntriesCalculatorResult.getBuildDirectories()) {
                 if (buildDirectory.equals(project.getBuild().getOutputDirectory())) {
