@@ -633,9 +633,13 @@ public abstract class AbstractRunMojo
      * @return the webapp context path
      */
     @Override
-    protected String getPath()
-    {
-        return path;
+    protected String getPath() {
+        String versionSeparator = "##";
+        if (path.contains(versionSeparator)) {
+            return path.substring(0, path.indexOf(versionSeparator));
+        } else {
+            return path;
+        }
     }
 
     protected void enhanceContext( final Context context )
