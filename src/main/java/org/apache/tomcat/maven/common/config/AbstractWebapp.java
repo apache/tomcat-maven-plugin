@@ -19,7 +19,7 @@ package org.apache.tomcat.maven.common.config;
  * under the License.
  */
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.Artifact;
 
 import java.io.File;
