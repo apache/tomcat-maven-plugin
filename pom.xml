@@ -287,6 +287,12 @@
     </ciManagement>
 
     <build>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
         <pluginManagement>
             <plugins>
                 <!-- Override settings inherited from parent POM -->
@@ -294,6 +300,20 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
                     <version>3.2.0</version>
+                    <executions>
+                        <execution>
+                            <phase>pre-integration-test</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <configuration>
+                                <target>
+                                    <unzip src="src/test/manager.war"
+                                        dest="${managerWebAppPath}" />
+                                </target>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -313,6 +333,14 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${surefire.version}</version>
+                    <configuration>
+                        <excludes>
+                            <exclude>**/**IT*</exclude>
+                        </excludes>
+                        <systemPropertyVariables>
+                            <java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
+                        </systemPropertyVariables>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -840,6 +868,7 @@
     </reporting>
 
     <profiles>
+
         <profile>
             <id>site-release</id>
             <properties>
@@ -882,12 +911,12 @@
                 </plugins>
             </reporting>
         </profile>
+
         <profile>
             <id>tc-staging</id>
             <properties>
                 <tcStagedReleaseUrl />
             </properties>
-
             <repositories>
                 <repository>
                     <id>tc-staged</id>
@@ -895,6 +924,48 @@
                 </repository>
             </repositories>
         </profile>
+
+        <profile>
+            <id>run-its</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-install-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>pre-integration-test</id>
+                                <goals>
+                                    <goal>install</goal>
+                                </goals>
+                                <phase>pre-integration-test</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-invoker-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>run-its</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <pomIncludes>**/simple-war-exec-project/pom.xml</pomIncludes>
+                                    <ignoreFailures>false</ignoreFailures>
+                                    <showErrors>true</showErrors>
+                                    <localRepositoryPath>${basedir}/target/it-repo</localRepositoryPath>
+                                    <settingsFile>src/it/settings.xml</settingsFile>
+                                    <postBuildHookScript>verify</postBuildHookScript>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
     </profiles>
 
 </project>
