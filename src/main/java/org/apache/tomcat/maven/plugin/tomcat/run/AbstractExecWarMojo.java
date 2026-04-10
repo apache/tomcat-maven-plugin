@@ -38,7 +38,7 @@ import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
@@ -298,11 +298,12 @@ public abstract class AbstractExecWarMojo
             if ( "war".equals( project.getPackaging() ) )
             {
 
-                os.putArchiveEntry( new JarArchiveEntry( StringUtils.removeStart( path, "/" ) + ".war" ) );
+                String pathWithoutSlash = path.startsWith( "/" ) ? path.substring( 1 ) : path;
+                os.putArchiveEntry( new JarArchiveEntry( pathWithoutSlash + ".war" ) );
                 IOUtils.copy( new FileInputStream( projectArtifact.getFile() ), os );
                 os.closeArchiveEntry();
 
-                properties.put( TomcatRunner.WARS_KEY, StringUtils.removeStart( path, "/" ) + ".war|" + path );
+                properties.put( TomcatRunner.WARS_KEY, pathWithoutSlash + ".war|" + path );
             }
             else if ( warRunDependencies != null && !warRunDependencies.isEmpty() )
             {
@@ -312,12 +313,12 @@ public abstract class AbstractExecWarMojo
                     {
                         Dependency dependency = warRunDependency.dependency;
                         String version = dependency.getVersion();
-                        if ( StringUtils.isEmpty( version ) )
+                        if ( version == null || version.isEmpty() )
                         {
                             version = findArtifactVersion( dependency );
                         }
 
-                        if ( StringUtils.isEmpty( version ) )
+if ( version == null || version.isEmpty() )
                         {
                             throw new MojoExecutionException(
                                 "Dependency '" + dependency.getGroupId() + "':'" + dependency.getArtifactId()
@@ -344,7 +345,7 @@ public abstract class AbstractExecWarMojo
                         os.closeArchiveEntry();
                         String propertyWarValue = properties.getProperty( TomcatRunner.WARS_KEY );
                         String contextPath =
-                            StringUtils.isEmpty( warRunDependency.contextPath ) ? "/" : warRunDependency.contextPath;
+                            warRunDependency.contextPath == null || warRunDependency.contextPath.isEmpty() ? "/" : warRunDependency.contextPath;
                         if ( propertyWarValue != null )
                         {
                             properties.put( TomcatRunner.WARS_KEY,
@@ -386,12 +387,11 @@ public abstract class AbstractExecWarMojo
             // add tomcat classes
             for ( Artifact pluginArtifact : pluginArtifacts )
             {
-                if ( StringUtils.equals( "org.apache.tomcat", pluginArtifact.getGroupId() ) //
-                    || StringUtils.equals( "org.apache.tomcat.embed", pluginArtifact.getGroupId() ) //
-                    || StringUtils.equals( "org.eclipse.jdt.core.compiler", pluginArtifact.getGroupId() ) //
-                    || StringUtils.equals( "commons-cli", pluginArtifact.getArtifactId() ) //
-                    || StringUtils.equals( "tomcat-maven-plugin", pluginArtifact.getArtifactId() ) )
-                {
+                if ("org.apache.tomcat".equals(pluginArtifact.getGroupId()) //
+                        || "org.apache.tomcat.embed".equals(pluginArtifact.getGroupId()) //
+                        || "org.eclipse.jdt.core.compiler".equals(pluginArtifact.getGroupId()) //
+                        || "commons-cli".equals(pluginArtifact.getArtifactId()) //
+                        || "tomcat-maven-plugin".equals(pluginArtifact.getArtifactId()))                {
                     JarFile jarFile = new JarFile( pluginArtifact.getFile() );
                     extractJarToArchive( jarFile, os, null );
                 }
@@ -403,12 +403,12 @@ public abstract class AbstractExecWarMojo
                 for ( Dependency dependency : extraDependencies )
                 {
                     String version = dependency.getVersion();
-                    if ( StringUtils.isEmpty( version ) )
+                    if ( version == null || version.isEmpty() )
                     {
                         version = findArtifactVersion( dependency );
                     }
 
-                    if ( StringUtils.isEmpty( version ) )
+                    if ( version == null || version.isEmpty() )
                     {
                         throw new MojoExecutionException(
                             "Dependency '" + dependency.getGroupId() + "':'" + dependency.getArtifactId()
@@ -530,8 +530,8 @@ public abstract class AbstractExecWarMojo
 
     protected boolean sameDependencyWithoutVersion( Dependency that, Dependency dependency )
     {
-        return StringUtils.equals( that.getGroupId(), dependency.getGroupId() ) && StringUtils.equals(
-            that.getArtifactId(), dependency.getArtifactId() );
+        return that.getGroupId() != null && that.getGroupId().equals(dependency.getGroupId()) &&
+                that.getArtifactId() != null && that.getArtifactId().equals(dependency.getArtifactId());
     }
 
     protected void copyDirectoryContentIntoArchive( File sourceFolder, String destinationPath,
@@ -660,7 +660,7 @@ public abstract class AbstractExecWarMojo
                 }
             }
 
-            if ( StringUtils.equalsIgnoreCase( j.getName(), "META-INF/MANIFEST.MF" ) )
+            if ( "META-INF/MANIFEST.MF".equalsIgnoreCase( j.getName() ) )
             {
                 continue;
             }

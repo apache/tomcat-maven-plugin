@@ -30,7 +30,7 @@ import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
@@ -175,11 +175,11 @@ public abstract class AbstractStandaloneWarMojo
             // add tomcat classes
             for ( Artifact pluginArtifact : pluginArtifacts )
             {
-                if ( StringUtils.equals( "org.apache.tomcat", pluginArtifact.getGroupId() ) //
-                    || StringUtils.equals( "org.apache.tomcat.embed", pluginArtifact.getGroupId() ) //
-                    || StringUtils.equals( "org.eclipse.jdt.core.compiler", pluginArtifact.getGroupId() ) //
-                    || StringUtils.equals( "commons-cli", pluginArtifact.getArtifactId() ) //
-                    || StringUtils.equals( "tomcat-maven-plugin", pluginArtifact.getArtifactId() ) )
+if ( "org.apache.tomcat".equals( pluginArtifact.getGroupId() ) //
+                        || "org.apache.tomcat.embed".equals( pluginArtifact.getGroupId() ) //
+                        || "org.eclipse.jdt.core.compiler".equals( pluginArtifact.getGroupId() ) //
+                        || "commons-cli".equals( pluginArtifact.getArtifactId() ) //
+                        || "tomcat-maven-plugin".equals( pluginArtifact.getArtifactId() ) )
                 {
                     JarFile jarFile = new JarFile( pluginArtifact.getFile() );
                     extractJarToArchive( jarFile, os, null );
@@ -192,12 +192,12 @@ public abstract class AbstractStandaloneWarMojo
                 for ( Dependency dependency : extraDependencies )
                 {
                     String version = dependency.getVersion();
-                    if ( StringUtils.isEmpty( version ) )
+                    if ( version == null || version.isEmpty() )
                     {
                         version = findArtifactVersion( dependency );
                     }
 
-                    if ( StringUtils.isEmpty( version ) )
+                    if ( version == null || version.isEmpty() )
                     {
                         throw new MojoExecutionException(
                             "Dependency '" + dependency.getGroupId() + "':'" + dependency.getArtifactId()

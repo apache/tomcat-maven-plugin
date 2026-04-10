@@ -38,7 +38,7 @@ import org.apache.catalina.webresources.EmptyResource;
 import org.apache.catalina.webresources.FileResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -445,7 +445,7 @@ public class RunMojo
             {
                 URI uri = new URI( classLoaderEntry );
                 File file = new File( uri );
-                if ( !file.isDirectory() && StringUtils.endsWithIgnoreCase(file.getName(), ".jar"))
+                if ( !file.isDirectory() && file.getName().toLowerCase().endsWith( ".jar" ) )
                 {
                     jarPaths.add( file.getAbsolutePath() );
                 }

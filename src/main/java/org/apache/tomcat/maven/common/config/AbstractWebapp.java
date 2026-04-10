@@ -19,7 +19,7 @@ package org.apache.tomcat.maven.common.config;
  * under the License.
  */
 
-import org.apache.commons.lang3.StringUtils;
+
 import org.apache.maven.artifact.Artifact;
 
 import java.io.File;
@@ -133,7 +133,7 @@ public abstract class AbstractWebapp
 
     public String getContextPath()
     {
-        if ( StringUtils.isEmpty( contextPath ) )
+        if ( contextPath == null || contextPath.isEmpty() )
         {
             return this.artifactId;
         }

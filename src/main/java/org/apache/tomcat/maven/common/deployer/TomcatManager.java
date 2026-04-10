@@ -33,7 +33,7 @@ import java.util.Locale;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
+
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -194,7 +194,7 @@ public class TomcatManager
         poolingClientConnectionManager.setMaxTotal( 5 );
         this.httpClient = new DefaultHttpClient( poolingClientConnectionManager );
 
-        if ( StringUtils.isNotEmpty( username ) )
+        if ( username != null && !username.isEmpty() )
         {
             Credentials creds = new UsernamePasswordCredentials( username, password );
 

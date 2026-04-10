@@ -26,7 +26,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
 import org.apache.tomcat.maven.common.deployer.TomcatManager;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
-import org.codehaus.plexus.util.StringUtils;
+
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -211,7 +211,7 @@ public abstract class AbstractCatalinaMojo
             }
 
             // if userName/password are defined in the mojo or the cli they override
-            if ( !StringUtils.isEmpty( this.username ) )
+            if ( this.username != null && !this.username.isEmpty() )
             {
                 userName = this.username;
                 password = this.password == null ? "" : this.password;

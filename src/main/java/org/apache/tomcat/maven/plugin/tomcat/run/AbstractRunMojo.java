@@ -56,7 +56,7 @@ import org.apache.catalina.startup.CatalinaProperties;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.valves.AccessLogValve;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
@@ -751,16 +751,16 @@ public abstract class AbstractRunMojo
 
             while ( true )
             {
-                if ( tag == XMLStreamConstants.START_ELEMENT && StringUtils.equals( "Context", reader.getLocalName() ) )
+                if ( tag == XMLStreamConstants.START_ELEMENT && "Context".equals( reader.getLocalName() ) )
                 {
                     String path = reader.getAttributeValue( null, "path" );
-                    if ( StringUtils.isNotBlank( path ) )
+                    if ( path != null && !path.isEmpty() )
                     {
                         standardContext.setPath( path );
                     }
 
                     String docBase = reader.getAttributeValue( null, "docBase" );
-                    if ( StringUtils.isNotBlank( docBase ) )
+                    if ( docBase != null && !docBase.isEmpty() )
                     {
                         standardContext.setDocBase( docBase );
                     }
@@ -1515,7 +1515,7 @@ public abstract class AbstractRunMojo
             vr = VersionRange.createFromVersion( additionalWebapp.getVersion() );
         }
 
-        if ( StringUtils.isEmpty( additionalWebapp.getClassifier() ) )
+        if ( additionalWebapp.getClassifier() == null || additionalWebapp.getClassifier().isEmpty() )
         {
             artifact =
                 factory.createDependencyArtifact( additionalWebapp.getGroupId(), additionalWebapp.getArtifactId(), vr,

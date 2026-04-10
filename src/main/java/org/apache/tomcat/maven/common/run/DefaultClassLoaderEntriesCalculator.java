@@ -30,7 +30,7 @@ import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.util.StringUtils;
+
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -251,7 +251,7 @@ public class DefaultClassLoaderEntriesCalculator
             project.getProjectReferences().values();
         for ( MavenProject mavenProject : mavenProjects )
         {
-            if ( StringUtils.equals( mavenProject.getId(), artifact.getId() ) )
+            if ( mavenProject.getId() != null && mavenProject.getId().equals( artifact.getId() ) )
             {
                 return true;
             }
