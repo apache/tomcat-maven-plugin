@@ -77,6 +77,14 @@ mvn tomcat:start
 mvn tomcat:stop
 +--
 
+* {Reloading a WAR project}
+
+  To reload a WAR in Tomcat you can type:
+
++--
+mvn tomcat:reload
++--
+
 * {Listing session statistics}
 
   To list the session statistics for a deployed WAR project you can type:
