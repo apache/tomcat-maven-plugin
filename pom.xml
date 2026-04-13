@@ -909,7 +909,9 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <pomIncludes>**/simple-war-exec-project/pom.xml</pomIncludes>
+                                    <pomIncludes>
+                                        <include>**/simple-war-exec-project/pom.xml</include>
+                                    </pomIncludes>
                                     <ignoreFailures>false</ignoreFailures>
                                     <showErrors>true</showErrors>
                                     <localRepositoryPath>${basedir}/target/it-repo</localRepositoryPath>
