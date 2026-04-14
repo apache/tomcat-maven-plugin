@@ -108,7 +108,6 @@ public final class EmbeddedRegistry
             {
                 Method method = embedded.getClass().getMethod( "stop" );
                 method.invoke( embedded );
-                embedded.getClass().getMethod( "destroy" ).invoke( embedded );
                 iterator.remove();
             }
             catch ( NoSuchMethodException e )

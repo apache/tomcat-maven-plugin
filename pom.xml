@@ -80,6 +80,7 @@
         <its.ajp.port>2001</its.ajp.port>
         <!-- server port for it tests -->
         <its.server.port>2008</its.server.port>
+
         <tomcatVersion>9.0.117</tomcatVersion>
         <!-- Tomcat 10 and 11 should skip tests -->
         <!--<tomcatVersion>11.0.21</tomcatVersion>-->
@@ -92,6 +93,7 @@
         <tomcat-maven.siteUrlDeployment>file://${tomcat-maven.siteFilePath}</tomcat-maven.siteUrlDeployment>
         <tomcat-maven.scmPubCheckoutDirectory>
             ${user.home}/tomcat-maven-plugin-${project.version}-content</tomcat-maven.scmPubCheckoutDirectory>
+        <managerWebAppPath>${basedir}/target/</managerWebAppPath>
 
     </properties>
 
@@ -346,6 +348,23 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>${failsafe.version}</version>
+                    <configuration>
+                        <excludes>
+                            <exclude>**/deploy-only-war-project/**</exclude>
+                            <exclude>**/deploy-war-project/**</exclude>
+                            <exclude>**/simple-war-project/**</exclude>
+                            <exclude>**/tomcat-run-multi-config/**</exclude>
+                            <exclude>**/Abstract*.java</exclude>
+                        </excludes>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>integration-test</goal>
+                                <goal>verify</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -425,8 +444,7 @@
                             <inputExclude>*.patch</inputExclude>
                             <inputExclude>**/access_log.*</inputExclude>
                             <inputExclude>**/src/test/resources/**/goal.txt</inputExclude>
-                            <inputExclude>
-                                **/src/test/resources/**/archetype.properties</inputExclude>
+                            <inputExclude>**/src/test/resources/**/archetype.properties</inputExclude>
                         </inputExcludes>
                     </configuration>
                 </plugin>
@@ -495,6 +513,24 @@
                         <goals>
                             <goal>generate-metadata</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <unzip src="src/test/manager.war"
+                                    dest="${managerWebAppPath}" />
+                            </target>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

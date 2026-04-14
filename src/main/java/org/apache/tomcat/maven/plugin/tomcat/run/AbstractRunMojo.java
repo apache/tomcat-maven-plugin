@@ -173,13 +173,13 @@ public abstract class AbstractRunMojo
      * NOTE The ajp connector will be started only if {@link #ajpPort} > 0.
      * possible values are:
      * <ul>
-     * <li>org.apache.coyote.ajp.AjpProtocol - new blocking Java connector that supports an executor</li>
+     * <li>org.apache.coyote.ajp.AjpNioProtocol - new blocking Java connector that supports an executor</li>
      * <li>org.apache.coyote.ajp.AjpAprProtocol - the APR/native connector.</li>
      * </ul>
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.ajp.protocol", defaultValue = "org.apache.coyote.ajp.AjpProtocol" )
+    @Parameter( property = "maven.tomcat.ajp.protocol", defaultValue = "org.apache.coyote.ajp.AjpNioProtocol" )
     private String ajpProtocol;
 
     /**
@@ -1119,10 +1119,11 @@ public abstract class AbstractRunMojo
                     httpsConnector.setMaxPostSize( maxPostSize );
                     httpsConnector.setSecure( true );
                     httpsConnector.setProperty( "SSLEnabled", "true" );
-                    // should be default but configure it anyway
-                    httpsConnector.setProperty( "sslProtocol", "TLS" );
+                    httpsConnector.setURIEncoding( uriEncoding );
+                    httpsConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
+
                     SSLHostConfig hostConfig = new SSLHostConfig();
-                    SSLHostConfigCertificate certificate = new SSLHostConfigCertificate();
+                    SSLHostConfigCertificate certificate = new SSLHostConfigCertificate(hostConfig, SSLHostConfigCertificate.DEFAULT_TYPE);
 
                     if ( keystoreFile != null )
                     {
@@ -1172,12 +1173,7 @@ public abstract class AbstractRunMojo
                     {
                         hostConfig.setTruststoreType(truststoreType);
                     }
-
                     hostConfig.setCertificateVerificationAsString(clientAuth);
-
-                    httpsConnector.setURIEncoding( uriEncoding );
-
-                    httpsConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
 
                     if ( address != null )
                     {
