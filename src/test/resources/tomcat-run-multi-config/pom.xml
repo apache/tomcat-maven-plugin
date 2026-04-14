@@ -65,12 +65,12 @@
             </goals>
             <phase>pre-integration-test</phase>
             <configuration>
-              <additionalConfigFilesDir>\${basedir}/src/main/tcconf</additionalConfigFilesDir>
-              <configurationDir>\${project.build.directory}/tc</configurationDir>
+              <additionalConfigFilesDir>${basedir}/src/main/tcconf</additionalConfigFilesDir>
+              <configurationDir>${project.build.directory}/tc</configurationDir>
               <path>/multi-config</path>
               <port>${its.http.port}</port>
               <httpsPort>${its.https.port}</httpsPort>
-              <keystoreFile>${keystoreTestPath}</keystoreFile>
+              <keystoreFile>${basedir}/src/test/keystore</keystoreFile>
               <ajpPort>${its.ajp.port}</ajpPort>
               <uriEncoding>UTF-8</uriEncoding>
               <systemProperties>

@@ -25,6 +25,7 @@ import org.junit.Test;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.logging.Level;
 
 import static junitx.framework.StringAssert.assertContains;
 import static org.junit.Assert.assertNotNull;
@@ -56,7 +57,7 @@ public abstract class AbstractTomcatRunMultiConfigIT
         }
         catch ( URISyntaxException e )
         {
-            logger.error( "An exception occurred.", e );
+            logger.log(Level.SEVERE, "An exception occurred.", e );
             return "http://localhost:" + getHttpItPort() + "/multi-config";
         }
     }

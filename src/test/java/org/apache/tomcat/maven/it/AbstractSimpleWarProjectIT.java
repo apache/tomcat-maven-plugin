@@ -22,8 +22,6 @@ package org.apache.tomcat.maven.it;
 
 import org.apache.maven.it.VerificationException;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
@@ -37,7 +35,6 @@ import static org.junit.Assert.assertTrue;
 public abstract class AbstractSimpleWarProjectIT
     extends AbstractWarProjectIT
 {
-    protected Logger logger = LoggerFactory.getLogger( getClass() );
 
     @Override
     protected String getWebappUrl()
@@ -62,7 +59,6 @@ public abstract class AbstractSimpleWarProjectIT
         assertTrue( "Tomcat folder should exist in target folder of project at " + webappHome,
                     new File( webappHome, "target/tomcat" ).exists() );
 
-        logger.info( "Error Free Log check" );
         verifier.verifyErrorFreeLog();
         verifyConnectorsStarted();
     }

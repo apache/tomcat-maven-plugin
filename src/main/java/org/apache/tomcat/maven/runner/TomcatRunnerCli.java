@@ -88,9 +88,6 @@ public class TomcatRunnerCli
     static Option extractDirectory = OptionBuilder.withArgName( "extractDirectory" ).hasArg().withDescription(
         "path to extract war content, default value: .extract" ).create( "extractDirectory" );
 
-    static Option loggerName = OptionBuilder.withArgName( "loggerName" ).hasArg().withDescription(
-        "logger to use: slf4j to use slf4j bridge on top of jul" ).create( "loggerName" );
-
     static Option uriEncoding = OptionBuilder.withArgName( "uriEncoding" ).hasArg().withDescription(
         "connector uriEncoding default ISO-8859-1" ).create( "uriEncoding" );
 
@@ -111,7 +108,6 @@ public class TomcatRunnerCli
             .addOption( keyAlias ) //
             .addOption( obfuscate ) //
             .addOption( extractDirectory ) //
-            .addOption( loggerName ) //
             .addOption( uriEncoding ) //
             .addOption( maxPostSize );
     }
@@ -217,11 +213,6 @@ public class TomcatRunnerCli
         if ( line.hasOption( extractDirectory.getOpt() ) )
         {
             tomcatRunner.extractDirectory = line.getOptionValue( extractDirectory.getOpt() );
-        }
-
-        if ( line.hasOption( loggerName.getOpt() ) )
-        {
-            tomcatRunner.loggerName = line.getOptionValue( loggerName.getOpt() );
         }
 
         if ( line.hasOption( uriEncoding.getOpt() ) )

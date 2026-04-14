@@ -59,9 +59,7 @@
         <it.sleep.time>2000</it.sleep.time>
         <verifier.maven.debug>false</verifier.maven.debug>
         <verifier.debugJvm>false</verifier.debugJvm>
-        <maven.resources.escapeString>\</maven.resources.escapeString>
-        <distributionReleaseUrl>
-            https://repository.apache.org/service/local/staging/deploy/maven2</distributionReleaseUrl>
+        <distributionReleaseUrl>https://repository.apache.org/service/local/staging/deploy/maven2</distributionReleaseUrl>
 
         <distributionSnapshotsUrl>
             https://repository.apache.org/content/repositories/snapshots</distributionSnapshotsUrl>
@@ -88,11 +86,9 @@
         <!-- to prevent isssues with last apache parent pom -->
         <arguments />
 
-        <tomcat-maven.siteFilePath>
-            ${user.home}/tomcat-maven-plugin-${project.version}/</tomcat-maven.siteFilePath>
+        <tomcat-maven.siteFilePath>${user.home}/tomcat-maven-plugin-${project.version}/</tomcat-maven.siteFilePath>
         <tomcat-maven.siteUrlDeployment>file://${tomcat-maven.siteFilePath}</tomcat-maven.siteUrlDeployment>
-        <tomcat-maven.scmPubCheckoutDirectory>
-            ${user.home}/tomcat-maven-plugin-${project.version}-content</tomcat-maven.scmPubCheckoutDirectory>
+        <tomcat-maven.scmPubCheckoutDirectory>${user.home}/tomcat-maven-plugin-${project.version}-content</tomcat-maven.scmPubCheckoutDirectory>
         <managerWebAppPath>${basedir}/target/</managerWebAppPath>
 
     </properties>
@@ -527,8 +523,7 @@
                         </goals>
                         <configuration>
                             <target>
-                                <unzip src="src/test/manager.war"
-                                    dest="${managerWebAppPath}" />
+                                <unzip src="src/test/manager.war" dest="${managerWebAppPath}" />
                             </target>
                         </configuration>
                     </execution>
@@ -591,16 +586,6 @@
             <artifactId>maven-core</artifactId>
             <version>${mavenVersion}</version>
             <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-jdk14</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-nop</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
@@ -651,26 +636,6 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.14</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>2.0.17</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-            <version>2.0.17</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.25.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
-            <version>2.25.4</version>
         </dependency>
 
         <dependency>

@@ -32,7 +32,7 @@
     <Connector port="${its.http.port}" keepAliveTimeout="1800000" maxKeepAliveRequests="30000" maxThreads="300" />
     <Engine name="Catalina" defaultHost="localhost">
       <Valve className="org.apache.catalina.valves.AccessLogValve"
-             resolveHosts="false" pattern="%t-ip:%a-protocol::%H-status:%s-localPort:%p-path:%U-time:%D ms" buffered="false"/>
+             pattern="%t-ip:%a-protocol::%H-status:%s-localPort:%p-path:%U-time:%D ms" buffered="false"/>
       <Realm className="org.apache.catalina.realm.UserDatabaseRealm"
              resourceName="UserDatabase" />
       <Host name="localhost" appBase="${project.build.directory}/test-classes/deploy-war-project/target/tomcat/webapps">

@@ -29,11 +29,11 @@
   </GlobalNamingResources>
 
   <Service name="Catalina">
-    <Connector port="8080" keepAliveTimeout="1800000" maxKeepAliveRequests="30000" maxThreads="300" />
-    <Connector port="8088" keepAliveTimeout="1800000" maxKeepAliveRequests="30000" maxThreads="300" />
+    <Connector port="${its.http.port}" keepAliveTimeout="1800000" maxKeepAliveRequests="30000" maxThreads="300" />
+    <Connector port="${its.ajp.port}" protocol="AJP/1.3" keepAliveTimeout="1800000" maxKeepAliveRequests="30000" maxThreads="300" />
     <Engine name="Catalina" defaultHost="localhost">
       <Valve className="org.apache.catalina.valves.AccessLogValve" 
-             resolveHosts="false" pattern="%t-ip:%a-protocol:%H-localPort:%p-path:%U-time:%D ms"/> 
+             pattern="%t-ip:%a-protocol:%H-localPort:%p-path:%U-time:%D ms"/> 
       <Realm className="org.apache.catalina.realm.UserDatabaseRealm"
              resourceName="UserDatabase" />
       <Host name="localhost" appBase="webapps" />
