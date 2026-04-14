@@ -882,6 +882,8 @@
             </repositories>
         </profile>
 
+        <!-- For integration tests the plugin needs to be installed before
+               the integration tests are executed -->
         <profile>
             <id>run-its</id>
             <build>
