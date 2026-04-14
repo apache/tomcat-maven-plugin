@@ -19,6 +19,7 @@
  */
 
 import java.io.*;
+import java.net.*;
 import java.util.*;
 import java.util.jar.*;
 
@@ -79,6 +80,41 @@ try
         System.err.println( "tomcat.standalone.properties is missing." );
         return false;
     }
+
+    jar.close();
+
+    System.err.println( "Starting Tomcat from: " + new File( basedir, "target" ).getAbsolutePath() );
+
+    Process process = Runtime.getRuntime().exec( "java -jar " + artifact.getAbsolutePath(), null, new File( basedir, "target" ) );
+
+    Thread.sleep( 15000 );
+
+    try
+    {
+        HttpURLConnection connection = (HttpURLConnection) new URL( "http://localhost:8088/foo" ).openConnection();
+        connection.setConnectTimeout( 5000 );
+        connection.setRequestMethod( "GET" );
+
+        int status = connection.getResponseCode();
+
+        System.err.println( "HTTP Status: " + status );
+        
+        if ( status != 200 )
+        {
+            System.err.println( "Expected HTTP 200, got " + status );
+            result = false;
+        }
+
+        connection.disconnect();
+    }
+    catch ( Exception e )
+    {
+        System.err.println( "Failed to connect to Tomcat: " + e.getMessage() );
+        e.printStackTrace();
+        result = false;
+    }
+
+    process.destroy();
 
 }
 catch( Throwable e )

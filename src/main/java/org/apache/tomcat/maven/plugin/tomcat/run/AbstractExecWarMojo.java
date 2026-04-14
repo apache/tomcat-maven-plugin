@@ -389,7 +389,7 @@ if ( version == null || version.isEmpty() )
             {
                 if ("org.apache.tomcat".equals(pluginArtifact.getGroupId()) //
                         || "org.apache.tomcat.embed".equals(pluginArtifact.getGroupId()) //
-                        || "org.eclipse.jdt.core.compiler".equals(pluginArtifact.getGroupId()) //
+                        || "org.eclipse.jdt".equals(pluginArtifact.getGroupId()) //
                         || "commons-cli".equals(pluginArtifact.getArtifactId()) //
                         || "tomcat-maven-plugin".equals(pluginArtifact.getArtifactId()))                {
                     JarFile jarFile = new JarFile( pluginArtifact.getFile() );
@@ -662,6 +662,10 @@ if ( version == null || version.isEmpty() )
 
             if ( "META-INF/MANIFEST.MF".equalsIgnoreCase( j.getName() ) )
             {
+                continue;
+            }
+            if (j.getName().startsWith("META-INF/") &&
+                    (j.getName().endsWith(".SF") || j.getName().endsWith(".DSA") || j.getName().endsWith(".RSA"))) {
                 continue;
             }
             os.putArchiveEntry( new JarArchiveEntry( j.getName() ) );

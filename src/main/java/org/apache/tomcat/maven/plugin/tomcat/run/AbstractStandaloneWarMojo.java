@@ -175,9 +175,9 @@ public abstract class AbstractStandaloneWarMojo
             // add tomcat classes
             for ( Artifact pluginArtifact : pluginArtifacts )
             {
-if ( "org.apache.tomcat".equals( pluginArtifact.getGroupId() ) //
+                if ( "org.apache.tomcat".equals( pluginArtifact.getGroupId() ) //
                         || "org.apache.tomcat.embed".equals( pluginArtifact.getGroupId() ) //
-                        || "org.eclipse.jdt.core.compiler".equals( pluginArtifact.getGroupId() ) //
+                        || "org.eclipse.jdt".equals( pluginArtifact.getGroupId() ) //
                         || "commons-cli".equals( pluginArtifact.getArtifactId() ) //
                         || "tomcat-maven-plugin".equals( pluginArtifact.getArtifactId() ) )
                 {
