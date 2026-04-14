@@ -61,6 +61,7 @@
             <configuration>
               <path>foo</path>
               <serverXml>${basedir}/src/main/tomcatconf/server.xml</serverXml>
+              <enableNaming>true</enableNaming>
             </configuration>
           </execution>
         </executions>
