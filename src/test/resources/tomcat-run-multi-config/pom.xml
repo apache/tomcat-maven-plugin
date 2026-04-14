@@ -65,8 +65,8 @@
             </goals>
             <phase>pre-integration-test</phase>
             <configuration>
-              <additionalConfigFilesDir>${basedir}/src/main/tcconf</additionalConfigFilesDir>
-              <configurationDir>${project.build.directory}/tc</configurationDir>
+              <additionalConfigFilesDir>src/main/tcconf</additionalConfigFilesDir>
+              <configurationDir>target/tc</configurationDir>
               <path>/multi-config</path>
               <port>${its.http.port}</port>
               <httpsPort>${its.https.port}</httpsPort>
