@@ -663,19 +663,6 @@ public class TomcatManager
     }
 
     /**
-     * Lists the security role names and corresponding descriptions that are available.
-     *
-     * @return the list of security role names and corresponding descriptions
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
-     */
-    public TomcatManagerResponse getRoles()
-        throws TomcatManagerException, IOException
-    {
-        return invoke( "/roles" );
-    }
-
-    /**
      * Lists the default session timeout and the number of currently active sessions for the given context path.
      *
      * @param path the context path to list session information for

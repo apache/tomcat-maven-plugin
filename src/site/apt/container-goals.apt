@@ -34,7 +34,6 @@ Container Goals
   * {{{#Listing deployed applications}Listing deployed applications}}
   * {{{#Getting server information}Getting server information}}
   * {{{#Listing JNDI resources}Listing JNDI resources}}
-  * {{{#Listing security roles}Listing security roles}}
   []
 
  These are described in more detail below.
@@ -68,14 +67,6 @@ mvn tomcat:resources
 
 +--
 mvn -Dmaven.tomcat.type=my.class.name tomcat:resources
-+--
-
-* {Listing security roles}
-
- To list the available security roles available within Tomcat you can type:
-
-+--
-mvn tomcat:roles
 +--
 
   Note: For detailed information about container management, please refer to the
