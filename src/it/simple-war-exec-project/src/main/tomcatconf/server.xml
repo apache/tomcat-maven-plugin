@@ -32,7 +32,7 @@
     <Connector port="8088"/>
     <Engine name="Catalina" defaultHost="localhost">
       <Valve className="org.apache.catalina.valves.AccessLogValve" 
-             resolveHosts="false" pattern="%t-ip:%a-protocol:%H-localPort:%p-path:%U-time:%D ms"/> 
+             pattern="%t-ip:%a-protocol:%H-localPort:%p-path:%U-time:%D ms"/> 
       <Realm className="org.apache.catalina.realm.UserDatabaseRealm"
              resourceName="UserDatabase" />
       <Host name="localhost" appBase="webapps" />
