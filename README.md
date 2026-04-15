@@ -207,19 +207,7 @@ To test staging artifacts for a vote process:
 
 * Activate a profile: `tc-staging`
 * Pass staging repository as parameter: `-DtcStagedReleaseUrl=`
-* Pass Tomcat version as parameter: `-DtomcatVersion=` (for Tomcat 10/11) or `-Dtomcat9Version=` (for Tomcat 9)
-
-Sample for Tomcat 10/11 artifacts:
-
-```bash
-mvn clean install -Prun-its -Ptc-staging -DtcStagedReleaseUrl=stagingrepositoryurl -DtomcatVersion=11.0.21
-```
-
-Sample for Tomcat 9 artifacts:
-
-```bash
-mvn clean install -Prun-its -Ptc-staging -DtcStagedReleaseUrl=stagingrepositoryurl -Dtomcat9Version=9.0.117
-```
+* Pass Tomcat version as parameter: `-DtomcatVersion=`
 
 ## Examples
 
