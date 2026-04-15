@@ -14,7 +14,7 @@ The plugin supports Tomcat 9, Tomcat 10, and Tomcat 11.
 ## Prerequisites
 
 - Java 8 or higher
-- Maven 3.8.1 or higher
+- Maven 3.9.14 or higher
 
 ## Basic Usage
 
@@ -76,12 +76,6 @@ mvn tomcat:info
 
 ```bash
 mvn tomcat:resources
-```
-
-**roles** - List security roles:
-
-```bash
-mvn tomcat:roles
 ```
 
 ## Configuration
