@@ -1,7 +1,5 @@
 # Apache Tomcat Maven Plugin
 
-[![Build Status](https://builds.apache.org/job/TomcatMavenPlugin/badge/icon)](https://builds.apache.org/job/TomcatMavenPlugin/)
-
 ## Overview
 
 The Apache Tomcat Maven Plugin provides goals to manipulate WAR projects within the Apache Tomcat servlet container. It supports:
