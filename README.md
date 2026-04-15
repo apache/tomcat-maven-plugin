@@ -14,6 +14,27 @@ The plugin supports Tomcat 9, Tomcat 10, and Tomcat 11.
 - Java 8 or higher
 - Maven 3.8.1 or higher
 
+## Build
+
+Edit the main pom.xml to set the main <version> which should correspond
+to the version of Apache Tomcat that is going to be used.
+
+```bash
+mvn clean install
+```
+
+To run integration tests:
+
+```bash
+mvn clean install -Prun-its
+```
+
+Override default ports for integration tests:
+
+```bash
+mvn clean install -Prun-its -Dits.http.port=8080 -Dits.ajp.port=8009
+```
+
 ## Basic Usage
 
 Add the plugin to your `pom.xml`:
@@ -36,12 +57,58 @@ Add the plugin to your `pom.xml`:
 mvn tomcat:run
 ```
 
+**run-war** - Run the current project as a packaged web application:
+
+```bash
+mvn tomcat:run-war
+```
+
+**exec-war** - Create a self-executable JAR file with embedded Tomcat:
+
+```bash
+mvn tomcat:exec-war
+```
+
+**standalone-war** - Create an executable WAR file with embedded Tomcat:
+
+```bash
+mvn tomcat:standalone-war
+```
+
+**shutdown** - Shut down all embedded Tomcat servers:
+
+```bash
+mvn tomcat:shutdown
+```
+
+### Run Goals (No Lifecycle Forking)
+
+The following goals are similar to the above but don't fork the Maven lifecycle:
+
+**run-war-only** - Run the current project as a packaged web application without forking the package phase:
+
+```bash
+mvn tomcat:run-war-only
+```
+
+**exec-war-only** - Create a self-executable JAR file without forking the package phase:
+
+```bash
+mvn tomcat:exec-war-only
+```
+
+**standalone-war-only** - Create an executable WAR file without forking the package phase:
+
+```bash
+mvn tomcat:standalone-war-only
+```
+
 ### Deploy Goals
 
 **deploy** - Deploy a WAR to Tomcat:
 
 ```bash
-mvn package tomcat:deploy
+mvn tomcat:deploy
 ```
 
 **undeploy** - Undeploy a WAR from Tomcat:
@@ -53,7 +120,19 @@ mvn tomcat:undeploy
 **redeploy** - Redeploy an existing WAR:
 
 ```bash
-mvn package tomcat:redeploy
+mvn tomcat:redeploy
+```
+
+**deploy-only** - Deploy a WAR to Tomcat without forking the package lifecycle:
+
+```bash
+mvn tomcat:deploy-only
+```
+
+**redeploy-only** - Redeploy a WAR without forking the package lifecycle:
+
+```bash
+mvn tomcat:redeploy-only
 ```
 
 ### Container Goals
@@ -64,16 +143,40 @@ mvn package tomcat:redeploy
 mvn tomcat:list
 ```
 
-**info** - Get server information:
+**serverinfo** - Get server information:
 
 ```bash
-mvn tomcat:info
+mvn tomcat:serverinfo
 ```
 
 **resources** - List JNDI resources:
 
 ```bash
 mvn tomcat:resources
+```
+
+**reload** - Reload a web application:
+
+```bash
+mvn tomcat:reload
+```
+
+**sessions** - List session information for a web application:
+
+```bash
+mvn tomcat:sessions
+```
+
+**start** - Start a web application:
+
+```bash
+mvn tomcat:start
+```
+
+**stop** - Stop a web application:
+
+```bash
+mvn tomcat:stop
 ```
 
 ## Configuration
@@ -123,24 +226,6 @@ Configure custom HTTP port in your `pom.xml`:
     <path>/</path>
   </configuration>
 </plugin>
-```
-
-## Build
-
-```bash
-mvn clean install
-```
-
-To run integration tests:
-
-```bash
-mvn clean install -Prun-its
-```
-
-Override default ports for integration tests:
-
-```bash
-mvn clean install -Prun-its -Dits.http.port=8080 -Dits.ajp.port=8009
 ```
 
 ## Snapshots Deployment

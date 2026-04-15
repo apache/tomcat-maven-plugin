@@ -1,0 +1,92 @@
+---
+  Run Goals
+  ---
+
+  ~~ Licensed to the Apache Software Foundation (ASF) under one
+  ~~ or more contributor license agreements.  See the NOTICE file
+  ~~ distributed with this work for additional information
+  ~~ regarding copyright ownership.  The ASF licenses this file
+  ~~ to you under the Apache License, Version 2.0 (the
+  ~~ "License"); you may not use this file except in compliance
+  ~~ with the License.  You may obtain a copy of the License at
+  ~~
+  ~~   http://www.apache.org/licenses/LICENSE-2.0
+  ~~
+  ~~ Unless required by applicable law or agreed to in writing,
+  ~~ software distributed under the License is distributed on an
+  ~~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~~ KIND, either express or implied.  See the License for the
+  ~~ specific language governing permissions and limitations
+  ~~ under the License.
+
+  ~~ NOTE: For help with the syntax of this file, see:
+  ~~ http://maven.apache.org/doxia/references/apt-format.html
+
+Run Goals
+
+  This document describes run-related goals in the Apache Tomcat Maven Plugin.
+
+  * {{{#Running a web application}Running a web application}}
+  * {{{#Running a packaged web application}Running a packaged web application}}
+  * {{{#Creating an executable JAR}Creating an executable JAR}}
+  * {{{#Creating a standalone WAR}Creating a standalone WAR}}
+  * {{{#Shutting down Tomcat}Shutting down Tomcat}}
+  []
+
+  These are described in more detail below.
+
+* {Running a web application}
+
+  To run the current project as a dynamic web application using an embedded Tomcat server you can type:
+
++--
+mvn tomcat:run
++--
+
+  This will start an embedded Tomcat instance and deploy your web application to it.
+  The source code is compiled and deployed dynamically without needing to create a WAR file first.
+
+* {Running a packaged web application}
+
+  To run the current project as a packaged web application using an embedded Tomcat server you can type:
+
++--
+mvn tomcat:run-war
++--
+
+  This is similar to the run goal but uses an already packaged WAR file instead of dynamic compilation.
+
+* {Creating an executable JAR}
+
+  To create a self-executable JAR file containing all necessary Apache Tomcat classes you can type:
+
++--
+mvn tomcat:exec-war
++--
+
+  This allows you to run your web application using just `java -jar mywebapp.jar` without needing to install a Tomcat instance.
+
+* {Creating a standalone WAR}
+
+  To create an executable WAR file with embedded Tomcat that is also capable of being deployed elsewhere you can type:
+
++--
+mvn tomcat:standalone-war
++--
+
+  This creates a WAR file that can be both executed directly and deployed to any Tomcat server.
+
+* {Shutting down Tomcat}
+
+  To shut down all embedded Tomcat servers that were started by the plugin you can type:
+
++--
+mvn tomcat:shutdown
++--
+
+  This will gracefully shut down all embedded Tomcat instances that were started during the current Maven session.
+
+  Note: The shutdown goal is typically bound to the post-integration-test phase for integration testing scenarios.
+
+  Note: For detailed information about running web applications, please refer to the
+  Tomcat documentation at http://tomcat.apache.org/tomcat-11.0-doc/index.html

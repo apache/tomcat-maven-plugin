@@ -29,8 +29,11 @@
 
 Context Goals
 
-  This document describes the context goals available in the Apache Tomcat Maven Plugin.
-  These goals allow you to manage web applications deployed to a running Tomcat server.
+   This document describes the context goals available in the Apache Tomcat Maven Plugin.
+   These goals allow you to manage web applications deployed to a running Tomcat server.
+
+   For running web applications with an embedded Tomcat server, see the
+   {{{./run-goals.html}Run Goals}} documentation.
 
 * {Deploying a WAR project}
 

@@ -52,7 +52,7 @@ mvn tomcat:list
  type:
 
 +--
-mvn tomcat:info
+mvn tomcat:serverinfo
 +--
 
 * {Listing JNDI resources}

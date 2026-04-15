@@ -70,6 +70,7 @@ Apache Tomcat Maven Plugin
 * Goals Overview
 
   * {{{./context-goals.html}Deployment goals (run, deploy, undeploy, etc)}}
+  * {{{./run-goals.html}Run goals (run, run-war, exec-war, standalone-war, shutdown)}}
   * {{{./executable-war-jar.html}Executable WAR goals (standalone-war, exec-war)}}
   * {{{./run-mojo-features.html}Run features documentation}}
 
