@@ -33,7 +33,8 @@
     <artifactId>tomcat-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
     <name>Apache Tomcat Maven Plugin</name>
-    <version>3.0-SNAPSHOT</version>
+    <!-- Tomcat 9, 10 and 11 are supported -->
+    <version>9.0.117</version>
     <description>The Tomcat Maven Plugin provides goals to manipulate WAR
         projects within the Tomcat servlet
         container.
@@ -42,6 +43,10 @@
     <url>${siteUrl}</url>
 
     <properties>
+
+        <!-- Tomcat version derives from the plugin version -->
+        <tomcatVersion>${project.version}</tomcatVersion>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -75,10 +80,6 @@
         <its.ajp.port>2001</its.ajp.port>
         <!-- server port for it tests -->
         <its.server.port>2008</its.server.port>
-
-        <tomcatVersion>9.0.117</tomcatVersion>
-        <!-- Tomcat 10 and 11 should skip tests -->
-        <!--<tomcatVersion>11.0.21</tomcatVersion>-->
 
         <!-- to prevent isssues with last apache parent pom -->
         <arguments />
@@ -526,21 +527,11 @@
     <dependencies>
 
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>4.0.1</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- tomcat dependencies -->
-        <dependency>
             <groupId>org.eclipse.jdt</groupId>
             <artifactId>ecj</artifactId>
             <!-- Latest version that supports Java 8 -->
             <version>3.26.0</version>
         </dependency>
-
-        <!-- end tomcat dependencies -->
 
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
