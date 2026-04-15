@@ -15,10 +15,10 @@ name: Smoke Test
 on:
   push:
     branches:
-      - main
+      - trunk
   pull_request:
     branches:
-      - main
+      - trunk
 
 env:
   LC_ALL: en_US.UTF-8
@@ -29,7 +29,7 @@ jobs:
       fail-fast: false
       matrix:
         isMain:
-          - ${{ contains(github.ref, 'main') }}
+          - ${{ contains(github.ref, 'trunk') }}
         java: [ 25 ]
         os: [ ubuntu-latest, windows-latest ]
     name: JDK${{ matrix.java }} ${{ matrix.os }}
