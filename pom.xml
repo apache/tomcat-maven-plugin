@@ -22,8 +22,6 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <!-- for more information, see the documentation of this POM:
-    http://maven.apache.org/pom/maven/ -->
     <parent>
         <groupId>org.apache</groupId>
         <artifactId>apache</artifactId>
@@ -61,8 +59,7 @@
         <verifier.debugJvm>false</verifier.debugJvm>
         <distributionReleaseUrl>https://repository.apache.org/service/local/staging/deploy/maven2</distributionReleaseUrl>
 
-        <distributionSnapshotsUrl>
-            https://repository.apache.org/content/repositories/snapshots</distributionSnapshotsUrl>
+        <distributionSnapshotsUrl>https://repository.apache.org/content/repositories/snapshots</distributionSnapshotsUrl>
         <distributionIdSnapshots>apache.snapshots.https</distributionIdSnapshots>
 
         <distributionSiteUrl>
@@ -259,10 +256,8 @@
             <archive>http://mail-archives.apache.org/mod_mbox/tomcat-announce/</archive>
             <otherArchives>
                 <otherArchive>http://marc.info/?l=tomcat-announce</otherArchive>
-                <otherArchive>
-                    http://markmail.org/list/org.apache.tomcat.announce/</otherArchive>
-                <otherArchive>
-                    http://www.mail-archive.com/announce@tomcat.apache.org/</otherArchive>
+                <otherArchive>http://markmail.org/list/org.apache.tomcat.announce/</otherArchive>
+                <otherArchive>http://www.mail-archive.com/announce@tomcat.apache.org/</otherArchive>
             </otherArchives>
         </mailingList>
 
@@ -270,8 +265,7 @@
 
     <scm>
         <connection>scm:git:https://github.com/apache/tomcat-maven-plugin.git</connection>
-        <developerConnection>
-            scm:git:ssh://git@github.com:apache/tomcat-maven-plugin.git</developerConnection>
+        <developerConnection>scm:git:ssh://git@github.com:apache/tomcat-maven-plugin.git</developerConnection>
         <url>https://github.com/apache/tomcat-maven-plugin</url>
     </scm>
 
@@ -297,7 +291,6 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
-                    <version>3.2.0</version>
                     <executions>
                         <execution>
                             <phase>pre-integration-test</phase>
@@ -306,8 +299,7 @@
                             </goals>
                             <configuration>
                                 <target>
-                                    <unzip src="src/test/manager.war"
-                                        dest="${managerWebAppPath}" />
+                                    <unzip src="src/test/manager.war" dest="${managerWebAppPath}" />
                                 </target>
                             </configuration>
                         </execution>
@@ -315,7 +307,6 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.15.0</version>
                     <configuration>
                         <encoding>${project.build.sourceEncoding}</encoding>
                         <source>${maven.compiler.source}</source>
@@ -325,7 +316,6 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.10.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -375,12 +365,10 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-install-plugin</artifactId>
-                    <version>3.1.4</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-plugin-plugin</artifactId>
-                    <version>${mavenPluginPluginVersion}</version>
                     <configuration>
                         <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
                     </configuration>
@@ -403,12 +391,10 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <version>3.1.4</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>3.3.1</version>
                     <configuration>
                         <preparationGoals>clean install</preparationGoals>
                     </configuration>
@@ -416,17 +402,14 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.5.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>3.21.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-invoker-plugin</artifactId>
-                    <version>3.9.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.plexus</groupId>
@@ -458,7 +441,6 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-scm-publish-plugin</artifactId>
-                    <version>3.3.0</version>
                     <configuration>
                         <pubScmUrl>
                             scm:svn:https://svn.apache.org/repos/asf/tomcat/site/trunk/docs/${sitePath}</pubScmUrl>
@@ -473,7 +455,6 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.12.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -848,6 +829,7 @@
             <reporting>
                 <plugins>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-pmd-plugin</artifactId>
                         <version>3.28.0</version>
                         <configuration>
