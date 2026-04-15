@@ -51,4 +51,6 @@ jobs:
       uses: actions/upload-artifact@v7
       with:
         name: JDK${{ matrix.java }}-${{ matrix.os }}-logs
+        path: |
+          target/test-classes/**/*.txt
         retention-days: 7
