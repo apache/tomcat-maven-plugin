@@ -48,9 +48,12 @@ public class TomcatContainerGoalsIT extends AbstractWarProjectIT {
                 new File(webappHome, "target/tomcat").exists());
 
         logger.info("Verifying container goals output");
-        verifier.verifyTextInLog("Manager: list: Listing contexts for virtual host");
-        verifier.verifyTextInLog("Manager: serverinfo");
-        verifier.verifyTextInLog("Manager: resources:  Listing resources of all types");
+        verifier.verifyTextInLog("OK - Listed applications for virtual host [localhost]");
+        verifier.verifyTextInLog("/foo:running:0:foo");
+        verifier.verifyTextInLog("/manager:running:0:");
+        verifier.verifyTextInLog("OK - Server info");
+        verifier.verifyTextInLog("OK - Listed global resources of all types");
+        verifier.verifyTextInLog("UserDatabase:org.apache.catalina.users.MemoryUserDatabase");
 
         logger.info("Error Free Log check");
         verifier.verifyErrorFreeLog();

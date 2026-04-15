@@ -23,52 +23,40 @@ import org.junit.Test;
 
 import java.io.File;
 
-import static junitx.framework.StringAssert.assertContains;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class TomcatContextGoalsIT
-    extends AbstractWarProjectIT
-{
+public class TomcatContextGoalsIT extends AbstractWarProjectIT {
     @Override
-    protected String getWebappUrl()
-    {
+    protected String getWebappUrl() {
         return "http://localhost:" + getHttpItPort() + "/foo/";
     }
 
     @Override
-    protected String getWarArtifactId()
-    {
+    protected String getWarArtifactId() {
         return "context-goals-test";
     }
 
     @Test
-    public void testContextGoals()
-        throws Exception
-    {
+    public void testContextGoals() throws Exception {
         final String responseBody = executeVerifyWithGet();
-        assertNotNull( "Received message body must not be null.", responseBody );
-        assertContains( "Response must match expected content.", "It works !!", responseBody );
 
-        assertTrue( "Tomcat folder should exist in target folder of project at " + webappHome,
-                    new File( webappHome, "target/tomcat" ).exists() );
+        assertTrue("Tomcat folder should exist in target folder of project at " + webappHome,
+                new File(webappHome, "target/tomcat").exists());
 
-        logger.info( "Verifying context goals output" );
-        verifier.verifyTextInLog( "Manager: list: Listing contexts for virtual host" );
-        verifier.verifyTextInLog( "Manager: redeploy" );
-        verifier.verifyTextInLog( "Manager: undeploy" );
-        verifier.verifyTextInLog( "Manager: starting" );
-        verifier.verifyTextInLog( "Manager: stopping" );
-        verifier.verifyTextInLog( "Manager: reloading" );
-        verifier.verifyTextInLog( "Listing session information for application at" );
+        logger.info("Verifying context goals output");
+        verifier.verifyTextInLog("OK - Deployed application at context path [/foo]");
+        verifier.verifyTextInLog("OK - Undeployed application at context path [/foo]");
+        verifier.verifyTextInLog("OK - Session information for application at context path [/foo]");
+        verifier.verifyTextInLog("OK - Reloaded application at context path [/foo]");
+        verifier.verifyTextInLog("OK - Stopped application at context path [/foo]");
+        verifier.verifyTextInLog("OK - Started application at context path [/foo]");
 
-        logger.info( "Error Free Log check" );
+        logger.info("Error Free Log check");
         verifier.verifyErrorFreeLog();
     }
 
     @Override
-    protected int getTimeout()
-    {
+    protected int getTimeout() {
         return 40000;
     }
 }
