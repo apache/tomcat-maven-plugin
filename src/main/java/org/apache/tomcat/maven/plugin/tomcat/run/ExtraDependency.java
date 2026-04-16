@@ -27,5 +27,7 @@ import org.apache.maven.model.Dependency;
 public class ExtraDependency
     extends Dependency
 {
+
+    private static final long serialVersionUID = 1L;
     // no op just here to support for maven 2.x
 }

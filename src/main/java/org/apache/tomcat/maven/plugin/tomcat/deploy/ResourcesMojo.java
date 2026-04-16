@@ -23,7 +23,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
-import org.apache.tomcat.maven.plugin.tomcat.AbstractWarCatalinaMojo;
+import org.apache.tomcat.maven.plugin.tomcat.AbstractCatalinaMojo;
 
 import java.io.IOException;
 
@@ -34,7 +34,7 @@ import java.io.IOException;
  */
 @Mojo( name = "resources", threadSafe = true )
 public class ResourcesMojo
-    extends AbstractWarCatalinaMojo
+    extends AbstractCatalinaMojo
 {
     // ----------------------------------------------------------------------
     // Mojo Parameters

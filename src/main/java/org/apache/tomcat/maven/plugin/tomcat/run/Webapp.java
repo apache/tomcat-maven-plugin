@@ -1,5 +1,7 @@
 package org.apache.tomcat.maven.plugin.tomcat.run;
 
+import java.io.File;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -20,25 +22,127 @@ package org.apache.tomcat.maven.plugin.tomcat.run;
  */
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.tomcat.maven.common.config.AbstractWebapp;
 
 /**
- * Webapp represents information specified in the plugin configuration section
- * for each webapp.
+ * Webapp represents information specified in the plugin configuration section for each webapp.
  *
  * @since 2.0
  */
-public class Webapp
-    extends AbstractWebapp
-{
+public class Webapp {
 
-    public Webapp()
-    {
+    /**
+     *
+     */
+    private String groupId;
+    /**
+     *
+     */
+    private String artifactId;
+    /**
+     *
+     */
+    private String version = null;
+    /**
+     *
+     */
+    private String type = "war";
+    /**
+     *
+     */
+    private String classifier;
+    /**
+     * @parameter
+     */
+    private String contextPath;
+    private Artifact artifact;
+    private File contextFile;
+    private boolean asWebapp = false;
+
+    public Webapp() {
         // default constructor
     }
 
-    public Webapp( Artifact artifact )
-    {
-        super( artifact );
+    public Webapp(Artifact artifact) {
+        this.setArtifact(artifact);
+        this.setGroupId(artifact.getGroupId());
+        this.setArtifactId(artifact.getArtifactId());
+        this.setVersion(artifact.getVersion());
+        this.setClassifier(artifact.getClassifier());
+        this.setType(artifact.getType());
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getArtifactId() {
+        return artifactId;
+    }
+
+    public void setArtifactId(String artifactId) {
+        this.artifactId = artifactId;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getClassifier() {
+        return classifier;
+    }
+
+    public void setClassifier(String classifier) {
+        this.classifier = classifier;
+    }
+
+    public String getContextPath() {
+        if (contextPath == null || contextPath.isEmpty()) {
+            return this.artifactId;
+        }
+        return contextPath;
+    }
+
+    public void setContextPath(String contextPath) {
+        this.contextPath = contextPath;
+    }
+
+    public Artifact getArtifact() {
+        return artifact;
+    }
+
+    public void setArtifact(Artifact artifact) {
+        this.artifact = artifact;
+    }
+
+    public void setContextFile(File contextFile) {
+        this.contextFile = contextFile;
+    }
+
+    public File getContextFile() {
+        return contextFile;
+    }
+
+    public boolean isAsWebapp() {
+        return asWebapp;
+    }
+
+    public void setAsWebapp(boolean asWebapp) {
+        this.asWebapp = asWebapp;
     }
 }

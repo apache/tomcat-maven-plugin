@@ -76,7 +76,6 @@ import org.apache.maven.shared.filtering.MavenFileFilter;
 import org.apache.maven.shared.filtering.MavenFileFilterRequest;
 import org.apache.maven.shared.filtering.MavenFilteringException;
 import org.apache.tomcat.JarScanner;
-import org.apache.tomcat.maven.common.config.AbstractWebapp;
 import org.apache.tomcat.maven.common.run.EmbeddedRegistry;
 import org.apache.tomcat.maven.plugin.tomcat.AbstractTomcatMojo;
 import org.apache.tomcat.util.net.SSLHostConfig;
@@ -1396,7 +1395,7 @@ public abstract class AbstractRunMojo
             }
         }
 
-        for ( AbstractWebapp additionalWebapp : getAdditionalWebapps() )
+        for ( Webapp additionalWebapp : getAdditionalWebapps() )
         {
             String contextPath = additionalWebapp.getContextPath();
             if ( !contextPath.startsWith( "/" ) )
@@ -1495,7 +1494,7 @@ public abstract class AbstractRunMojo
      * @return Artifact object representing the specified file.
      * @throws MojoExecutionException with a message if the version can't be found in DependencyManagement.
      */
-    protected Artifact getArtifact( AbstractWebapp additionalWebapp )
+    protected Artifact getArtifact( Webapp additionalWebapp )
         throws MojoExecutionException
     {
 

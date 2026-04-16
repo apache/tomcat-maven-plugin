@@ -22,7 +22,7 @@ package org.apache.tomcat.maven.plugin.tomcat.deploy;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
-import org.apache.tomcat.maven.plugin.tomcat.AbstractWarCatalinaMojo;
+import org.apache.tomcat.maven.plugin.tomcat.AbstractCatalinaMojo;
 
 import java.io.IOException;
 
@@ -33,7 +33,7 @@ import java.io.IOException;
  */
 @Mojo( name = "serverinfo", threadSafe = true )
 public class ServerInfoMojo
-    extends AbstractWarCatalinaMojo
+    extends AbstractCatalinaMojo
 {
     // ----------------------------------------------------------------------
     // Protected Methods
