@@ -1,4 +1,3 @@
-package org.apache.tomcat.maven.common.run;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,6 +16,7 @@ package org.apache.tomcat.maven.common.run;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.tomcat.maven.common.run;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.logging.Log;

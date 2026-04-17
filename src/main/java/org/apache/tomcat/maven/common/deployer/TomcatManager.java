@@ -1,5 +1,3 @@
-package org.apache.tomcat.maven.common.deployer;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.tomcat.maven.common.deployer;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.tomcat.maven.common.deployer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -85,17 +84,17 @@ public class TomcatManager
     /**
      * The username to use when authenticating with Tomcat manager.
      */
-    private String username;
+    private final String username;
 
     /**
      * The password to use when authenticating with Tomcat manager.
      */
-    private String password;
+    private final String password;
 
     /**
      * The URL encoding charset to use when communicating with Tomcat manager.
      */
-    private String charset;
+    private final String charset;
 
     /**
      * The user agent name to use when communicating with Tomcat manager.
@@ -105,7 +104,7 @@ public class TomcatManager
     /**
      * @since 2.0
      */
-    private DefaultHttpClient httpClient;
+    private final DefaultHttpClient httpClient;
 
     /**
      * @since 2.0
@@ -117,7 +116,7 @@ public class TomcatManager
     /**
      * @since 2.2
      */
-    private boolean verbose;
+    private final boolean verbose;
 
     // ----------------------------------------------------------------------
     // Constructors
@@ -652,12 +651,12 @@ public class TomcatManager
     public TomcatManagerResponse getResources( String type )
         throws TomcatManagerException, IOException
     {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append( "/resources" );
 
         if ( type != null )
         {
-            buffer.append( "?type=" + URLEncoder.encode( type, charset ) );
+            buffer.append("?type=").append(URLEncoder.encode(type, charset));
         }
         return invoke( buffer.toString() );
     }
@@ -770,7 +769,7 @@ public class TomcatManager
         {
             HttpPut httpPut = new HttpPut( url + path );
 
-            httpPut.setEntity( new RequestEntityImplementation( data, length, url + path, verbose ) );
+            httpPut.setEntity(new RequestEntityImplementation(data, length, url + path, verbose));
 
             httpRequestBase = httpPut;
 
@@ -825,7 +824,7 @@ public class TomcatManager
      */
     private String toAuthorization( String username, String password )
     {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append( username ).append( ':' );
         if ( password != null )
         {
@@ -834,13 +833,13 @@ public class TomcatManager
         return "Basic " + new String( Base64.encodeBase64( buffer.toString().getBytes() ) );
     }
 
-    private final class RequestEntityImplementation
+    private static final class RequestEntityImplementation
         extends AbstractHttpEntity
     {
 
         private final static int BUFFER_SIZE = 2048;
 
-        private File file;
+        private final File file;
 
         PrintStream out = System.out;
 
@@ -848,11 +847,11 @@ public class TomcatManager
 
         private int lastLength;
 
-        private String url;
+        private final String url;
 
         private long startTime;
 
-        private boolean verbose;
+        private final boolean verbose;
 
         private RequestEntityImplementation( final File file, long length, String url, boolean verbose )
         {
@@ -865,7 +864,11 @@ public class TomcatManager
         @Override
         public long getContentLength()
         {
-            return length >= 0 ? length : ( file.length() >= 0 ? file.length() : -1 );
+            if (length >= 0) {
+                return length;
+            } else {
+                return file.length();
+            }
         }
 
 
@@ -892,47 +895,36 @@ public class TomcatManager
             {
                 throw new IllegalArgumentException( "Output stream may not be null" );
             }
-            FileInputStream stream = new FileInputStream( this.file );
-            transferInitiated( this.url );
-            this.startTime = System.currentTimeMillis();
-            try
-            {
+            try (FileInputStream stream = new FileInputStream(this.file)) {
+                transferInitiated(this.url);
+                this.startTime = System.currentTimeMillis();
                 byte[] buffer = new byte[BUFFER_SIZE];
 
                 int l;
-                if ( this.length < 0 )
-                {
+                if (this.length < 0) {
                     // until EOF
-                    while ( ( l = stream.read( buffer ) ) != -1 )
-                    {
-                        transferProgressed( completed += buffer.length, -1 );
-                        outstream.write( buffer, 0, l );
+                    while ((l = stream.read(buffer)) != -1) {
+                        transferProgressed(completed += buffer.length, -1);
+                        outstream.write(buffer, 0, l);
                     }
-                }
-                else
-                {
+                } else {
                     // no need to consume more than length
                     long remaining = this.length;
-                    while ( remaining > 0 )
-                    {
-                        int transferSize = (int) Math.min( BUFFER_SIZE, remaining );
+                    while (remaining > 0) {
+                        int transferSize = (int) Math.min(BUFFER_SIZE, remaining);
                         completed += transferSize;
-                        l = stream.read( buffer, 0, transferSize );
-                        if ( l == -1 )
-                        {
+                        l = stream.read(buffer, 0, transferSize);
+                        if (l == -1) {
                             break;
                         }
 
-                        outstream.write( buffer, 0, l );
+                        outstream.write(buffer, 0, l);
                         remaining -= l;
-                        transferProgressed( completed, this.length );
+                        transferProgressed(completed, this.length);
                     }
                 }
-                transferSucceeded( completed );
-            }
-            finally
-            {
-                stream.close();
+                transferSucceeded(completed);
+            } finally {
                 out.println();
             }
             // end transfer

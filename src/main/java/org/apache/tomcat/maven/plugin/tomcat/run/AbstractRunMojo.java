@@ -1,4 +1,3 @@
-package org.apache.tomcat.maven.plugin.tomcat.run;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,6 +16,7 @@ package org.apache.tomcat.maven.plugin.tomcat.run;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.tomcat.maven.plugin.tomcat.run;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -773,11 +773,7 @@ public abstract class AbstractRunMojo
 
             return standardContext;
         }
-        catch ( XMLStreamException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
-        }
-        catch ( FileNotFoundException e )
+        catch (XMLStreamException | FileNotFoundException e )
         {
             throw new MojoExecutionException( e.getMessage(), e );
         }
@@ -826,17 +822,13 @@ public abstract class AbstractRunMojo
             }
             getLog().debug( "context reloadable: " + reloadable );
         }
-        catch ( IOException ioe )
+        catch (IOException | SAXException ioe )
         {
             getLog().error( "Could not parse file: [" + contextFile.getAbsolutePath() + "]", ioe );
         }
         catch ( ParserConfigurationException pce )
         {
             getLog().error( "Could not configure XML parser", pce );
-        }
-        catch ( SAXException se )
-        {
-            getLog().error( "Could not parse file: [" + contextFile.getAbsolutePath() + "]", se );
         }
 
         return reloadable;
@@ -1291,13 +1283,10 @@ public abstract class AbstractRunMojo
             ClassWorld world = new ClassWorld();
             ClassRealm root = world.newRealm( "tomcat", Thread.currentThread().getContextClassLoader() );
 
-            for ( Iterator<Artifact> i = pluginArtifacts.iterator(); i.hasNext(); )
-            {
-                Artifact pluginArtifact = i.next();
+            for (Artifact pluginArtifact : pluginArtifacts) {
                 // add all plugin artifacts see https://issues.apache.org/jira/browse/MTOMCAT-122
-                if ( pluginArtifact.getFile() != null )
-                {
-                    root.addURL( pluginArtifact.getFile().toURI().toURL() );
+                if (pluginArtifact.getFile() != null) {
+                    root.addURL(pluginArtifact.getFile().toURI().toURL());
                 }
 
             }
@@ -1379,7 +1368,7 @@ public abstract class AbstractRunMojo
     {
         getLog().info( "Deploying dependency wars" );
         // Let's add other modules
-        List<Context> contexts = new ArrayList<Context>();
+        List<Context> contexts = new ArrayList<>();
 
         ScopeArtifactFilter filter = new ScopeArtifactFilter( "tomcat" );
         Set<Artifact> artifacts = project.getArtifacts();
@@ -1428,12 +1417,7 @@ public abstract class AbstractRunMojo
                 // Extract the module
                 unArchiver.extract();
             }
-            catch ( NoSuchArchiverException e )
-            {
-                getLog().error( e );
-                return;
-            }
-            catch ( ArchiverException e )
+            catch (NoSuchArchiverException | ArchiverException e )
             {
                 getLog().error( e );
                 return;

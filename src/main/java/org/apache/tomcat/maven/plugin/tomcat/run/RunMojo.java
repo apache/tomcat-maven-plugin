@@ -1,4 +1,3 @@
-package org.apache.tomcat.maven.plugin.tomcat.run;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,6 +16,7 @@ package org.apache.tomcat.maven.plugin.tomcat.run;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.tomcat.maven.plugin.tomcat.run;
 
 import java.io.File;
 import java.io.FileReader;
@@ -92,8 +92,8 @@ public class RunMojo
     /**
      * Set the "follow standard delegation model" flag used to configure our ClassLoader.
      *
-     * @see <a href="http://tomcat.apache.org/tomcat-7.0-doc/api/org/apache/catalina/loader/WebappLoader.html#setDelegate(boolean)">
-     *      http://tomcat.apache.org/tomcat-7.0-doc/api/org/apache/catalina/loader/WebappLoader.html#setDelegate(boolean)</a>
+     * @see <a href="http://tomcat.apache.org/tomcat-9.0-doc/api/org/apache/catalina/loader/WebappLoader.html#setDelegate(boolean)">
+     *      http://tomcat.apache.org/tomcat-9.0-doc/api/org/apache/catalina/loader/WebappLoader.html#setDelegate(boolean)</a>
      * @since 1.0
      */
     @Parameter( property = "tomcat.delegate", defaultValue = "true" )
@@ -148,21 +148,16 @@ public class RunMojo
         {
             // we create a temporary file in build.directory
             final File tempDocBase = createTempDirectory( new File( project.getBuild().getDirectory() ) );
-            Runtime.getRuntime().addShutdownHook( new Thread()
-            {
-                @Override
-                public void run()
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try
                 {
-                    try
-                    {
-                        FileUtils.deleteDirectory( tempDocBase );
-                    }
-                    catch ( Exception e )
-                    {
-                        // we can consider as safe to ignore as it's located in build directory
-                    }
+                    FileUtils.deleteDirectory( tempDocBase );
                 }
-            } );
+                catch ( Exception e )
+                {
+                    // we can consider as safe to ignore as it's located in build directory
+                }
+            }));
             return tempDocBase;
         }
         return warSourceDirectory;
@@ -171,9 +166,7 @@ public class RunMojo
     private static File createTempDirectory( File baseTmpDirectory )
         throws IOException
     {
-        final File temp = Files.createTempDirectory(baseTmpDirectory.toPath(), "temp" + Long.toString(System.nanoTime())).toFile();
-
-        return temp;
+        return Files.createTempDirectory(baseTmpDirectory.toPath(), "temp" + Long.toString(System.nanoTime())).toFile();
     }
 
     /**
@@ -224,9 +217,9 @@ public class RunMojo
                 if ( contextReloadable )
                 {
                     // don't care about using a complicated xml api to create one xml line :-)
-                    StringBuilder sb = new StringBuilder( "<Context " ).append( "backgroundProcessorDelay=\"" ).append(
-                        Integer.toString( backgroundProcessorDelay ) ).append( "\"" ).append(
-                        " reloadable=\"" + Boolean.toString( isContextReloadable() ) + "\"/>" );
+                    StringBuilder sb = new StringBuilder("<Context ").append("backgroundProcessorDelay=\"").append(
+                            Integer.toString(backgroundProcessorDelay)).append("\"").append(" reloadable=\"")
+                            .append(Boolean.toString(isContextReloadable())).append("\"/>");
 
                     getLog().debug( " generated context file " + sb.toString() );
                     fw = new FileWriter( temporaryContextFile );
@@ -239,12 +232,7 @@ public class RunMojo
                 }
             }
         }
-        catch ( IOException e )
-        {
-            getLog().error( "error creating fake context.xml : " + e.getMessage(), e );
-            throw new MojoExecutionException( "error creating fake context.xml : " + e.getMessage(), e );
-        }
-        catch ( XmlPullParserException e )
+        catch (IOException | XmlPullParserException e )
         {
             getLog().error( "error creating fake context.xml : " + e.getMessage(), e );
             throw new MojoExecutionException( "error creating fake context.xml : " + e.getMessage(), e );
@@ -367,7 +355,7 @@ public class RunMojo
             }
 
             /* Support the maven-war-plugin's webResources configuration to add resources */
-            final Plugin warPlugin = (Plugin) project.getBuild().getPluginsAsMap().get("org.apache.maven.plugins:maven-war-plugin");
+            final Plugin warPlugin = project.getBuild().getPluginsAsMap().get("org.apache.maven.plugins:maven-war-plugin");
             if (warPlugin != null && warPlugin.getConfiguration() instanceof Xpp3Dom) {
                 final Xpp3Dom cfg = (Xpp3Dom) warPlugin.getConfiguration();
                 Xpp3Dom webResources = cfg.getChild("webResources");
@@ -400,24 +388,19 @@ public class RunMojo
                 }
             }
 
-            Runtime.getRuntime().addShutdownHook( new Thread()
-            {
-                @Override
-                public void run()
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                for ( File tmpDir : tmpDirectories )
                 {
-                    for ( File tmpDir : tmpDirectories )
+                    try
                     {
-                        try
-                        {
-                            FileUtils.deleteDirectory( tmpDir );
-                        }
-                        catch ( IOException e )
-                        {
-                            // ignore
-                        }
+                        FileUtils.deleteDirectory( tmpDir );
+                    }
+                    catch ( IOException e )
+                    {
+                        // ignore
                     }
                 }
-            } );
+            }));
         }
         catch ( TomcatRunException e )
         {
@@ -437,7 +420,7 @@ public class RunMojo
         throws MojoExecutionException
     {
 
-        List<String> jarPaths = new ArrayList<String>();
+        List<String> jarPaths = new ArrayList<>();
 
         try
         {

@@ -1,4 +1,3 @@
-package org.apache.tomcat.maven.plugin.tomcat;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,6 +16,7 @@ package org.apache.tomcat.maven.plugin.tomcat;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.tomcat.maven.plugin.tomcat;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;

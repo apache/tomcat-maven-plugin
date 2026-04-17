@@ -1,5 +1,3 @@
-package org.apache.tomcat.maven.common.run;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.tomcat.maven.common.run;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.tomcat.maven.common.run;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.Artifact;
@@ -58,13 +57,13 @@ public class DefaultClassLoaderEntriesCalculator
     public ClassLoaderEntriesCalculatorResult calculateClassPathEntries( ClassLoaderEntriesCalculatorRequest request )
         throws TomcatRunException
     {
-        Set<String> classLoaderEntries = new LinkedHashSet<String>();
+        Set<String> classLoaderEntries = new LinkedHashSet<>();
 
-        List<String> fileInClassLoaderEntries = new ArrayList<String>();
+        List<String> fileInClassLoaderEntries = new ArrayList<>();
 
-        List<File> tmpDirectories = new ArrayList<File>();
+        List<File> tmpDirectories = new ArrayList<>();
 
-        List<String> buildDirectories = new ArrayList<String>();
+        List<String> buildDirectories = new ArrayList<>();
 
         // add classes directories to loader
         try
@@ -186,18 +185,16 @@ public class DefaultClassLoaderEntriesCalculator
                                     return s.endsWith( ".jar" );
                                 }
                             } );
-                            for ( String jar : jars )
-                            {
-                                File jarFile = new File( libsDirectory, jar );
-                                if ( !fileInClassLoaderEntries.contains( jarFile.getName() ) )
-                                {
-                                    classLoaderEntries.add( jarFile.toURI().toString() );
-                                    fileInClassLoaderEntries.add( jarFile.getName() );
-                                }
-                                else
-                                {
-                                    request.getLog().debug( "skip adding file " + jarFile.getPath()
-                                                                + " as it's already in classloader entries" );
+                            if (jars != null) {
+                                for (String jar : jars) {
+                                    File jarFile = new File(libsDirectory, jar);
+                                    if (!fileInClassLoaderEntries.contains(jarFile.getName())) {
+                                        classLoaderEntries.add(jarFile.toURI().toString());
+                                        fileInClassLoaderEntries.add(jarFile.getName());
+                                    } else {
+                                        request.getLog().debug("skip adding file " + jarFile.getPath()
+                                                + " as it's already in classloader entries");
+                                    }
                                 }
                             }
                         }
@@ -221,7 +218,7 @@ public class DefaultClassLoaderEntriesCalculator
             }
         }
 
-        return new ClassLoaderEntriesCalculatorResult( new ArrayList<String>( classLoaderEntries ), //
+        return new ClassLoaderEntriesCalculatorResult( new ArrayList<>( classLoaderEntries ), //
                                                        tmpDirectories, //
                                                        buildDirectories );
 
@@ -247,8 +244,7 @@ public class DefaultClassLoaderEntriesCalculator
         {
             return false;
         }
-        @SuppressWarnings( "unchecked" ) Collection<MavenProject> mavenProjects =
-            project.getProjectReferences().values();
+        Collection<MavenProject> mavenProjects = project.getProjectReferences().values();
         for ( MavenProject mavenProject : mavenProjects )
         {
             if ( mavenProject.getId() != null && mavenProject.getId().equals( artifact.getId() ) )

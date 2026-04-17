@@ -1,4 +1,3 @@
-package org.apache.tomcat.maven.runner;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,6 +16,7 @@ package org.apache.tomcat.maven.runner;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.tomcat.maven.runner;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;

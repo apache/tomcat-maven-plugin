@@ -1,4 +1,3 @@
-package org.apache.tomcat.maven.common.run;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,6 +16,7 @@ package org.apache.tomcat.maven.common.run;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.tomcat.maven.common.run;
 
 import java.io.File;
 import java.util.List;
@@ -41,7 +41,7 @@ public class ClassLoaderEntriesCalculatorResult
     /**
      * directory part of webapp classpath (project.build.directory and reactor projects)
      */
-    private List<String> buildDirectories;
+    private final List<String> buildDirectories;
 
     /**
      * @param classPathEntries  Classpath entries File .toURI().toString()

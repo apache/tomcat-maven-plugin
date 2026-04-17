@@ -1,5 +1,3 @@
-package org.apache.tomcat.maven.common.messages;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.tomcat.maven.common.messages;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.tomcat.maven.common.messages;
 
 import org.codehaus.plexus.component.annotations.Component;
 
@@ -37,7 +36,7 @@ public class DefaultMessagesProvider
     /**
      * plugin messages
      */
-    private ResourceBundle messages;
+    private final ResourceBundle messages;
 
 
     public DefaultMessagesProvider()
@@ -65,15 +64,7 @@ public class DefaultMessagesProvider
         {
             return getResourceBundle().getString( key );
         }
-        catch ( NullPointerException exception )
-        {
-            return "???" + key + "???";
-        }
-        catch ( MissingResourceException exception )
-        {
-            return "???" + key + "???";
-        }
-        catch ( ClassCastException exception )
+        catch (NullPointerException | MissingResourceException | ClassCastException exception )
         {
             return "???" + key + "???";
         }

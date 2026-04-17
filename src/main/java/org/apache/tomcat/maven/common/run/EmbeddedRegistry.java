@@ -1,5 +1,3 @@
-package org.apache.tomcat.maven.common.run;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.tomcat.maven.common.run;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.tomcat.maven.common.run;
 
 import org.apache.maven.plugin.logging.Log;
 
@@ -39,7 +38,7 @@ public final class EmbeddedRegistry
 {
     private static EmbeddedRegistry instance;
 
-    private Set<Object> containers = new HashSet<>( 1 );
+    private final Set<Object> containers = new HashSet<>( 1 );
 
     /**
      * Don't instantiate - use the instance through {@link #getInstance()}.
@@ -59,21 +58,16 @@ public final class EmbeddedRegistry
         if ( instance == null )
         {
             instance = new EmbeddedRegistry();
-            Runtime.getRuntime().addShutdownHook( new Thread()
-            {
-                @Override
-                public void run()
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try
                 {
-                    try
-                    {
-                        getInstance().shutdownAll( null );
-                    }
-                    catch ( Exception e )
-                    {
-                        // ignore, the exception should already have been reported
-                    }
+                    getInstance().shutdownAll( null );
                 }
-            } );
+                catch ( Exception e )
+                {
+                    // ignore, the exception should already have been reported
+                }
+            }));
         }
         return instance;
     }

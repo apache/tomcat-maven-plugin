@@ -1,4 +1,3 @@
-package org.apache.tomcat.maven.runner;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,6 +16,7 @@ package org.apache.tomcat.maven.runner;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.tomcat.maven.runner;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -164,32 +164,27 @@ public class TomcatRunner
         codeSourceContextPath = runtimeProperties.getProperty( CODE_SOURCE_CONTEXT_PATH );
         if ( codeSourceContextPath != null && !codeSourceContextPath.isEmpty() )
         {
-            codeSourceWar = AccessController.doPrivileged( new PrivilegedAction<File>()
-            {
-                @Override
-                public File run()
+            codeSourceWar = AccessController.doPrivileged((PrivilegedAction<File>) () -> {
+                try
                 {
-                    try
+                    File src =
+                        new File( TomcatRunner.class.getProtectionDomain().getCodeSource().getLocation().toURI() );
+                    if ( src.getName().endsWith( ".war" ) )
                     {
-                        File src =
-                            new File( TomcatRunner.class.getProtectionDomain().getCodeSource().getLocation().toURI() );
-                        if ( src.getName().endsWith( ".war" ) )
-                        {
-                            return src;
-                        }
-                        else
-                        {
-                            debugMessage( "ERROR: Code source is not a war file, ignoring." );
-                        }
+                        return src;
                     }
-                    catch ( URISyntaxException e )
+                    else
                     {
-                        debugMessage( "ERROR: Could not find code source. " + e.getMessage() );
-
+                        debugMessage( "ERROR: Code source is not a war file, ignoring." );
                     }
-                    return null;
                 }
-            } );
+                catch ( URISyntaxException e )
+                {
+                    debugMessage( "ERROR: Could not find code source. " + e.getMessage() );
+
+                }
+                return null;
+            });
         }
 
         // do we have to extract content
@@ -264,7 +259,7 @@ public class TomcatRunner
 
             String connectorHttpProtocol = runtimeProperties.getProperty( HTTP_PROTOCOL_KEY );
 
-            if ( httpProtocol != null && httpProtocol.trim().length() > 0 )
+            if ( httpProtocol != null && !httpProtocol.trim().isEmpty())
             {
                 connectorHttpProtocol = httpProtocol;
             }
@@ -614,25 +609,13 @@ public class TomcatRunner
     private static void expandConfigurationFile( String fileName, File extractDirectory )
         throws Exception
     {
-        InputStream inputStream = null;
-        try
-        {
-            inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( "conf/" + fileName );
-            if ( inputStream != null )
-            {
-                File confDirectory = new File( extractDirectory, "conf" );
-                if ( !confDirectory.exists() )
-                {
+        try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("conf/" + fileName)) {
+            if (inputStream != null) {
+                File confDirectory = new File(extractDirectory, "conf");
+                if (!confDirectory.exists()) {
                     confDirectory.mkdirs();
                 }
-                expand( inputStream, new File( confDirectory, fileName ) );
-            }
-        }
-        finally
-        {
-            if ( inputStream != null )
-            {
-                inputStream.close();
+                expand(inputStream, new File(confDirectory, fileName));
             }
         }
 
@@ -660,7 +643,7 @@ public class TomcatRunner
             if ( separatorIndex >= 0 )
             {
                 warFileName = warValue.substring( 0, separatorIndex );
-                contextValue = warValue.substring( separatorIndex + 1, warValue.length() );
+                contextValue = warValue.substring( separatorIndex + 1);
 
             }
             else
@@ -683,35 +666,17 @@ public class TomcatRunner
     private static void expand( InputStream input, File file )
         throws IOException
     {
-        BufferedOutputStream output = null;
-        try
-        {
-            output = new BufferedOutputStream( new FileOutputStream( file ) );
-            byte buffer[] = new byte[2048];
-            while ( true )
-            {
-                int n = input.read( buffer );
-                if ( n <= 0 )
-                {
+        try (BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(file))) {
+            byte[] buffer = new byte[2048];
+            while (true) {
+                int n = input.read(buffer);
+                if (n <= 0) {
                     break;
                 }
-                output.write( buffer, 0, n );
+                output.write(buffer, 0, n);
             }
         }
-        finally
-        {
-            if ( output != null )
-            {
-                try
-                {
-                    output.close();
-                }
-                catch ( IOException e )
-                {
-                    // Ignore
-                }
-            }
-        }
+        // Ignore
     }
 
     public boolean useServerXml()

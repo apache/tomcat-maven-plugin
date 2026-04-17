@@ -1,5 +1,3 @@
-package org.apache.tomcat.maven.plugin.tomcat.run;
-
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
 * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.tomcat.maven.plugin.tomcat.run;
 * specific language governing permissions and limitations
 * under the License.
 */
+package org.apache.tomcat.maven.plugin.tomcat.run;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -25,7 +24,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.tomcat.maven.common.run.EmbeddedRegistry;
 import org.apache.tomcat.maven.plugin.tomcat.AbstractTomcatMojo;
-
 
 /**
  * <p>

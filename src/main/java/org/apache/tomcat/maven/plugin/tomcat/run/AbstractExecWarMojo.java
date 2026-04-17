@@ -1,4 +1,3 @@
-package org.apache.tomcat.maven.plugin.tomcat.run;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,6 +16,7 @@ package org.apache.tomcat.maven.plugin.tomcat.run;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.tomcat.maven.plugin.tomcat.run;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -172,7 +172,7 @@ public abstract class AbstractExecWarMojo
     protected boolean enableNaming;
 
     /**
-     * see http://tomcat.apache.org/tomcat-7.0-doc/config/valve.html
+     * see http://tomcat.apache.org/tomcat-9.0-doc/config/valve.html
      */
     @Parameter( property = "maven.tomcat.exec.war.accessLogValveFormat", defaultValue = "%h %l %u %t %r %s %b %I %D",
                 required = true )
@@ -480,19 +480,7 @@ public abstract class AbstractExecWarMojo
             }
 
         }
-        catch ( ManifestException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
-        }
-        catch ( IOException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
-        }
-        catch ( ArtifactNotFoundException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
-        }
-        catch ( ArtifactResolutionException e )
+        catch (ManifestException | IOException | ArtifactNotFoundException | ArtifactResolutionException e )
         {
             throw new MojoExecutionException( e.getMessage(), e );
         }
@@ -649,7 +637,7 @@ public abstract class AbstractExecWarMojo
         {
             JarEntry j = entries.nextElement();
 
-            if ( excludes != null && excludes.length > 0 )
+            if (excludes != null)
             {
                 for ( String exclude : excludes )
                 {
@@ -672,9 +660,6 @@ public abstract class AbstractExecWarMojo
             IOUtils.copy( file.getInputStream( j ), os );
             os.closeArchiveEntry();
         }
-        if ( file != null )
-        {
-            file.close();
-        }
+        file.close();
     }
 }
