@@ -44,7 +44,7 @@ jobs:
         distribution: zulu
     - name: Build
       run: |
-        mvn clean install failsafe:integration-test
+        mvn clean install
 
     - name: Upload logs
       if: ${{ !cancelled() }}
