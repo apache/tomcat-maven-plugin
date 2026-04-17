@@ -88,6 +88,14 @@ mvn tomcat:stop
 mvn tomcat:reload
 +--
 
+* {Waiting for a WAR project to be available}
+
+  To wait for the end of the deployment of a WAR in Tomcat you can type:
+
++--
+mvn tomcat:wait
++--
+
 * {Listing session statistics}
 
   To list the session statistics for a deployed WAR project you can type:

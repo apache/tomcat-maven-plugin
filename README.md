@@ -26,13 +26,13 @@ mvn clean install
 To run integration tests:
 
 ```bash
-mvn clean install -Prun-its
+./run-its.sh
 ```
 
 Override default ports for integration tests:
 
 ```bash
-mvn clean install -Prun-its -Dits.http.port=8080 -Dits.ajp.port=8009
+./run-its.sh -Dits.http.port=8080 -Dits.ajp.port=8009
 ```
 
 ## Basic Usage
@@ -155,6 +155,8 @@ mvn tomcat:serverinfo
 mvn tomcat:resources
 ```
 
+### Context Goals
+
 **reload** - Reload a web application:
 
 ```bash
@@ -177,6 +179,12 @@ mvn tomcat:start
 
 ```bash
 mvn tomcat:stop
+```
+
+**wait** - Wait for a specific webapp to become available:
+
+```bash
+mvn tomcat:wait
 ```
 
 ## Configuration

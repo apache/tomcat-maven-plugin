@@ -68,6 +68,7 @@
                         <id>tomcat-context-goals</id>
                         <phase>integration-test</phase>
                         <goals>
+                            <goal>wait</goal>
                             <goal>stop</goal>
                             <goal>start</goal>
                             <goal>reload</goal>
