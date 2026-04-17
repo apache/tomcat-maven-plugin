@@ -20,19 +20,13 @@ Edit the main pom.xml to set the main <version> which should correspond
 to the version of Apache Tomcat that is going to be used.
 
 ```bash
-mvn clean install
-```
-
-To run integration tests:
-
-```bash
-./run-its.sh
+./build.sh
 ```
 
 Override default ports for integration tests:
 
 ```bash
-./run-its.sh -Dits.http.port=8080 -Dits.ajp.port=8009
+./build.sh -Dits.http.port=8080 -Dits.ajp.port=8009
 ```
 
 ## Basic Usage
