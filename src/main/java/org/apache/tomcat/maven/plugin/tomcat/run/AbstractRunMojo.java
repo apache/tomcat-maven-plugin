@@ -1314,7 +1314,6 @@ public abstract class AbstractRunMojo
         }
     }
 
-    @SuppressWarnings( "unchecked" )
     public Set<Artifact> getProjectArtifacts()
     {
         return project.getArtifacts();
@@ -1383,7 +1382,7 @@ public abstract class AbstractRunMojo
         List<Context> contexts = new ArrayList<Context>();
 
         ScopeArtifactFilter filter = new ScopeArtifactFilter( "tomcat" );
-        @SuppressWarnings( "unchecked" ) Set<Artifact> artifacts = project.getArtifacts();
+        Set<Artifact> artifacts = project.getArtifacts();
         for ( Artifact artifact : artifacts )
         {
 

@@ -26,6 +26,8 @@ package org.apache.tomcat.maven.common.run;
 public class TomcatRunException
     extends Exception
 {
+    private static final long serialVersionUID = 1L;
+
     public TomcatRunException( String s, Throwable throwable )
     {
         super( s, throwable );

@@ -93,7 +93,7 @@ public abstract class AbstractStandaloneWarMojo
         File execWarJar = new File( buildDirectory, finalName );
 
         FileOutputStream execWarJarOutputStream = null;
-        ArchiveOutputStream os = null;
+        ArchiveOutputStream<JarArchiveEntry> os = null;
         File tmpPropertiesFile = null;
         File tmpManifestFile = null;
         FileOutputStream tmpPropertiesFileOutputStream = null;

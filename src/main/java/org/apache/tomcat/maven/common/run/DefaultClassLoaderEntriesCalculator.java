@@ -69,7 +69,7 @@ public class DefaultClassLoaderEntriesCalculator
         // add classes directories to loader
         try
         {
-            @SuppressWarnings( "unchecked" ) List<String> classPathElements = request.isUseTestClassPath()
+            List<String> classPathElements = request.isUseTestClassPath()
                 ? request.getMavenProject().getTestClasspathElements()
                 : request.getMavenProject().getRuntimeClasspathElements();
             if ( classPathElements != null )

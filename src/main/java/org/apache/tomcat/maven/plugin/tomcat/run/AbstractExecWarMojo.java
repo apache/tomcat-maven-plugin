@@ -239,7 +239,7 @@ public abstract class AbstractExecWarMojo
         File execWarJar = new File( buildDirectory, finalName );
 
         FileOutputStream execWarJarOutputStream = null;
-        ArchiveOutputStream os = null;
+        ArchiveOutputStream<JarArchiveEntry> os = null;
         File tmpPropertiesFile = null;
         File tmpManifestFile = null;
         FileOutputStream tmpPropertiesFileOutputStream = null;
@@ -318,7 +318,7 @@ public abstract class AbstractExecWarMojo
                             version = findArtifactVersion( dependency );
                         }
 
-if ( version == null || version.isEmpty() )
+                        if ( version == null || version.isEmpty() )
                         {
                             throw new MojoExecutionException(
                                 "Dependency '" + dependency.getGroupId() + "':'" + dependency.getArtifactId()
@@ -535,7 +535,7 @@ if ( version == null || version.isEmpty() )
     }
 
     protected void copyDirectoryContentIntoArchive( File sourceFolder, String destinationPath,
-                                                    ArchiveOutputStream archiveOutputStream )
+                                                    ArchiveOutputStream<JarArchiveEntry> archiveOutputStream )
         throws IOException
     {
 
@@ -609,7 +609,7 @@ if ( version == null || version.isEmpty() )
     protected File addContextXmlToWar( File contextXmlFile, File warFile )
         throws IOException, ArchiveException
     {
-        ArchiveOutputStream os = null;
+        ArchiveOutputStream<JarArchiveEntry> os = null;
         OutputStream warOutputStream = null;
         File tmpWar = Files.createTempFile( "tomcat", "war-exec" ).toFile();
         tmpWar.deleteOnExit();
@@ -641,7 +641,7 @@ if ( version == null || version.isEmpty() )
      * @param os   The output archive
      * @throws IOException
      */
-    protected void extractJarToArchive( JarFile file, ArchiveOutputStream os, String[] excludes )
+    protected void extractJarToArchive( JarFile file, ArchiveOutputStream<JarArchiveEntry> os, String[] excludes )
         throws IOException
     {
         Enumeration<? extends JarEntry> entries = file.entries();
