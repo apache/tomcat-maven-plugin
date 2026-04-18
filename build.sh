@@ -16,4 +16,4 @@
 # under the License.
 
 export MAVEN_OPTS="--add-opens=java.base/java.util.zip=ALL-UNNAMED --add-opens=java.base/java.util.jar=ALL-UNNAMED --add-opens=java.base/sun.net.www.protocol.http=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED"
-mvn clean install
+mvn clean install failsafe:integration-test invoker:integration-test

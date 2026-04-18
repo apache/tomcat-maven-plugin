@@ -366,6 +366,22 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-invoker-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>integration-test</goal>
+                            </goals>
+                            <configuration>
+                                <pomIncludes>
+                                    <include>**/simple-war-exec-project/pom.xml</include>
+                                </pomIncludes>
+                                <showErrors>true</showErrors>
+                                <localRepositoryPath>${basedir}/target/it-repo</localRepositoryPath>
+                                <settingsFile>src/it/settings.xml</settingsFile>
+                                <postBuildHookScript>verify</postBuildHookScript>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -438,7 +454,6 @@
                         </inputExcludes>
                     </configuration>
                 </plugin>
-
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-scm-publish-plugin</artifactId>
@@ -514,38 +529,6 @@
                             <target>
                                 <unzip src="src/test/manager.war" dest="${managerWebAppPath}" />
                             </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-invoker-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                        </goals>
-                        <configuration>
-                            <pomIncludes>
-                                <include>**/simple-war-exec-project/pom.xml</include>
-                            </pomIncludes>
-                            <showErrors>true</showErrors>
-                            <localRepositoryPath>${basedir}/target/it-repo</localRepositoryPath>
-                            <settingsFile>src/it/settings.xml</settingsFile>
-                            <postBuildHookScript>verify</postBuildHookScript>
                         </configuration>
                     </execution>
                 </executions>
