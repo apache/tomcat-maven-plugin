@@ -24,11 +24,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -874,7 +875,11 @@ public abstract class AbstractRunMojo
     private URL getWebappUrl()
         throws MalformedURLException
     {
-        return new URL( "http", "localhost", port, getPath() );
+        try {
+            return (new URI("http", null, "localhost", port, getPath(), null, null)).toURL();
+        } catch (URISyntaxException e) {
+            throw new MalformedURLException(e.getMessage());
+        }
     }
 
     /**

@@ -25,6 +25,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -766,7 +769,11 @@ public class TomcatManager
             case SC_MOVED_TEMPORARILY: // 302
             case SC_SEE_OTHER: // 303
                 relocateUrl = calculateRelocatedUrl( connection );
-                this.url = new URL( relocateUrl );
+                try {
+                    this.url = new URI(relocateUrl).toURL();
+                } catch (URISyntaxException e) {
+                    throw new MalformedURLException(e.getMessage());
+                }
                 return invoke( path, data, length );
         }
 
@@ -791,7 +798,12 @@ public class TomcatManager
 
     private HttpURLConnection openConnection( String urlString ) throws IOException
     {
-        URL url = new URL( urlString );
+        URL url = null;
+        try {
+            url = new URI(urlString).toURL();
+        } catch (URISyntaxException e) {
+            throw new MalformedURLException(e.getMessage());
+        }
         java.net.Proxy netProxy = java.net.Proxy.NO_PROXY;
 
         if ( proxySettings != null )

@@ -22,6 +22,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
@@ -179,7 +182,12 @@ public abstract class AbstractWarProjectIT
     private String getResponseBody()
         throws IOException
     {
-        URL url = new URL( getWebappUrl() );
+        URL url;
+        try {
+            url = new URI(getWebappUrl()).toURL();
+        } catch (URISyntaxException e) {
+            throw new MalformedURLException(e.getMessage());
+        }
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setConnectTimeout( getTimeout() );
         connection.setReadTimeout( getTimeout() );
@@ -198,9 +206,9 @@ public abstract class AbstractWarProjectIT
         final URL url;
         try
         {
-            url = new URL( getWebappUrl() );
+            url = new URI(getWebappUrl()).toURL();
         }
-        catch ( IOException e )
+        catch (IOException | URISyntaxException e)
         {
             logger.log(Level.FINE, "Ignoring exception while pinging URL " + getWebappUrl(), e );
             return -1;

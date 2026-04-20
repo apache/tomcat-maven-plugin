@@ -25,6 +25,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.AccessController;
@@ -434,7 +436,12 @@ public class TomcatRunner
         {
             String urlStr = "jar:file:" + warPath + "!/META-INF/context.xml";
             debugMessage( "search context.xml in url:'" + urlStr + "'" );
-            URL url = new URL( urlStr );
+            URL url = null;
+            try {
+                url = new URI(urlStr).toURL();
+            } catch (URISyntaxException e) {
+                throw new MalformedURLException(e.getMessage());
+            }
             inputStream = url.openConnection().getInputStream();
             if ( inputStream != null )
             {

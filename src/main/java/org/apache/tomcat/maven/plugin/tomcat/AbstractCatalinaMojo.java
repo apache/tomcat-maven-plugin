@@ -29,6 +29,7 @@ import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.StringTokenizer;
 
@@ -253,7 +254,11 @@ public abstract class AbstractCatalinaMojo
     protected URL getDeployedURL()
         throws MalformedURLException
     {
-        return new URL( getURL(), getPath() );
+        try {
+            return getURL().toURI().resolve(getPath()).toURL();
+        } catch (URISyntaxException e) {
+            throw new MalformedURLException(e.getMessage());
+        }
     }
 
     /**
