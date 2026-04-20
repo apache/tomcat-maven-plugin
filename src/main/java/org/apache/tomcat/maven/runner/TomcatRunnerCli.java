@@ -20,12 +20,11 @@ package org.apache.tomcat.maven.runner;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.help.HelpFormatter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,119 +35,126 @@ import java.util.Properties;
  * @author Olivier Lamy
  * @since 2.0
  */
-@SuppressWarnings( "static-access" )
 public class TomcatRunnerCli
 {
 
     public static final String STAND_ALONE_PROPERTIES_FILENAME = "tomcat.standalone.properties";
 
-    static Option httpPort =
-        OptionBuilder.withArgName( "httpPort" ).hasArg().withDescription( "http port to use" ).create( "httpPort" );
+    static final Option HTTP_PORT =
+        Option.builder().longOpt( "httpPort" ).hasArg().argName( "httpPort" )
+            .desc( "http port to use" ).get();
 
-    static Option httpsPort =
-        OptionBuilder.withArgName( "httpsPort" ).hasArg().withDescription( "https port to use" ).create( "httpsPort" );
+    static final Option HTTPS_PORT =
+        Option.builder().longOpt( "httpsPort" ).hasArg().argName( "httpsPort" )
+            .desc( "https port to use" ).get();
 
-    static Option maxPostSize =
-        OptionBuilder.withArgName( "maxPostSize" ).hasArg().withDescription( "max post size to use" ).create(
-            "maxPostSize" );
+    static final Option MAX_POST_SIZE =
+        Option.builder().longOpt( "maxPostSize" ).hasArg().argName( "maxPostSize" )
+            .desc( "max post size to use" ).get();
 
-    static Option ajpPort =
-        OptionBuilder.withArgName( "ajpPort" ).hasArg().withDescription( "ajp port to use" ).create( "ajpPort" );
+    static final Option AJP_PORT =
+        Option.builder().longOpt( "ajpPort" ).hasArg().argName( "ajpPort" )
+            .desc( "ajp port to use" ).get();
 
-    static Option serverXmlPath =
-        OptionBuilder.withArgName( "serverXmlPath" ).hasArg().withDescription( "server.xml to use, optional" ).create(
-            "serverXmlPath" );
+    static final Option SERVER_XML_PATH =
+        Option.builder().longOpt( "serverXmlPath" ).hasArg().argName( "serverXmlPath" )
+            .desc( "server.xml to use, optional" ).get();
 
-    static Option resetExtract =
-        OptionBuilder.withArgName( "resetExtract" ).withDescription( "clean previous extract directory" ).create(
-            "resetExtract" );
+    static final Option RESET_EXTRACT =
+        Option.builder().longOpt( "resetExtract" ).desc( "clean previous extract directory" ).get();
 
-    static Option help = OptionBuilder.withLongOpt( "help" ).withDescription( "help" ).create( 'h' );
+    static final Option HELP =
+        Option.builder().longOpt( "help" ).desc( "help" ).get();
 
-    static Option debug = OptionBuilder.withLongOpt( "debug" ).withDescription( "debug" ).create( 'X' );
+    static final Option DEBUG =
+        Option.builder().option( "X" ).longOpt( "debug" ).desc( "debug" ).get();
 
-    static Option sysProps = OptionBuilder.withDescription( "use value for given property" ).hasArgs().withDescription(
-        "key=value" ).withValueSeparator().create( 'D' );
+    static final Option SYS_PROPS =
+        Option.builder().option( "D" ).hasArgs().valueSeparator().argName( "key=value" )
+            .desc( "use value for given property" ).get();
 
-    static Option clientAuth =
-        OptionBuilder.withArgName( "clientAuth" ).withDescription( "enable client authentication for https" ).create(
-            "clientAuth" );
+    static final Option CLIENT_AUTH =
+        Option.builder().longOpt( "clientAuth" ).desc( "enable client authentication for https" ).get();
 
-    static Option keyAlias =
-        OptionBuilder.withArgName( "keyAlias" ).hasArgs().withDescription( "alias from keystore for ssl" ).create(
-            "keyAlias" );
+    static final Option KEY_ALIAS =
+        Option.builder().longOpt( "keyAlias" ).hasArgs().argName( "alias from keystore for ssl" ).get();
 
-    static Option obfuscate =
-        OptionBuilder.withArgName( "password" ).hasArgs().withDescription( "obfuscate the password and exit" ).create(
-            "obfuscate" );
+    static final Option OBFUSCATE =
+        Option.builder().longOpt( "obfuscate" ).hasArgs().argName( "password" )
+            .desc( "obfuscate the password and exit" ).get();
 
-    static Option httpProtocol = OptionBuilder.withArgName( "httpProtocol" ).hasArg().withDescription(
-        "http protocol to use: HTTP/1.1 or org.apache.coyote.http11.Http11NioProtocol" ).create( "httpProtocol" );
+    static final Option HTTP_PROTOCOL =
+        Option.builder().longOpt( "httpProtocol" ).hasArg().argName( "httpProtocol" )
+            .desc( "http protocol to use: HTTP/1.1 or org.apache.coyote.http11.Http11NioProtocol" ).get();
 
-    static Option extractDirectory = OptionBuilder.withArgName( "extractDirectory" ).hasArg().withDescription(
-        "path to extract war content, default value: .extract" ).create( "extractDirectory" );
+    static final Option EXTRACT_DIRECTORY =
+        Option.builder().longOpt( "extractDirectory" ).hasArg().argName( "extractDirectory" )
+            .desc( "path to extract war content, default value: .extract" ).get();
 
-    static Option uriEncoding = OptionBuilder.withArgName( "uriEncoding" ).hasArg().withDescription(
-        "connector uriEncoding default ISO-8859-1" ).create( "uriEncoding" );
+    static final Option URI_ENCODING =
+        Option.builder().longOpt( "uriEncoding" ).hasArg().argName( "uriEncoding" )
+            .desc( "connector uriEncoding default ISO-8859-1" ).get();
 
-    static Options options = new Options();
+    static final Options OPTIONS = new Options();
 
     static
     {
-        options.addOption( httpPort ) //
-            .addOption( httpsPort ) //
-            .addOption( ajpPort ) //
-            .addOption( serverXmlPath ) //
-            .addOption( resetExtract ) //
-            .addOption( help ) //
-            .addOption( debug ) //
-            .addOption( sysProps ) //
-            .addOption( httpProtocol ) //
-            .addOption( clientAuth ) //
-            .addOption( keyAlias ) //
-            .addOption( obfuscate ) //
-            .addOption( extractDirectory ) //
-            .addOption( uriEncoding ) //
-            .addOption( maxPostSize );
+        OPTIONS.addOption( HTTP_PORT )
+            .addOption( HTTPS_PORT )
+            .addOption( AJP_PORT )
+            .addOption( MAX_POST_SIZE )
+            .addOption( SERVER_XML_PATH )
+            .addOption( RESET_EXTRACT )
+            .addOption( HELP )
+            .addOption( DEBUG )
+            .addOption( SYS_PROPS )
+            .addOption( HTTP_PROTOCOL )
+            .addOption( CLIENT_AUTH )
+            .addOption( KEY_ALIAS )
+            .addOption( OBFUSCATE )
+            .addOption( EXTRACT_DIRECTORY )
+            .addOption( URI_ENCODING );
     }
 
 
     public static void main( String[] args )
         throws Exception
     {
-        CommandLineParser parser = new GnuParser();
+        CommandLineParser parser = new DefaultParser();
         CommandLine line = null;
         try
         {
-            line = parser.parse( TomcatRunnerCli.options, args );
+            line = parser.parse( TomcatRunnerCli.OPTIONS, args );
         }
         catch ( ParseException e )
         {
             System.err.println( "Parsing failed.  Reason: " + e.getMessage() );
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp( getCmdLineSyntax(), TomcatRunnerCli.options );
+            HelpFormatter formatter = HelpFormatter.builder().get();
+            formatter.printHelp(getCmdLineSyntax(), "Apache Tomcat Maven plugin executable WAR", TomcatRunnerCli.OPTIONS,
+                    "NOTE: The command line options are disabled if using Tomcat server.xml configuration", true);
             System.exit( 1 );
         }
 
-        if ( line.hasOption( help.getOpt() ) )
+        if ( line.hasOption( HELP ) )
         {
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp( getCmdLineSyntax(), TomcatRunnerCli.options );
+            HelpFormatter formatter = HelpFormatter.builder().get();
+            formatter.printHelp(getCmdLineSyntax(), "Apache Tomcat Maven plugin executable WAR", TomcatRunnerCli.OPTIONS,
+                    "NOTE: The command line options are disabled if using Tomcat server.xml configuration", true);
             System.exit( 0 );
         }
 
-        if ( line.hasOption( obfuscate.getOpt() ) )
+        if ( line.hasOption( OBFUSCATE ) )
         {
-            System.out.println( PasswordUtil.obfuscate( line.getOptionValue( obfuscate.getOpt() ) ) );
+            System.out.println( PasswordUtil.obfuscate( line.getOptionValue( OBFUSCATE ) ) );
             System.exit( 0 );
         }
         TomcatRunner tomcatRunner = new TomcatRunner();
 
         tomcatRunner.runtimeProperties = buildStandaloneProperties();
 
-        if ( line.hasOption( serverXmlPath.getOpt() ) )
+        if ( line.hasOption( SERVER_XML_PATH ) )
         {
-            tomcatRunner.serverXmlPath = line.getOptionValue( serverXmlPath.getOpt() );
+            tomcatRunner.serverXmlPath = line.getOptionValue( SERVER_XML_PATH );
         }
 
         String port = tomcatRunner.runtimeProperties.getProperty( TomcatRunner.HTTP_PORT_KEY );
@@ -158,41 +164,41 @@ public class TomcatRunnerCli
         }
 
         // cli win for the port
-        if ( line.hasOption( httpPort.getOpt() ) )
+        if ( line.hasOption( HTTP_PORT ) )
         {
-            tomcatRunner.httpPort = Integer.parseInt( line.getOptionValue( httpPort.getOpt() ) );
+            tomcatRunner.httpPort = Integer.parseInt( line.getOptionValue( HTTP_PORT ) );
         }
 
-        if ( line.hasOption( maxPostSize.getOpt() ) )
+        if ( line.hasOption( MAX_POST_SIZE ) )
         {
-            tomcatRunner.maxPostSize = Integer.parseInt( line.getOptionValue( maxPostSize.getOpt() ) );
+            tomcatRunner.maxPostSize = Integer.parseInt( line.getOptionValue( MAX_POST_SIZE ) );
         }
 
-        if ( line.hasOption( httpsPort.getOpt() ) )
+        if ( line.hasOption( HTTPS_PORT ) )
         {
-            tomcatRunner.httpsPort = Integer.parseInt( line.getOptionValue( httpsPort.getOpt() ) );
+            tomcatRunner.httpsPort = Integer.parseInt( line.getOptionValue( HTTPS_PORT ) );
         }
-        if ( line.hasOption( ajpPort.getOpt() ) )
+        if ( line.hasOption( AJP_PORT ) )
         {
-            tomcatRunner.ajpPort = Integer.parseInt( line.getOptionValue( ajpPort.getOpt() ) );
+            tomcatRunner.ajpPort = Integer.parseInt( line.getOptionValue( AJP_PORT ) );
         }
-        if ( line.hasOption( resetExtract.getOpt() ) )
+        if ( line.hasOption( RESET_EXTRACT ) )
         {
             tomcatRunner.resetExtract = true;
         }
-        if ( line.hasOption( debug.getOpt() ) )
+        if ( line.hasOption( DEBUG ) )
         {
             tomcatRunner.debug = true;
         }
 
-        if ( line.hasOption( httpProtocol.getOpt() ) )
+        if ( line.hasOption( HTTP_PROTOCOL ) )
         {
-            tomcatRunner.httpProtocol = line.getOptionValue( httpProtocol.getOpt() );
+            tomcatRunner.httpProtocol = line.getOptionValue( HTTP_PROTOCOL );
         }
 
-        if ( line.hasOption( sysProps.getOpt() ) )
+        if ( line.hasOption( SYS_PROPS ) )
         {
-            Properties systemProperties = line.getOptionProperties( sysProps.getOpt() );
+            Properties systemProperties = line.getOptionProperties( SYS_PROPS );
             if ( systemProperties != null && !systemProperties.isEmpty() )
             {
                 for ( Map.Entry<Object, Object> sysProp : systemProperties.entrySet() )
@@ -201,23 +207,23 @@ public class TomcatRunnerCli
                 }
             }
         }
-        if ( line.hasOption( clientAuth.getOpt() ) )
+        if ( line.hasOption( CLIENT_AUTH ) )
         {
             tomcatRunner.clientAuth = "true";
         }
-        if ( line.hasOption( keyAlias.getOpt() ) )
+        if ( line.hasOption( KEY_ALIAS ) )
         {
-            tomcatRunner.keyAlias = line.getOptionValue( keyAlias.getOpt() );
+            tomcatRunner.keyAlias = line.getOptionValue( KEY_ALIAS );
         }
 
-        if ( line.hasOption( extractDirectory.getOpt() ) )
+        if ( line.hasOption( EXTRACT_DIRECTORY ) )
         {
-            tomcatRunner.extractDirectory = line.getOptionValue( extractDirectory.getOpt() );
+            tomcatRunner.extractDirectory = line.getOptionValue( EXTRACT_DIRECTORY );
         }
 
-        if ( line.hasOption( uriEncoding.getOpt() ) )
+        if ( line.hasOption( URI_ENCODING ) )
         {
-            tomcatRunner.uriEncoding = line.getOptionValue( uriEncoding.getOpt() );
+            tomcatRunner.uriEncoding = line.getOptionValue( URI_ENCODING );
         }
 
         // here we go
