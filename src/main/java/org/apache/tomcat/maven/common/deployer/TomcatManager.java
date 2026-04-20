@@ -23,35 +23,17 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
+import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-
-import org.apache.http.Header;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.AuthCache;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.protocol.ClientContext;
-import org.apache.http.conn.params.ConnRoutePNames;
-import org.apache.http.entity.AbstractHttpEntity;
-import org.apache.http.impl.auth.BasicScheme;
-import org.apache.http.impl.client.BasicAuthCache;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
-import org.apache.http.protocol.BasicHttpContext;
 import org.apache.maven.settings.Proxy;
 import org.apache.maven.wagon.proxy.ProxyInfo;
 import org.apache.maven.wagon.proxy.ProxyUtils;
@@ -67,10 +49,14 @@ public class TomcatManager
     // Constants
     // ----------------------------------------------------------------------
 
-    /**
-     * The charset to use when decoding Tomcat manager responses.
-     */
-    private static final String MANAGER_CHARSET = "UTF-8";
+    private static final int BUFFER_SIZE = 2048;
+
+    private static final int SC_OK = 200;
+    private static final int SC_CREATED = 201;
+    private static final int SC_ACCEPTED = 202;
+    private static final int SC_MOVED_PERMANENTLY = 301;
+    private static final int SC_MOVED_TEMPORARILY = 302;
+    private static final int SC_SEE_OTHER = 303;
 
     // ----------------------------------------------------------------------
     // Fields
@@ -104,19 +90,14 @@ public class TomcatManager
     /**
      * @since 2.0
      */
-    private final DefaultHttpClient httpClient;
-
-    /**
-     * @since 2.0
-     */
-    private BasicHttpContext localContext;
-
-    private Proxy proxy;
+    private final boolean usernameProvided;
 
     /**
      * @since 2.2
      */
     private final boolean verbose;
+
+    private Proxy proxySettings;
 
     // ----------------------------------------------------------------------
     // Constructors
@@ -188,27 +169,7 @@ public class TomcatManager
         this.password = password;
         this.charset = charset;
         this.verbose = verbose;
-
-        PoolingClientConnectionManager poolingClientConnectionManager = new PoolingClientConnectionManager();
-        poolingClientConnectionManager.setMaxTotal( 5 );
-        this.httpClient = new DefaultHttpClient( poolingClientConnectionManager );
-
-        if ( username != null && !username.isEmpty() )
-        {
-            Credentials creds = new UsernamePasswordCredentials( username, password );
-
-            String host = url.getHost();
-            int port = url.getPort() > -1 ? url.getPort() : AuthScope.ANY_PORT;
-            httpClient.getCredentialsProvider().setCredentials( new AuthScope( host, port ), creds );
-
-            AuthCache authCache = new BasicAuthCache();
-            BasicScheme basicAuth = new BasicScheme();
-            HttpHost targetHost = new HttpHost( url.getHost(), url.getPort(), url.getProtocol() );
-            authCache.put( targetHost, basicAuth );
-
-            localContext = new BasicHttpContext();
-            localContext.setAttribute( ClientContext.AUTH_CACHE, authCache );
-        }
+        this.usernameProvided = username != null && !username.isEmpty();
     }
 
     // ----------------------------------------------------------------------
@@ -277,50 +238,17 @@ public class TomcatManager
 
     /**
      * Sets the proxy to use when communicating with Tomcat manager.
-     * 
+     *
      * @param proxy the proxy to use when communicating with Tomcat manager
      */
     public void setProxy( Proxy proxy )
     {
-        if ( this.proxy != proxy )
-        {
-            this.proxy = proxy;
-            if ( httpClient != null )
-            {
-                applyProxy();
-            }
-        }
+        this.proxySettings = proxy;
     }
 
-    /**
-     * {@link #setProxy(Proxy)} is called by {@link AbstractCatinalMojo#getManager()} after the constructor
-     */
-    private void applyProxy()
-    {
-        if ( this.proxy != null )
-        {
-
-            ProxyInfo proxyInfo = new ProxyInfo();
-            proxyInfo.setNonProxyHosts( this.proxy.getNonProxyHosts() );
-
-            if ( !ProxyUtils.validateNonProxyHosts( proxyInfo, url.getHost() ) )
-            {
-                HttpHost proxy = new HttpHost( this.proxy.getHost(), this.proxy.getPort(), this.proxy.getProtocol() );
-                httpClient.getParams().setParameter( ConnRoutePNames.DEFAULT_PROXY, proxy );
-                if ( this.proxy.getUsername() != null )
-                {
-                    httpClient.getCredentialsProvider().setCredentials(
-                        new AuthScope( this.proxy.getHost(), this.proxy.getPort() ),
-                        new UsernamePasswordCredentials( this.proxy.getUsername(), this.proxy.getPassword() ) );
-                }
-            }
-        }
-        else
-        {
-            httpClient.getParams().removeParameter( ConnRoutePNames.DEFAULT_PROXY );
-        }
-    }
-
+    // ----------------------------------------------------------------------
+    // Deploy Methods
+    // ----------------------------------------------------------------------
 
     /**
      * Deploys the specified WAR as a URL to the specified context path.
@@ -545,6 +473,10 @@ public class TomcatManager
         return deployImpl( path, config, war, null, update, tag );
     }
 
+    // ----------------------------------------------------------------------
+    // Other Manager Methods
+    // ----------------------------------------------------------------------
+
     /**
      * Undeploys the webapp at the specified context path.
      *
@@ -759,61 +691,147 @@ public class TomcatManager
     protected TomcatManagerResponse invoke( String path, File data, long length )
         throws TomcatManagerException, IOException
     {
+        HttpURLConnection connection = openConnection( url + path );
 
-        HttpRequestBase httpRequestBase = null;
         if ( data == null )
         {
-            httpRequestBase = new HttpGet( url + path );
+            connection.setRequestMethod( "GET" );
         }
         else
         {
-            HttpPut httpPut = new HttpPut( url + path );
+            connection.setRequestMethod( "PUT" );
+            connection.setDoOutput( true );
+            connection.setFixedLengthStreamingMode( length >= 0 ? length : data.length() );
 
-            httpPut.setEntity(new RequestEntityImplementation(data, length, url + path, verbose));
+            if ( userAgent != null )
+            {
+                connection.setRequestProperty( "User-Agent", userAgent );
+            }
 
-            httpRequestBase = httpPut;
+            long completed = 0;
+            try ( OutputStream os = connection.getOutputStream();
+                  FileInputStream stream = new FileInputStream( data ) )
+            {
+                transferInitiated( url + path );
+                long startTime = System.currentTimeMillis();
+                byte[] buffer = new byte[BUFFER_SIZE];
 
+                if ( length < 0 )
+                {
+                    // until EOF
+                    int l;
+                    while ( ( l = stream.read( buffer ) ) != -1 )
+                    {
+                        transferProgressed( completed += l, -1 );
+                        os.write( buffer, 0, l );
+                    }
+                }
+                else
+                {
+                    // no need to consume more than length
+                    long remaining = length;
+                    while ( remaining > 0 )
+                    {
+                        int transferSize = (int) Math.min( BUFFER_SIZE, remaining );
+                        completed += transferSize;
+                        int l = stream.read( buffer, 0, transferSize );
+                        if ( l == -1 )
+                        {
+                            break;
+                        }
+
+                        os.write( buffer, 0, l );
+                        remaining -= l;
+                        transferProgressed( completed, length );
+                    }
+                }
+                transferSucceeded( completed, startTime );
+            } finally {
+                System.out.println();
+            }
         }
 
-        if ( userAgent != null )
-        {
-            httpRequestBase.setHeader( "User-Agent", userAgent );
-        }
+        int statusCode = connection.getResponseCode();
 
-        HttpResponse response = httpClient.execute( httpRequestBase, localContext );
-
-        int statusCode = response.getStatusLine().getStatusCode();
-
+        String relocateUrl = null;
         switch ( statusCode )
         {
             // Success Codes
-            case HttpStatus.SC_OK: // 200
-            case HttpStatus.SC_CREATED: // 201
-            case HttpStatus.SC_ACCEPTED: // 202
+            case SC_OK: // 200
+            case SC_CREATED: // 201
+            case SC_ACCEPTED: // 202
                 break;
             // handle all redirect even if http specs says " the user agent MUST NOT automatically redirect the request unless it can be confirmed by the user"
-            case HttpStatus.SC_MOVED_PERMANENTLY: // 301
-            case HttpStatus.SC_MOVED_TEMPORARILY: // 302
-            case HttpStatus.SC_SEE_OTHER: // 303
-                String relocateUrl = calculateRelocatedUrl( response );
+            case SC_MOVED_PERMANENTLY: // 301
+            case SC_MOVED_TEMPORARILY: // 302
+            case SC_SEE_OTHER: // 303
+                relocateUrl = calculateRelocatedUrl( connection );
                 this.url = new URL( relocateUrl );
                 return invoke( path, data, length );
         }
 
-        return new TomcatManagerResponse().setStatusCode( response.getStatusLine().getStatusCode() ).setReasonPhrase(
-            response.getStatusLine().getReasonPhrase() ).setHttpResponseBody(
-            IOUtils.toString( response.getEntity().getContent() ) );
+        String responseBody;
+        try ( InputStream is = connection.getInputStream() != null ? connection.getInputStream() : connection.getErrorStream() )
+        {
+            responseBody = IOUtils.toString( is, StandardCharsets.UTF_8 );
+        }
 
+        return new TomcatManagerResponse()
+            .setStatusCode( statusCode )
+            .setReasonPhrase( connection.getResponseMessage() )
+            .setHttpResponseBody( responseBody );
     }
 
-    protected String calculateRelocatedUrl( HttpResponse response )
+    protected String calculateRelocatedUrl( HttpURLConnection connection )
     {
-        Header locationHeader = response.getFirstHeader( "Location" );
-        String locationField = locationHeader.getValue();
+        String locationField = connection.getHeaderField( "Location" );
         // is it a relative Location or a full ?
         return locationField.startsWith( "http" ) ? locationField : url.toString() + '/' + locationField;
     }
 
+    private HttpURLConnection openConnection( String urlString ) throws IOException
+    {
+        URL url = new URL( urlString );
+        java.net.Proxy netProxy = java.net.Proxy.NO_PROXY;
+
+        if ( proxySettings != null )
+        {
+            ProxyInfo proxyInfo = new ProxyInfo();
+            proxyInfo.setNonProxyHosts( proxySettings.getNonProxyHosts() );
+
+            if ( !ProxyUtils.validateNonProxyHosts( proxyInfo, url.getHost() ) )
+            {
+                netProxy = new java.net.Proxy( java.net.Proxy.Type.HTTP,
+                    new InetSocketAddress( proxySettings.getHost(), proxySettings.getPort() ) );
+            }
+        }
+
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection( netProxy );
+
+        connection.setInstanceFollowRedirects( false );
+        connection.setUseCaches( false );
+        connection.setDefaultUseCaches( false );
+        connection.setRequestProperty( "Accept", "text/plain" );
+
+        if ( userAgent != null )
+        {
+            connection.setRequestProperty( "User-Agent", userAgent );
+        }
+
+        if ( usernameProvided )
+        {
+            String authorization = toAuthorization( username, password );
+            connection.setRequestProperty( "Authorization", authorization );
+        }
+
+        if ( netProxy != java.net.Proxy.NO_PROXY )
+        {
+            String proxyAuth = toAuthorization( proxySettings.getUsername(), proxySettings.getPassword() );
+            connection.setRequestProperty( "Proxy-Authorization", proxyAuth );
+        }
+
+        return connection;
+    }
 
     /**
      * Gets the HTTP Basic Authorization header value for the supplied username and password.
@@ -833,178 +851,71 @@ public class TomcatManager
         return "Basic " + new String( Base64.encodeBase64( buffer.toString().getBytes() ) );
     }
 
-    private static final class RequestEntityImplementation
-        extends AbstractHttpEntity
+    private void transferInitiated( String targetUrl )
     {
+        String message = "Uploading";
 
-        private final static int BUFFER_SIZE = 2048;
-
-        private final File file;
-
-        PrintStream out = System.out;
-
-        private long length = -1;
-
-        private int lastLength;
-
-        private final String url;
-
-        private long startTime;
-
-        private final boolean verbose;
-
-        private RequestEntityImplementation( final File file, long length, String url, boolean verbose )
-        {
-            this.file = file;
-            this.length = length;
-            this.url = url;
-            this.verbose = verbose;
-        }
-
-        @Override
-        public long getContentLength()
-        {
-            if (length >= 0) {
-                return length;
-            } else {
-                return file.length();
-            }
-        }
-
-
-        @Override
-        public InputStream getContent()
-            throws IOException, IllegalStateException
-        {
-            return new FileInputStream( this.file );
-        }
-
-        @Override
-        public boolean isRepeatable()
-        {
-            return true;
-        }
-
-
-        @Override
-        public void writeTo( final OutputStream outstream )
-            throws IOException
-        {
-            long completed = 0;
-            if ( outstream == null )
-            {
-                throw new IllegalArgumentException( "Output stream may not be null" );
-            }
-            try (FileInputStream stream = new FileInputStream(this.file)) {
-                transferInitiated(this.url);
-                this.startTime = System.currentTimeMillis();
-                byte[] buffer = new byte[BUFFER_SIZE];
-
-                int l;
-                if (this.length < 0) {
-                    // until EOF
-                    while ((l = stream.read(buffer)) != -1) {
-                        transferProgressed(completed += buffer.length, -1);
-                        outstream.write(buffer, 0, l);
-                    }
-                } else {
-                    // no need to consume more than length
-                    long remaining = this.length;
-                    while (remaining > 0) {
-                        int transferSize = (int) Math.min(BUFFER_SIZE, remaining);
-                        completed += transferSize;
-                        l = stream.read(buffer, 0, transferSize);
-                        if (l == -1) {
-                            break;
-                        }
-
-                        outstream.write(buffer, 0, l);
-                        remaining -= l;
-                        transferProgressed(completed, this.length);
-                    }
-                }
-                transferSucceeded(completed);
-            } finally {
-                out.println();
-            }
-            // end transfer
-        }
-
-        @Override
-        public boolean isStreaming()
-        {
-            return true;
-        }
-
-
-        public void transferInitiated( String url )
-        {
-            String message = "Uploading";
-
-            out.println( message + ": " + url );
-        }
-
-        public void transferProgressed( long completedSize, long totalSize )
-        {
-            if ( !verbose )
-            {
-                return;
-            }
-
-            StringBuilder buffer = new StringBuilder( 64 );
-
-            buffer.append( getStatus( completedSize, totalSize ) ).append( "  " );
-            lastLength = buffer.length();
-            buffer.append( '\r' );
-
-            out.print( buffer );
-        }
-
-        public void transferSucceeded( long contentLength )
-        {
-
-            if ( contentLength >= 0 )
-            {
-                String type = "Uploaded";
-                String len = contentLength >= 1024 ? toKB( contentLength ) + " KB" : contentLength + " B";
-
-                String throughput = "";
-                long duration = System.currentTimeMillis() - startTime;
-                if ( duration > 0 )
-                {
-                    DecimalFormat format = new DecimalFormat( "0.0", new DecimalFormatSymbols( Locale.ENGLISH ) );
-                    double kbPerSec = ( contentLength / 1024.0 ) / ( duration / 1000.0 );
-                    throughput = " at " + format.format( kbPerSec ) + " KB/sec";
-                }
-
-                out.println( type + ": " + url + " (" + len + throughput + ")" );
-            }
-        }
-
-        private String getStatus( long complete, long total )
-        {
-            if ( total >= 1024 )
-            {
-                return toKB( complete ) + "/" + toKB( total ) + " KB ";
-            }
-            else if ( total >= 0 )
-            {
-                return complete + "/" + total + " B ";
-            }
-            else if ( complete >= 1024 )
-            {
-                return toKB( complete ) + " KB ";
-            }
-            else
-            {
-                return complete + " B ";
-            }
-        }
-
-        private long toKB( long bytes )
-        {
-            return ( bytes + 1023 ) / 1024;
-        }
-
+        System.out.println( message + ": " + targetUrl );
     }
+
+    private void transferProgressed( long completedSize, long totalSize )
+    {
+        if ( !verbose )
+        {
+            return;
+        }
+
+        StringBuilder buffer = new StringBuilder( 64 );
+
+        buffer.append( getStatus( completedSize, totalSize ) ).append( "  " );
+        buffer.append( '\r' );
+
+        System.out.print( buffer );
+    }
+
+    private void transferSucceeded( long contentLength, long startTime )
+    {
+        if ( contentLength >= 0 )
+        {
+            String type = "Uploaded";
+            String len = contentLength >= 1024 ? toKB( contentLength ) + " KB" : contentLength + " B";
+
+            String throughput = "";
+            long duration = System.currentTimeMillis() - startTime;
+            if ( duration > 0 )
+            {
+                DecimalFormat format = new DecimalFormat( "0.0", new DecimalFormatSymbols( Locale.ENGLISH ) );
+                double kbPerSec = ( contentLength / 1024.0 ) / ( duration / 1000.0 );
+                throughput = " at " + format.format( kbPerSec ) + " KB/sec";
+            }
+
+            System.out.println( type + ": " + url + " (" + len + throughput + ")" );
+        }
+    }
+
+    private String getStatus( long complete, long total )
+    {
+        if ( total >= 1024 )
+        {
+            return toKB( complete ) + "/" + toKB( total ) + " KB ";
+        }
+        else if ( total >= 0 )
+        {
+            return complete + "/" + total + " B ";
+        }
+        else if ( complete >= 1024 )
+        {
+            return toKB( complete ) + " KB ";
+        }
+        else
+        {
+            return complete + " B ";
+        }
+    }
+
+    private long toKB( long bytes )
+    {
+        return ( bytes + 1023 ) / 1024;
+    }
+
 }

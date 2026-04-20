@@ -18,26 +18,23 @@
  */
 package org.apache.tomcat.maven.it;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.maven.it.VerificationException;
 import org.apache.maven.it.Verifier;
 import org.apache.maven.it.util.ResourceExtractor;
 import org.junit.After;
 import org.junit.Before;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Base class for all tests which have a war-project using the tomcat-maven-plugin below project-resources.
@@ -63,11 +60,6 @@ public abstract class AbstractWarProjectIT
     protected abstract String getWarArtifactId();
 
     /**
-     * HttpClient to use to connect to the deployed web-application.
-     */
-    private CloseableHttpClient httpClient;
-
-    /**
      * Helper for Maven-Integration-Tests.
      */
     protected Verifier verifier;
@@ -81,8 +73,6 @@ public abstract class AbstractWarProjectIT
     public void setUp()
         throws Exception
     {
-
-        httpClient = HttpClientBuilder.create().build();
 
         webappHome = ResourceExtractor.simpleExtractResources( getClass(), "/" + getWarArtifactId() );
         verifier = new Verifier( webappHome.getAbsolutePath() );
@@ -100,7 +90,6 @@ public abstract class AbstractWarProjectIT
     public void tearDown()
         throws Exception
     {
-        httpClient.close();
         verifier.resetStreams();
         verifier.deleteArtifact( "org.apache.tomcat.maven.it", getWarArtifactId(), "1.0-SNAPSHOT", "war" );
     }
@@ -190,27 +179,52 @@ public abstract class AbstractWarProjectIT
     private String getResponseBody()
         throws IOException
     {
-        HttpGet httpGet = new HttpGet( getWebappUrl() );
-        httpGet.setConfig( RequestConfig.custom() //
-                               .setSocketTimeout( getTimeout() ) //
-                               .setConnectTimeout( getTimeout() ) //
-                               .build() );
-        ResponseHandler<String> responseHandler = new BasicResponseHandler();
-        return httpClient.execute( httpGet, responseHandler );
+        URL url = new URL( getWebappUrl() );
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setConnectTimeout( getTimeout() );
+        connection.setReadTimeout( getTimeout() );
+        try ( InputStream is = connection.getInputStream() )
+        {
+            return IOUtils.toString( is, StandardCharsets.UTF_8 );
+        }
+        finally
+        {
+            connection.disconnect();
+        }
     }
 
     private int pingUrl()
     {
-        final HttpHead httpHead = new HttpHead( getWebappUrl() );
+        final URL url;
         try
         {
-            final HttpResponse response = httpClient.execute( httpHead );
-            return response.getStatusLine().getStatusCode();
+            url = new URL( getWebappUrl() );
         }
         catch ( IOException e )
         {
-            logger.log(Level.FINE, "Ignoring exception while pinging URL " + httpHead.getURI(), e );
+            logger.log(Level.FINE, "Ignoring exception while pinging URL " + getWebappUrl(), e );
             return -1;
+        }
+        HttpURLConnection connection = null;
+        try
+        {
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod( "HEAD" );
+            connection.setConnectTimeout( getTimeout() );
+            connection.setReadTimeout( getTimeout() );
+            return connection.getResponseCode();
+        }
+        catch ( IOException e )
+        {
+            logger.log(Level.FINE, "Ignoring exception while pinging URL " + getWebappUrl(), e );
+            return -1;
+        }
+        finally
+        {
+            if ( connection != null )
+            {
+                connection.disconnect();
+            }
         }
     }
 
