@@ -35,7 +35,7 @@
              pattern="%t-ip:%a-protocol::%H-status:%s-localPort:%p-path:%U-time:%D ms" buffered="false"/>
       <Realm className="org.apache.catalina.realm.UserDatabaseRealm"
              resourceName="UserDatabase" />
-      <Host name="localhost" appBase="${project.build.directory}/test-classes/deploy-only-war-project/target/tomcat/webapps">
+      <Host name="localhost" appBase="webapps">
         <Context path="/manager" privileged="true" docBase="${managerWebAppPath}/manager"/>
       </Host>
     </Engine>

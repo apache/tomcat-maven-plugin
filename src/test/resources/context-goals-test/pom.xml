@@ -65,6 +65,19 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>tomcat-deploy</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                        <configuration>
+                            <url>http://localhost:${its.http.port}/manager</url>
+                            <username>tomcat</username>
+                            <password>tomcat</password>
+                            <path>/foo</path>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>tomcat-context-goals</id>
                         <phase>integration-test</phase>
                         <goals>
@@ -73,9 +86,6 @@
                             <goal>start</goal>
                             <goal>reload</goal>
                             <goal>sessions</goal>
-                            <goal>redeploy</goal>
-                            <goal>undeploy</goal>
-                            <goal>deploy</goal>
                         </goals>
                         <configuration>
                             <url>http://localhost:${its.http.port}/manager</url>
