@@ -18,9 +18,18 @@
  */
 package org.apache.tomcat.maven.common.run;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.archiver.ArchiverException;
@@ -29,16 +38,6 @@ import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
-
-
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * @author Olivier Lamy
@@ -51,6 +50,9 @@ public class DefaultClassLoaderEntriesCalculator
 
     @Requirement
     private ArchiverManager archiverManager;
+
+    @Requirement
+    private MavenSession mavenSession;
 
 
     @Override
@@ -240,12 +242,11 @@ public class DefaultClassLoaderEntriesCalculator
 
     protected boolean isInProjectReferences( Artifact artifact, MavenProject project )
     {
-        if ( project.getProjectReferences() == null || project.getProjectReferences().isEmpty() )
+        if ( mavenSession == null || mavenSession.getProjects() == null || mavenSession.getProjects().isEmpty() )
         {
             return false;
         }
-        Collection<MavenProject> mavenProjects = project.getProjectReferences().values();
-        for ( MavenProject mavenProject : mavenProjects )
+        for ( MavenProject mavenProject : mavenSession.getProjects() )
         {
             if ( mavenProject.getId() != null && mavenProject.getId().equals( artifact.getId() ) )
             {

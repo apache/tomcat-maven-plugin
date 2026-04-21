@@ -19,6 +19,7 @@
 package org.apache.tomcat.maven.common.run;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
@@ -31,6 +32,8 @@ import java.util.Set;
 public class ClassLoaderEntriesCalculatorRequest
 {
     private MavenProject mavenProject;
+
+    private MavenSession mavenSession;
 
     private Set<Artifact> dependencies;
 
@@ -48,6 +51,17 @@ public class ClassLoaderEntriesCalculatorRequest
     public ClassLoaderEntriesCalculatorRequest setMavenProject( MavenProject mavenProject )
     {
         this.mavenProject = mavenProject;
+        return this;
+    }
+
+    public MavenSession getMavenSession()
+    {
+        return mavenSession;
+    }
+
+    public ClassLoaderEntriesCalculatorRequest setMavenSession( MavenSession mavenSession )
+    {
+        this.mavenSession = mavenSession;
         return this;
     }
 

@@ -32,8 +32,6 @@ import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.io.IOUtils;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -204,13 +202,12 @@ public abstract class AbstractStandaloneWarMojo
                                 + "' does not have version specified" );
                     }
                     // String groupId, String artifactId, String version, String scope, String type
-                    Artifact artifact = artifactFactory.createArtifact( dependency.getGroupId(), //
-                                                                        dependency.getArtifactId(), //
-                                                                        version, //
-                                                                        dependency.getScope(), //
-                                                                        dependency.getType() );
-
-                    artifactResolver.resolve( artifact, this.remoteRepos, this.local );
+                    Artifact artifact = resolveArtifact( dependency.getGroupId(), //
+                                                         dependency.getArtifactId(), //
+                                                         version, //
+                                                         dependency.getType(), //
+                                                         null, //
+                                                         dependency.getScope() );
                     JarFile jarFile = new JarFile( artifact.getFile() );
                     extractJarToArchive( jarFile, os, excludes );
                 }
@@ -272,14 +269,6 @@ public abstract class AbstractStandaloneWarMojo
             throw new MojoExecutionException( e.getMessage(), e );
         }
         catch ( IOException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
-        }
-        catch ( ArtifactNotFoundException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
-        }
-        catch ( ArtifactResolutionException e )
         {
             throw new MojoExecutionException( e.getMessage(), e );
         }

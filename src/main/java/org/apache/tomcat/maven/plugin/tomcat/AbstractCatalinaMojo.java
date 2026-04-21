@@ -18,20 +18,23 @@
  */
 package org.apache.tomcat.maven.plugin.tomcat;
 
-import org.apache.maven.artifact.manager.WagonManager;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.wagon.authentication.AuthenticationInfo;
-import org.apache.tomcat.maven.common.deployer.TomcatManager;
-import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
-
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Map;
 import java.util.StringTokenizer;
+
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.settings.Server;
+import org.apache.maven.settings.crypto.DefaultSettingsDecryptionRequest;
+import org.apache.maven.settings.crypto.SettingsDecrypter;
+import org.apache.maven.settings.crypto.SettingsDecryptionRequest;
+import org.apache.maven.settings.crypto.SettingsDecryptionResult;
+import org.apache.tomcat.maven.common.deployer.TomcatManager;
+import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
 
 /**
  * Abstract goal that provides common configuration for Catalina-based goals.
@@ -63,12 +66,6 @@ public abstract class AbstractCatalinaMojo
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
-
-    /**
-     * The Maven Wagon manager to use when obtaining server authentication details.
-     */
-    @Component
-    private WagonManager wagonManager;
 
     /**
      * The full URL of the Tomcat manager instance to use.
@@ -107,6 +104,16 @@ public abstract class AbstractCatalinaMojo
 
     @Parameter( defaultValue = "${plugin.version}", required = true, readonly = true )
     private String version;
+
+    // ----------------------------------------------------------------------
+    // Mojo Components
+    // ----------------------------------------------------------------------
+
+    /**
+     * Component used to decrypt server passwords from Maven settings.
+     */
+    @Component
+    protected SettingsDecrypter settingsDecrypter;
 
     // ----------------------------------------------------------------------
     // Fields
@@ -173,7 +180,7 @@ public abstract class AbstractCatalinaMojo
         // lazily instantiate when config values have been injected
         if ( manager == null )
         {
-            String userName;
+            String userName = null;
             String password;
 
             if ( server == null )
@@ -185,24 +192,51 @@ public abstract class AbstractCatalinaMojo
             }
             else
             {
-                // obtain authenication details for specified server from wagon
-                AuthenticationInfo info = wagonManager.getAuthenticationInfo( server );
-                if ( info == null )
+                // obtain authentication details for specified server from settings
+                Server settingsServer = settings.getServer( server );
+                if ( settingsServer == null )
                 {
                     throw new MojoExecutionException(
                         messagesProvider.getMessage( "AbstractCatalinaMojo.unknownServer", server ) );
                 }
 
-                // derive username
-                userName = info.getUserName();
-                if ( userName == null )
+                // decrypt the server password
+                String decryptedPassword = null;
+                Object configObj = settingsServer.getConfiguration();
+                if ( configObj instanceof Map )
+                {
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> config = (Map<String, Object>) configObj;
+                    if ( config.get( "password" ) != null )
+                    {
+                        SettingsDecryptionRequest decryptionRequest =
+                            new DefaultSettingsDecryptionRequest( settingsServer );
+                        SettingsDecryptionResult decryptionResult = settingsDecrypter.decrypt( decryptionRequest );
+                        Object decryptedConfigObj = decryptionResult.getServer().getConfiguration();
+                        if ( decryptedConfigObj instanceof Map )
+                        {
+                            @SuppressWarnings("unchecked")
+                            Map<String, Object> decryptedConfig = (Map<String, Object>) decryptedConfigObj;
+                            if ( decryptedConfig.get( "password" ) != null )
+                            {
+                                decryptedPassword = (String) decryptedConfig.get( "password" );
+                            }
+                        }
+                    }
+
+                    // derive username
+                    if ( config.get( "username" ) != null )
+                    {
+                        userName = (String) config.get( "username" );
+                    }
+                }
+                if ( userName == null || userName.isEmpty() )
                 {
                     getLog().debug( messagesProvider.getMessage( "AbstractCatalinaMojo.defaultUserName" ) );
                     userName = DEFAULT_USERNAME;
                 }
 
-                // derive password
-                password = info.getPassword();
+                password = decryptedPassword;
                 if ( password == null )
                 {
                     getLog().debug( messagesProvider.getMessage( "AbstractCatalinaMojo.defaultPassword" ) );

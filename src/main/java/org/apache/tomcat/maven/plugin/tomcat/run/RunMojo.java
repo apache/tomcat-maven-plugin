@@ -191,7 +191,7 @@ public class RunMojo
             temporaryContextFile = File.createTempFile( "tomcat-maven-plugin", "temp-ctx-file" );
             temporaryContextFile.deleteOnExit();
 
-            // format to modify/create <Context backgroundProcessorDelay="5" reloadable="false">
+// format to modify/create <Context backgroundProcessorDelay="5" reloadable="false">
             if ( contextFile != null && contextFile.exists() )
             {
                 MavenFileFilterRequest mavenFileFilterRequest = new MavenFileFilterRequest();
@@ -283,6 +283,7 @@ public class RunMojo
                 .setDependencies( dependencies ) //
                 .setLog( getLog() ) //
                 .setMavenProject( project ) //
+                .setMavenSession( session ) //
                 .setAddWarDependenciesInClassloader( addWarDependenciesInClassloader ) //
                 .setUseTestClassPath( useTestClasspath );
             final ClassLoaderEntriesCalculatorResult classLoaderEntriesCalculatorResult =

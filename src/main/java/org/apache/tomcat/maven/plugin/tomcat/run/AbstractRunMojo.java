@@ -57,16 +57,10 @@ import org.apache.catalina.startup.CatalinaProperties;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.valves.AccessLogValve;
 import org.apache.commons.io.IOUtils;
-
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.factory.ArtifactFactory;
+import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
-import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
-import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
-import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -91,6 +85,10 @@ import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.classworlds.realm.DuplicateRealmException;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
+import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -108,22 +106,22 @@ public abstract class AbstractRunMojo
     // ---------------------------------------------------------------------
 
     /**
-     * Used to look up Artifacts in the remote repository.
+     * Used to resolve artifacts using Eclipse Aether.
      */
     @Component
-    protected ArtifactFactory factory;
+    protected org.eclipse.aether.RepositorySystem repositorySystem;
 
     /**
      * Location of the local repository.
      */
     @Parameter( defaultValue = "${localRepository}", required = true, readonly = true )
-    private ArtifactRepository local;
+    private ArtifactRepository localRepository;
 
     /**
-     * Used to look up Artifacts in the remote repository.
+     * List of Remote Repositories used by the resolver.
      */
-    @Component
-    protected ArtifactResolver resolver;
+    @Parameter( defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true )
+    private List<ArtifactRepository> remoteRepos;
 
     // ----------------------------------------------------------------------
     // Mojo Parameters
@@ -1215,13 +1213,13 @@ public abstract class AbstractRunMojo
 
                 portProperties.put( "tomcat.maven.http.port", Integer.toString( connector.getLocalPort() ) );
 
-                session.getExecutionProperties().put( "tomcat.maven.http.port",
+                session.getUserProperties().put( "tomcat.maven.http.port",
                                                       Integer.toString( connector.getLocalPort() ) );
                 System.setProperty( "tomcat.maven.http.port", Integer.toString( connector.getLocalPort() ) );
 
                 if ( httpsConnector != null )
                 {
-                    session.getExecutionProperties().put( "tomcat.maven.https.port",
+                    session.getUserProperties().put( "tomcat.maven.https.port",
                                                           Integer.toString( httpsConnector.getLocalPort() ) );
                     portProperties.put( "tomcat.maven.https.port", Integer.toString( httpsConnector.getLocalPort() ) );
                     System.setProperty( "tomcat.maven.https.port", Integer.toString( httpsConnector.getLocalPort() ) );
@@ -1229,7 +1227,7 @@ public abstract class AbstractRunMojo
 
                 if ( ajpConnector != null )
                 {
-                    session.getExecutionProperties().put( "tomcat.maven.ajp.port",
+                    session.getUserProperties().put( "tomcat.maven.ajp.port",
                                                           Integer.toString( ajpConnector.getLocalPort() ) );
                     portProperties.put( "tomcat.maven.ajp.port", Integer.toString( ajpConnector.getLocalPort() ) );
                     System.setProperty( "tomcat.maven.ajp.port", Integer.toString( ajpConnector.getLocalPort() ) );
@@ -1310,7 +1308,7 @@ public abstract class AbstractRunMojo
 
     public Set<Artifact> getProjectArtifacts()
     {
-        return project.getArtifacts();
+        return project.getDependencyArtifacts();
     }
 
     /**
@@ -1375,14 +1373,13 @@ public abstract class AbstractRunMojo
         // Let's add other modules
         List<Context> contexts = new ArrayList<>();
 
-        ScopeArtifactFilter filter = new ScopeArtifactFilter( "tomcat" );
-        Set<Artifact> artifacts = project.getArtifacts();
+        Set<Artifact> artifacts = project.getDependencyArtifacts();
         for ( Artifact artifact : artifacts )
         {
 
             // Artifact is not yet registered and it has neither test, nor a
             // provided scope, not is it optional
-            if ( "war".equals( artifact.getType() ) && !artifact.isOptional() && filter.include( artifact ) )
+            if ( "war".equals( artifact.getType() ) && !artifact.isOptional() && Artifact.SCOPE_COMPILE.equals( artifact.getScope() ) )
             {
                 addContextFromArtifact( container, contexts, artifact, "/" + artifact.getArtifactId(), null, false );
             }
@@ -1485,46 +1482,62 @@ public abstract class AbstractRunMojo
     protected Artifact getArtifact( Webapp additionalWebapp )
         throws MojoExecutionException
     {
-
-        Artifact artifact;
-        VersionRange vr;
         try
         {
-            vr = VersionRange.createFromVersionSpec( additionalWebapp.getVersion() );
+            ArtifactRequest artifactRequest = new ArtifactRequest();
+            org.eclipse.aether.artifact.Artifact inputArtifact = new org.eclipse.aether.artifact.DefaultArtifact(
+                additionalWebapp.getGroupId(),
+                additionalWebapp.getArtifactId(),
+                additionalWebapp.getClassifier(),
+                additionalWebapp.getType(),
+                additionalWebapp.getVersion()
+            );
+            artifactRequest.setArtifact( inputArtifact );
+            artifactRequest.setRepositories( convertToRemoteRepositories( project.getRemoteArtifactRepositories() ) );
+
+            org.eclipse.aether.RepositorySystemSession repoSession = new DefaultRepositorySystemSession( session.getRepositorySession() );
+            ArtifactResult result = repositorySystem.resolveArtifact( repoSession, artifactRequest );
+            org.eclipse.aether.artifact.Artifact resolvedArtifact = result.getArtifact();
+
+            if ( resolvedArtifact != null && resolvedArtifact.getFile() != null )
+            {
+                return new DefaultArtifact(
+                    resolvedArtifact.getGroupId(),
+                    resolvedArtifact.getArtifactId(),
+                    resolvedArtifact.getVersion(),
+                    Artifact.SCOPE_COMPILE,
+                    resolvedArtifact.getExtension(),
+                    resolvedArtifact.getClassifier(),
+new DefaultArtifactHandler()
+                );
+            }
         }
-        catch ( InvalidVersionSpecificationException e )
+        catch ( org.eclipse.aether.resolution.ArtifactResolutionException e )
         {
-            getLog().warn( "fail to create versionRange from version: " + additionalWebapp.getVersion(), e );
-            vr = VersionRange.createFromVersion( additionalWebapp.getVersion() );
+            throw new MojoExecutionException( "Unable to resolve artifact: " + additionalWebapp.getGroupId()
+                + ":" + additionalWebapp.getArtifactId() + ":" + additionalWebapp.getVersion(), e );
         }
 
-        if ( additionalWebapp.getClassifier() == null || additionalWebapp.getClassifier().isEmpty() )
-        {
-            artifact =
-                factory.createDependencyArtifact( additionalWebapp.getGroupId(), additionalWebapp.getArtifactId(), vr,
-                                                  additionalWebapp.getType(), null, Artifact.SCOPE_COMPILE );
-        }
-        else
-        {
-            artifact =
-                factory.createDependencyArtifact( additionalWebapp.getGroupId(), additionalWebapp.getArtifactId(), vr,
-                                                  additionalWebapp.getType(), additionalWebapp.getClassifier(),
-                                                  Artifact.SCOPE_COMPILE );
-        }
-
-        try
-        {
-            resolver.resolve( artifact, project.getRemoteArtifactRepositories(), this.local );
-        }
-        catch ( ArtifactResolutionException e )
-        {
-            throw new MojoExecutionException( "Unable to resolve artifact.", e );
-        }
-        catch ( ArtifactNotFoundException e )
-        {
-            throw new MojoExecutionException( "Unable to find artifact.", e );
-        }
-
-        return artifact;
+        return new DefaultArtifact(
+            additionalWebapp.getGroupId(),
+            additionalWebapp.getArtifactId(),
+            additionalWebapp.getVersion(),
+            Artifact.SCOPE_COMPILE,
+            additionalWebapp.getType(),
+            additionalWebapp.getClassifier(),
+new DefaultArtifactHandler()
+        );
     }
+
+    private List<RemoteRepository> convertToRemoteRepositories( List<ArtifactRepository> mavenRepos )
+    {
+        List<RemoteRepository> remoteRepos = new ArrayList<>();
+        for ( ArtifactRepository repo : mavenRepos )
+        {
+            remoteRepos.add( new RemoteRepository.Builder( repo.getId(), "default", repo.getUrl() ).build() );
+        }
+        return remoteRepos;
+    }
+
+    
 }
