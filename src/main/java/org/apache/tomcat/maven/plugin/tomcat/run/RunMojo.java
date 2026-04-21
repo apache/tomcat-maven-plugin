@@ -283,7 +283,6 @@ public class RunMojo
                 .setDependencies( dependencies ) //
                 .setLog( getLog() ) //
                 .setMavenProject( project ) //
-                .setMavenSession( session ) //
                 .setAddWarDependenciesInClassloader( addWarDependenciesInClassloader ) //
                 .setUseTestClassPath( useTestClasspath );
             final ClassLoaderEntriesCalculatorResult classLoaderEntriesCalculatorResult =

@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,7 +30,6 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.archiver.ArchiverException;
@@ -50,9 +50,6 @@ public class DefaultClassLoaderEntriesCalculator
 
     @Requirement
     private ArchiverManager archiverManager;
-
-    @Requirement
-    private MavenSession mavenSession;
 
 
     @Override
@@ -242,11 +239,12 @@ public class DefaultClassLoaderEntriesCalculator
 
     protected boolean isInProjectReferences( Artifact artifact, MavenProject project )
     {
-        if ( mavenSession == null || mavenSession.getProjects() == null || mavenSession.getProjects().isEmpty() )
+        if ( project.getProjectReferences() == null || project.getProjectReferences().isEmpty() )
         {
             return false;
         }
-        for ( MavenProject mavenProject : mavenSession.getProjects() )
+        Collection<MavenProject> mavenProjects = project.getProjectReferences().values();
+        for ( MavenProject mavenProject : mavenProjects )
         {
             if ( mavenProject.getId() != null && mavenProject.getId().equals( artifact.getId() ) )
             {
