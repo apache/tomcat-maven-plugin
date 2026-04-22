@@ -59,19 +59,18 @@
         <failsafe.version>${surefire.version}</failsafe.version>
 
         <junit.version>4.13.2</junit.version>
-        <it.sleep.time>2000</it.sleep.time>
         <verifier.maven.debug>false</verifier.maven.debug>
         <verifier.debugJvm>false</verifier.debugJvm>
-        <distributionReleaseUrl>https://repository.apache.org/service/local/staging/deploy/maven2</distributionReleaseUrl>
 
+        <distributionReleaseUrl>https://repository.apache.org/service/local/staging/deploy/maven2</distributionReleaseUrl>
         <distributionSnapshotsUrl>https://repository.apache.org/content/repositories/snapshots</distributionSnapshotsUrl>
         <distributionIdSnapshots>apache.snapshots.https</distributionIdSnapshots>
 
-        <distributionSiteUrl>
-            scp://people.apache.org/www/tomcat.apache.org/maven-plugin-${project.version}</distributionSiteUrl>
+        <distributionSiteUrl>scp://people.apache.org/www/tomcat.apache.org/maven-plugin-${project.version}</distributionSiteUrl>
         <sitePath>maven-plugin-trunk</sitePath>
         <siteUrl>http://tomcat.apache.org/${sitePath}</siteUrl>
 
+        <it.sleep.time>2000</it.sleep.time>
         <!-- http port used to run it test -->
         <its.http.port>1973</its.http.port>
         <!-- https port used to run it test -->
