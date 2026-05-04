@@ -18,11 +18,9 @@
  */
 package org.apache.tomcat.maven.plugin.tomcat;
 
-import org.apache.maven.artifact.manager.WagonManager;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.wagon.authentication.AuthenticationInfo;
+import org.apache.maven.settings.Server;
 import org.apache.tomcat.maven.common.deployer.TomcatManager;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
 
@@ -63,12 +61,6 @@ public abstract class AbstractCatalinaMojo
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
-
-    /**
-     * The Maven Wagon manager to use when obtaining server authentication details.
-     */
-    @Component
-    private WagonManager wagonManager;
 
     /**
      * The full URL of the Tomcat manager instance to use.
@@ -185,16 +177,16 @@ public abstract class AbstractCatalinaMojo
             }
             else
             {
-                // obtain authenication details for specified server from wagon
-                AuthenticationInfo info = wagonManager.getAuthenticationInfo( server );
-                if ( info == null )
+                // obtain authentication details for specified server from settings
+                Server s = settings.getServer( server );
+                if ( s == null )
                 {
                     throw new MojoExecutionException(
                         messagesProvider.getMessage( "AbstractCatalinaMojo.unknownServer", server ) );
                 }
 
                 // derive username
-                userName = info.getUserName();
+                userName = s.getUsername();
                 if ( userName == null )
                 {
                     getLog().debug( messagesProvider.getMessage( "AbstractCatalinaMojo.defaultUserName" ) );
@@ -202,7 +194,7 @@ public abstract class AbstractCatalinaMojo
                 }
 
                 // derive password
-                password = info.getPassword();
+                password = s.getPassword();
                 if ( password == null )
                 {
                     getLog().debug( messagesProvider.getMessage( "AbstractCatalinaMojo.defaultPassword" ) );

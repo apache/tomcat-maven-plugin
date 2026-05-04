@@ -38,13 +38,8 @@ import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -59,6 +54,10 @@ import org.codehaus.plexus.archiver.jar.Manifest;
 import org.codehaus.plexus.archiver.jar.ManifestException;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.SelectorUtils;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResult;
 
 /**
  * @author Olivier Lamy
@@ -121,13 +120,7 @@ public abstract class AbstractExecWarMojo
     protected List<WarRunDependency> warRunDependencies;
 
     @Component
-    protected ArtifactResolver artifactResolver;
-
-    /**
-     * Maven Artifact Factory component.
-     */
-    @Component
-    protected ArtifactFactory artifactFactory;
+    protected RepositorySystem repositorySystem;
 
     /**
      * Location of the local repository.
@@ -140,6 +133,9 @@ public abstract class AbstractExecWarMojo
      */
     @Parameter( defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true )
     protected List<ArtifactRepository> remoteRepos;
+
+    @Parameter( defaultValue = "${session}", readonly = true, required = true )
+    protected org.apache.maven.execution.MavenSession session;
 
     @Component
     protected MavenProjectHelper projectHelper;
@@ -324,13 +320,7 @@ public abstract class AbstractExecWarMojo
                                 "Dependency '" + dependency.getGroupId() + "':'" + dependency.getArtifactId()
                                     + "' does not have version specified" );
                         }
-                        Artifact artifact = artifactFactory.createArtifactWithClassifier( dependency.getGroupId(), //
-                                                                                          dependency.getArtifactId(), //
-                                                                                          version, //
-                                                                                          dependency.getType(), //
-                                                                                          dependency.getClassifier() );
-
-                        artifactResolver.resolve( artifact, this.remoteRepos, this.local );
+                       Artifact artifact = toMavenArtifact( dependency.getGroupId(), dependency.getArtifactId(), version, dependency.getType(), dependency.getClassifier() );
 
                         File warFileToBundle = new File( resolvePluginWorkDir(), artifact.getFile().getName() );
                         FileUtils.copyFile( artifact.getFile(), warFileToBundle );
@@ -415,14 +405,7 @@ public abstract class AbstractExecWarMojo
                                 + "' does not have version specified" );
                     }
 
-                    // String groupId, String artifactId, String version, String scope, String type
-                    Artifact artifact = artifactFactory.createArtifact( dependency.getGroupId(), //
-                                                                        dependency.getArtifactId(), //
-                                                                        version, //
-                                                                        dependency.getScope(), //
-                                                                        dependency.getType() );
-
-                    artifactResolver.resolve( artifact, this.remoteRepos, this.local );
+                    Artifact artifact = toMavenArtifact( dependency.getGroupId(), dependency.getArtifactId(), version, dependency.getType(), null );
                     JarFile jarFile = new JarFile( artifact.getFile() );
                     extractJarToArchive( jarFile, os, this.excludes );
                 }
@@ -480,7 +463,7 @@ public abstract class AbstractExecWarMojo
             }
 
         }
-        catch (ManifestException | IOException | ArtifactNotFoundException | ArtifactResolutionException e )
+        catch (ManifestException | IOException e )
         {
             throw new MojoExecutionException( e.getMessage(), e );
         }
@@ -661,5 +644,52 @@ public abstract class AbstractExecWarMojo
             os.closeArchiveEntry();
         }
         file.close();
+    }
+
+    private Artifact toMavenArtifact( String groupId, String artifactId, String version, String type, String classifier )
+        throws MojoExecutionException
+    {
+        try
+        {
+            org.eclipse.aether.artifact.Artifact aetherArtifact = new DefaultArtifact(
+                    groupId,
+                    artifactId,
+                    classifier != null && !classifier.isEmpty() ? classifier : type,
+                    type,
+                    version
+            );
+
+            ArtifactRequest req = new ArtifactRequest();
+            req.setArtifact( aetherArtifact );
+
+            List<org.eclipse.aether.repository.RemoteRepository> aetherRepos = new ArrayList<>();
+            for ( ArtifactRepository repo : remoteRepos )
+            {
+                org.eclipse.aether.repository.RemoteRepository aetherRepo = new org.eclipse.aether.repository.RemoteRepository.Builder(
+                        repo.getId(), "default", repo.getUrl() )
+                        .build();
+                aetherRepos.add( aetherRepo );
+            }
+            req.setRepositories( aetherRepos );
+
+            ArtifactResult result = repositorySystem.resolveArtifact( session.getRepositorySession(), req );
+            org.eclipse.aether.artifact.Artifact resolved = result.getArtifact();
+
+            Artifact mavenArtifact = new org.apache.maven.artifact.DefaultArtifact(
+                    groupId,
+                    artifactId,
+                    version,
+                    Artifact.SCOPE_COMPILE,
+                    type,
+                    classifier != null && !classifier.isEmpty() ? classifier : "",
+                    new org.apache.maven.artifact.handler.DefaultArtifactHandler( type )
+            );
+            mavenArtifact.setFile( resolved.getFile() );
+            return mavenArtifact;
+        }
+        catch ( Exception e )
+        {
+            throw new MojoExecutionException( "Unable to resolve artifact: " + e.getMessage(), e );
+        }
     }
 }
