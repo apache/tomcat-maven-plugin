@@ -21,18 +21,15 @@ package org.apache.tomcat.maven.plugin.tomcat.deploy;
 import org.apache.maven.plugins.annotations.Mojo;
 
 /**
- * Redeploy a WAR in Tomcat without forking the package lifecycle. 
- * (Alias for the deploy-only goal with its update parameter set to true.)
+ * Redeploy a WAR in Tomcat without forking the package lifecycle. (Alias for the deploy-only goal with its update
+ * parameter set to true.)
  *
  * @since 2.1
  */
-@Mojo( name = "redeploy-only", threadSafe = true )
-public class RedeployOnlyMojo
-    extends DeployOnlyMojo
-{
+@Mojo(name = "redeploy-only", threadSafe = true)
+public class RedeployOnlyMojo extends DeployOnlyMojo {
     @Override
-    protected boolean isUpdate()
-    {
+    protected boolean isUpdate() {
         return true;
     }
 

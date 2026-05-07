@@ -20,15 +20,13 @@ package org.apache.tomcat.maven.common.run;
 
 /**
  * @author Olivier Lamy
+ * 
  * @since 2.0
  */
-public class TomcatRunException
-    extends Exception
-{
+public class TomcatRunException extends Exception {
     private static final long serialVersionUID = 1L;
 
-    public TomcatRunException( String s, Throwable throwable )
-    {
-        super( s, throwable );
+    public TomcatRunException(String s, Throwable throwable) {
+        super(s, throwable);
     }
 }

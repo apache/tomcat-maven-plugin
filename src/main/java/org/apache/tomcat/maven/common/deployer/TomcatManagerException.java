@@ -23,9 +23,7 @@ package org.apache.tomcat.maven.common.deployer;
  *
  * @author Mark Hobson (markhobson@gmail.com)
  */
-public class TomcatManagerException
-    extends Exception
-{
+public class TomcatManagerException extends Exception {
     // ----------------------------------------------------------------------
     // Constants
     // ----------------------------------------------------------------------
@@ -42,8 +40,7 @@ public class TomcatManagerException
     /**
      * Creates a new <code>TomcatManagerException</code> with no message or cause.
      */
-    public TomcatManagerException()
-    {
+    public TomcatManagerException() {
         super();
     }
 
@@ -52,9 +49,8 @@ public class TomcatManagerException
      *
      * @param message the message for this exception
      */
-    public TomcatManagerException( String message )
-    {
-        super( message );
+    public TomcatManagerException(String message) {
+        super(message);
     }
 
     /**
@@ -63,8 +59,7 @@ public class TomcatManagerException
      * @param message the message for this exception
      * @param cause   the cause of this exception
      */
-    public TomcatManagerException( String message, Throwable cause )
-    {
-        super( message, cause );
+    public TomcatManagerException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

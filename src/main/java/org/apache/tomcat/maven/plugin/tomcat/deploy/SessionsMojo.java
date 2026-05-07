@@ -30,10 +30,8 @@ import java.io.IOException;
  *
  * @since 3.0
  */
-@Mojo( name = "sessions", threadSafe = true )
-public class SessionsMojo
-    extends AbstractCatalinaMojo
-{
+@Mojo(name = "sessions", threadSafe = true)
+public class SessionsMojo extends AbstractCatalinaMojo {
     // ----------------------------------------------------------------------
     // Protected Methods
     // ----------------------------------------------------------------------
@@ -42,13 +40,11 @@ public class SessionsMojo
      * {@inheritDoc}
      */
     @Override
-    protected void invokeManager()
-        throws MojoExecutionException, TomcatManagerException, IOException
-    {
-        getLog().info( messagesProvider.getMessage( "SessionsMojo.listSessions", getURL() ) );
+    protected void invokeManager() throws MojoExecutionException, TomcatManagerException, IOException {
+        getLog().info(messagesProvider.getMessage("SessionsMojo.listSessions", getURL()));
 
-        String responseBody = getManager().getSessions( getPath() ).getHttpResponseBody();
+        String responseBody = getManager().getSessions(getPath()).getHttpResponseBody();
 
-        log( responseBody );
+        log(responseBody);
     }
 }

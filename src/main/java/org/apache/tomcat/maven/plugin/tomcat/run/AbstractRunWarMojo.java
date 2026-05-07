@@ -27,9 +27,7 @@ import java.io.File;
  *
  * @author Mark Hobson (markhobson@gmail.com)
  */
-public abstract class AbstractRunWarMojo
-    extends AbstractRunMojo
-{
+public abstract class AbstractRunWarMojo extends AbstractRunMojo {
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
@@ -37,7 +35,7 @@ public abstract class AbstractRunWarMojo
     /**
      * The path of the exploded WAR directory to run.
      */
-    @Parameter( property = "maven.tomcat.warDirectory", defaultValue = "${project.build.directory}/${project.build.finalName}", required = true )
+    @Parameter(property = "maven.tomcat.warDirectory", defaultValue = "${project.build.directory}/${project.build.finalName}", required = true)
     private File warDirectory;
 
     // ----------------------------------------------------------------------
@@ -48,8 +46,7 @@ public abstract class AbstractRunWarMojo
      * {@inheritDoc}
      */
     @Override
-    protected File getDocBase()
-    {
+    protected File getDocBase() {
         return warDirectory;
     }
 
@@ -57,8 +54,7 @@ public abstract class AbstractRunWarMojo
      * {@inheritDoc}
      */
     @Override
-    protected File getContextFile()
-    {
+    protected File getContextFile() {
         return contextFile;
     }
 }

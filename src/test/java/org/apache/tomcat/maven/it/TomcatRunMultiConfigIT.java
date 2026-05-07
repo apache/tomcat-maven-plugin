@@ -23,13 +23,9 @@ import org.apache.maven.it.VerificationException;
 /**
  * @author Olivier Lamy
  */
-public class TomcatRunMultiConfigIT
-    extends AbstractTomcatRunMultiConfigIT
-{
+public class TomcatRunMultiConfigIT extends AbstractTomcatRunMultiConfigIT {
     @Override
-    protected void verifyConnectorsStarted()
-        throws VerificationException
-    {
+    protected void verifyConnectorsStarted() throws VerificationException {
         verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"http-nio-" + getHttpItPort() + "\"]");
         verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"https-jsse-nio-" + getHttpsItPort() + "\"]");
         verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"ajp-nio-127.0.0.1-" + getAjpItPort() + "\"]");

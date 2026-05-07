@@ -27,24 +27,22 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * Registry which collects all embedded Tomcat Servers so that they will be shutdown
- * through a shutdown hook when the JVM terminates or you can ask the registry to
- * shutdown all started servers.
+ * Registry which collects all embedded Tomcat Servers so that they will be shutdown through a shutdown hook when the
+ * JVM terminates or you can ask the registry to shutdown all started servers.
  *
  * @author Mark Michaelis
+ * 
  * @since 1.1
  */
-public final class EmbeddedRegistry
-{
+public final class EmbeddedRegistry {
     private static EmbeddedRegistry instance;
 
-    private final Set<Object> containers = new HashSet<>( 1 );
+    private final Set<Object> containers = new HashSet<>(1);
 
     /**
      * Don't instantiate - use the instance through {@link #getInstance()}.
      */
-    private EmbeddedRegistry()
-    {
+    private EmbeddedRegistry() {
         // no op
     }
 
@@ -53,18 +51,13 @@ public final class EmbeddedRegistry
      *
      * @return singleton instance of the registry
      */
-    public static EmbeddedRegistry getInstance()
-    {
-        if ( instance == null )
-        {
+    public static EmbeddedRegistry getInstance() {
+        if (instance == null) {
             instance = new EmbeddedRegistry();
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                try
-                {
-                    getInstance().shutdownAll( null );
-                }
-                catch ( Exception e )
-                {
+                try {
+                    getInstance().shutdownAll(null);
+                } catch (Exception e) {
                     // ignore, the exception should already have been reported
                 }
             }));
@@ -73,99 +66,77 @@ public final class EmbeddedRegistry
     }
 
     /**
-     * Adds the given container to the registry which automatically registers it for the shutdown
-     * hook.
+     * Adds the given container to the registry which automatically registers it for the shutdown hook.
      *
      * @param container the container to register
+     * 
      * @return true if it got added; false if not
      */
-    public synchronized boolean register( final Object container )
-    {
-        return containers.add( container );
+    public synchronized boolean register(final Object container) {
+        return containers.add(container);
     }
 
     /**
-     * Shuts down all registered embedded tomcats. All tomcats which successfully shut down will be
-     * removed from the registry.
+     * Shuts down all registered embedded tomcats. All tomcats which successfully shut down will be removed from the
+     * registry.
      *
      * @param log the log to write possible shutdown exceptions to
+     * 
      * @throws Exception the first exception which occurred will be rethrown
      */
-    public synchronized void shutdownAll( final Log log )
-        throws Exception
-    {
+    public synchronized void shutdownAll(final Log log) throws Exception {
         Exception firstException = null;
-        for ( Iterator<Object> iterator = containers.iterator(); iterator.hasNext(); )
-        {
+        for (Iterator<Object> iterator = containers.iterator(); iterator.hasNext();) {
             Object embedded = iterator.next();
-            try
-            {
-                Method method = embedded.getClass().getMethod( "stop" );
-                method.invoke( embedded );
+            try {
+                Method method = embedded.getClass().getMethod("stop");
+                method.invoke(embedded);
                 iterator.remove();
-            }
-            catch ( NoSuchMethodException e )
-            {
-                if ( firstException == null )
-                {
+            } catch (NoSuchMethodException e) {
+                if (firstException == null) {
                     firstException = e;
-                    error( log, e, "no stop/destroy method in class " + embedded.getClass().getName() );
+                    error(log, e, "no stop/destroy method in class " + embedded.getClass().getName());
+                } else {
+                    error(log, e, "Error while shutting down embedded Tomcat.");
                 }
-                else
-                {
-                    error( log, e, "Error while shutting down embedded Tomcat." );
-                }
-            }
-            catch ( IllegalAccessException e )
-            {
-                if ( firstException == null )
-                {
+            } catch (IllegalAccessException e) {
+                if (firstException == null) {
                     firstException = e;
-                    error( log, e, "IllegalAccessException for stop/destroy method in class " + embedded.getClass().getName() );
+                    error(log, e,
+                            "IllegalAccessException for stop/destroy method in class " + embedded.getClass().getName());
+                } else {
+                    error(log, e, "Error while shutting down embedded Tomcat.");
                 }
-                else
-                {
-                    error( log, e, "Error while shutting down embedded Tomcat." );
-                }
-            }
-            catch ( InvocationTargetException e )
-            {
+            } catch (InvocationTargetException e) {
 
-                if ( firstException == null )
-                {
+                if (firstException == null) {
                     firstException = e;
-                    error( log, e, "IllegalAccessException for stop/destroy method in class " + embedded.getClass().getName() );
-                }
-                else
-                {
-                    error( log, e, "Error while shutting down embedded Tomcat." );
+                    error(log, e,
+                            "IllegalAccessException for stop/destroy method in class " + embedded.getClass().getName());
+                } else {
+                    error(log, e, "Error while shutting down embedded Tomcat.");
                 }
             }
         }
-        if ( firstException != null )
-        {
+        if (firstException != null) {
             throw firstException;
         }
     }
 
     /**
-     * Reports the exception. If a log is given (typically when called from within a Mojo) the
-     * message will be printed to the log. Otherwise it will be printed to StdErr.
+     * Reports the exception. If a log is given (typically when called from within a Mojo) the message will be printed
+     * to the log. Otherwise it will be printed to StdErr.
      *
      * @param log     the log to write the message to; null to write to stderr
      * @param e       exception which shall be reported
      * @param message message which shall be reported
      */
-    private void error( final Log log, final Exception e, final String message )
-    {
-        if ( log == null )
-        {
-            System.err.println( "ERROR: " + message );
+    private void error(final Log log, final Exception e, final String message) {
+        if (log == null) {
+            System.err.println("ERROR: " + message);
             e.printStackTrace();
-        }
-        else
-        {
-            log.error( message, e );
+        } else {
+            log.error(message, e);
         }
     }
 

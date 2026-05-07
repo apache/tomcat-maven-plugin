@@ -22,12 +22,12 @@ package org.apache.tomcat.maven.common.messages;
  * messages provider
  *
  * @author Olivier Lamy
+ * 
  * @since 2.0
  */
-public interface MessagesProvider
-{
-    String getMessage( String key );
+public interface MessagesProvider {
+    String getMessage(String key);
 
-    String getMessage( String key, Object... param1 );
+    String getMessage(String key, Object... param1);
 
 }

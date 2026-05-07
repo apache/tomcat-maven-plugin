@@ -27,9 +27,7 @@ import static org.junit.Assert.assertNotNull;
  *
  * @author Mark Michaelis
  */
-public class AbstractUsageContextpathIT
-    extends AbstractWarProjectIT
-{
+public class AbstractUsageContextpathIT extends AbstractWarProjectIT {
 
     private static final String WEBAPP_URL = "http://localhost:" + getHttpItPort() + "/lorem/index.html";
 
@@ -39,26 +37,22 @@ public class AbstractUsageContextpathIT
     private static final String WAR_ARTIFACT_ID = "usage-contextpath";
 
     @Override
-    protected String getWebappUrl()
-    {
+    protected String getWebappUrl() {
         return WEBAPP_URL;
     }
 
     @Override
-    protected String getWarArtifactId()
-    {
+    protected String getWarArtifactId() {
         return WAR_ARTIFACT_ID;
     }
 
     @Test
-    public void testIt()
-        throws Exception
-    {
+    public void testIt() throws Exception {
         final String responseBody = executeVerifyWithGet();
-        assertNotNull( "Received message body must not be null.", responseBody );
-        assertContains( "Response must match expected content.", "Success!", responseBody );
+        assertNotNull("Received message body must not be null.", responseBody);
+        assertContains("Response must match expected content.", "Success!", responseBody);
 
-        logger.info( "Error Free Log check" );
+        logger.info("Error Free Log check");
         verifier.verifyErrorFreeLog();
     }
 

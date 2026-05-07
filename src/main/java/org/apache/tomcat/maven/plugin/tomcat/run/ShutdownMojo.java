@@ -27,28 +27,27 @@ import org.apache.tomcat.maven.plugin.tomcat.AbstractTomcatMojo;
 
 /**
  * <p>
- * Shuts down all possibly started embedded Tomcat servers. This will be automatically done
- * through a shutdown hook or you may call this Mojo to shut them down explictly.
+ * Shuts down all possibly started embedded Tomcat servers. This will be automatically done through a shutdown hook or
+ * you may call this Mojo to shut them down explictly.
  * </p>
  * <p>
- * By default the <code>shutdown</code> goal is not bound to any phase. For integration tests
- * you might want to bind it to <code>post-integration-test</code>.
+ * By default the <code>shutdown</code> goal is not bound to any phase. For integration tests you might want to bind it
+ * to <code>post-integration-test</code>.
  * </p>
  *
  * @author Mark Michaelis
+ * 
  * @since 2.0
  */
-@Mojo( name = "shutdown", requiresDependencyResolution = ResolutionScope.RUNTIME, threadSafe = true )
-public class ShutdownMojo
-    extends AbstractTomcatMojo
-{
+@Mojo(name = "shutdown", requiresDependencyResolution = ResolutionScope.RUNTIME, threadSafe = true)
+public class ShutdownMojo extends AbstractTomcatMojo {
 
     /**
      * Ignore error when shutdown
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.skipErrorOnShutdown", defaultValue = "false" )
+    @Parameter(property = "maven.tomcat.skipErrorOnShutdown", defaultValue = "false")
     protected boolean skipErrorOnShutdown;
 
     /**
@@ -56,33 +55,25 @@ public class ShutdownMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.skipShutdown", defaultValue = "false" )
+    @Parameter(property = "maven.tomcat.skipShutdown", defaultValue = "false")
     protected boolean skip;
 
     /**
      * Shuts down all embedded tomcats which got started up to now.
      *
-     * @throws org.apache.maven.plugin.MojoExecutionException
-     *          if shutting down one or all servers failed
+     * @throws org.apache.maven.plugin.MojoExecutionException if shutting down one or all servers failed
      */
     @Override
-    public void execute()
-        throws MojoExecutionException
-    {
-        if ( skip )
-        {
-            getLog().info( "skip execution" );
+    public void execute() throws MojoExecutionException {
+        if (skip) {
+            getLog().info("skip execution");
             return;
         }
-        try
-        {
-            EmbeddedRegistry.getInstance().shutdownAll( getLog() );
-        }
-        catch ( Exception e )
-        {
-            if ( !skipErrorOnShutdown )
-            {
-                throw new MojoExecutionException( messagesProvider.getMessage( "ShutdownMojo.shutdownError" ), e );
+        try {
+            EmbeddedRegistry.getInstance().shutdownAll(getLog());
+        } catch (Exception e) {
+            if (!skipErrorOnShutdown) {
+                throw new MojoExecutionException(messagesProvider.getMessage("ShutdownMojo.shutdownError"), e);
             }
         }
     }

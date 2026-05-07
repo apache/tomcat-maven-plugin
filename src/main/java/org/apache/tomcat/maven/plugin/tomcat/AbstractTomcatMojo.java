@@ -28,12 +28,11 @@ import org.apache.tomcat.maven.common.messages.MessagesProvider;
 
 /**
  * @author Olivier Lamy
+ * 
  * @since 2.0
  */
-public abstract class AbstractTomcatMojo
-    extends AbstractMojo
-{
-    @Parameter( defaultValue = "${settings}", readonly = true )
+public abstract class AbstractTomcatMojo extends AbstractMojo {
+    @Parameter(defaultValue = "${settings}", readonly = true)
     protected Settings settings;
 
     @Component
@@ -51,8 +50,7 @@ public abstract class AbstractTomcatMojo
     protected String path;
 
 
-    protected String getPath()
-    {
+    protected String getPath() {
         return path;
     }
 
@@ -60,12 +58,10 @@ public abstract class AbstractTomcatMojo
      * Check response of Tomcat to know if ok or not.
      *
      * @param tomcatResponse response of tomcat return by TomcatManager class
-     * @throws org.apache.maven.plugin.MojoExecutionException
-     *          if HTTP status code greater than 400 (included)
+     * 
+     * @throws org.apache.maven.plugin.MojoExecutionException if HTTP status code greater than 400 (included)
      */
-    protected void checkTomcatResponse( TomcatManagerResponse tomcatResponse )
-        throws MojoExecutionException
-    {
+    protected void checkTomcatResponse(TomcatManagerResponse tomcatResponse) throws MojoExecutionException {
         int statusCode = tomcatResponse.getStatusCode();
 
         if (statusCode >= 400) {

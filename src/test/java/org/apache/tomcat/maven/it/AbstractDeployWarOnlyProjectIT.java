@@ -28,39 +28,32 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Mark Michaelis
  */
-public abstract class AbstractDeployWarOnlyProjectIT
-    extends AbstractWarProjectIT
-{
+public abstract class AbstractDeployWarOnlyProjectIT extends AbstractWarProjectIT {
 
     @Override
-    protected String getWebappUrl()
-    {
+    protected String getWebappUrl() {
         return "http://localhost:" + getHttpItPort() + "/bar/";
     }
 
     @Override
-    protected String getWarArtifactId()
-    {
+    protected String getWarArtifactId() {
         return "deploy-only-war-project";
     }
 
     @Test
-    public void testIt()
-        throws Exception
-    {
+    public void testIt() throws Exception {
         final String responseBody = executeVerifyWithGet();
-        assertNotNull( "Received message body must not be null.", responseBody );
-        assertContains( "Response must match expected content.", "It works !!", responseBody );
+        assertNotNull("Received message body must not be null.", responseBody);
+        assertContains("Response must match expected content.", "It works !!", responseBody);
 
-        assertTrue( "Tomcat folder should exist in target folder of project at " + webappHome,
-                    new File( webappHome, "target/tomcat" ).exists() );
-        logger.info( "Error Free Log check" );
+        assertTrue("Tomcat folder should exist in target folder of project at " + webappHome,
+                new File(webappHome, "target/tomcat").exists());
+        logger.info("Error Free Log check");
         verifier.verifyErrorFreeLog();
     }
 
     @Override
-    protected int getTimeout()
-    {
+    protected int getTimeout() {
         return 40000;
     }
 }

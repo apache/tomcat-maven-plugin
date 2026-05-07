@@ -21,8 +21,6 @@ package org.apache.tomcat.maven.it;
 /**
  * @author Olivier Lamy
  */
-public class TomcatDeployWarProjectIT
-    extends AbstractDeployWarProjectIT
-{
+public class TomcatDeployWarProjectIT extends AbstractDeployWarProjectIT {
     // no op
 }

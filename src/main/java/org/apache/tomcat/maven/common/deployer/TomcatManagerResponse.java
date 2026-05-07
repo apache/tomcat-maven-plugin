@@ -20,50 +20,43 @@ package org.apache.tomcat.maven.common.deployer;
 
 /**
  * @author Olivier Lamy
+ * 
  * @since 2.0
  */
-public class TomcatManagerResponse
-{
+public class TomcatManagerResponse {
     private int statusCode;
 
     private String reasonPhrase;
 
     private String httpResponseBody;
 
-    public TomcatManagerResponse()
-    {
+    public TomcatManagerResponse() {
         // no op
     }
 
-    public int getStatusCode()
-    {
+    public int getStatusCode() {
         return statusCode;
     }
 
-    public TomcatManagerResponse setStatusCode( int statusCode )
-    {
+    public TomcatManagerResponse setStatusCode(int statusCode) {
         this.statusCode = statusCode;
         return this;
     }
 
-    public String getReasonPhrase()
-    {
+    public String getReasonPhrase() {
         return reasonPhrase;
     }
 
-    public TomcatManagerResponse setReasonPhrase( String reasonPhrase )
-    {
+    public TomcatManagerResponse setReasonPhrase(String reasonPhrase) {
         this.reasonPhrase = reasonPhrase;
         return this;
     }
 
-    public String getHttpResponseBody()
-    {
+    public String getHttpResponseBody() {
         return httpResponseBody;
     }
 
-    public TomcatManagerResponse setHttpResponseBody( String httpResponseBody )
-    {
+    public TomcatManagerResponse setHttpResponseBody(String httpResponseBody) {
         this.httpResponseBody = httpResponseBody;
         return this;
     }

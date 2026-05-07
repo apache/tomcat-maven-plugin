@@ -28,10 +28,8 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  *
  * @author Mark Hobson (markhobson@gmail.com)
  */
-@Mojo( name = "run-war", requiresDependencyResolution = ResolutionScope.RUNTIME, threadSafe = true )
-@Execute( phase = LifecyclePhase.PACKAGE )
-public class RunWarMojo
-    extends AbstractRunWarMojo
-{
+@Mojo(name = "run-war", requiresDependencyResolution = ResolutionScope.RUNTIME, threadSafe = true)
+@Execute(phase = LifecyclePhase.PACKAGE)
+public class RunWarMojo extends AbstractRunWarMojo {
     // no-op : only mojo metadata overriding
 }

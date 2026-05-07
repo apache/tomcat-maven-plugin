@@ -31,10 +31,8 @@ import java.io.IOException;
  *
  * @since 3.0
  */
-@Mojo( name = "resources", threadSafe = true )
-public class ResourcesMojo
-    extends AbstractCatalinaMojo
-{
+@Mojo(name = "resources", threadSafe = true)
+public class ResourcesMojo extends AbstractCatalinaMojo {
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
@@ -42,7 +40,7 @@ public class ResourcesMojo
     /**
      * The type of resources to list, or <code>null</code> for all.
      */
-    @Parameter( property = "maven.tomcat.type" )
+    @Parameter(property = "maven.tomcat.type")
     private String type;
 
     // ----------------------------------------------------------------------
@@ -53,20 +51,15 @@ public class ResourcesMojo
      * {@inheritDoc}
      */
     @Override
-    protected void invokeManager()
-        throws MojoExecutionException, TomcatManagerException, IOException
-    {
-        if ( type == null )
-        {
-            getLog().info( messagesProvider.getMessage( "ResourcesMojo.listAllResources", getURL() ) );
-        }
-        else
-        {
-            getLog().info( messagesProvider.getMessage( "ResourcesMojo.listTypedResources", type, getURL() ) );
+    protected void invokeManager() throws MojoExecutionException, TomcatManagerException, IOException {
+        if (type == null) {
+            getLog().info(messagesProvider.getMessage("ResourcesMojo.listAllResources", getURL()));
+        } else {
+            getLog().info(messagesProvider.getMessage("ResourcesMojo.listTypedResources", type, getURL()));
         }
 
-        String responseBody = getManager().getResources( type ).getHttpResponseBody();
+        String responseBody = getManager().getResources(type).getHttpResponseBody();
 
-        log( responseBody );
+        log(responseBody);
     }
 }

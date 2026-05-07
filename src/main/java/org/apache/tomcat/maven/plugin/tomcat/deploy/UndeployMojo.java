@@ -32,10 +32,8 @@ import java.io.IOException;
  *
  * @since 2.1
  */
-@Mojo( name = "undeploy", threadSafe = true )
-public class UndeployMojo
-    extends AbstractWarCatalinaMojo
-{
+@Mojo(name = "undeploy", threadSafe = true)
+public class UndeployMojo extends AbstractWarCatalinaMojo {
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
@@ -43,7 +41,7 @@ public class UndeployMojo
     /**
      * Whether to fail the build if the web application cannot be undeployed.
      */
-    @Parameter( property = "maven.tomcat.failOnError", defaultValue = "true" )
+    @Parameter(property = "maven.tomcat.failOnError", defaultValue = "true")
     private boolean failOnError;
 
     // ----------------------------------------------------------------------
@@ -54,29 +52,23 @@ public class UndeployMojo
      * {@inheritDoc}
      */
     @Override
-    protected void invokeManager()
-        throws MojoExecutionException, TomcatManagerException, IOException
-    {
-        getLog().info( messagesProvider.getMessage( "UndeployMojo.undeployingApp", getDeployedURL() ) );
+    protected void invokeManager() throws MojoExecutionException, TomcatManagerException, IOException {
+        getLog().info(messagesProvider.getMessage("UndeployMojo.undeployingApp", getDeployedURL()));
 
-        try
-        {
+        try {
 
-            TomcatManagerResponse tomcatResponse = getManager().undeploy( getPath() );
+            TomcatManagerResponse tomcatResponse = getManager().undeploy(getPath());
 
-            checkTomcatResponse( tomcatResponse );
+            checkTomcatResponse(tomcatResponse);
 
-            log( tomcatResponse.getHttpResponseBody() );
+            log(tomcatResponse.getHttpResponseBody());
 
-        }
-        catch ( TomcatManagerException e )
-        {
-            if ( failOnError )
-            {
+        } catch (TomcatManagerException e) {
+            if (failOnError) {
                 throw e;
             }
 
-            getLog().warn( messagesProvider.getMessage( "UndeployMojo.undeployError", e.getMessage() ) );
+            getLog().warn(messagesProvider.getMessage("UndeployMojo.undeployError", e.getMessage()));
         }
     }
 

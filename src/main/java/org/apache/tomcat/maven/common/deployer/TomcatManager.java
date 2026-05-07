@@ -46,8 +46,7 @@ import org.apache.maven.wagon.proxy.ProxyUtils;
  *
  * @author Mark Hobson (markhobson@gmail.com)
  */
-public class TomcatManager
-{
+public class TomcatManager {
     // ----------------------------------------------------------------------
     // Constants
     // ----------------------------------------------------------------------
@@ -112,9 +111,8 @@ public class TomcatManager
      *
      * @param url the full URL of the Tomcat manager instance to use
      */
-    public TomcatManager( URL url )
-    {
-        this( url, "admin" );
+    public TomcatManager(URL url) {
+        this(url, "admin");
     }
 
     /**
@@ -124,9 +122,8 @@ public class TomcatManager
      * @param url      the full URL of the Tomcat manager instance to use
      * @param username the username to use when authenticating with Tomcat manager
      */
-    public TomcatManager( URL url, String username )
-    {
-        this( url, username, "" );
+    public TomcatManager(URL url, String username) {
+        this(url, username, "");
     }
 
     /**
@@ -136,9 +133,8 @@ public class TomcatManager
      * @param username the username to use when authenticating with Tomcat manager
      * @param password the password to use when authenticating with Tomcat manager
      */
-    public TomcatManager( URL url, String username, String password )
-    {
-        this( url, username, password, "ISO-8859-1" );
+    public TomcatManager(URL url, String username, String password) {
+        this(url, username, password, "ISO-8859-1");
     }
 
 
@@ -150,9 +146,8 @@ public class TomcatManager
      * @param password the password to use when authenticating with Tomcat manager
      * @param charset  the URL encoding charset to use when communicating with Tomcat manager
      */
-    public TomcatManager( URL url, String username, String password, String charset )
-    {
-        this( url, username, password, charset, true );
+    public TomcatManager(URL url, String username, String password, String charset) {
+        this(url, username, password, charset, true);
     }
 
     /**
@@ -163,10 +158,10 @@ public class TomcatManager
      * @param password the password to use when authenticating with Tomcat manager
      * @param charset  the URL encoding charset to use when communicating with Tomcat manager
      * @param verbose  if the build is in verbose mode (quiet mode otherwise)
+     * 
      * @since 2.2
      */
-    public TomcatManager( URL url, String username, String password, String charset, boolean verbose )
-    {
+    public TomcatManager(URL url, String username, String password, String charset, boolean verbose) {
         this.url = url;
         this.username = username;
         this.password = password;
@@ -184,8 +179,7 @@ public class TomcatManager
      *
      * @return the full URL of the Tomcat manager instance
      */
-    public URL getURL()
-    {
+    public URL getURL() {
         return url;
     }
 
@@ -194,8 +188,7 @@ public class TomcatManager
      *
      * @return the username to use when authenticating with Tomcat manager
      */
-    public String getUserName()
-    {
+    public String getUserName() {
         return username;
     }
 
@@ -204,8 +197,7 @@ public class TomcatManager
      *
      * @return the password to use when authenticating with Tomcat manager
      */
-    public String getPassword()
-    {
+    public String getPassword() {
         return password;
     }
 
@@ -214,8 +206,7 @@ public class TomcatManager
      *
      * @return the URL encoding charset to use when communicating with Tomcat manager
      */
-    public String getCharset()
-    {
+    public String getCharset() {
         return charset;
     }
 
@@ -224,8 +215,7 @@ public class TomcatManager
      *
      * @return the user agent name to use when communicating with Tomcat manager
      */
-    public String getUserAgent()
-    {
+    public String getUserAgent() {
         return userAgent;
     }
 
@@ -234,8 +224,7 @@ public class TomcatManager
      *
      * @param userAgent the user agent name to use when communicating with Tomcat manager
      */
-    public void setUserAgent( String userAgent )
-    {
+    public void setUserAgent(String userAgent) {
         this.userAgent = userAgent;
     }
 
@@ -244,8 +233,7 @@ public class TomcatManager
      *
      * @param proxy the proxy to use when communicating with Tomcat manager
      */
-    public void setProxy( Proxy proxy )
-    {
+    public void setProxy(Proxy proxy) {
         this.proxySettings = proxy;
     }
 
@@ -258,14 +246,14 @@ public class TomcatManager
      *
      * @param path the webapp context path to deploy to
      * @param war  the URL of the WAR to deploy
+     * 
      * @return the Tomcat manager response
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    public TomcatManagerResponse deploy( String path, URL war )
-        throws TomcatManagerException, IOException
-    {
-        return deploy( path, war, false );
+    public TomcatManagerResponse deploy(String path, URL war) throws TomcatManagerException, IOException {
+        return deploy(path, war, false);
     }
 
     /**
@@ -275,14 +263,15 @@ public class TomcatManager
      * @param path   the webapp context path to deploy to
      * @param war    the URL of the WAR to deploy
      * @param update whether to first undeploy the webapp if it already exists
+     * 
      * @return the Tomcat manager response
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    public TomcatManagerResponse deploy( String path, URL war, boolean update )
-        throws TomcatManagerException, IOException
-    {
-        return deploy( path, war, update, null );
+    public TomcatManagerResponse deploy(String path, URL war, boolean update)
+            throws TomcatManagerException, IOException {
+        return deploy(path, war, update, null);
     }
 
     /**
@@ -293,14 +282,15 @@ public class TomcatManager
      * @param war    the URL of the WAR to deploy
      * @param update whether to first undeploy the webapp if it already exists
      * @param tag    the tag name to use
+     * 
      * @return the Tomcat manager response
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    public TomcatManagerResponse deploy( String path, URL war, boolean update, String tag )
-        throws TomcatManagerException, IOException
-    {
-        return deployImpl( path, null, war, null, update, tag );
+    public TomcatManagerResponse deploy(String path, URL war, boolean update, String tag)
+            throws TomcatManagerException, IOException {
+        return deployImpl(path, null, war, null, update, tag);
     }
 
     /**
@@ -308,14 +298,14 @@ public class TomcatManager
      *
      * @param path the webapp context path to deploy to
      * @param war  an input stream to the WAR to deploy
+     * 
      * @return the Tomcat manager response
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    public TomcatManagerResponse deploy( String path, File war )
-        throws TomcatManagerException, IOException
-    {
-        return deploy( path, war, false );
+    public TomcatManagerResponse deploy(String path, File war) throws TomcatManagerException, IOException {
+        return deploy(path, war, false);
     }
 
     /**
@@ -325,14 +315,15 @@ public class TomcatManager
      * @param path   the webapp context path to deploy to
      * @param war    an input stream to the WAR to deploy
      * @param update whether to first undeploy the webapp if it already exists
+     * 
      * @return the Tomcat manager response
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    public TomcatManagerResponse deploy( String path, File war, boolean update )
-        throws TomcatManagerException, IOException
-    {
-        return deploy( path, war, update, null );
+    public TomcatManagerResponse deploy(String path, File war, boolean update)
+            throws TomcatManagerException, IOException {
+        return deploy(path, war, update, null);
     }
 
     /**
@@ -343,14 +334,15 @@ public class TomcatManager
      * @param war    an input stream to the WAR to deploy
      * @param update whether to first undeploy the webapp if it already exists
      * @param tag    the tag name to use
+     * 
      * @return the Tomcat manager response
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    public TomcatManagerResponse deploy( String path, File war, boolean update, String tag )
-        throws TomcatManagerException, IOException
-    {
-        return deployImpl( path, null, null, war, update, tag );
+    public TomcatManagerResponse deploy(String path, File war, boolean update, String tag)
+            throws TomcatManagerException, IOException {
+        return deployImpl(path, null, null, war, update, tag);
     }
 
     /**
@@ -362,15 +354,17 @@ public class TomcatManager
      * @param update whether to first undeploy the webapp if it already exists
      * @param tag    the tag name to use
      * @param length the size of the war deployed
+     * 
      * @return the Tomcat manager response
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
+     * 
      * @since 2.0
      */
-    public TomcatManagerResponse deploy( String path, File war, boolean update, String tag, long length )
-        throws TomcatManagerException, IOException
-    {
-        return deployImpl( path, null, null, war, update, tag, length );
+    public TomcatManagerResponse deploy(String path, File war, boolean update, String tag, long length)
+            throws TomcatManagerException, IOException {
+        return deployImpl(path, null, null, war, update, tag, length);
     }
 
     /**
@@ -378,14 +372,14 @@ public class TomcatManager
      *
      * @param path   the webapp context path to deploy to
      * @param config the URL of the context XML configuration to deploy
+     * 
      * @return the Tomcat manager response
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    public TomcatManagerResponse deployContext( String path, URL config )
-        throws TomcatManagerException, IOException
-    {
-        return deployContext( path, config, false );
+    public TomcatManagerResponse deployContext(String path, URL config) throws TomcatManagerException, IOException {
+        return deployContext(path, config, false);
     }
 
     /**
@@ -395,14 +389,15 @@ public class TomcatManager
      * @param path   the webapp context path to deploy to
      * @param config the URL of the context XML configuration to deploy
      * @param update whether to first undeploy the webapp if it already exists
+     * 
      * @return the Tomcat manager response
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    public TomcatManagerResponse deployContext( String path, URL config, boolean update )
-        throws TomcatManagerException, IOException
-    {
-        return deployContext( path, config, update, null );
+    public TomcatManagerResponse deployContext(String path, URL config, boolean update)
+            throws TomcatManagerException, IOException {
+        return deployContext(path, config, update, null);
     }
 
     /**
@@ -413,14 +408,15 @@ public class TomcatManager
      * @param config the URL of the context XML configuration to deploy
      * @param update whether to first undeploy the webapp if it already exists
      * @param tag    the tag name to use
+     * 
      * @return the Tomcat manager response
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    public TomcatManagerResponse deployContext( String path, URL config, boolean update, String tag )
-        throws TomcatManagerException, IOException
-    {
-        return deployContext( path, config, null, update, tag );
+    public TomcatManagerResponse deployContext(String path, URL config, boolean update, String tag)
+            throws TomcatManagerException, IOException {
+        return deployContext(path, config, null, update, tag);
     }
 
     /**
@@ -429,14 +425,15 @@ public class TomcatManager
      * @param path   the webapp context path to deploy to
      * @param config the URL of the context XML configuration to deploy
      * @param war    the URL of the WAR to deploy
+     * 
      * @return the Tomcat manager response
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    public TomcatManagerResponse deployContext( String path, URL config, URL war )
-        throws TomcatManagerException, IOException
-    {
-        return deployContext( path, config, war, false );
+    public TomcatManagerResponse deployContext(String path, URL config, URL war)
+            throws TomcatManagerException, IOException {
+        return deployContext(path, config, war, false);
     }
 
     /**
@@ -447,14 +444,15 @@ public class TomcatManager
      * @param config the URL of the context XML configuration to deploy
      * @param war    the URL of the WAR to deploy
      * @param update whether to first undeploy the webapp if it already exists
+     * 
      * @return the Tomcat manager response
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    public TomcatManagerResponse deployContext( String path, URL config, URL war, boolean update )
-        throws TomcatManagerException, IOException
-    {
-        return deployContext( path, config, war, update, null );
+    public TomcatManagerResponse deployContext(String path, URL config, URL war, boolean update)
+            throws TomcatManagerException, IOException {
+        return deployContext(path, config, war, update, null);
     }
 
     /**
@@ -466,14 +464,15 @@ public class TomcatManager
      * @param war    the URL of the WAR to deploy
      * @param update whether to first undeploy the webapp if it already exists
      * @param tag    the tag name to use
+     * 
      * @return the Tomcat manager response
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    public TomcatManagerResponse deployContext( String path, URL config, URL war, boolean update, String tag )
-        throws TomcatManagerException, IOException
-    {
-        return deployImpl( path, config, war, null, update, tag );
+    public TomcatManagerResponse deployContext(String path, URL config, URL war, boolean update, String tag)
+            throws TomcatManagerException, IOException {
+        return deployImpl(path, config, war, null, update, tag);
     }
 
     // ----------------------------------------------------------------------
@@ -484,130 +483,126 @@ public class TomcatManager
      * Undeploys the webapp at the specified context path.
      *
      * @param path the webapp context path to undeploy
+     * 
      * @return the Tomcat manager response
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    public TomcatManagerResponse undeploy( String path )
-        throws TomcatManagerException, IOException
-    {
-        return invoke( "/undeploy?path=" + URLEncoder.encode( path, charset ) );
+    public TomcatManagerResponse undeploy(String path) throws TomcatManagerException, IOException {
+        return invoke("/undeploy?path=" + URLEncoder.encode(path, charset));
     }
 
     /**
      * Reloads the webapp at the specified context path.
      *
      * @param path the webapp context path to reload
+     * 
      * @return the Tomcat manager response
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    public TomcatManagerResponse reload( String path )
-        throws TomcatManagerException, IOException
-    {
-        return invoke( "/reload?path=" + URLEncoder.encode( path, charset ) );
+    public TomcatManagerResponse reload(String path) throws TomcatManagerException, IOException {
+        return invoke("/reload?path=" + URLEncoder.encode(path, charset));
     }
 
     /**
      * Starts the webapp at the specified context path.
      *
      * @param path the webapp context path to start
+     * 
      * @return the Tomcat manager response
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    public TomcatManagerResponse start( String path )
-        throws TomcatManagerException, IOException
-    {
-        return invoke( "/start?path=" + URLEncoder.encode( path, charset ) );
+    public TomcatManagerResponse start(String path) throws TomcatManagerException, IOException {
+        return invoke("/start?path=" + URLEncoder.encode(path, charset));
     }
 
     /**
      * Stops the webapp at the specified context path.
      *
      * @param path the webapp context path to stop
+     * 
      * @return the Tomcat manager response
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    public TomcatManagerResponse stop( String path )
-        throws TomcatManagerException, IOException
-    {
-        return invoke( "/stop?path=" + URLEncoder.encode( path, charset ) );
+    public TomcatManagerResponse stop(String path) throws TomcatManagerException, IOException {
+        return invoke("/stop?path=" + URLEncoder.encode(path, charset));
     }
 
     /**
      * Lists all the currently deployed web applications.
      *
      * @return the list of currently deployed applications
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    public TomcatManagerResponse list()
-        throws TomcatManagerException, IOException
-    {
-        return invoke( "/list" );
+    public TomcatManagerResponse list() throws TomcatManagerException, IOException {
+        return invoke("/list");
     }
 
     /**
      * Lists information about the Tomcat version, OS, and JVM properties.
      *
      * @return the server information
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    public TomcatManagerResponse getServerInfo()
-        throws TomcatManagerException, IOException
-    {
-        return invoke( "/serverinfo" );
+    public TomcatManagerResponse getServerInfo() throws TomcatManagerException, IOException {
+        return invoke("/serverinfo");
     }
 
     /**
      * Lists all of the global JNDI resources.
      *
      * @return the list of all global JNDI resources
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    public TomcatManagerResponse getResources()
-        throws TomcatManagerException, IOException
-    {
-        return getResources( null );
+    public TomcatManagerResponse getResources() throws TomcatManagerException, IOException {
+        return getResources(null);
     }
 
     /**
      * Lists the global JNDI resources of the given type.
      *
      * @param type the class name of the resources to list, or <code>null</code> for all
+     * 
      * @return the list of global JNDI resources of the given type
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    public TomcatManagerResponse getResources( String type )
-        throws TomcatManagerException, IOException
-    {
+    public TomcatManagerResponse getResources(String type) throws TomcatManagerException, IOException {
         StringBuilder buffer = new StringBuilder();
-        buffer.append( "/resources" );
+        buffer.append("/resources");
 
-        if ( type != null )
-        {
+        if (type != null) {
             buffer.append("?type=").append(URLEncoder.encode(type, charset));
         }
-        return invoke( buffer.toString() );
+        return invoke(buffer.toString());
     }
 
     /**
      * Lists the default session timeout and the number of currently active sessions for the given context path.
      *
      * @param path the context path to list session information for
+     * 
      * @return the default session timeout and the number of currently active sessions
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    public TomcatManagerResponse getSessions( String path )
-        throws TomcatManagerException, IOException
-    {
-        return invoke( "/sessions?path=" + URLEncoder.encode( path, charset ) );
+    public TomcatManagerResponse getSessions(String path) throws TomcatManagerException, IOException {
+        return invoke("/sessions?path=" + URLEncoder.encode(path, charset));
     }
 
     // ----------------------------------------------------------------------
@@ -618,24 +613,23 @@ public class TomcatManager
      * Invokes Tomcat manager with the specified command.
      *
      * @param path the Tomcat manager command to invoke
+     * 
      * @return the Tomcat manager response
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    protected TomcatManagerResponse invoke( String path )
-        throws TomcatManagerException, IOException
-    {
-        return invoke( path, null, -1 );
+    protected TomcatManagerResponse invoke(String path) throws TomcatManagerException, IOException {
+        return invoke(path, null, -1);
     }
 
     // ----------------------------------------------------------------------
     // Private Methods
     // ----------------------------------------------------------------------
 
-    private TomcatManagerResponse deployImpl( String path, URL config, URL war, File data, boolean update, String tag )
-        throws TomcatManagerException, IOException
-    {
-        return deployImpl( path, config, war, data, update, tag, -1 );
+    private TomcatManagerResponse deployImpl(String path, URL config, URL war, File data, boolean update, String tag)
+            throws TomcatManagerException, IOException {
+        return deployImpl(path, config, war, data, update, tag, -1);
     }
 
     /**
@@ -647,38 +641,34 @@ public class TomcatManager
      * @param data   WAR file to deploy, or null to use <code>war</code>
      * @param update whether to first undeploy the webapp if it already exists
      * @param tag    the tag name to use
+     * 
      * @return the Tomcat manager response
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    private TomcatManagerResponse deployImpl( String path, URL config, URL war, File data, boolean update, String tag,
-                                              long length )
-        throws TomcatManagerException, IOException
-    {
-        StringBuilder buffer = new StringBuilder( "/deploy" );
-        buffer.append( "?path=" ).append( URLEncoder.encode( path, charset ) );
+    private TomcatManagerResponse deployImpl(String path, URL config, URL war, File data, boolean update, String tag,
+            long length) throws TomcatManagerException, IOException {
+        StringBuilder buffer = new StringBuilder("/deploy");
+        buffer.append("?path=").append(URLEncoder.encode(path, charset));
 
-        if ( config != null )
-        {
-            buffer.append( "&config=" ).append( URLEncoder.encode( config.toString(), charset ) );
+        if (config != null) {
+            buffer.append("&config=").append(URLEncoder.encode(config.toString(), charset));
         }
 
-        if ( war != null )
-        {
-            buffer.append( "&war=" ).append( URLEncoder.encode( war.toString(), charset ) );
+        if (war != null) {
+            buffer.append("&war=").append(URLEncoder.encode(war.toString(), charset));
         }
 
-        if ( update )
-        {
-            buffer.append( "&update=true" );
+        if (update) {
+            buffer.append("&update=true");
         }
 
-        if ( tag != null )
-        {
-            buffer.append( "&tag=" ).append( URLEncoder.encode( tag, charset ) );
+        if (tag != null) {
+            buffer.append("&tag=").append(URLEncoder.encode(tag, charset));
         }
 
-        return invoke( buffer.toString(), data, length );
+        return invoke(buffer.toString(), data, length);
     }
 
 
@@ -687,68 +677,57 @@ public class TomcatManager
      *
      * @param path the Tomcat manager command to invoke
      * @param data file to deploy
+     * 
      * @return the Tomcat manager response
+     * 
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
-    protected TomcatManagerResponse invoke( String path, File data, long length )
-        throws TomcatManagerException, IOException
-    {
-        HttpURLConnection connection = openConnection( url + path );
+    protected TomcatManagerResponse invoke(String path, File data, long length)
+            throws TomcatManagerException, IOException {
+        HttpURLConnection connection = openConnection(url + path);
 
-        if ( data == null )
-        {
-            connection.setRequestMethod( "GET" );
-        }
-        else
-        {
-            connection.setRequestMethod( "PUT" );
-            connection.setDoOutput( true );
-            connection.setFixedLengthStreamingMode( length >= 0 ? length : data.length() );
+        if (data == null) {
+            connection.setRequestMethod("GET");
+        } else {
+            connection.setRequestMethod("PUT");
+            connection.setDoOutput(true);
+            connection.setFixedLengthStreamingMode(length >= 0 ? length : data.length());
 
-            if ( userAgent != null )
-            {
-                connection.setRequestProperty( "User-Agent", userAgent );
+            if (userAgent != null) {
+                connection.setRequestProperty("User-Agent", userAgent);
             }
 
             long completed = 0;
-            try ( OutputStream os = connection.getOutputStream();
-                  FileInputStream stream = new FileInputStream( data ) )
-            {
-                transferInitiated( url + path );
+            try (OutputStream os = connection.getOutputStream(); FileInputStream stream = new FileInputStream(data)) {
+                transferInitiated(url + path);
                 long startTime = System.currentTimeMillis();
                 byte[] buffer = new byte[BUFFER_SIZE];
 
-                if ( length < 0 )
-                {
+                if (length < 0) {
                     // until EOF
                     int l;
-                    while ( ( l = stream.read( buffer ) ) != -1 )
-                    {
-                        transferProgressed( completed += l, -1 );
-                        os.write( buffer, 0, l );
+                    while ((l = stream.read(buffer)) != -1) {
+                        transferProgressed(completed += l, -1);
+                        os.write(buffer, 0, l);
                     }
-                }
-                else
-                {
+                } else {
                     // no need to consume more than length
                     long remaining = length;
-                    while ( remaining > 0 )
-                    {
-                        int transferSize = (int) Math.min( BUFFER_SIZE, remaining );
+                    while (remaining > 0) {
+                        int transferSize = (int) Math.min(BUFFER_SIZE, remaining);
                         completed += transferSize;
-                        int l = stream.read( buffer, 0, transferSize );
-                        if ( l == -1 )
-                        {
+                        int l = stream.read(buffer, 0, transferSize);
+                        if (l == -1) {
                             break;
                         }
 
-                        os.write( buffer, 0, l );
+                        os.write(buffer, 0, l);
                         remaining -= l;
-                        transferProgressed( completed, length );
+                        transferProgressed(completed, length);
                     }
                 }
-                transferSucceeded( completed, startTime );
+                transferSucceeded(completed, startTime);
             } finally {
                 System.out.println();
             }
@@ -757,47 +736,43 @@ public class TomcatManager
         int statusCode = connection.getResponseCode();
 
         String relocateUrl = null;
-        switch ( statusCode )
-        {
+        switch (statusCode) {
             // Success Codes
             case SC_OK: // 200
             case SC_CREATED: // 201
             case SC_ACCEPTED: // 202
                 break;
-            // handle all redirect even if http specs says " the user agent MUST NOT automatically redirect the request unless it can be confirmed by the user"
+            // handle all redirect even if http specs says " the user agent MUST NOT automatically redirect the request
+            // unless it can be confirmed by the user"
             case SC_MOVED_PERMANENTLY: // 301
             case SC_MOVED_TEMPORARILY: // 302
             case SC_SEE_OTHER: // 303
-                relocateUrl = calculateRelocatedUrl( connection );
+                relocateUrl = calculateRelocatedUrl(connection);
                 try {
                     this.url = new URI(relocateUrl).toURL();
                 } catch (URISyntaxException e) {
                     throw new MalformedURLException(e.getMessage());
                 }
-                return invoke( path, data, length );
+                return invoke(path, data, length);
         }
 
         String responseBody;
-        try ( InputStream is = connection.getInputStream() != null ? connection.getInputStream() : connection.getErrorStream() )
-        {
-            responseBody = IOUtils.toString( is, StandardCharsets.UTF_8 );
+        try (InputStream is = connection.getInputStream() != null ? connection.getInputStream()
+                : connection.getErrorStream()) {
+            responseBody = IOUtils.toString(is, StandardCharsets.UTF_8);
         }
 
-        return new TomcatManagerResponse()
-            .setStatusCode( statusCode )
-            .setReasonPhrase( connection.getResponseMessage() )
-            .setHttpResponseBody( responseBody );
+        return new TomcatManagerResponse().setStatusCode(statusCode).setReasonPhrase(connection.getResponseMessage())
+                .setHttpResponseBody(responseBody);
     }
 
-    protected String calculateRelocatedUrl( HttpURLConnection connection )
-    {
-        String locationField = connection.getHeaderField( "Location" );
+    protected String calculateRelocatedUrl(HttpURLConnection connection) {
+        String locationField = connection.getHeaderField("Location");
         // is it a relative Location or a full ?
-        return locationField.startsWith( "http" ) ? locationField : url.toString() + '/' + locationField;
+        return locationField.startsWith("http") ? locationField : url.toString() + '/' + locationField;
     }
 
-    private HttpURLConnection openConnection( String urlString ) throws IOException
-    {
+    private HttpURLConnection openConnection(String urlString) throws IOException {
         URL url = null;
         try {
             url = new URI(urlString).toURL();
@@ -806,40 +781,35 @@ public class TomcatManager
         }
         java.net.Proxy netProxy = java.net.Proxy.NO_PROXY;
 
-        if ( proxySettings != null )
-        {
+        if (proxySettings != null) {
             ProxyInfo proxyInfo = new ProxyInfo();
-            proxyInfo.setNonProxyHosts( proxySettings.getNonProxyHosts() );
+            proxyInfo.setNonProxyHosts(proxySettings.getNonProxyHosts());
 
-            if ( !ProxyUtils.validateNonProxyHosts( proxyInfo, url.getHost() ) )
-            {
-                netProxy = new java.net.Proxy( java.net.Proxy.Type.HTTP,
-                    new InetSocketAddress( proxySettings.getHost(), proxySettings.getPort() ) );
+            if (!ProxyUtils.validateNonProxyHosts(proxyInfo, url.getHost())) {
+                netProxy = new java.net.Proxy(java.net.Proxy.Type.HTTP,
+                        new InetSocketAddress(proxySettings.getHost(), proxySettings.getPort()));
             }
         }
 
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection( netProxy );
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection(netProxy);
 
-        connection.setInstanceFollowRedirects( false );
-        connection.setUseCaches( false );
-        connection.setDefaultUseCaches( false );
-        connection.setRequestProperty( "Accept", "text/plain" );
+        connection.setInstanceFollowRedirects(false);
+        connection.setUseCaches(false);
+        connection.setDefaultUseCaches(false);
+        connection.setRequestProperty("Accept", "text/plain");
 
-        if ( userAgent != null )
-        {
-            connection.setRequestProperty( "User-Agent", userAgent );
+        if (userAgent != null) {
+            connection.setRequestProperty("User-Agent", userAgent);
         }
 
-        if ( usernameProvided )
-        {
-            String authorization = toAuthorization( username, password );
-            connection.setRequestProperty( "Authorization", authorization );
+        if (usernameProvided) {
+            String authorization = toAuthorization(username, password);
+            connection.setRequestProperty("Authorization", authorization);
         }
 
-        if ( netProxy != java.net.Proxy.NO_PROXY )
-        {
-            String proxyAuth = toAuthorization( proxySettings.getUsername(), proxySettings.getPassword() );
-            connection.setRequestProperty( "Proxy-Authorization", proxyAuth );
+        if (netProxy != java.net.Proxy.NO_PROXY) {
+            String proxyAuth = toAuthorization(proxySettings.getUsername(), proxySettings.getPassword());
+            connection.setRequestProperty("Proxy-Authorization", proxyAuth);
         }
 
         return connection;
@@ -850,84 +820,68 @@ public class TomcatManager
      *
      * @param username the username to use for authentication
      * @param password the password to use for authentication
+     * 
      * @return the HTTP Basic Authorization header value
      */
-    private String toAuthorization( String username, String password )
-    {
+    private String toAuthorization(String username, String password) {
         StringBuilder buffer = new StringBuilder();
-        buffer.append( username ).append( ':' );
-        if ( password != null )
-        {
-            buffer.append( password );
+        buffer.append(username).append(':');
+        if (password != null) {
+            buffer.append(password);
         }
-        return "Basic " + new String( Base64.encodeBase64( buffer.toString().getBytes() ) );
+        return "Basic " + new String(Base64.encodeBase64(buffer.toString().getBytes()));
     }
 
-    private void transferInitiated( String targetUrl )
-    {
+    private void transferInitiated(String targetUrl) {
         String message = "Uploading";
 
-        System.out.println( message + ": " + targetUrl );
+        System.out.println(message + ": " + targetUrl);
     }
 
-    private void transferProgressed( long completedSize, long totalSize )
-    {
-        if ( !verbose )
-        {
+    private void transferProgressed(long completedSize, long totalSize) {
+        if (!verbose) {
             return;
         }
 
-        StringBuilder buffer = new StringBuilder( 64 );
+        StringBuilder buffer = new StringBuilder(64);
 
-        buffer.append( getStatus( completedSize, totalSize ) ).append( "  " );
-        buffer.append( '\r' );
+        buffer.append(getStatus(completedSize, totalSize)).append("  ");
+        buffer.append('\r');
 
-        System.out.print( buffer );
+        System.out.print(buffer);
     }
 
-    private void transferSucceeded( long contentLength, long startTime )
-    {
-        if ( contentLength >= 0 )
-        {
+    private void transferSucceeded(long contentLength, long startTime) {
+        if (contentLength >= 0) {
             String type = "Uploaded";
-            String len = contentLength >= 1024 ? toKB( contentLength ) + " KB" : contentLength + " B";
+            String len = contentLength >= 1024 ? toKB(contentLength) + " KB" : contentLength + " B";
 
             String throughput = "";
             long duration = System.currentTimeMillis() - startTime;
-            if ( duration > 0 )
-            {
-                DecimalFormat format = new DecimalFormat( "0.0", new DecimalFormatSymbols( Locale.ENGLISH ) );
-                double kbPerSec = ( contentLength / 1024.0 ) / ( duration / 1000.0 );
-                throughput = " at " + format.format( kbPerSec ) + " KB/sec";
+            if (duration > 0) {
+                DecimalFormat format = new DecimalFormat("0.0", new DecimalFormatSymbols(Locale.ENGLISH));
+                double kbPerSec = (contentLength / 1024.0) / (duration / 1000.0);
+                throughput = " at " + format.format(kbPerSec) + " KB/sec";
             }
 
-            System.out.println( type + ": " + url + " (" + len + throughput + ")" );
+            System.out.println(type + ": " + url + " (" + len + throughput + ")");
         }
     }
 
-    private String getStatus( long complete, long total )
-    {
-        if ( total >= 1024 )
-        {
-            return toKB( complete ) + "/" + toKB( total ) + " KB ";
-        }
-        else if ( total >= 0 )
-        {
+    private String getStatus(long complete, long total) {
+        if (total >= 1024) {
+            return toKB(complete) + "/" + toKB(total) + " KB ";
+        } else if (total >= 0) {
             return complete + "/" + total + " B ";
-        }
-        else if ( complete >= 1024 )
-        {
-            return toKB( complete ) + " KB ";
-        }
-        else
-        {
+        } else if (complete >= 1024) {
+            return toKB(complete) + " KB ";
+        } else {
             return complete + " B ";
         }
     }
 
-    private long toKB( long bytes )
-    {
-        return ( bytes + 1023 ) / 1024;
+    private long toKB(long bytes) {
+        return (bytes + 1023) / 1024;
     }
 
 }

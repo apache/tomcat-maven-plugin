@@ -95,11 +95,10 @@ import org.xml.sax.SAXException;
 
 /**
  * @author Olivier Lamy
+ * 
  * @since 2.0
  */
-public abstract class AbstractRunMojo
-    extends AbstractTomcatMojo
-{
+public abstract class AbstractRunMojo extends AbstractTomcatMojo {
     // ---------------------------------------------------------------------
     // Mojo Components
     // ---------------------------------------------------------------------
@@ -107,7 +106,7 @@ public abstract class AbstractRunMojo
     /**
      * Location of the local repository.
      */
-    @Parameter( defaultValue = "${localRepository}", required = true, readonly = true )
+    @Parameter(defaultValue = "${localRepository}", required = true, readonly = true)
     private ArtifactRepository local;
 
     @Component
@@ -120,20 +119,20 @@ public abstract class AbstractRunMojo
     /**
      * The packaging of the Maven project that this goal operates upon.
      */
-    @Parameter( defaultValue = "${project.packaging}", required = true, readonly = true )
+    @Parameter(defaultValue = "${project.packaging}", required = true, readonly = true)
     private String packaging;
 
     /**
      * The directory to create the Tomcat server configuration under.
      */
-    @Parameter( defaultValue = "${project.build.directory}/tomcat" )
+    @Parameter(defaultValue = "${project.build.directory}/tomcat")
     private File configurationDir;
 
     /**
-     * The port to run the Tomcat server on.
-     * Will be exposed as System props and session.executionProperties with key tomcat.maven.http.port
+     * The port to run the Tomcat server on. Will be exposed as System props and session.executionProperties with key
+     * tomcat.maven.http.port
      */
-    @Parameter( property = "maven.tomcat.port", defaultValue = "8080" )
+    @Parameter(property = "maven.tomcat.port", defaultValue = "8080")
     private int port;
 
     /**
@@ -141,25 +140,22 @@ public abstract class AbstractRunMojo
      *
      * @since 2.2
      */
-    @Parameter( property = "maven.tomcat.address" )
+    @Parameter(property = "maven.tomcat.address")
     private String address;
 
     /**
-     * The AJP port to run the Tomcat server on.
-     * By default it's 0 this means won't be started.
-     * The ajp connector will be started only for value > 0.
-     * Will be exposed as System props and session.executionProperties with key tomcat.maven.ajp.port
+     * The AJP port to run the Tomcat server on. By default it's 0 this means won't be started. The ajp connector will
+     * be started only for value > 0. Will be exposed as System props and session.executionProperties with key
+     * tomcat.maven.ajp.port
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.ajp.port", defaultValue = "0" )
+    @Parameter(property = "maven.tomcat.ajp.port", defaultValue = "0")
     private int ajpPort;
 
     /**
-     * The AJP protocol to run the Tomcat server on.
-     * By default it's ajp.
-     * NOTE The ajp connector will be started only if {@link #ajpPort} > 0.
-     * possible values are:
+     * The AJP protocol to run the Tomcat server on. By default it's ajp. NOTE The ajp connector will be started only if
+     * {@link #ajpPort} > 0. possible values are:
      * <ul>
      * <li>org.apache.coyote.ajp.AjpNioProtocol - new blocking Java connector that supports an executor</li>
      * <li>org.apache.coyote.ajp.AjpAprProtocol - the APR/native connector.</li>
@@ -167,28 +163,26 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.ajp.protocol", defaultValue = "org.apache.coyote.ajp.AjpNioProtocol" )
+    @Parameter(property = "maven.tomcat.ajp.protocol", defaultValue = "org.apache.coyote.ajp.AjpNioProtocol")
     private String ajpProtocol;
 
     /**
-     * The https port to run the Tomcat server on.
-     * By default it's 0 this means won't be started.
-     * The https connector will be started only for value > 0.
-     * Will be exposed as System props and session.executionProperties with key tomcat.maven.https.port
+     * The https port to run the Tomcat server on. By default it's 0 this means won't be started. The https connector
+     * will be started only for value > 0. Will be exposed as System props and session.executionProperties with key
+     * tomcat.maven.https.port
      *
      * @since 1.0
      */
-    @Parameter( property = "maven.tomcat.httpsPort", defaultValue = "0" )
+    @Parameter(property = "maven.tomcat.httpsPort", defaultValue = "0")
     private int httpsPort;
 
     /**
-     * The max post size to run the Tomcat server on.
-     * By default it's 2097152 bytes. That's the default Tomcat configuration.
-     * Set this value to 0 or less to disable the post size limit.
+     * The max post size to run the Tomcat server on. By default it's 2097152 bytes. That's the default Tomcat
+     * configuration. Set this value to 0 or less to disable the post size limit.
      *
      * @since 2.3
      */
-    @Parameter( property = "maven.tomcat.maxPostSize", defaultValue = "2097152" )
+    @Parameter(property = "maven.tomcat.maxPostSize", defaultValue = "2097152")
     private int maxPostSize;
 
     /**
@@ -196,7 +190,7 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0
      */
-    @Parameter( property = "maven.tomcat.uriEncoding", defaultValue = "ISO-8859-1" )
+    @Parameter(property = "maven.tomcat.uriEncoding", defaultValue = "ISO-8859-1")
     private String uriEncoding;
 
     /**
@@ -212,7 +206,7 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0-alpha-2
      */
-    @Parameter( property = "maven.tomcat.additionalConfigFilesDir", defaultValue = "${basedir}/src/main/tomcatconf" )
+    @Parameter(property = "maven.tomcat.additionalConfigFilesDir", defaultValue = "${basedir}/src/main/tomcatconf")
     private File additionalConfigFilesDir;
 
     /**
@@ -220,40 +214,42 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0-alpha-2
      */
-    @Parameter( property = "maven.tomcat.serverXml" )
+    @Parameter(property = "maven.tomcat.serverXml")
     private File serverXml;
 
     /**
-     * overriding the providing web.xml to run tomcat
-     * <b>This override the global Tomcat web.xml located in $CATALINA_HOME/conf/</b>
+     * overriding the providing web.xml to run tomcat <b>This override the global Tomcat web.xml located in
+     * $CATALINA_HOME/conf/</b>
      *
      * @since 1.0-alpha-2
      */
-    @Parameter( property = "maven.tomcat.webXml" )
+    @Parameter(property = "maven.tomcat.webXml")
     private File tomcatWebXml;
 
     /**
-     * Set this to true to allow Maven to continue to execute after invoking
-     * the run goal.
+     * Set this to true to allow Maven to continue to execute after invoking the run goal.
      *
      * @since 1.0
      */
-    @Parameter( property = "maven.tomcat.fork", defaultValue = "false" )
+    @Parameter(property = "maven.tomcat.fork", defaultValue = "false")
     private boolean fork;
 
     /**
-     * Will create a tomcat context for each dependencies of war type with 'scope' set to 'tomcat'.
-     * In other words, dependencies with:
+     * Will create a tomcat context for each dependencies of war type with 'scope' set to 'tomcat'. In other words,
+     * dependencies with:
+     * 
      * <pre>
      *    &lt;type&gt;war&lt;/type&gt;
      *    &lt;scope&gt;tomcat&lt;/scope&gt;
      * </pre>
+     * 
      * To preserve backward compatibility it's false by default.
      *
      * @since 1.0
+     * 
      * @deprecated use webapps instead
      */
-    @Parameter( property = "maven.tomcat.addContextWarDependencies", defaultValue = "false" )
+    @Parameter(property = "maven.tomcat.addContextWarDependencies", defaultValue = "false")
     private boolean addContextWarDependencies;
 
     /**
@@ -261,7 +257,7 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0
      */
-    @Parameter( defaultValue = "${project}", readonly = true )
+    @Parameter(defaultValue = "${project}", readonly = true)
     protected MavenProject project;
 
     /**
@@ -277,13 +273,13 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0
      */
-    @Parameter( property = "tomcat.useSeparateTomcatClassLoader", defaultValue = "false" )
+    @Parameter(property = "tomcat.useSeparateTomcatClassLoader", defaultValue = "false")
     protected boolean useSeparateTomcatClassLoader;
 
     /**
      * @since 1.0
      */
-    @Parameter( defaultValue = "${plugin.artifacts}", required = true )
+    @Parameter(defaultValue = "${plugin.artifacts}", required = true)
     private List<Artifact> pluginArtifacts;
 
     /**
@@ -291,7 +287,7 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0
      */
-    @Parameter( property = "tomcat.ignorePackaging", defaultValue = "false" )
+    @Parameter(property = "tomcat.ignorePackaging", defaultValue = "false")
     private boolean ignorePackaging;
 
     /**
@@ -311,11 +307,12 @@ public abstract class AbstractRunMojo
     private String keystorePass;
 
     /**
-     * Override the type of keystore file to be used for the server certificate. If not specified, the default value is "JKS".
+     * Override the type of keystore file to be used for the server certificate. If not specified, the default value is
+     * "JKS".
      *
      * @since 2.0
      */
-    @Parameter( defaultValue = "JKS" )
+    @Parameter(defaultValue = "JKS")
     private String keystoreType;
 
     /**
@@ -323,63 +320,65 @@ public abstract class AbstractRunMojo
      * Enables or disables naming support for the embedded Tomcat server.
      * </p>
      * <p>
-     * <strong>Note:</strong> This setting is ignored if you provide a <code>server.xml</code> for your
-     * Tomcat. Instead please configure naming in the <code>server.xml</code>.
+     * <strong>Note:</strong> This setting is ignored if you provide a <code>server.xml</code> for your Tomcat. Instead
+     * please configure naming in the <code>server.xml</code>.
      * </p>
      *
-     * @see <a href="http://tomcat.apache.org/tomcat-7.0-doc/api/org/apache/catalina/startup/Embedded.html">org.apache.catalina.startup.Embedded</a>
-     * @see <a href="http://tomcat.apache.org/tomcat-8.0-doc/api/org/apache/catalina/startup/Tomcat.html">org.apache.catalina.startup.Tomcat</a>
+     * @see <a href=
+     *          "http://tomcat.apache.org/tomcat-7.0-doc/api/org/apache/catalina/startup/Embedded.html">org.apache.catalina.startup.Embedded</a>
+     * @see <a href=
+     *          "http://tomcat.apache.org/tomcat-8.0-doc/api/org/apache/catalina/startup/Tomcat.html">org.apache.catalina.startup.Tomcat</a>
+     * 
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.useNaming", defaultValue = "true" )
+    @Parameter(property = "maven.tomcat.useNaming", defaultValue = "true")
     private boolean useNaming;
 
     /**
-     * Force context scanning if you don't use a context file with reloadable = "true".
-     * The other way to use contextReloadable is to add attribute reloadable = "true"
-     * in your context file.
+     * Force context scanning if you don't use a context file with reloadable = "true". The other way to use
+     * contextReloadable is to add attribute reloadable = "true" in your context file.
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.contextReloadable", defaultValue = "false" )
+    @Parameter(property = "maven.tomcat.contextReloadable", defaultValue = "false")
     protected boolean contextReloadable;
 
     /**
      * represents the delay in seconds between each classPathScanning change invocation
      *
-     * @see <a href="http://tomcat.apache.org/tomcat-7.0-doc/config/context.html">http://tomcat.apache.org/tomcat-7.0-doc/config/context.html</a>
+     * @see <a href=
+     *          "http://tomcat.apache.org/tomcat-7.0-doc/config/context.html">http://tomcat.apache.org/tomcat-7.0-doc/config/context.html</a>
      */
-    @Parameter( property = "maven.tomcat.backgroundProcessorDelay", defaultValue = "-1" )
+    @Parameter(property = "maven.tomcat.backgroundProcessorDelay", defaultValue = "-1")
     protected int backgroundProcessorDelay = -1;
 
 
     /**
-     * <p>The path of the Tomcat context XML file.</p>
-     * <p>Since release 2.0, the file is filtered as a maven resource so you can use
-     * interpolation tokens ${ }</p>
+     * <p>
+     * The path of the Tomcat context XML file.
+     * </p>
+     * <p>
+     * Since release 2.0, the file is filtered as a maven resource so you can use interpolation tokens ${ }
+     * </p>
      */
-    @Parameter( property = "maven.tomcat.contextFile" )
+    @Parameter(property = "maven.tomcat.contextFile")
     protected File contextFile;
 
     /**
-     * The default context file to check for if contextFile not configured.
-     * If no contextFile configured and the below default not present, no
-     * contextFile will be sent to Tomcat, resulting in the latter's default
-     * context configuration being used instead.
+     * The default context file to check for if contextFile not configured. If no contextFile configured and the below
+     * default not present, no contextFile will be sent to Tomcat, resulting in the latter's default context
+     * configuration being used instead.
      */
-    @Parameter( defaultValue = "${project.build.directory}/${project.build.finalName}/META-INF/context.xml",
-                readonly = true )
+    @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}/META-INF/context.xml", readonly = true)
     private File defaultContextFile;
 
     /**
-     * The protocol to run the Tomcat server on.
-     * By default it's HTTP/1.1.
-     * See possible values <a href="http://tomcat.apache.org/tomcat-7.0-doc/config/http.html">HTTP Connector</a>
-     * protocol attribute
+     * The protocol to run the Tomcat server on. By default it's HTTP/1.1. See possible values
+     * <a href="http://tomcat.apache.org/tomcat-7.0-doc/config/http.html">HTTP Connector</a> protocol attribute
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.protocol", defaultValue = "HTTP/1.1" )
+    @Parameter(property = "maven.tomcat.protocol", defaultValue = "HTTP/1.1")
     private String protocol;
 
     /**
@@ -387,7 +386,7 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.tomcatUsers.file" )
+    @Parameter(property = "maven.tomcat.tomcatUsers.file")
     private File tomcatUsers;
 
     /**
@@ -395,7 +394,7 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.tomcatLogging.file" )
+    @Parameter(property = "maven.tomcat.tomcatLogging.file")
     private File tomcatLoggingFile;
 
     /**
@@ -403,14 +402,16 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.skip", defaultValue = "false" )
+    @Parameter(property = "maven.tomcat.skip", defaultValue = "false")
     protected boolean skip;
 
     /**
-     * Collection of webapp artifacts to be deployed. Elements are &lt;webapp&gt; and contain
-     * usual GAVC plus contextPath and/or contextFile elements.<p>
+     * Collection of webapp artifacts to be deployed. Elements are &lt;webapp&gt; and contain usual GAVC plus
+     * contextPath and/or contextFile elements.
+     * <p>
      *
      * @see Webapp
+     * 
      * @since 2.0
      */
     @Parameter
@@ -421,16 +422,15 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.staticContextPath", defaultValue = "/" )
+    @Parameter(property = "maven.tomcat.staticContextPath", defaultValue = "/")
     private String staticContextPath;
 
     /**
-     * The static context docroot base fully qualified path
-     * if <code>null</code> static context won't be added
+     * The static context docroot base fully qualified path if <code>null</code> static context won't be added
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.staticContextDocbase" )
+    @Parameter(property = "maven.tomcat.staticContextDocbase")
     private String staticContextDocbase;
 
     /**
@@ -441,14 +441,13 @@ public abstract class AbstractRunMojo
     @Parameter
     protected String classLoaderClass;
 
-    @Parameter( defaultValue = "${session}", readonly = true, required = true )
+    @Parameter(defaultValue = "${session}", readonly = true, required = true)
     protected MavenSession session;
 
     /**
-     * Will dump port in a properties file (see ports for property names).
-     * If empty no file generated
+     * Will dump port in a properties file (see ports for property names). If empty no file generated
      */
-    @Parameter( property = "maven.tomcat.propertiesPortFilePath" )
+    @Parameter(property = "maven.tomcat.propertiesPortFilePath")
     protected String propertiesPortFilePath;
 
     /**
@@ -456,12 +455,12 @@ public abstract class AbstractRunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.hostName", defaultValue = "localhost" )
+    @Parameter(property = "maven.tomcat.hostName", defaultValue = "localhost")
     protected String hostName;
 
     /**
-     * configure aliases
-     * see <a href="http://tomcat.apache.org/tomcat-7.0-doc/config/host.html#Host_Name_Aliases">Host Name aliases</a>
+     * configure aliases see <a href="http://tomcat.apache.org/tomcat-7.0-doc/config/host.html#Host_Name_Aliases">Host
+     * Name aliases</a>
      *
      * @since 2.0
      */
@@ -469,31 +468,31 @@ public abstract class AbstractRunMojo
     protected String[] aliases;
 
     /**
-     * enable client authentication for https (if configured)
-     * see <a href="http://tomcat.apache.org/tomcat-7.0-doc/config/http.html#SSL_Support_-_BIO_and_NIO">http://tomcat.apache.org/tomcat-7.0-doc/config/http.html#SSL_Support_-_BIO_and_NIO</a>
+     * enable client authentication for https (if configured) see <a href=
+     * "http://tomcat.apache.org/tomcat-7.0-doc/config/http.html#SSL_Support_-_BIO_and_NIO">http://tomcat.apache.org/tomcat-7.0-doc/config/http.html#SSL_Support_-_BIO_and_NIO</a>
      *
      * @since 2.1
      */
-    @Parameter( property = "maven.tomcat.https.clientAuth", defaultValue = "false" )
+    @Parameter(property = "maven.tomcat.https.clientAuth", defaultValue = "false")
     protected String clientAuth = "false";
 
-    @Component( role = MavenFileFilter.class, hint = "default" )
+    @Component(role = MavenFileFilter.class, hint = "default")
     protected MavenFileFilter mavenFileFilter;
 
 
     /**
-     * In case a module in your reactors has some web-fragments they will be read.
-     * If you don't need that for performance reasons, you can deactivate it.
+     * In case a module in your reactors has some web-fragments they will be read. If you don't need that for
+     * performance reasons, you can deactivate it.
      *
      * @since 2.2
      */
-    @Parameter( property = "maven.tomcat.jarScan.allDirectories", defaultValue = "true" )
+    @Parameter(property = "maven.tomcat.jarScan.allDirectories", defaultValue = "true")
     protected boolean jarScanAllDirectories = true;
 
     /**
      * @since 2.2
      */
-    @Parameter( property = "maven.tomcat.useBodyEncodingForURI", defaultValue = "false" )
+    @Parameter(property = "maven.tomcat.useBodyEncodingForURI", defaultValue = "false")
     protected boolean useBodyEncodingForURI;
 
     /**
@@ -555,58 +554,40 @@ public abstract class AbstractRunMojo
      * {@inheritDoc}
      */
     @Override
-    public void execute()
-        throws MojoExecutionException, MojoFailureException
-    {
-        if ( skip )
-        {
-            getLog().info( "skip execution" );
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        if (skip) {
+            getLog().info("skip execution");
             return;
         }
         // ensure project is a web application
-        if ( !isWar() && !addContextWarDependencies && getAdditionalWebapps().isEmpty() )
-        {
-            getLog().info( messagesProvider.getMessage( "AbstractRunMojo.nonWar" ) );
+        if (!isWar() && !addContextWarDependencies && getAdditionalWebapps().isEmpty()) {
+            getLog().info(messagesProvider.getMessage("AbstractRunMojo.nonWar"));
             return;
         }
         ClassLoader originalClassLoader = null;
-        if ( useSeparateTomcatClassLoader )
-        {
+        if (useSeparateTomcatClassLoader) {
             originalClassLoader = Thread.currentThread().getContextClassLoader();
         }
-        try
-        {
-            getLog().info( messagesProvider.getMessage( "AbstractRunMojo.runningWar", getWebappUrl() ) );
+        try {
+            getLog().info(messagesProvider.getMessage("AbstractRunMojo.runningWar", getWebappUrl()));
 
             initConfiguration();
             startContainer();
-            if ( !fork )
-            {
+            if (!fork) {
                 waitIndefinitely();
             }
-        }
-        catch ( LifecycleException exception )
-        {
-            throw new MojoExecutionException( messagesProvider.getMessage( "AbstractRunMojo.cannotStart" ), exception );
-        }
-        catch ( IOException exception )
-        {
-            throw new MojoExecutionException(
-                messagesProvider.getMessage( "AbstractRunMojo.cannotCreateConfiguration" ), exception );
-        }
-        catch ( MavenFilteringException e )
-        {
-            throw new MojoExecutionException( "filtering issue: " + e.getMessage(), e );
-        }
-        catch ( Exception e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
-        }
-        finally
-        {
-            if ( useSeparateTomcatClassLoader )
-            {
-                Thread.currentThread().setContextClassLoader( originalClassLoader );
+        } catch (LifecycleException exception) {
+            throw new MojoExecutionException(messagesProvider.getMessage("AbstractRunMojo.cannotStart"), exception);
+        } catch (IOException exception) {
+            throw new MojoExecutionException(messagesProvider.getMessage("AbstractRunMojo.cannotCreateConfiguration"),
+                    exception);
+        } catch (MavenFilteringException e) {
+            throw new MojoExecutionException("filtering issue: " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new MojoExecutionException(e.getMessage(), e);
+        } finally {
+            if (useSeparateTomcatClassLoader) {
+                Thread.currentThread().setContextClassLoader(originalClassLoader);
             }
         }
     }
@@ -630,9 +611,7 @@ public abstract class AbstractRunMojo
         }
     }
 
-    protected void enhanceContext( final Context context )
-        throws MojoExecutionException
-    {
+    protected void enhanceContext(final Context context) throws MojoExecutionException {
         // no op
     }
 
@@ -641,13 +620,13 @@ public abstract class AbstractRunMojo
      * Gets the context to run this web application under for the specified embedded Tomcat.
      *
      * @param container the embedded Tomcat container being used
+     * 
      * @return the context to run this web application under
+     * 
      * @throws IOException            if the context could not be created
      * @throws MojoExecutionException in case of an error creating the context
      */
-    protected Context createContext( Tomcat container )
-        throws IOException, MojoExecutionException, Exception
-    {
+    protected Context createContext(Tomcat container) throws IOException, MojoExecutionException, Exception {
         String contextPath = getPath();
 
         String baseDir = getDocBase().getAbsolutePath();
@@ -656,60 +635,49 @@ public abstract class AbstractRunMojo
 
         StandardContext standardContext = null;
 
-        if ( overriddenContextFile != null && overriddenContextFile.exists() )
-        {
-            standardContext = parseContextFile( overriddenContextFile );
-        }
-        else if ( defaultContextFile.exists() )
-        {
-            standardContext = parseContextFile( defaultContextFile );
+        if (overriddenContextFile != null && overriddenContextFile.exists()) {
+            standardContext = parseContextFile(overriddenContextFile);
+        } else if (defaultContextFile.exists()) {
+            standardContext = parseContextFile(defaultContextFile);
         }
 
-        if ( standardContext != null )
-        {
-            if ( standardContext.getPath() != null )
-            {
+        if (standardContext != null) {
+            if (standardContext.getPath() != null) {
                 contextPath = standardContext.getPath();
             }
-            if ( standardContext.getDocBase() != null )
-            {
+            if (standardContext.getDocBase() != null) {
                 baseDir = standardContext.getDocBase();
             }
         }
 
-        contextPath = "/".equals( contextPath ) ? "" : contextPath;
+        contextPath = "/".equals(contextPath) ? "" : contextPath;
 
-        getLog().info( "create webapp with contextPath: " + contextPath );
+        getLog().info("create webapp with contextPath: " + contextPath);
 
-        Context context = container.addWebapp( contextPath, baseDir );
+        Context context = container.addWebapp(contextPath, baseDir);
 
-        if ( useSeparateTomcatClassLoader )
-        {
-            context.setParentClassLoader( getTomcatClassLoader() );
+        if (useSeparateTomcatClassLoader) {
+            context.setParentClassLoader(getTomcatClassLoader());
         }
 
-        enhanceContext( context );
+        enhanceContext(context);
 
         final WebappLoader loader = createWebappLoader();
         context.setReloadable(isContextReloadable());
 
-        context.setLoader( loader );
+        context.setLoader(loader);
 
-        if ( overriddenContextFile != null )
-        {
+        if (overriddenContextFile != null) {
             // here, send file to Tomcat for it to complain if missing
-            context.setConfigFile( overriddenContextFile.toURI().toURL() );
-        }
-        else if ( defaultContextFile.exists() )
-        {
+            context.setConfigFile(overriddenContextFile.toURI().toURL());
+        } else if (defaultContextFile.exists()) {
             // here, only sending default file if it indeed exists
             // otherwise Tomcat will create a default context
-            context.setConfigFile( defaultContextFile.toURI().toURL() );
+            context.setConfigFile(defaultContextFile.toURI().toURL());
         }
 
-        if ( classLoaderClass != null )
-        {
-            loader.setLoaderClass( classLoaderClass );
+        if (classLoaderClass != null) {
+            loader.setLoaderClass(classLoaderClass);
         }
 
         // https://issues.apache.org/jira/browse/MTOMCAT-239
@@ -718,53 +686,42 @@ public abstract class AbstractRunMojo
         JarScanner jarScanner = context.getJarScanner();
 
         // normally this one only but just in case ...
-        if ( jarScanner instanceof StandardJarScanner )
-        {
-            ( (StandardJarScanner) jarScanner ).setScanAllDirectories( jarScanAllDirectories );
+        if (jarScanner instanceof StandardJarScanner) {
+            ((StandardJarScanner) jarScanner).setScanAllDirectories(jarScanAllDirectories);
         }
 
         return context;
 
     }
 
-    protected StandardContext parseContextFile( File file )
-        throws MojoExecutionException
-    {
-        try
-        {
+    protected StandardContext parseContextFile(File file) throws MojoExecutionException {
+        try {
             StandardContext standardContext = new StandardContext();
-            XMLStreamReader reader = XMLInputFactory.newFactory().createXMLStreamReader( new FileInputStream( file ) );
+            XMLStreamReader reader = XMLInputFactory.newFactory().createXMLStreamReader(new FileInputStream(file));
 
             int tag = reader.next();
 
-            while ( true )
-            {
-                if ( tag == XMLStreamConstants.START_ELEMENT && "Context".equals( reader.getLocalName() ) )
-                {
-                    String path = reader.getAttributeValue( null, "path" );
-                    if ( path != null && !path.isEmpty() )
-                    {
-                        standardContext.setPath( path );
+            while (true) {
+                if (tag == XMLStreamConstants.START_ELEMENT && "Context".equals(reader.getLocalName())) {
+                    String path = reader.getAttributeValue(null, "path");
+                    if (path != null && !path.isEmpty()) {
+                        standardContext.setPath(path);
                     }
 
-                    String docBase = reader.getAttributeValue( null, "docBase" );
-                    if ( docBase != null && !docBase.isEmpty() )
-                    {
-                        standardContext.setDocBase( docBase );
+                    String docBase = reader.getAttributeValue(null, "docBase");
+                    if (docBase != null && !docBase.isEmpty()) {
+                        standardContext.setDocBase(docBase);
                     }
                 }
-                if ( !reader.hasNext() )
-                {
+                if (!reader.hasNext()) {
                     break;
                 }
                 tag = reader.next();
             }
 
             return standardContext;
-        }
-        catch (XMLStreamException | FileNotFoundException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
+        } catch (XMLStreamException | FileNotFoundException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
         }
     }
 
@@ -773,6 +730,7 @@ public abstract class AbstractRunMojo
      * Gets the webapp loader to run this web application under.
      *
      * @return the webapp loader to use
+     * 
      * @throws IOException            if the webapp loader could not be created
      * @throws MojoExecutionException in case of an error creating the webapp loader
      */
@@ -783,41 +741,32 @@ public abstract class AbstractRunMojo
     /**
      * Determine whether the passed context.xml file declares the context as reloadable or not.
      *
-     * @return false by default, true if  reloadable="true" in context.xml.
+     * @return false by default, true if reloadable="true" in context.xml.
      */
-    protected boolean isContextReloadable()
-        throws MojoExecutionException
-    {
-        if ( contextReloadable || backgroundProcessorDelay > 0 )
-        {
+    protected boolean isContextReloadable() throws MojoExecutionException {
+        if (contextReloadable || backgroundProcessorDelay > 0) {
             return true;
         }
         // determine whether to use a reloadable Loader or not (default is false).
         boolean reloadable = false;
-        try
-        {
-            if ( contextFile != null && contextFile.exists() )
-            {
+        try {
+            if (contextFile != null && contextFile.exists()) {
                 DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
                 DocumentBuilder builder = builderFactory.newDocumentBuilder();
-                Document contextDoc = builder.parse( contextFile );
+                Document contextDoc = builder.parse(contextFile);
                 contextDoc.getDocumentElement().normalize();
 
                 NamedNodeMap nodeMap = contextDoc.getDocumentElement().getAttributes();
-                Node reloadableAttribute = nodeMap.getNamedItem( "reloadable" );
+                Node reloadableAttribute = nodeMap.getNamedItem("reloadable");
 
-                reloadable =
-                    ( reloadableAttribute != null ) ? Boolean.valueOf( reloadableAttribute.getNodeValue() ) : false;
+                reloadable = (reloadableAttribute != null) ? Boolean.valueOf(reloadableAttribute.getNodeValue())
+                        : false;
             }
-            getLog().debug( "context reloadable: " + reloadable );
-        }
-        catch (IOException | SAXException ioe )
-        {
-            getLog().error( "Could not parse file: [" + contextFile.getAbsolutePath() + "]", ioe );
-        }
-        catch ( ParserConfigurationException pce )
-        {
-            getLog().error( "Could not configure XML parser", pce );
+            getLog().debug("context reloadable: " + reloadable);
+        } catch (IOException | SAXException ioe) {
+            getLog().error("Could not parse file: [" + contextFile.getAbsolutePath() + "]", ioe);
+        } catch (ParserConfigurationException pce) {
+            getLog().error("Could not configure XML parser", pce);
         }
 
         return reloadable;
@@ -829,16 +778,14 @@ public abstract class AbstractRunMojo
      *
      * @return the webapp directory
      */
-    protected abstract File getDocBase()
-        throws IOException;
+    protected abstract File getDocBase() throws IOException;
 
     /**
      * Gets the Tomcat context XML file to use.
      *
      * @return the context XML file
      */
-    protected abstract File getContextFile()
-        throws MojoExecutionException;
+    protected abstract File getContextFile() throws MojoExecutionException;
 
     // ----------------------------------------------------------------------
     // Private Methods
@@ -849,20 +796,18 @@ public abstract class AbstractRunMojo
      *
      * @return whether this project uses WAR packaging
      */
-    protected boolean isWar()
-    {
-        return "war".equals( packaging ) || ignorePackaging;
+    protected boolean isWar() {
+        return "war".equals(packaging) || ignorePackaging;
     }
 
     /**
      * Gets the URL of the running webapp.
      *
      * @return the URL of the running webapp
+     * 
      * @throws java.net.MalformedURLException if the running webapp URL is invalid
      */
-    private URL getWebappUrl()
-        throws MalformedURLException
-    {
+    private URL getWebappUrl() throws MalformedURLException {
         try {
             return (new URI("http", null, "localhost", port, getPath(), null, null)).toURL();
         } catch (URISyntaxException e) {
@@ -876,81 +821,66 @@ public abstract class AbstractRunMojo
      * @throws IOException            if the Tomcat configuration could not be created
      * @throws MojoExecutionException if the Tomcat configuration could not be created
      */
-    private void initConfiguration()
-        throws IOException, MojoExecutionException, MavenFilteringException
-    {
-        if ( configurationDir.exists() )
-        {
-            getLog().info( messagesProvider.getMessage( "AbstractRunMojo.usingConfiguration", configurationDir ) );
-        }
-        else
-        {
-            getLog().info( messagesProvider.getMessage( "AbstractRunMojo.creatingConfiguration", configurationDir ) );
+    private void initConfiguration() throws IOException, MojoExecutionException, MavenFilteringException {
+        if (configurationDir.exists()) {
+            getLog().info(messagesProvider.getMessage("AbstractRunMojo.usingConfiguration", configurationDir));
+        } else {
+            getLog().info(messagesProvider.getMessage("AbstractRunMojo.creatingConfiguration", configurationDir));
 
             configurationDir.mkdirs();
 
-            File confDir = new File( configurationDir, "conf" );
+            File confDir = new File(configurationDir, "conf");
             confDir.mkdir();
 
-            if ( tomcatLoggingFile != null )
-            {
-                FileUtils.copyFile( tomcatLoggingFile, new File( confDir, "logging.properties" ) );
-            }
-            else
-            {
-                copyFile( "/conf/logging.properties", new File( confDir, "logging.properties" ) );
+            if (tomcatLoggingFile != null) {
+                FileUtils.copyFile(tomcatLoggingFile, new File(confDir, "logging.properties"));
+            } else {
+                copyFile("/conf/logging.properties", new File(confDir, "logging.properties"));
             }
 
-            copyFile( "/conf/tomcat-users.xml", new File( confDir, "tomcat-users.xml" ) );
-            if ( tomcatWebXml != null )
-            {
-                if ( !tomcatWebXml.exists() )
-                {
-                    throw new MojoExecutionException( " tomcatWebXml " + tomcatWebXml.getPath() + " not exists" );
+            copyFile("/conf/tomcat-users.xml", new File(confDir, "tomcat-users.xml"));
+            if (tomcatWebXml != null) {
+                if (!tomcatWebXml.exists()) {
+                    throw new MojoExecutionException(" tomcatWebXml " + tomcatWebXml.getPath() + " not exists");
                 }
-                //MTOMCAT-42  here it's a real file resources not a one coming with the mojo
-                //MTOMCAT-128 apply filtering
+                // MTOMCAT-42 here it's a real file resources not a one coming with the mojo
+                // MTOMCAT-128 apply filtering
                 MavenFileFilterRequest mavenFileFilterRequest = new MavenFileFilterRequest();
-                mavenFileFilterRequest.setFrom( tomcatWebXml );
-                mavenFileFilterRequest.setTo( new File( confDir, "web.xml" ) );
-                mavenFileFilterRequest.setMavenProject( project );
-                mavenFileFilterRequest.setMavenSession( session );
-                mavenFileFilterRequest.setFiltering( true );
+                mavenFileFilterRequest.setFrom(tomcatWebXml);
+                mavenFileFilterRequest.setTo(new File(confDir, "web.xml"));
+                mavenFileFilterRequest.setMavenProject(project);
+                mavenFileFilterRequest.setMavenSession(session);
+                mavenFileFilterRequest.setFiltering(true);
 
-                mavenFileFilter.copyFile( mavenFileFilterRequest );
+                mavenFileFilter.copyFile(mavenFileFilterRequest);
 
-            }
-            else
-            {
-                copyFile( "/conf/web.xml", new File( confDir, "web.xml" ) );
+            } else {
+                copyFile("/conf/web.xml", new File(confDir, "web.xml"));
             }
 
-            File logDir = new File( configurationDir, "logs" );
+            File logDir = new File(configurationDir, "logs");
             logDir.mkdir();
 
-            File webappsDir = new File( configurationDir, "webapps" );
+            File webappsDir = new File(configurationDir, "webapps");
             webappsDir.mkdir();
 
-            if ( additionalConfigFilesDir != null && additionalConfigFilesDir.exists() )
-            {
+            if (additionalConfigFilesDir != null && additionalConfigFilesDir.exists()) {
                 DirectoryScanner scanner = new DirectoryScanner();
                 scanner.addDefaultExcludes();
-                scanner.setBasedir( additionalConfigFilesDir.getPath() );
+                scanner.setBasedir(additionalConfigFilesDir.getPath());
                 scanner.scan();
 
                 String[] files = scanner.getIncludedFiles();
 
-                if ( files != null && files.length > 0 )
-                {
-                    getLog().info( "Coping additional tomcat config files" );
+                if (files != null && files.length > 0) {
+                    getLog().info("Coping additional tomcat config files");
 
-                    for ( int i = 0; i < files.length; i++ )
-                    {
-                        File file = new File( additionalConfigFilesDir, files[i] );
+                    for (int i = 0; i < files.length; i++) {
+                        File file = new File(additionalConfigFilesDir, files[i]);
 
-                        getLog().info( " copy " + file.getName() );
+                        getLog().info(" copy " + file.getName());
 
-                        FileUtils.copyFileToDirectory( file, confDir );
+                        FileUtils.copyFileToDirectory(file, confDir);
                     }
                 }
             }
@@ -962,19 +892,17 @@ public abstract class AbstractRunMojo
      *
      * @param fromPath the path of the class resource to copy
      * @param toFile   the file to copy to
+     * 
      * @throws IOException if the file could not be copied
      */
-    private void copyFile( String fromPath, File toFile )
-        throws IOException
-    {
-        URL fromURL = getClass().getResource( fromPath );
+    private void copyFile(String fromPath, File toFile) throws IOException {
+        URL fromURL = getClass().getResource(fromPath);
 
-        if ( fromURL == null )
-        {
-            throw new FileNotFoundException( fromPath );
+        if (fromURL == null) {
+            throw new FileNotFoundException(fromPath);
         }
 
-        FileUtils.copyURLToFile( fromURL, toFile );
+        FileUtils.copyURLToFile(fromURL, toFile);
     }
 
     /**
@@ -984,297 +912,250 @@ public abstract class AbstractRunMojo
      * @throws LifecycleException     if the server could not be started
      * @throws MojoExecutionException if the server could not be configured
      */
-    private void startContainer()
-        throws IOException, LifecycleException, MojoExecutionException, Exception
-    {
-        String previousCatalinaBase = System.getProperty( "catalina.base" );
+    private void startContainer() throws IOException, LifecycleException, MojoExecutionException, Exception {
+        String previousCatalinaBase = System.getProperty("catalina.base");
 
-        try
-        {
+        try {
 
             // Set the system properties
             setupSystemProperties();
 
-            System.setProperty( "catalina.base", configurationDir.getAbsolutePath() );
+            System.setProperty("catalina.base", configurationDir.getAbsolutePath());
 
-            if ( serverXml != null )
-            {
-                if ( !serverXml.exists() )
-                {
-                    throw new MojoExecutionException( serverXml.getPath() + " not exists" );
+            if (serverXml != null) {
+                if (!serverXml.exists()) {
+                    throw new MojoExecutionException(serverXml.getPath() + " not exists");
                 }
 
                 Catalina container = new Catalina();
 
-                if ( useSeparateTomcatClassLoader )
-                {
-                    Thread.currentThread().setContextClassLoader( getTomcatClassLoader() );
-                    container.setParentClassLoader( getTomcatClassLoader() );
+                if (useSeparateTomcatClassLoader) {
+                    Thread.currentThread().setContextClassLoader(getTomcatClassLoader());
+                    container.setParentClassLoader(getTomcatClassLoader());
                 }
 
-                container.setUseNaming( this.useNaming );
-                container.setConfigFile( serverXml.getAbsolutePath() );
+                container.setUseNaming(this.useNaming);
+                container.setConfigFile(serverXml.getAbsolutePath());
                 container.start();
-                EmbeddedRegistry.getInstance().register( container );
-            }
-            else
-            {
+                EmbeddedRegistry.getInstance().register(container);
+            } else {
 
-                System.setProperty( "java.util.logging.manager", "org.apache.juli.ClassLoaderLogManager" );
-                System.setProperty( "java.util.logging.config.file",
-                                    new File( configurationDir, "conf/logging.properties" ).toString() );
+                System.setProperty("java.util.logging.manager", "org.apache.juli.ClassLoaderLogManager");
+                System.setProperty("java.util.logging.config.file",
+                        new File(configurationDir, "conf/logging.properties").toString());
 
                 // Trigger loading of catalina.properties
-                CatalinaProperties.getProperty( "foo" );
+                CatalinaProperties.getProperty("foo");
 
-                Tomcat embeddedTomcat = new ExtendedTomcat( configurationDir );
+                Tomcat embeddedTomcat = new ExtendedTomcat(configurationDir);
 
-                embeddedTomcat.setBaseDir( configurationDir.getAbsolutePath() );
+                embeddedTomcat.setBaseDir(configurationDir.getAbsolutePath());
                 MemoryRealm memoryRealm = new MemoryRealm();
 
-                if ( tomcatUsers != null )
-                {
-                    if ( !tomcatUsers.exists() )
-                    {
-                        throw new MojoExecutionException( " tomcatUsers " + tomcatUsers.getPath() + " not exists" );
+                if (tomcatUsers != null) {
+                    if (!tomcatUsers.exists()) {
+                        throw new MojoExecutionException(" tomcatUsers " + tomcatUsers.getPath() + " not exists");
                     }
-                    getLog().info( "use tomcat-users.xml from " + tomcatUsers.getAbsolutePath() );
-                    memoryRealm.setPathname( tomcatUsers.getAbsolutePath() );
+                    getLog().info("use tomcat-users.xml from " + tomcatUsers.getAbsolutePath());
+                    memoryRealm.setPathname(tomcatUsers.getAbsolutePath());
                 }
 
-                embeddedTomcat.getEngine().setRealm( memoryRealm );
+                embeddedTomcat.getEngine().setRealm(memoryRealm);
 
-                Context ctx = createContext( embeddedTomcat );
+                Context ctx = createContext(embeddedTomcat);
 
-                if ( useNaming )
-                {
+                if (useNaming) {
                     embeddedTomcat.enableNaming();
                 }
 
-                embeddedTomcat.getHost().setAppBase( new File( configurationDir, "webapps" ).getAbsolutePath() );
+                embeddedTomcat.getHost().setAppBase(new File(configurationDir, "webapps").getAbsolutePath());
 
-                if ( hostName != null )
-                {
-                    embeddedTomcat.getHost().setName( hostName );
+                if (hostName != null) {
+                    embeddedTomcat.getHost().setName(hostName);
                 }
-                if ( aliases != null )
-                {
-                    for ( String alias : aliases )
-                    {
-                        embeddedTomcat.getHost().addAlias( alias );
+                if (aliases != null) {
+                    for (String alias : aliases) {
+                        embeddedTomcat.getHost().addAlias(alias);
                     }
 
                 }
-                createStaticContext( embeddedTomcat, ctx, embeddedTomcat.getHost() );
+                createStaticContext(embeddedTomcat, ctx, embeddedTomcat.getHost());
 
-                Connector connector = new Connector( protocol );
-                connector.setPort( port );
-                connector.setMaxPostSize( maxPostSize );
+                Connector connector = new Connector(protocol);
+                connector.setPort(port);
+                connector.setMaxPostSize(maxPostSize);
 
-                if ( httpsPort > 0 )
-                {
-                    connector.setRedirectPort( httpsPort );
+                if (httpsPort > 0) {
+                    connector.setRedirectPort(httpsPort);
                 }
 
-                if ( address != null )
-                {
-                    connector.setProperty( "address", address );
+                if (address != null) {
+                    connector.setProperty("address", address);
                 }
 
-                connector.setURIEncoding( uriEncoding );
+                connector.setURIEncoding(uriEncoding);
 
-                connector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
+                connector.setUseBodyEncodingForURI(this.useBodyEncodingForURI);
 
-                embeddedTomcat.getService().addConnector( connector );
+                embeddedTomcat.getService().addConnector(connector);
 
-                embeddedTomcat.setConnector( connector );
+                embeddedTomcat.setConnector(connector);
 
                 AccessLogValve alv = new AccessLogValve();
-                alv.setDirectory( new File( configurationDir, "logs" ).getAbsolutePath() );
-                alv.setPattern( "%h %l %u %t \"%r\" %s %b %I %D" );
-                embeddedTomcat.getHost().getPipeline().addValve( alv );
+                alv.setDirectory(new File(configurationDir, "logs").getAbsolutePath());
+                alv.setPattern("%h %l %u %t \"%r\" %s %b %I %D");
+                embeddedTomcat.getHost().getPipeline().addValve(alv);
 
                 // create https connector
                 Connector httpsConnector = null;
-                if ( httpsPort > 0 )
-                {
-                    httpsConnector = new Connector( protocol );
-                    httpsConnector.setPort( httpsPort );
-                    httpsConnector.setMaxPostSize( maxPostSize );
-                    httpsConnector.setSecure( true );
-                    httpsConnector.setProperty( "SSLEnabled", "true" );
-                    httpsConnector.setURIEncoding( uriEncoding );
-                    httpsConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
+                if (httpsPort > 0) {
+                    httpsConnector = new Connector(protocol);
+                    httpsConnector.setPort(httpsPort);
+                    httpsConnector.setMaxPostSize(maxPostSize);
+                    httpsConnector.setSecure(true);
+                    httpsConnector.setProperty("SSLEnabled", "true");
+                    httpsConnector.setURIEncoding(uriEncoding);
+                    httpsConnector.setUseBodyEncodingForURI(this.useBodyEncodingForURI);
 
                     SSLHostConfig hostConfig = new SSLHostConfig();
-                    SSLHostConfigCertificate certificate = new SSLHostConfigCertificate(hostConfig, SSLHostConfigCertificate.DEFAULT_TYPE);
+                    SSLHostConfigCertificate certificate = new SSLHostConfigCertificate(hostConfig,
+                            SSLHostConfigCertificate.DEFAULT_TYPE);
 
-                    if ( keystoreFile != null )
-                    {
+                    if (keystoreFile != null) {
                         certificate.setCertificateKeystoreFile(keystoreFile);
                     }
-                    if ( keystorePass != null )
-                    {
+                    if (keystorePass != null) {
                         certificate.setCertificateKeystorePassword(keystorePass);
-                        httpsConnector.setProperty( "keystorePass", keystorePass );
+                        httpsConnector.setProperty("keystorePass", keystorePass);
                     }
-                    if ( keystoreType != null )
-                    {
+                    if (keystoreType != null) {
                         certificate.setCertificateKeystoreType(keystoreType);
                     }
 
-                    if ( trustManagerClassName != null )
-                    {
+                    if (trustManagerClassName != null) {
                         hostConfig.setTrustManagerClassName(trustManagerClassName);
                     }
 
-                    if ( trustMaxCertLength != null )
-                    {
+                    if (trustMaxCertLength != null) {
                         hostConfig.setCertificateVerificationDepth(Integer.parseInt(trustMaxCertLength));
                     }
 
-                    if ( truststoreAlgorithm != null )
-                    {
+                    if (truststoreAlgorithm != null) {
                         hostConfig.setTruststoreAlgorithm(truststoreAlgorithm);
                     }
 
-                    if ( truststoreFile != null )
-                    {
+                    if (truststoreFile != null) {
                         hostConfig.setTruststoreFile(truststoreFile);
                     }
 
-                    if ( truststorePass != null )
-                    {
+                    if (truststorePass != null) {
                         hostConfig.setTruststorePassword(truststorePass);
                     }
 
-                    if ( truststoreProvider != null )
-                    {
+                    if (truststoreProvider != null) {
                         hostConfig.setTruststoreProvider(truststoreProvider);
                     }
 
-                    if ( truststoreType != null )
-                    {
+                    if (truststoreType != null) {
                         hostConfig.setTruststoreType(truststoreType);
                     }
                     hostConfig.setCertificateVerificationAsString(clientAuth);
 
-                    if ( address != null )
-                    {
-                        httpsConnector.setProperty( "address", address );
+                    if (address != null) {
+                        httpsConnector.setProperty("address", address);
                     }
                     hostConfig.addCertificate(certificate);
                     httpsConnector.addSslHostConfig(hostConfig);
 
-                    embeddedTomcat.getEngine().getService().addConnector( httpsConnector );
+                    embeddedTomcat.getEngine().getService().addConnector(httpsConnector);
 
                 }
 
                 // create ajp connector
                 Connector ajpConnector = null;
-                if ( ajpPort > 0 )
-                {
-                    ajpConnector = new Connector( ajpProtocol );
-                    ajpConnector.setPort( ajpPort );
-                    ajpConnector.setURIEncoding( uriEncoding );
-                    ajpConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
-                    if ( address != null )
-                    {
-                        ajpConnector.setProperty( "address", address );
+                if (ajpPort > 0) {
+                    ajpConnector = new Connector(ajpProtocol);
+                    ajpConnector.setPort(ajpPort);
+                    ajpConnector.setURIEncoding(uriEncoding);
+                    ajpConnector.setUseBodyEncodingForURI(this.useBodyEncodingForURI);
+                    if (address != null) {
+                        ajpConnector.setProperty("address", address);
                     }
                     ajpConnector.setProperty("secretRequired", "false");
-                    embeddedTomcat.getEngine().getService().addConnector( ajpConnector );
+                    embeddedTomcat.getEngine().getService().addConnector(ajpConnector);
                 }
 
-                if ( addContextWarDependencies || !getAdditionalWebapps().isEmpty() )
-                {
-                    createDependencyContexts( embeddedTomcat );
+                if (addContextWarDependencies || !getAdditionalWebapps().isEmpty()) {
+                    createDependencyContexts(embeddedTomcat);
                 }
 
-                if ( useSeparateTomcatClassLoader )
-                {
-                    Thread.currentThread().setContextClassLoader( getTomcatClassLoader() );
-                    embeddedTomcat.getEngine().setParentClassLoader( getTomcatClassLoader() );
+                if (useSeparateTomcatClassLoader) {
+                    Thread.currentThread().setContextClassLoader(getTomcatClassLoader());
+                    embeddedTomcat.getEngine().setParentClassLoader(getTomcatClassLoader());
                 }
 
                 embeddedTomcat.start();
 
                 Properties portProperties = new Properties();
 
-                portProperties.put( "tomcat.maven.http.port", Integer.toString( connector.getLocalPort() ) );
+                portProperties.put("tomcat.maven.http.port", Integer.toString(connector.getLocalPort()));
 
-                session.getUserProperties().setProperty( "tomcat.maven.http.port",
-                                                      Integer.toString( connector.getLocalPort() ) );
-                System.setProperty( "tomcat.maven.http.port", Integer.toString( connector.getLocalPort() ) );
+                session.getUserProperties().setProperty("tomcat.maven.http.port",
+                        Integer.toString(connector.getLocalPort()));
+                System.setProperty("tomcat.maven.http.port", Integer.toString(connector.getLocalPort()));
 
-                if ( httpsConnector != null )
-                {
-                    session.getUserProperties().setProperty( "tomcat.maven.https.port",
-                                                          Integer.toString( httpsConnector.getLocalPort() ) );
-                    portProperties.put( "tomcat.maven.https.port", Integer.toString( httpsConnector.getLocalPort() ) );
-                    System.setProperty( "tomcat.maven.https.port", Integer.toString( httpsConnector.getLocalPort() ) );
+                if (httpsConnector != null) {
+                    session.getUserProperties().setProperty("tomcat.maven.https.port",
+                            Integer.toString(httpsConnector.getLocalPort()));
+                    portProperties.put("tomcat.maven.https.port", Integer.toString(httpsConnector.getLocalPort()));
+                    System.setProperty("tomcat.maven.https.port", Integer.toString(httpsConnector.getLocalPort()));
                 }
 
-                if ( ajpConnector != null )
-                {
-                    session.getUserProperties().setProperty( "tomcat.maven.ajp.port",
-                                                          Integer.toString( ajpConnector.getLocalPort() ) );
-                    portProperties.put( "tomcat.maven.ajp.port", Integer.toString( ajpConnector.getLocalPort() ) );
-                    System.setProperty( "tomcat.maven.ajp.port", Integer.toString( ajpConnector.getLocalPort() ) );
+                if (ajpConnector != null) {
+                    session.getUserProperties().setProperty("tomcat.maven.ajp.port",
+                            Integer.toString(ajpConnector.getLocalPort()));
+                    portProperties.put("tomcat.maven.ajp.port", Integer.toString(ajpConnector.getLocalPort()));
+                    System.setProperty("tomcat.maven.ajp.port", Integer.toString(ajpConnector.getLocalPort()));
                 }
-                if ( propertiesPortFilePath != null )
-                {
-                    File propertiesPortsFile = new File( propertiesPortFilePath );
-                    if ( propertiesPortsFile.exists() )
-                    {
+                if (propertiesPortFilePath != null) {
+                    File propertiesPortsFile = new File(propertiesPortFilePath);
+                    if (propertiesPortsFile.exists()) {
                         propertiesPortsFile.delete();
                     }
-                    FileOutputStream fileOutputStream = new FileOutputStream( propertiesPortsFile );
-                    try
-                    {
-                        portProperties.store( fileOutputStream, "Apache Tomcat Maven plugin port used" );
-                    }
-                    finally
-                    {
-                        IOUtils.closeQuietly( fileOutputStream );
+                    FileOutputStream fileOutputStream = new FileOutputStream(propertiesPortsFile);
+                    try {
+                        portProperties.store(fileOutputStream, "Apache Tomcat Maven plugin port used");
+                    } finally {
+                        IOUtils.closeQuietly(fileOutputStream);
                     }
                 }
 
-                EmbeddedRegistry.getInstance().register( embeddedTomcat );
+                EmbeddedRegistry.getInstance().register(embeddedTomcat);
 
             }
 
 
-        }
-        finally
-        {
-            if ( previousCatalinaBase != null )
-            {
-                System.setProperty( "catalina.base", previousCatalinaBase );
+        } finally {
+            if (previousCatalinaBase != null) {
+                System.setProperty("catalina.base", previousCatalinaBase);
             }
         }
     }
 
-    private List<Webapp> getAdditionalWebapps()
-    {
-        if ( webapps == null )
-        {
+    private List<Webapp> getAdditionalWebapps() {
+        if (webapps == null) {
             return Collections.emptyList();
         }
         return webapps;
     }
 
-    protected ClassRealm getTomcatClassLoader()
-        throws MojoExecutionException
-    {
-        if ( this.tomcatRealm != null )
-        {
+    protected ClassRealm getTomcatClassLoader() throws MojoExecutionException {
+        if (this.tomcatRealm != null) {
             return tomcatRealm;
         }
-        try
-        {
+        try {
             ClassWorld world = new ClassWorld();
-            ClassRealm root = world.newRealm( "tomcat", Thread.currentThread().getContextClassLoader() );
+            ClassRealm root = world.newRealm("tomcat", Thread.currentThread().getContextClassLoader());
 
             for (Artifact pluginArtifact : pluginArtifacts) {
                 // add all plugin artifacts see https://issues.apache.org/jira/browse/MTOMCAT-122
@@ -1285,38 +1166,28 @@ public abstract class AbstractRunMojo
             }
             tomcatRealm = root;
             return root;
-        }
-        catch ( DuplicateRealmException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
-        }
-        catch ( MalformedURLException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
+        } catch (DuplicateRealmException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
+        } catch (MalformedURLException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
         }
     }
 
-    public Set<Artifact> getProjectArtifacts()
-    {
+    public Set<Artifact> getProjectArtifacts() {
         return project.getArtifacts();
     }
 
     /**
      * Causes the current thread to wait indefinitely. This method does not return.
      */
-    private void waitIndefinitely()
-    {
+    private void waitIndefinitely() {
         Object lock = new Object();
 
-        synchronized ( lock )
-        {
-            try
-            {
+        synchronized (lock) {
+            try {
                 lock.wait();
-            }
-            catch ( InterruptedException exception )
-            {
-                getLog().warn( messagesProvider.getMessage( "AbstractRunMojo.interrupted" ), exception );
+            } catch (InterruptedException exception) {
+                getLog().warn(messagesProvider.getMessage("AbstractRunMojo.interrupted"), exception);
             }
         }
     }
@@ -1325,24 +1196,18 @@ public abstract class AbstractRunMojo
     /**
      * Set the SystemProperties from the configuration.
      */
-    private void setupSystemProperties()
-    {
-        if ( systemProperties != null && !systemProperties.isEmpty() )
-        {
-            getLog().info( "setting SystemProperties:" );
+    private void setupSystemProperties() {
+        if (systemProperties != null && !systemProperties.isEmpty()) {
+            getLog().info("setting SystemProperties:");
 
-            for ( String key : systemProperties.keySet() )
-            {
-                String value = systemProperties.get( key );
+            for (String key : systemProperties.keySet()) {
+                String value = systemProperties.get(key);
 
-                if ( value != null )
-                {
-                    getLog().info( " " + key + "=" + value );
-                    System.setProperty( key, value );
-                }
-                else
-                {
-                    getLog().info( "skip sysProps " + key + " with empty value" );
+                if (value != null) {
+                    getLog().info(" " + key + "=" + value);
+                    System.setProperty(key, value);
+                } else {
+                    getLog().info("skip sysProps " + key + " with empty value");
                 }
             }
         }
@@ -1350,82 +1215,68 @@ public abstract class AbstractRunMojo
 
 
     /**
-     * Allows the startup of additional webapps in the tomcat container by declaration with scope
-     * "tomcat".
+     * Allows the startup of additional webapps in the tomcat container by declaration with scope "tomcat".
      *
      * @param container tomcat
+     * 
      * @return dependency tomcat contexts of warfiles in scope "tomcat"
      */
-    private Collection<Context> createDependencyContexts( Tomcat container )
-        throws MojoExecutionException, MalformedURLException, Exception, IOException
-    {
-        getLog().info( "Deploying dependency wars" );
+    private Collection<Context> createDependencyContexts(Tomcat container)
+            throws MojoExecutionException, MalformedURLException, Exception, IOException {
+        getLog().info("Deploying dependency wars");
         // Let's add other modules
         List<Context> contexts = new ArrayList<>();
 
-        ScopeArtifactFilter filter = new ScopeArtifactFilter( "tomcat" );
+        ScopeArtifactFilter filter = new ScopeArtifactFilter("tomcat");
         Set<Artifact> artifacts = project.getArtifacts();
-        for ( Artifact artifact : artifacts )
-        {
+        for (Artifact artifact : artifacts) {
 
             // Artifact is not yet registered and it has neither test, nor a
             // provided scope, not is it optional
-            if ( "war".equals( artifact.getType() ) && !artifact.isOptional() && filter.include( artifact ) )
-            {
-                addContextFromArtifact( container, contexts, artifact, "/" + artifact.getArtifactId(), null, false );
+            if ("war".equals(artifact.getType()) && !artifact.isOptional() && filter.include(artifact)) {
+                addContextFromArtifact(container, contexts, artifact, "/" + artifact.getArtifactId(), null, false);
             }
         }
 
-        for ( Webapp additionalWebapp : getAdditionalWebapps() )
-        {
+        for (Webapp additionalWebapp : getAdditionalWebapps()) {
             String contextPath = additionalWebapp.getContextPath();
-            if ( !contextPath.startsWith( "/" ) )
-            {
+            if (!contextPath.startsWith("/")) {
                 contextPath = "/" + contextPath;
             }
-            addContextFromArtifact( container, contexts, getArtifact( additionalWebapp ), contextPath,
-                                    additionalWebapp.getContextFile(), additionalWebapp.isAsWebapp() );
+            addContextFromArtifact(container, contexts, getArtifact(additionalWebapp), contextPath,
+                    additionalWebapp.getContextFile(), additionalWebapp.isAsWebapp());
         }
         return contexts;
     }
 
 
-    private void addContextFromArtifact( Tomcat container, List<Context> contexts, Artifact artifact,
-                                         String contextPath, File contextXml, boolean asWebApp )
-        throws MojoExecutionException, Exception, IOException
-    {
-        getLog().info( "Deploy warfile: " + String.valueOf( artifact.getFile() ) + " to contextPath: " + contextPath );
-        File webapps = new File( configurationDir, "webapps" );
-        File artifactWarDir = new File( webapps, artifact.getArtifactId() );
-        if ( !artifactWarDir.exists() )
-        {
-            //dont extract if exists
+    private void addContextFromArtifact(Tomcat container, List<Context> contexts, Artifact artifact, String contextPath,
+            File contextXml, boolean asWebApp) throws MojoExecutionException, Exception, IOException {
+        getLog().info("Deploy warfile: " + String.valueOf(artifact.getFile()) + " to contextPath: " + contextPath);
+        File webapps = new File(configurationDir, "webapps");
+        File artifactWarDir = new File(webapps, artifact.getArtifactId());
+        if (!artifactWarDir.exists()) {
+            // dont extract if exists
             artifactWarDir.mkdir();
-            try
-            {
-                UnArchiver unArchiver = archiverManager.getUnArchiver( "zip" );
-                unArchiver.setSourceFile( artifact.getFile() );
-                unArchiver.setDestDirectory( artifactWarDir );
+            try {
+                UnArchiver unArchiver = archiverManager.getUnArchiver("zip");
+                unArchiver.setSourceFile(artifact.getFile());
+                unArchiver.setDestDirectory(artifactWarDir);
 
                 // Extract the module
                 unArchiver.extract();
-            }
-            catch (NoSuchArchiverException | ArchiverException e )
-            {
-                getLog().error( e );
+            } catch (NoSuchArchiverException | ArchiverException e) {
+                getLog().error(e);
                 return;
             }
         }
         // TODO make that configurable ?
         WebappLoader webappLoader = createWebappLoader();
         Context context = null;
-        if ( asWebApp )
-        {
-            context = container.addWebapp( contextPath, artifactWarDir.getAbsolutePath() );
-        }
-        else
-        {
-            context = container.addContext( contextPath, artifactWarDir.getAbsolutePath() );
+        if (asWebApp) {
+            context = container.addWebapp(contextPath, artifactWarDir.getAbsolutePath());
+        } else {
+            context = container.addContext(contextPath, artifactWarDir.getAbsolutePath());
         }
         context.setReloadable(isContextReloadable());
         if (useSeparateTomcatClassLoader) {
@@ -1433,31 +1284,28 @@ public abstract class AbstractRunMojo
         } else {
             context.setParentClassLoader(Thread.currentThread().getContextClassLoader());
         }
-        context.setLoader( webappLoader );
+        context.setLoader(webappLoader);
 
         File contextFile = contextXml != null ? contextXml : getContextFile();
-        if ( contextFile != null )
-        {
-            context.setConfigFile( contextFile.toURI().toURL() );
+        if (contextFile != null) {
+            context.setConfigFile(contextFile.toURI().toURL());
         }
 
-        contexts.add( context );
-//        container.getHost().addChild(context);
+        contexts.add(context);
+        // container.getHost().addChild(context);
     }
 
-    private void createStaticContext( final Tomcat container, Context context, Host host )
-    {
-        if ( staticContextDocbase != null )
-        {
-            Context staticContext = container.addContext( staticContextPath, staticContextDocbase );
-            staticContext.setPrivileged( true );
+    private void createStaticContext(final Tomcat container, Context context, Host host) {
+        if (staticContextDocbase != null) {
+            Context staticContext = container.addContext(staticContextPath, staticContextDocbase);
+            staticContext.setPrivileged(true);
             Wrapper servlet = context.createWrapper();
-            servlet.setServletClass( DefaultServlet.class.getName() );
-            servlet.setName( "staticContent" );
-            staticContext.addChild( servlet );
-            staticContext.addServletMappingDecoded( "/", "staticContent" );
+            servlet.setServletClass(DefaultServlet.class.getName());
+            servlet.setName("staticContent");
+            staticContext.addChild(servlet);
+            staticContext.addServletMappingDecoded("/", "staticContent");
             // see https://issues.apache.org/jira/browse/MTOMCAT-238
-            //host.addChild( staticContext );
+            // host.addChild( staticContext );
         }
     }
 
@@ -1467,56 +1315,43 @@ public abstract class AbstractRunMojo
      * from the dependency list or from the DependencyManagement section of the pom.
      *
      * @param additionalWebapp containing information about artifact from plugin configuration.
+     * 
      * @return Artifact object representing the specified file.
+     * 
      * @throws MojoExecutionException with a message if the version can't be found in DependencyManagement.
      */
-    protected Artifact getArtifact( Webapp additionalWebapp )
-        throws MojoExecutionException
-    {
+    protected Artifact getArtifact(Webapp additionalWebapp) throws MojoExecutionException {
         String classifier = additionalWebapp.getClassifier();
         String version = additionalWebapp.getVersion();
 
-        org.eclipse.aether.artifact.Artifact aetherArtifact = new DefaultArtifact(
-                additionalWebapp.getGroupId(),
-                additionalWebapp.getArtifactId(),
-                classifier != null && !classifier.isEmpty() ? classifier : "",
-                additionalWebapp.getType(),
-                version
-        );
+        org.eclipse.aether.artifact.Artifact aetherArtifact = new DefaultArtifact(additionalWebapp.getGroupId(),
+                additionalWebapp.getArtifactId(), classifier != null && !classifier.isEmpty() ? classifier : "",
+                additionalWebapp.getType(), version);
 
         ArtifactRequest artifactRequest = new ArtifactRequest();
-        artifactRequest.setArtifact( aetherArtifact );
+        artifactRequest.setArtifact(aetherArtifact);
 
         List<org.eclipse.aether.repository.RemoteRepository> aetherRepos = new ArrayList<>();
-        for ( org.apache.maven.artifact.repository.ArtifactRepository repo : project.getRemoteArtifactRepositories() )
-        {
+        for (org.apache.maven.artifact.repository.ArtifactRepository repo : project.getRemoteArtifactRepositories()) {
             org.eclipse.aether.repository.RemoteRepository aetherRepo = new org.eclipse.aether.repository.RemoteRepository.Builder(
-                    repo.getId(), "default", repo.getUrl() )
-                    .build();
-            aetherRepos.add( aetherRepo );
+                    repo.getId(), "default", repo.getUrl()).build();
+            aetherRepos.add(aetherRepo);
         }
-        artifactRequest.setRepositories( aetherRepos );
+        artifactRequest.setRepositories(aetherRepos);
 
-        try
-        {
-            ArtifactResult artifactResult = repositorySystem.resolveArtifact( session.getRepositorySession(), artifactRequest );
+        try {
+            ArtifactResult artifactResult = repositorySystem.resolveArtifact(session.getRepositorySession(),
+                    artifactRequest);
             org.eclipse.aether.artifact.Artifact resolved = artifactResult.getArtifact();
 
-            Artifact artifact = new org.apache.maven.artifact.DefaultArtifact(
-                    additionalWebapp.getGroupId(),
-                    additionalWebapp.getArtifactId(),
-                    version,
-                    Artifact.SCOPE_COMPILE,
-                    additionalWebapp.getType(),
+            Artifact artifact = new org.apache.maven.artifact.DefaultArtifact(additionalWebapp.getGroupId(),
+                    additionalWebapp.getArtifactId(), version, Artifact.SCOPE_COMPILE, additionalWebapp.getType(),
                     classifier != null && !classifier.isEmpty() ? classifier : "",
-                    new org.apache.maven.artifact.handler.DefaultArtifactHandler( additionalWebapp.getType() )
-            );
-            artifact.setFile( resolved.getFile() );
+                    new org.apache.maven.artifact.handler.DefaultArtifactHandler(additionalWebapp.getType()));
+            artifact.setFile(resolved.getFile());
             return artifact;
-        }
-        catch ( Exception e )
-        {
-            throw new MojoExecutionException( "Unable to resolve artifact.", e );
+        } catch (Exception e) {
+            throw new MojoExecutionException("Unable to resolve artifact.", e);
         }
     }
 }

@@ -44,9 +44,8 @@ import org.junit.Before;
  *
  * @author Mark Michaelis
  */
-public abstract class AbstractWarProjectIT
-{
-    protected Logger logger = Logger.getLogger( getClass().getName() );
+public abstract class AbstractWarProjectIT {
+    protected Logger logger = Logger.getLogger(getClass().getName());
 
     /**
      * This URL will be queried for content. It will also be used to wait for the startup of the webapp.
@@ -73,58 +72,51 @@ public abstract class AbstractWarProjectIT
     protected File webappHome;
 
     @Before
-    public void setUp()
-        throws Exception
-    {
+    public void setUp() throws Exception {
 
-        webappHome = ResourceExtractor.simpleExtractResources( getClass(), "/" + getWarArtifactId() );
-        verifier = new Verifier( webappHome.getAbsolutePath() );
+        webappHome = ResourceExtractor.simpleExtractResources(getClass(), "/" + getWarArtifactId());
+        verifier = new Verifier(webappHome.getAbsolutePath());
 
-        boolean debugVerifier = Boolean.getBoolean( "verifier.maven.debug" );
+        boolean debugVerifier = Boolean.getBoolean("verifier.maven.debug");
 
-        verifier.setMavenDebug( debugVerifier );
-        verifier.setDebugJvm( Boolean.getBoolean( "verifier.debugJvm" ) );
+        verifier.setMavenDebug(debugVerifier);
+        verifier.setDebugJvm(Boolean.getBoolean("verifier.debugJvm"));
         verifier.displayStreamBuffers();
 
-        verifier.deleteArtifact( "org.apache.tomcat.maven.it", getWarArtifactId(), "1.0-SNAPSHOT", "war" );
+        verifier.deleteArtifact("org.apache.tomcat.maven.it", getWarArtifactId(), "1.0-SNAPSHOT", "war");
     }
 
     @After
-    public void tearDown()
-        throws Exception
-    {
+    public void tearDown() throws Exception {
         verifier.resetStreams();
-        verifier.deleteArtifact( "org.apache.tomcat.maven.it", getWarArtifactId(), "1.0-SNAPSHOT", "war" );
+        verifier.deleteArtifact("org.apache.tomcat.maven.it", getWarArtifactId(), "1.0-SNAPSHOT", "war");
     }
 
     /**
      * Executes mvn verify and retrieves the response from the web application.
      *
      * @return the response given
+     * 
      * @throws VerificationException if the verifier failed to execute the goal
      * @throws InterruptedException  if the execution got interrupted in some way
      */
-    protected final String executeVerifyWithGet()
-        throws VerificationException, InterruptedException, IOException
-    {
-        final String[] responseBodies = new String[]{ null };
+    protected final String executeVerifyWithGet() throws VerificationException, InterruptedException, IOException {
+        final String[] responseBodies = new String[] { null };
 
-        final Thread thread = new Thread( "webapp-response-retriever" )
-        {
+        final Thread thread = new Thread("webapp-response-retriever") {
             @Override
-            public void run()
-            {
-                responseBodies[0] = getResponseBody( getTimeout() );
+            public void run() {
+                responseBodies[0] = getResponseBody(getTimeout());
             }
         };
 
         thread.start();
 
-        logger.info( "Executing verify on " + webappHome.getAbsolutePath() );
+        logger.info("Executing verify on " + webappHome.getAbsolutePath());
 
-        verifier.setCliOptions( getCliOptions() );
+        verifier.setCliOptions(getCliOptions());
 
-        verifier.executeGoal( getGoal() );
+        verifier.executeGoal(getGoal());
 
         verifier.displayStreamBuffers();
 
@@ -134,54 +126,40 @@ public abstract class AbstractWarProjectIT
     }
 
 
-    protected String getGoal()
-    {
+    protected String getGoal() {
         return "verify";
     }
 
-    protected List<String> getCliOptions()
-    {
+    protected List<String> getCliOptions() {
         return Collections.emptyList();
     }
 
-    private String getResponseBody( int timeout )
-    {
+    private String getResponseBody(int timeout) {
         String responseBody = null;
         final long startTime = System.currentTimeMillis();
         final long endTime = startTime + timeout;
         long currentTime = System.currentTimeMillis();
-        try
-        {
-            while ( pingUrl() != 200 && currentTime < endTime )
-            {
-                logger.fine( "Ping..." );
-                Thread.sleep( 500 );
+        try {
+            while (pingUrl() != 200 && currentTime < endTime) {
+                logger.fine("Ping...");
+                Thread.sleep(500);
                 currentTime = System.currentTimeMillis();
             }
-            if ( currentTime < endTime )
-            {
+            if (currentTime < endTime) {
                 responseBody = getResponseBody();
-                logger.fine( "Received: " + responseBody );
+                logger.fine("Received: " + responseBody);
+            } else {
+                logger.severe("Timeout met while trying to access web application.");
             }
-            else
-            {
-                logger.severe( "Timeout met while trying to access web application." );
-            }
-        }
-        catch ( IOException e )
-        {
-            logger.log(Level.SEVERE, "Exception while trying to access web application.", e );
-        }
-        catch ( InterruptedException e )
-        {
-            logger.log(Level.SEVERE, "Exception while trying to access web application.", e );
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Exception while trying to access web application.", e);
+        } catch (InterruptedException e) {
+            logger.log(Level.SEVERE, "Exception while trying to access web application.", e);
         }
         return responseBody;
     }
 
-    private String getResponseBody()
-        throws IOException
-    {
+    private String getResponseBody() throws IOException {
         URL url;
         try {
             url = new URI(getWebappUrl()).toURL();
@@ -189,71 +167,54 @@ public abstract class AbstractWarProjectIT
             throw new MalformedURLException(e.getMessage());
         }
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setConnectTimeout( getTimeout() );
-        connection.setReadTimeout( getTimeout() );
-        try ( InputStream is = connection.getInputStream() )
-        {
-            return IOUtils.toString( is, StandardCharsets.UTF_8 );
-        }
-        finally
-        {
+        connection.setConnectTimeout(getTimeout());
+        connection.setReadTimeout(getTimeout());
+        try (InputStream is = connection.getInputStream()) {
+            return IOUtils.toString(is, StandardCharsets.UTF_8);
+        } finally {
             connection.disconnect();
         }
     }
 
-    private int pingUrl()
-    {
+    private int pingUrl() {
         final URL url;
-        try
-        {
+        try {
             url = new URI(getWebappUrl()).toURL();
-        }
-        catch (IOException | URISyntaxException e)
-        {
-            logger.log(Level.FINE, "Ignoring exception while pinging URL " + getWebappUrl(), e );
+        } catch (IOException | URISyntaxException e) {
+            logger.log(Level.FINE, "Ignoring exception while pinging URL " + getWebappUrl(), e);
             return -1;
         }
         HttpURLConnection connection = null;
-        try
-        {
+        try {
             connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod( "HEAD" );
-            connection.setConnectTimeout( getTimeout() );
-            connection.setReadTimeout( getTimeout() );
+            connection.setRequestMethod("HEAD");
+            connection.setConnectTimeout(getTimeout());
+            connection.setReadTimeout(getTimeout());
             return connection.getResponseCode();
-        }
-        catch ( IOException e )
-        {
-            logger.log(Level.FINE, "Ignoring exception while pinging URL " + getWebappUrl(), e );
+        } catch (IOException e) {
+            logger.log(Level.FINE, "Ignoring exception while pinging URL " + getWebappUrl(), e);
             return -1;
-        }
-        finally
-        {
-            if ( connection != null )
-            {
+        } finally {
+            if (connection != null) {
                 connection.disconnect();
             }
         }
     }
 
-    protected int getTimeout()
-    {
+    protected int getTimeout() {
         return 15000;
     }
 
-    protected static String getHttpItPort()
-    {
-        return System.getProperty( "its.http.port" );
+    protected static String getHttpItPort() {
+        return System.getProperty("its.http.port");
     }
 
-    protected static String getHttpsItPort()
-    {
-        return System.getProperty( "its.https.port" );
+    protected static String getHttpsItPort() {
+        return System.getProperty("its.https.port");
     }
 
-    protected static String getAjpItPort()
-    {
-        return System.getProperty( "its.ajp.port" );
+    protected static String getAjpItPort() {
+        return System.getProperty("its.ajp.port");
     }
 
 }

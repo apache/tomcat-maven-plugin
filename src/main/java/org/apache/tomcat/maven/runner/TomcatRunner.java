@@ -49,14 +49,14 @@ import org.apache.tomcat.util.ExceptionUtils;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 
 /**
- * FIXME add junit for that but when https://issues.apache.org/bugzilla/show_bug.cgi?id=52028 fixed
- * Main class used to run the standalone wars in a Apache Tomcat instance.
+ * FIXME add junit for that but when https://issues.apache.org/bugzilla/show_bug.cgi?id=52028 fixed Main class used to
+ * run the standalone wars in a Apache Tomcat instance.
  *
  * @author Olivier Lamy
+ * 
  * @since 2.0
  */
-public class TomcatRunner
-{
+public class TomcatRunner {
     // true/false to use the server.xml located in the jar /conf/server.xml
     public static final String USE_SERVER_XML_KEY = "useServerXml";
 
@@ -125,64 +125,50 @@ public class TomcatRunner
      */
     Map<String, String> webappWarPerContext = new HashMap<>();
 
-    public TomcatRunner()
-    {
+    public TomcatRunner() {
         // no op
     }
 
-    public void run()
-        throws Exception
-    {
+    public void run() throws Exception {
 
         PasswordUtil.deobfuscateSystemProps();
 
-        this.extractDirectoryFile = new File( this.extractDirectory );
+        this.extractDirectoryFile = new File(this.extractDirectory);
 
-        debugMessage( "use extractDirectory:" + extractDirectoryFile.getPath() );
+        debugMessage("use extractDirectory:" + extractDirectoryFile.getPath());
 
         boolean archiveTimestampChanged = false;
 
         // compare timestamp stored during previous run if exists
-        File timestampFile = new File( extractDirectoryFile, ".tomcat_executable_archive.timestamp" );
+        File timestampFile = new File(extractDirectoryFile, ".tomcat_executable_archive.timestamp");
 
-        Properties timestampProps = loadProperties( timestampFile );
+        Properties timestampProps = loadProperties(timestampFile);
 
-        if ( timestampFile.exists() )
-        {
-            String timestampValue = timestampProps.getProperty( TomcatRunner.ARCHIVE_GENERATION_TIMESTAMP_KEY );
-            if ( timestampValue != null )
-            {
-                long timestamp = Long.parseLong( timestampValue );
-                archiveTimestampChanged =
-                    Long.parseLong( runtimeProperties.getProperty( TomcatRunner.ARCHIVE_GENERATION_TIMESTAMP_KEY ) )
-                        > timestamp;
+        if (timestampFile.exists()) {
+            String timestampValue = timestampProps.getProperty(TomcatRunner.ARCHIVE_GENERATION_TIMESTAMP_KEY);
+            if (timestampValue != null) {
+                long timestamp = Long.parseLong(timestampValue);
+                archiveTimestampChanged = Long.parseLong(
+                        runtimeProperties.getProperty(TomcatRunner.ARCHIVE_GENERATION_TIMESTAMP_KEY)) > timestamp;
 
-                debugMessage( "read timestamp from file " + timestampValue + ", archiveTimestampChanged: "
-                                  + archiveTimestampChanged );
+                debugMessage("read timestamp from file " + timestampValue + ", archiveTimestampChanged: " +
+                        archiveTimestampChanged);
             }
 
         }
 
-        codeSourceContextPath = runtimeProperties.getProperty( CODE_SOURCE_CONTEXT_PATH );
-        if ( codeSourceContextPath != null && !codeSourceContextPath.isEmpty() )
-        {
+        codeSourceContextPath = runtimeProperties.getProperty(CODE_SOURCE_CONTEXT_PATH);
+        if (codeSourceContextPath != null && !codeSourceContextPath.isEmpty()) {
             codeSourceWar = AccessController.doPrivileged((PrivilegedAction<File>) () -> {
-                try
-                {
-                    File src =
-                        new File( TomcatRunner.class.getProtectionDomain().getCodeSource().getLocation().toURI() );
-                    if ( src.getName().endsWith( ".war" ) )
-                    {
+                try {
+                    File src = new File(TomcatRunner.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+                    if (src.getName().endsWith(".war")) {
                         return src;
+                    } else {
+                        debugMessage("ERROR: Code source is not a war file, ignoring.");
                     }
-                    else
-                    {
-                        debugMessage( "ERROR: Code source is not a war file, ignoring." );
-                    }
-                }
-                catch ( URISyntaxException e )
-                {
-                    debugMessage( "ERROR: Could not find code source. " + e.getMessage() );
+                } catch (URISyntaxException e) {
+                    debugMessage("ERROR: Could not find code source. " + e.getMessage());
 
                 }
                 return null;
@@ -191,202 +177,172 @@ public class TomcatRunner
 
         // do we have to extract content
         {
-            if ( !extractDirectoryFile.exists() || resetExtract || archiveTimestampChanged )
-            {
+            if (!extractDirectoryFile.exists() || resetExtract || archiveTimestampChanged) {
                 extract();
-                //if archiveTimestampChanged or timestamp file not exists store the last timestamp from the archive
-                if ( archiveTimestampChanged || !timestampFile.exists() )
-                {
-                    timestampProps.put( TomcatRunner.ARCHIVE_GENERATION_TIMESTAMP_KEY, runtimeProperties.getProperty(
-                        TomcatRunner.ARCHIVE_GENERATION_TIMESTAMP_KEY ) );
-                    saveProperties( timestampProps, timestampFile );
+                // if archiveTimestampChanged or timestamp file not exists store the last timestamp from the archive
+                if (archiveTimestampChanged || !timestampFile.exists()) {
+                    timestampProps.put(TomcatRunner.ARCHIVE_GENERATION_TIMESTAMP_KEY,
+                            runtimeProperties.getProperty(TomcatRunner.ARCHIVE_GENERATION_TIMESTAMP_KEY));
+                    saveProperties(timestampProps, timestampFile);
                 }
-            }
-            else
-            {
-                String wars = runtimeProperties.getProperty( WARS_KEY );
-                populateWebAppWarPerContext( wars );
+            } else {
+                String wars = runtimeProperties.getProperty(WARS_KEY);
+                populateWebAppWarPerContext(wars);
             }
         }
 
         // create tomcat various paths
-        new File( extractDirectory, "conf" ).mkdirs();
-        new File( extractDirectory, "logs" ).mkdirs();
-        new File( extractDirectory, "webapps" ).mkdirs();
-        new File( extractDirectory, "work" ).mkdirs();
-        File tmpDir = new File( extractDirectory, "temp" );
+        new File(extractDirectory, "conf").mkdirs();
+        new File(extractDirectory, "logs").mkdirs();
+        new File(extractDirectory, "webapps").mkdirs();
+        new File(extractDirectory, "work").mkdirs();
+        File tmpDir = new File(extractDirectory, "temp");
         tmpDir.mkdirs();
 
-        System.setProperty( "java.io.tmpdir", tmpDir.getAbsolutePath() );
+        System.setProperty("java.io.tmpdir", tmpDir.getAbsolutePath());
 
-        System.setProperty( "catalina.base", extractDirectoryFile.getAbsolutePath() );
-        System.setProperty( "catalina.home", extractDirectoryFile.getAbsolutePath() );
+        System.setProperty("catalina.base", extractDirectoryFile.getAbsolutePath());
+        System.setProperty("catalina.home", extractDirectoryFile.getAbsolutePath());
 
         // start with a server.xml
-        if ( serverXmlPath != null || useServerXml() )
-        {
+        if (serverXmlPath != null || useServerXml()) {
             container = new Catalina();
-            container.setUseNaming( this.enableNaming() );
-            if ( serverXmlPath != null && new File( serverXmlPath ).exists() )
-            {
-                container.setConfigFile( serverXmlPath );
-            }
-            else
-            {
-                container.setConfigFile( new File( extractDirectory, "conf/server.xml" ).getAbsolutePath() );
+            container.setUseNaming(this.enableNaming());
+            if (serverXmlPath != null && new File(serverXmlPath).exists()) {
+                container.setConfigFile(serverXmlPath);
+            } else {
+                container.setConfigFile(new File(extractDirectory, "conf/server.xml").getAbsolutePath());
             }
             container.start();
-        }
-        else
-        {
-            tomcat = new Tomcat()
-            {
+        } else {
+            tomcat = new Tomcat() {
                 @Override
-                public Context addWebapp( Host host, String contextPath, String docBase )
-                {
+                public Context addWebapp(Host host, String contextPath, String docBase) {
                     setAddDefaultWebXmlToWebapp(false);
                     ContextConfig ctxCfg = new ContextConfig();
-                    ctxCfg.setDefaultWebXml( new File( extractDirectory, "conf/web.xml" ).getAbsolutePath() );
+                    ctxCfg.setDefaultWebXml(new File(extractDirectory, "conf/web.xml").getAbsolutePath());
                     return addWebapp(host, contextPath, docBase, ctxCfg);
                 }
             };
 
-            if ( this.enableNaming() )
-            {
-                System.setProperty( "catalina.useNaming", "true" );
+            if (this.enableNaming()) {
+                System.setProperty("catalina.useNaming", "true");
                 tomcat.enableNaming();
             }
 
-            tomcat.getHost().setAppBase( new File( extractDirectory, "webapps" ).getAbsolutePath() );
+            tomcat.getHost().setAppBase(new File(extractDirectory, "webapps").getAbsolutePath());
 
-            String connectorHttpProtocol = runtimeProperties.getProperty( HTTP_PROTOCOL_KEY );
+            String connectorHttpProtocol = runtimeProperties.getProperty(HTTP_PROTOCOL_KEY);
 
-            if ( httpProtocol != null && !httpProtocol.trim().isEmpty())
-            {
+            if (httpProtocol != null && !httpProtocol.trim().isEmpty()) {
                 connectorHttpProtocol = httpProtocol;
             }
 
-            debugMessage( "use connectorHttpProtocol:" + connectorHttpProtocol );
+            debugMessage("use connectorHttpProtocol:" + connectorHttpProtocol);
 
-            if ( httpPort > 0 )
-            {
-                Connector connector = new Connector( connectorHttpProtocol );
-                connector.setPort( httpPort );
-                connector.setMaxPostSize( maxPostSize );
+            if (httpPort > 0) {
+                Connector connector = new Connector(connectorHttpProtocol);
+                connector.setPort(httpPort);
+                connector.setMaxPostSize(maxPostSize);
 
-                if ( httpsPort > 0 )
-                {
-                    connector.setRedirectPort( httpsPort );
+                if (httpsPort > 0) {
+                    connector.setRedirectPort(httpsPort);
                 }
-                connector.setURIEncoding( uriEncoding );
+                connector.setURIEncoding(uriEncoding);
 
-                tomcat.getService().addConnector( connector );
+                tomcat.getService().addConnector(connector);
 
-                tomcat.setConnector( connector );
+                tomcat.setConnector(connector);
             }
 
             // add a default acces log valve
             AccessLogValve alv = new AccessLogValve();
-            alv.setDirectory( new File( extractDirectory, "logs" ).getAbsolutePath() );
-            alv.setPattern( runtimeProperties.getProperty( TomcatRunner.ACCESS_LOG_VALVE_FORMAT_KEY ) );
-            tomcat.getHost().getPipeline().addValve( alv );
+            alv.setDirectory(new File(extractDirectory, "logs").getAbsolutePath());
+            alv.setPattern(runtimeProperties.getProperty(TomcatRunner.ACCESS_LOG_VALVE_FORMAT_KEY));
+            tomcat.getHost().getPipeline().addValve(alv);
 
             // create https connector
-            if ( httpsPort > 0 )
-            {
-                Connector httpsConnector = new Connector( connectorHttpProtocol );
-                httpsConnector.setPort( httpsPort );
-                httpsConnector.setMaxPostSize( maxPostSize );
-                httpsConnector.setSecure( true );
-                httpsConnector.setProperty( "SSLEnabled", "true" );
-                httpsConnector.setProperty( "sslProtocol", "TLS" );
-                httpsConnector.setURIEncoding( uriEncoding );
+            if (httpsPort > 0) {
+                Connector httpsConnector = new Connector(connectorHttpProtocol);
+                httpsConnector.setPort(httpsPort);
+                httpsConnector.setMaxPostSize(maxPostSize);
+                httpsConnector.setSecure(true);
+                httpsConnector.setProperty("SSLEnabled", "true");
+                httpsConnector.setProperty("sslProtocol", "TLS");
+                httpsConnector.setURIEncoding(uriEncoding);
 
-                String keystoreFile = System.getProperty( "javax.net.ssl.keyStore" );
-                String keystorePass = System.getProperty( "javax.net.ssl.keyStorePassword" );
-                String keystoreType = System.getProperty( "javax.net.ssl.keyStoreType", "jks" );
+                String keystoreFile = System.getProperty("javax.net.ssl.keyStore");
+                String keystorePass = System.getProperty("javax.net.ssl.keyStorePassword");
+                String keystoreType = System.getProperty("javax.net.ssl.keyStoreType", "jks");
 
-                if ( keystoreFile != null )
-                {
-                    httpsConnector.setProperty( "keystoreFile", keystoreFile );
+                if (keystoreFile != null) {
+                    httpsConnector.setProperty("keystoreFile", keystoreFile);
                 }
-                if ( keystorePass != null )
-                {
-                    httpsConnector.setProperty( "keystorePass", keystorePass );
+                if (keystorePass != null) {
+                    httpsConnector.setProperty("keystorePass", keystorePass);
                 }
-                httpsConnector.setProperty( "keystoreType", keystoreType );
+                httpsConnector.setProperty("keystoreType", keystoreType);
 
-                String truststoreFile = System.getProperty( "javax.net.ssl.trustStore" );
-                String truststorePass = System.getProperty( "javax.net.ssl.trustStorePassword" );
-                String truststoreType = System.getProperty( "javax.net.ssl.trustStoreType", "jks" );
-                if ( truststoreFile != null )
-                {
-                    httpsConnector.setProperty( "truststoreFile", truststoreFile );
+                String truststoreFile = System.getProperty("javax.net.ssl.trustStore");
+                String truststorePass = System.getProperty("javax.net.ssl.trustStorePassword");
+                String truststoreType = System.getProperty("javax.net.ssl.trustStoreType", "jks");
+                if (truststoreFile != null) {
+                    httpsConnector.setProperty("truststoreFile", truststoreFile);
                 }
-                if ( truststorePass != null )
-                {
-                    httpsConnector.setProperty( "truststorePass", truststorePass );
+                if (truststorePass != null) {
+                    httpsConnector.setProperty("truststorePass", truststorePass);
                 }
-                httpsConnector.setProperty( "truststoreType", truststoreType );
+                httpsConnector.setProperty("truststoreType", truststoreType);
 
-                httpsConnector.setProperty( "clientAuth", clientAuth );
-                httpsConnector.setProperty( "keyAlias", keyAlias );
+                httpsConnector.setProperty("clientAuth", clientAuth);
+                httpsConnector.setProperty("keyAlias", keyAlias);
 
-                tomcat.getService().addConnector( httpsConnector );
+                tomcat.getService().addConnector(httpsConnector);
 
-                if ( httpPort <= 0 )
-                {
-                    tomcat.setConnector( httpsConnector );
+                if (httpPort <= 0) {
+                    tomcat.setConnector(httpsConnector);
                 }
             }
 
             // create ajp connector
-            if ( ajpPort > 0 )
-            {
-                Connector ajpConnector = new Connector( "org.apache.coyote.ajp.AjpProtocol" );
-                ajpConnector.setPort( ajpPort );
-                ajpConnector.setURIEncoding( uriEncoding );
+            if (ajpPort > 0) {
+                Connector ajpConnector = new Connector("org.apache.coyote.ajp.AjpProtocol");
+                ajpConnector.setPort(ajpPort);
+                ajpConnector.setURIEncoding(uriEncoding);
                 ajpConnector.setProperty("secretRequired", "false");
-                tomcat.getService().addConnector( ajpConnector );
+                tomcat.getService().addConnector(ajpConnector);
             }
 
             // add webapps
-            for ( Map.Entry<String, String> entry : this.webappWarPerContext.entrySet() )
-            {
+            for (Map.Entry<String, String> entry : this.webappWarPerContext.entrySet()) {
                 String baseDir = null;
                 Context context = null;
-                if ( entry.getKey().equals( "/" ) )
-                {
-                    baseDir = new File( extractDirectory, "webapps/ROOT.war" ).getAbsolutePath();
-                    context = tomcat.addWebapp( "", baseDir );
-                }
-                else
-                {
-                    baseDir = new File( extractDirectory, "webapps/" + entry.getValue() ).getAbsolutePath();
-                    context = tomcat.addWebapp( entry.getKey(), baseDir );
+                if (entry.getKey().equals("/")) {
+                    baseDir = new File(extractDirectory, "webapps/ROOT.war").getAbsolutePath();
+                    context = tomcat.addWebapp("", baseDir);
+                } else {
+                    baseDir = new File(extractDirectory, "webapps/" + entry.getValue()).getAbsolutePath();
+                    context = tomcat.addWebapp(entry.getKey(), baseDir);
                 }
 
-                URL contextFileUrl = getContextXml( baseDir );
-                if ( contextFileUrl != null )
-                {
-                    context.setConfigFile( contextFileUrl );
+                URL contextFileUrl = getContextXml(baseDir);
+                if (contextFileUrl != null) {
+                    context.setConfigFile(contextFileUrl);
                 }
             }
 
-            if ( codeSourceWar != null )
-            {
-                String baseDir = new File( extractDirectory, "webapps/" + codeSourceWar.getName() ).getAbsolutePath();
-                Context context = tomcat.addWebapp( codeSourceContextPath, baseDir );
-                URL contextFileUrl = getContextXml( baseDir );
-                if ( contextFileUrl != null )
-                {
-                    context.setConfigFile( contextFileUrl );
+            if (codeSourceWar != null) {
+                String baseDir = new File(extractDirectory, "webapps/" + codeSourceWar.getName()).getAbsolutePath();
+                Context context = tomcat.addWebapp(codeSourceContextPath, baseDir);
+                URL contextFileUrl = getContextXml(baseDir);
+                if (contextFileUrl != null) {
+                    context.setConfigFile(contextFileUrl);
                 }
             }
 
             tomcat.start();
 
-            Runtime.getRuntime().addShutdownHook( new TomcatShutdownHook() );
+            Runtime.getRuntime().addShutdownHook(new TomcatShutdownHook());
 
         }
 
@@ -394,48 +350,35 @@ public class TomcatRunner
 
     }
 
-    protected class TomcatShutdownHook
-        extends Thread
-    {
+    protected class TomcatShutdownHook extends Thread {
 
-        protected TomcatShutdownHook()
-        {
+        protected TomcatShutdownHook() {
             // no op
         }
 
         @Override
-        public void run()
-        {
-            try
-            {
+        public void run() {
+            try {
                 TomcatRunner.this.stop();
-            }
-            catch ( Throwable ex )
-            {
-                ExceptionUtils.handleThrowable( ex );
-                System.out.println( "fail to properly shutdown Tomcat:" + ex.getMessage() );
-            }
-            finally
-            {
+            } catch (Throwable ex) {
+                ExceptionUtils.handleThrowable(ex);
+                System.out.println("fail to properly shutdown Tomcat:" + ex.getMessage());
+            } finally {
                 // If JULI is used, shut JULI down *after* the server shuts down
                 // so log messages aren't lost
                 LogManager logManager = LogManager.getLogManager();
-                if ( logManager instanceof ClassLoaderLogManager )
-                {
-                    ( (ClassLoaderLogManager) logManager ).shutdown();
+                if (logManager instanceof ClassLoaderLogManager) {
+                    ((ClassLoaderLogManager) logManager).shutdown();
                 }
             }
         }
     }
 
-    private URL getContextXml( String warPath )
-        throws IOException
-    {
+    private URL getContextXml(String warPath) throws IOException {
         InputStream inputStream = null;
-        try
-        {
+        try {
             String urlStr = "jar:file:" + warPath + "!/META-INF/context.xml";
-            debugMessage( "search context.xml in url:'" + urlStr + "'" );
+            debugMessage("search context.xml in url:'" + urlStr + "'");
             URL url = null;
             try {
                 url = new URI(urlStr).toURL();
@@ -443,180 +386,136 @@ public class TomcatRunner
                 throw new MalformedURLException(e.getMessage());
             }
             inputStream = url.openConnection().getInputStream();
-            if ( inputStream != null )
-            {
+            if (inputStream != null) {
                 return url;
             }
-        }
-        catch ( FileNotFoundException e )
-        {
+        } catch (FileNotFoundException e) {
             return null;
-        }
-        finally
-        {
-            closeQuietly( inputStream );
+        } finally {
+            closeQuietly(inputStream);
         }
         return null;
     }
 
-    private static void closeQuietly( InputStream inputStream )
-    {
-        if ( inputStream == null )
-        {
+    private static void closeQuietly(InputStream inputStream) {
+        if (inputStream == null) {
             return;
         }
-        try
-        {
+        try {
             inputStream.close();
-        }
-        catch ( IOException e )
-        {
+        } catch (IOException e) {
             // ignore exception here
         }
     }
 
-    private void waitIndefinitely()
-    {
+    private void waitIndefinitely() {
         Object lock = new Object();
 
-        synchronized ( lock )
-        {
-            try
-            {
+        synchronized (lock) {
+            try {
                 lock.wait();
-            }
-            catch ( InterruptedException exception )
-            {
-                throw new Error( "InterruptedException on wait Indefinitely lock:" + exception.getMessage(),
-                                 exception );
+            } catch (InterruptedException exception) {
+                throw new Error("InterruptedException on wait Indefinitely lock:" + exception.getMessage(), exception);
             }
         }
     }
 
-    public void stop()
-        throws Exception
-    {
-        if ( container != null )
-        {
+    public void stop() throws Exception {
+        if (container != null) {
             container.stop();
         }
-        if ( tomcat != null )
-        {
+        if (tomcat != null) {
             tomcat.stop();
         }
     }
 
-    protected void extract()
-        throws Exception
-    {
+    protected void extract() throws Exception {
 
-        if ( extractDirectoryFile.exists() )
-        {
-            debugMessage( "delete extractDirectory:" + extractDirectoryFile.getAbsolutePath() );
-            FileUtils.deleteDirectory( extractDirectoryFile );
+        if (extractDirectoryFile.exists()) {
+            debugMessage("delete extractDirectory:" + extractDirectoryFile.getAbsolutePath());
+            FileUtils.deleteDirectory(extractDirectoryFile);
         }
 
-        if ( !this.extractDirectoryFile.exists() )
-        {
+        if (!this.extractDirectoryFile.exists()) {
             boolean created = this.extractDirectoryFile.mkdirs();
-            if ( !created )
-            {
-                throw new Exception( "FATAL: impossible to create directory:" + this.extractDirectoryFile.getPath() );
+            if (!created) {
+                throw new Exception("FATAL: impossible to create directory:" + this.extractDirectoryFile.getPath());
             }
         }
 
         // ensure webapp dir is here
-        boolean created = new File( extractDirectory, "webapps" ).mkdirs();
-        if ( !created )
-        {
+        boolean created = new File(extractDirectory, "webapps").mkdirs();
+        if (!created) {
             throw new Exception(
-                "FATAL: impossible to create directory:" + this.extractDirectoryFile.getPath() + "/webapps" );
+                    "FATAL: impossible to create directory:" + this.extractDirectoryFile.getPath() + "/webapps");
 
         }
 
-        String wars = runtimeProperties.getProperty( WARS_KEY );
-        populateWebAppWarPerContext( wars );
+        String wars = runtimeProperties.getProperty(WARS_KEY);
+        populateWebAppWarPerContext(wars);
 
-        for ( Map.Entry<String, String> entry : webappWarPerContext.entrySet() )
-        {
-            debugMessage( "webappWarPerContext entry key/value: " + entry.getKey() + "/" + entry.getValue() );
+        for (Map.Entry<String, String> entry : webappWarPerContext.entrySet()) {
+            debugMessage("webappWarPerContext entry key/value: " + entry.getKey() + "/" + entry.getValue());
             InputStream inputStream = null;
-            try
-            {
+            try {
                 File expandFile = null;
-                inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( entry.getValue() );
-                if ( !useServerXml() )
-                {
-                    if ( entry.getKey().equals( "/" ) )
-                    {
-                        expandFile = new File( extractDirectory, "webapps/ROOT.war" );
+                inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(entry.getValue());
+                if (!useServerXml()) {
+                    if (entry.getKey().equals("/")) {
+                        expandFile = new File(extractDirectory, "webapps/ROOT.war");
+                    } else {
+                        expandFile = new File(extractDirectory, "webapps/" + entry.getValue());
                     }
-                    else
-                    {
-                        expandFile = new File( extractDirectory, "webapps/" + entry.getValue() );
-                    }
-                }
-                else
-                {
-                    expandFile = new File( extractDirectory, "webapps/" + entry.getValue() );
+                } else {
+                    expandFile = new File(extractDirectory, "webapps/" + entry.getValue());
                 }
 
-                debugMessage( "expand to file:" + expandFile.getPath() );
+                debugMessage("expand to file:" + expandFile.getPath());
 
                 // MTOMCAT-211 ensure parent directories created
                 File parentFile = expandFile.getParentFile();
-                if ( !parentFile.mkdirs() && !parentFile.isDirectory() )
-                {
-                    throw new Exception( "FATAL: impossible to create directories:" + parentFile );
+                if (!parentFile.mkdirs() && !parentFile.isDirectory()) {
+                    throw new Exception("FATAL: impossible to create directories:" + parentFile);
                 }
 
-                expand( inputStream, expandFile );
+                expand(inputStream, expandFile);
 
-            }
-            finally
-            {
-                if ( inputStream != null )
-                {
+            } finally {
+                if (inputStream != null) {
                     inputStream.close();
                 }
             }
         }
 
-        //Copy code source to webapps folder
-        if ( codeSourceWar != null )
-        {
+        // Copy code source to webapps folder
+        if (codeSourceWar != null) {
             FileInputStream inputStream = null;
-            try
-            {
-                File expandFile = new File( extractDirectory, "webapps/" + codeSourceContextPath + ".war" );
-                inputStream = new FileInputStream( codeSourceWar );
-                debugMessage( "move code source to file:" + expandFile.getPath() );
-                expand( inputStream, expandFile );
-            }
-            finally
-            {
-                if ( inputStream != null )
-                {
+            try {
+                File expandFile = new File(extractDirectory, "webapps/" + codeSourceContextPath + ".war");
+                inputStream = new FileInputStream(codeSourceWar);
+                debugMessage("move code source to file:" + expandFile.getPath());
+                expand(inputStream, expandFile);
+            } finally {
+                if (inputStream != null) {
                     inputStream.close();
                 }
             }
         }
 
         // expand tomcat configuration files if there
-        expandConfigurationFile( "catalina.properties", extractDirectoryFile );
-        expandConfigurationFile( "logging.properties", extractDirectoryFile );
-        expandConfigurationFile( "tomcat-users.xml", extractDirectoryFile );
-        expandConfigurationFile( "catalina.policy", extractDirectoryFile );
-        expandConfigurationFile( "context.xml", extractDirectoryFile );
-        expandConfigurationFile( "server.xml", extractDirectoryFile );
-        expandConfigurationFile( "web.xml", extractDirectoryFile );
+        expandConfigurationFile("catalina.properties", extractDirectoryFile);
+        expandConfigurationFile("logging.properties", extractDirectoryFile);
+        expandConfigurationFile("tomcat-users.xml", extractDirectoryFile);
+        expandConfigurationFile("catalina.policy", extractDirectoryFile);
+        expandConfigurationFile("context.xml", extractDirectoryFile);
+        expandConfigurationFile("server.xml", extractDirectoryFile);
+        expandConfigurationFile("web.xml", extractDirectoryFile);
 
     }
 
-    private static void expandConfigurationFile( String fileName, File extractDirectory )
-        throws Exception
-    {
-        try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("conf/" + fileName)) {
+    private static void expandConfigurationFile(String fileName, File extractDirectory) throws Exception {
+        try (InputStream inputStream = Thread.currentThread().getContextClassLoader()
+                .getResourceAsStream("conf/" + fileName)) {
             if (inputStream != null) {
                 File confDirectory = new File(extractDirectory, "conf");
                 if (!confDirectory.exists()) {
@@ -629,36 +528,30 @@ public class TomcatRunner
     }
 
     /**
-     * @param warsValue we can value in format: wars=foo.war|contextpath;bar.war  ( |contextpath is optionnal if empty use the war name)
-     *                  so here we return war file name and populate webappWarPerContext
+     * @param warsValue we can value in format: wars=foo.war|contextpath;bar.war ( |contextpath is optionnal if empty
+     *                      use the war name) so here we return war file name and populate webappWarPerContext
      */
-    private void populateWebAppWarPerContext( String warsValue )
-    {
-        if ( warsValue == null )
-        {
+    private void populateWebAppWarPerContext(String warsValue) {
+        if (warsValue == null) {
             return;
         }
 
-        StringTokenizer st = new StringTokenizer( warsValue, ";" );
-        while ( st.hasMoreTokens() )
-        {
+        StringTokenizer st = new StringTokenizer(warsValue, ";");
+        while (st.hasMoreTokens()) {
             String warValue = st.nextToken();
-            debugMessage( "populateWebAppWarPerContext warValue:" + warValue );
+            debugMessage("populateWebAppWarPerContext warValue:" + warValue);
             String warFileName = "";
             String contextValue = "";
-            int separatorIndex = warValue.indexOf( "|" );
-            if ( separatorIndex >= 0 )
-            {
-                warFileName = warValue.substring( 0, separatorIndex );
-                contextValue = warValue.substring( separatorIndex + 1);
+            int separatorIndex = warValue.indexOf("|");
+            if (separatorIndex >= 0) {
+                warFileName = warValue.substring(0, separatorIndex);
+                contextValue = warValue.substring(separatorIndex + 1);
 
-            }
-            else
-            {
+            } else {
                 warFileName = contextValue;
             }
-            debugMessage( "populateWebAppWarPerContext contextValue/warFileName:" + contextValue + "/" + warFileName );
-            this.webappWarPerContext.put( contextValue, warFileName );
+            debugMessage("populateWebAppWarPerContext contextValue/warFileName:" + contextValue + "/" + warFileName);
+            this.webappWarPerContext.put(contextValue, warFileName);
         }
     }
 
@@ -668,11 +561,10 @@ public class TomcatRunner
      *
      * @param input InputStream to be copied
      * @param file  The file to be created
+     * 
      * @throws java.io.IOException if an input/output error occurs
      */
-    private static void expand( InputStream input, File file )
-        throws IOException
-    {
+    private static void expand(InputStream input, File file) throws IOException {
         try (BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(file))) {
             byte[] buffer = new byte[2048];
             while (true) {
@@ -686,33 +578,26 @@ public class TomcatRunner
         // Ignore
     }
 
-    public boolean useServerXml()
-    {
-        return Boolean.parseBoolean( runtimeProperties.getProperty( USE_SERVER_XML_KEY, Boolean.FALSE.toString() ) );
+    public boolean useServerXml() {
+        return Boolean.parseBoolean(runtimeProperties.getProperty(USE_SERVER_XML_KEY, Boolean.FALSE.toString()));
     }
 
 
-    public void debugMessage( String message )
-    {
-        if ( debug )
-        {
-            System.out.println( message );
+    public void debugMessage(String message) {
+        if (debug) {
+            System.out.println(message);
         }
     }
 
 
-    public boolean enableNaming()
-    {
-        return Boolean.parseBoolean( runtimeProperties.getProperty( ENABLE_NAMING_KEY, Boolean.FALSE.toString() ) );
+    public boolean enableNaming() {
+        return Boolean.parseBoolean(runtimeProperties.getProperty(ENABLE_NAMING_KEY, Boolean.FALSE.toString()));
     }
 
-    private Properties loadProperties( File file ) throws IOException
-    {
+    private Properties loadProperties(File file) throws IOException {
         Properties properties = new Properties();
-        if ( file.exists() )
-        {
-            try (FileInputStream fileInputStream = new FileInputStream(file))
-            {
+        if (file.exists()) {
+            try (FileInputStream fileInputStream = new FileInputStream(file)) {
                 properties.load(fileInputStream);
             }
 
@@ -720,10 +605,8 @@ public class TomcatRunner
         return properties;
     }
 
-    private void saveProperties( Properties properties, File file ) throws IOException
-    {
-        try (FileOutputStream fileOutputStream = new FileOutputStream(file))
-        {
+    private void saveProperties(Properties properties, File file) throws IOException {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
             properties.store(fileOutputStream, "Timestamp file for executable war/jar");
         }
     }

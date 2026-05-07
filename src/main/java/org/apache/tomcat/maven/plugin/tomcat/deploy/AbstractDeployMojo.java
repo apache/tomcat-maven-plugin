@@ -33,9 +33,7 @@ import java.net.URL;
  *
  * @author Mark Hobson (markhobson@gmail.com)
  */
-public abstract class AbstractDeployMojo
-    extends AbstractWarCatalinaMojo
-{
+public abstract class AbstractDeployMojo extends AbstractWarCatalinaMojo {
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
@@ -44,25 +42,25 @@ public abstract class AbstractDeployMojo
      * The deployment mode to use. This must be either <code>war</code> to deploy the war, <code>context</code> to
      * deploy the context XML file, or <code>both</code> to deploy the war with the context XML file.
      */
-    @Parameter( property = "maven.tomcat.mode", defaultValue = "war", required = true )
+    @Parameter(property = "maven.tomcat.mode", defaultValue = "war", required = true)
     private String mode;
 
     /**
      * The path of the Tomcat context XML file. This is not used for war deployment mode.
      */
-    @Parameter( defaultValue = "${project.build.directory}/${project.build.finalName}/META-INF/context.xml" )
+    @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}/META-INF/context.xml")
     private File contextFile;
 
     /**
      * Whether Tomcat should automatically undeploy webapps that already exist when deploying.
      */
-    @Parameter( property = "maven.tomcat.update", defaultValue = "false", required = true )
+    @Parameter(property = "maven.tomcat.update", defaultValue = "false", required = true)
     private boolean update;
 
     /**
      * The Tomcat webapp tag name to use.
      */
-    @Parameter( property = "maven.tomcat.tag" )
+    @Parameter(property = "maven.tomcat.tag")
     private String tag;
 
     // ----------------------------------------------------------------------
@@ -73,24 +71,15 @@ public abstract class AbstractDeployMojo
      * {@inheritDoc}
      */
     @Override
-    public void invokeManager()
-        throws MojoExecutionException, TomcatManagerException, IOException
-    {
-        if ( "war".equals( mode ) )
-        {
+    public void invokeManager() throws MojoExecutionException, TomcatManagerException, IOException {
+        if ("war".equals(mode)) {
             deployWar();
-        }
-        else if ( "context".equals( mode ) )
-        {
+        } else if ("context".equals(mode)) {
             deployContext();
-        }
-        else if ( "both".equals( mode ) )
-        {
+        } else if ("both".equals(mode)) {
             deployWarAndContext();
-        }
-        else
-        {
-            throw new MojoExecutionException( messagesProvider.getMessage( "AbstractDeployMojo.unknownMode", mode ) );
+        } else {
+            throw new MojoExecutionException(messagesProvider.getMessage("AbstractDeployMojo.unknownMode", mode));
         }
     }
 
@@ -104,35 +93,29 @@ public abstract class AbstractDeployMojo
     /**
      * Ensures that the Tomcat WAR file exists and is the correct type for the deployment mode.
      *
-     * @throws org.apache.maven.plugin.MojoExecutionException
-     *          if the WAR file does not exist or is not the correct type for the deployment mode
+     * @throws org.apache.maven.plugin.MojoExecutionException if the WAR file does not exist or is not the correct type
+     *                                                            for the deployment mode
      */
-    protected abstract void validateWarFile()
-        throws MojoExecutionException;
+    protected abstract void validateWarFile() throws MojoExecutionException;
 
     /**
      * Gets the Tomcat context XML file.
      *
      * @return the Tomcat context XML file.
      */
-    protected File getContextFile()
-    {
+    protected File getContextFile() {
         return contextFile;
     }
 
     /**
      * Ensures that the Tomcat context XML file exists and is indeed a file.
      *
-     * @throws org.apache.maven.plugin.MojoExecutionException
-     *          if the context file does not exist or is not a file
+     * @throws org.apache.maven.plugin.MojoExecutionException if the context file does not exist or is not a file
      */
-    protected void validateContextFile()
-        throws MojoExecutionException
-    {
-        if ( !contextFile.exists() || !contextFile.isFile() )
-        {
+    protected void validateContextFile() throws MojoExecutionException {
+        if (!contextFile.exists() || !contextFile.isFile()) {
             throw new MojoExecutionException(
-                messagesProvider.getMessage( "AbstractDeployMojo.missingContext", contextFile.getPath() ) );
+                    messagesProvider.getMessage("AbstractDeployMojo.missingContext", contextFile.getPath()));
         }
     }
 
@@ -141,8 +124,7 @@ public abstract class AbstractDeployMojo
      *
      * @return whether Tomcat should automatically undeploy webapps that already exist when deploying
      */
-    protected boolean isUpdate()
-    {
+    protected boolean isUpdate() {
         return update;
     }
 
@@ -151,26 +133,21 @@ public abstract class AbstractDeployMojo
      *
      * @return the Tomcat webapp tag name to use
      */
-    protected String getTag()
-    {
+    protected String getTag() {
         return tag;
     }
 
     /**
      * Deploys the WAR to Tomcat.
      *
-     * @throws org.apache.maven.plugin.MojoExecutionException
-     *                             if there was a problem locating the WAR
-     * @throws org.apache.tomcat.maven.common.deployer.TomcatManagerException
-     *                             if the Tomcat manager request fails
-     * @throws java.io.IOException if an i/o error occurs
+     * @throws org.apache.maven.plugin.MojoExecutionException                 if there was a problem locating the WAR
+     * @throws org.apache.tomcat.maven.common.deployer.TomcatManagerException if the Tomcat manager request fails
+     * @throws java.io.IOException                                            if an i/o error occurs
      */
-    protected void deployWar()
-        throws MojoExecutionException, TomcatManagerException, IOException
-    {
+    protected void deployWar() throws MojoExecutionException, TomcatManagerException, IOException {
         validateWarFile();
 
-        getLog().info( messagesProvider.getMessage( "AbstractDeployMojo.deployingWar", getDeployedURL() ) );
+        getLog().info(messagesProvider.getMessage("AbstractDeployMojo.deployingWar", getDeployedURL()));
 
         URL warURL = getWarFile().toURI().toURL();
         TomcatManagerResponse tomcatResponse = getManager().deploy(getPath(), warURL, isUpdate(), getTag());
@@ -181,18 +158,15 @@ public abstract class AbstractDeployMojo
     /**
      * Deploys the context XML file to Tomcat.
      *
-     * @throws org.apache.maven.plugin.MojoExecutionException
-     *                             if there was a problem locating the context XML file
-     * @throws org.apache.tomcat.maven.common.deployer.TomcatManagerException
-     *                             if the Tomcat manager request fails
-     * @throws java.io.IOException if an i/o error occurs
+     * @throws org.apache.maven.plugin.MojoExecutionException                 if there was a problem locating the
+     *                                                                            context XML file
+     * @throws org.apache.tomcat.maven.common.deployer.TomcatManagerException if the Tomcat manager request fails
+     * @throws java.io.IOException                                            if an i/o error occurs
      */
-    protected void deployContext()
-        throws MojoExecutionException, TomcatManagerException, IOException
-    {
+    protected void deployContext() throws MojoExecutionException, TomcatManagerException, IOException {
         validateContextFile();
 
-        getLog().info( messagesProvider.getMessage( "AbstractDeployMojo.deployingContext", getDeployedURL() ) );
+        getLog().info(messagesProvider.getMessage("AbstractDeployMojo.deployingContext", getDeployedURL()));
 
         URL contextURL = getContextFile().toURI().toURL();
         TomcatManagerResponse tomcatResponse = getManager().deploy(getPath(), contextURL, isUpdate(), getTag());
@@ -203,27 +177,25 @@ public abstract class AbstractDeployMojo
     /**
      * Deploys the WAR and context XML file to Tomcat.
      *
-     * @throws org.apache.maven.plugin.MojoExecutionException
-     *                             if there was a problem locating either the WAR or the context XML file
-     * @throws org.apache.tomcat.maven.common.deployer.TomcatManagerException
-     *                             if the Tomcat manager request fails
-     * @throws java.io.IOException if an i/o error occurs
+     * @throws org.apache.maven.plugin.MojoExecutionException                 if there was a problem locating either the
+     *                                                                            WAR or the context XML file
+     * @throws org.apache.tomcat.maven.common.deployer.TomcatManagerException if the Tomcat manager request fails
+     * @throws java.io.IOException                                            if an i/o error occurs
      */
-    protected void deployWarAndContext()
-        throws MojoExecutionException, TomcatManagerException, IOException
-    {
+    protected void deployWarAndContext() throws MojoExecutionException, TomcatManagerException, IOException {
         validateWarFile();
         validateContextFile();
 
-        getLog().info( messagesProvider.getMessage( "AbstractDeployMojo.deployingWarContext", getDeployedURL() ) );
+        getLog().info(messagesProvider.getMessage("AbstractDeployMojo.deployingWarContext", getDeployedURL()));
 
         URL warURL = getWarFile().toURI().toURL();
         URL contextURL = getContextFile().toURI().toURL();
 
-        TomcatManagerResponse tomcatResponse = getManager().deployContext( getPath(), contextURL, warURL, isUpdate(), getTag() );
+        TomcatManagerResponse tomcatResponse = getManager().deployContext(getPath(), contextURL, warURL, isUpdate(),
+                getTag());
 
-        checkTomcatResponse( tomcatResponse );
+        checkTomcatResponse(tomcatResponse);
 
-        log( tomcatResponse.getHttpResponseBody() );
+        log(tomcatResponse.getHttpResponseBody());
     }
 }

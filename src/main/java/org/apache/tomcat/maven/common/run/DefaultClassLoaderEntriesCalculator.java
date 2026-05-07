@@ -42,21 +42,19 @@ import java.util.Set;
 
 /**
  * @author Olivier Lamy
+ * 
  * @since 2.0
  */
-@Component( role = ClassLoaderEntriesCalculator.class )
-public class DefaultClassLoaderEntriesCalculator
-    implements ClassLoaderEntriesCalculator
-{
+@Component(role = ClassLoaderEntriesCalculator.class)
+public class DefaultClassLoaderEntriesCalculator implements ClassLoaderEntriesCalculator {
 
     @Requirement
     private ArchiverManager archiverManager;
 
 
     @Override
-    public ClassLoaderEntriesCalculatorResult calculateClassPathEntries( ClassLoaderEntriesCalculatorRequest request )
-        throws TomcatRunException
-    {
+    public ClassLoaderEntriesCalculatorResult calculateClassPathEntries(ClassLoaderEntriesCalculatorRequest request)
+            throws TomcatRunException {
         Set<String> classLoaderEntries = new LinkedHashSet<>();
 
         List<String> fileInClassLoaderEntries = new ArrayList<>();
@@ -66,125 +64,103 @@ public class DefaultClassLoaderEntriesCalculator
         List<String> buildDirectories = new ArrayList<>();
 
         // add classes directories to loader
-        try
-        {
+        try {
             List<String> classPathElements = request.isUseTestClassPath()
-                ? request.getMavenProject().getTestClasspathElements()
-                : request.getMavenProject().getRuntimeClasspathElements();
-            if ( classPathElements != null )
-            {
-                for ( String classPathElement : classPathElements )
-                {
-                    File classPathElementFile = new File( classPathElement );
-                    if ( classPathElementFile.isDirectory() )
-                    {
-                        request.getLog().debug(
-                            "adding classPathElementFile " + classPathElementFile.toURI().toString() );
-                        classLoaderEntries.add( classPathElementFile.toURI().toString() );
-                        buildDirectories.add( classPathElement );
+                    ? request.getMavenProject().getTestClasspathElements()
+                    : request.getMavenProject().getRuntimeClasspathElements();
+            if (classPathElements != null) {
+                for (String classPathElement : classPathElements) {
+                    File classPathElementFile = new File(classPathElement);
+                    if (classPathElementFile.isDirectory()) {
+                        request.getLog()
+                                .debug("adding classPathElementFile " + classPathElementFile.toURI().toString());
+                        classLoaderEntries.add(classPathElementFile.toURI().toString());
+                        buildDirectories.add(classPathElement);
                     }
                 }
             }
-        }
-        catch ( DependencyResolutionRequiredException e )
-        {
-            throw new TomcatRunException( e.getMessage(), e );
+        } catch (DependencyResolutionRequiredException e) {
+            throw new TomcatRunException(e.getMessage(), e);
         }
 
-        File tmpExtractDatas =
-            new File( request.getMavenProject().getBuild().getDirectory(), "apache-tomcat-maven-plugin" );
+        File tmpExtractDatas = new File(request.getMavenProject().getBuild().getDirectory(),
+                "apache-tomcat-maven-plugin");
 
         tmpExtractDatas.mkdirs();
 
         // add artifacts to loader
-        if ( request.getDependencies() != null )
-        {
-            for ( Artifact artifact : request.getDependencies() )
-            {
+        if (request.getDependencies() != null) {
+            for (Artifact artifact : request.getDependencies()) {
                 String scope = artifact.getScope();
 
                 // skip provided and test scoped artifacts
-                if ( !Artifact.SCOPE_PROVIDED.equals( scope ) //
-                    && ( !Artifact.SCOPE_TEST.equals( scope ) || request.isUseTestClassPath() ) )
-                {
-                    request.getLog().debug(
-                        "add dependency to webapploader " + artifact.getGroupId() + ":" + artifact.getArtifactId() + ":"
-                            + artifact.getVersion() + ":" + artifact.getScope() );
-                    // we add artifact dependencies and projects from reactor if file (ie jar) as users can go to install/package phase
-                    // so artifact.getFile is a file not a directory and not added when iterate on project.classPathElements
-                    if ( !isInProjectReferences( artifact, request.getMavenProject() ) || artifact.getFile().isFile() )
-                    {
+                if (!Artifact.SCOPE_PROVIDED.equals(scope) //
+                        && (!Artifact.SCOPE_TEST.equals(scope) || request.isUseTestClassPath())) {
+                    request.getLog().debug("add dependency to webapploader " + artifact.getGroupId() + ":" +
+                            artifact.getArtifactId() + ":" + artifact.getVersion() + ":" + artifact.getScope());
+                    // we add artifact dependencies and projects from reactor if file (ie jar) as users can go to
+                    // install/package phase
+                    // so artifact.getFile is a file not a directory and not added when iterate on
+                    // project.classPathElements
+                    if (!isInProjectReferences(artifact, request.getMavenProject()) || artifact.getFile().isFile()) {
                         String fileName = artifact.getGroupId() + "-" + artifact.getFile().getName();
-                        if ( !fileInClassLoaderEntries.contains( fileName ) )
-                        {
-                            classLoaderEntries.add( artifact.getFile().toURI().toString() );
-                            fileInClassLoaderEntries.add( fileName );
+                        if (!fileInClassLoaderEntries.contains(fileName)) {
+                            classLoaderEntries.add(artifact.getFile().toURI().toString());
+                            fileInClassLoaderEntries.add(fileName);
                         }
-                    }
-                    else
-                    {
-                        request.getLog().debug(
-                            "skip adding artifact " + artifact.getArtifactId() + " as it's in reactors" );
+                    } else {
+                        request.getLog()
+                                .debug("skip adding artifact " + artifact.getArtifactId() + " as it's in reactors");
 
                     }
                 }
 
                 // in case of war dependency we must add /WEB-INF/lib/*.jar in entries and WEB-INF/classes
-                if ( "war".equals( artifact.getType() ) && request.isAddWarDependenciesInClassloader() )
-                {
+                if ("war".equals(artifact.getType()) && request.isAddWarDependenciesInClassloader()) {
 
-                    File tmpDir = new File( tmpExtractDatas, artifact.getArtifactId() );
+                    File tmpDir = new File(tmpExtractDatas, artifact.getArtifactId());
 
                     boolean existed = !tmpDir.mkdirs();
                     // does a directory for this artifact already exist?
-                    if ( existed )
-                    {
+                    if (existed) {
                         // check timestamp to see if artifact is newer than extracted directory
                         long dirLastMod = tmpDir.lastModified();
                         long warLastMod = artifact.getFile().lastModified();
 
-                        if ( warLastMod == 0L || warLastMod > dirLastMod )
-                        {
-                            request.getLog().debug(
-                                "re-exploding artifact " + artifact.getArtifactId() + " due to newer WAR" );
+                        if (warLastMod == 0L || warLastMod > dirLastMod) {
+                            request.getLog()
+                                    .debug("re-exploding artifact " + artifact.getArtifactId() + " due to newer WAR");
 
-                            deleteDirectory( tmpDir, request.getLog() );
-                            tmpDir = new File( tmpExtractDatas, artifact.getArtifactId() );
+                            deleteDirectory(tmpDir, request.getLog());
+                            tmpDir = new File(tmpExtractDatas, artifact.getArtifactId());
                             tmpDir.mkdirs();
                             existed = false;
-                        }
-                        else
-                        {
-                            request.getLog().debug(
-                                "using existing exploded war for artifact " + artifact.getArtifactId() );
+                        } else {
+                            request.getLog()
+                                    .debug("using existing exploded war for artifact " + artifact.getArtifactId());
                         }
                     }
 
-                    tmpDirectories.add( tmpDir );
+                    tmpDirectories.add(tmpDir);
 
-                    try
-                    {
+                    try {
                         // explode the archive if it is not already exploded
-                        if ( !existed )
-                        {
+                        if (!existed) {
                             File warFile = artifact.getFile();
-                            UnArchiver unArchiver = archiverManager.getUnArchiver( "jar" );
-                            unArchiver.setSourceFile( warFile );
-                            unArchiver.setDestDirectory( tmpDir );
+                            UnArchiver unArchiver = archiverManager.getUnArchiver("jar");
+                            unArchiver.setSourceFile(warFile);
+                            unArchiver.setDestDirectory(tmpDir);
                             unArchiver.extract();
                         }
 
-                        File libsDirectory = new File( tmpDir, "WEB-INF/lib" );
-                        if ( libsDirectory.exists() )
-                        {
-                            String[] jars = libsDirectory.list( new FilenameFilter()
-                            {
+                        File libsDirectory = new File(tmpDir, "WEB-INF/lib");
+                        if (libsDirectory.exists()) {
+                            String[] jars = libsDirectory.list(new FilenameFilter() {
                                 @Override
-                                public boolean accept( File file, String s )
-                                {
-                                    return s.endsWith( ".jar" );
+                                public boolean accept(File file, String s) {
+                                    return s.endsWith(".jar");
                                 }
-                            } );
+                            });
                             if (jars != null) {
                                 for (String jar : jars) {
                                     File jarFile = new File(libsDirectory, jar);
@@ -192,63 +168,49 @@ public class DefaultClassLoaderEntriesCalculator
                                         classLoaderEntries.add(jarFile.toURI().toString());
                                         fileInClassLoaderEntries.add(jarFile.getName());
                                     } else {
-                                        request.getLog().debug("skip adding file " + jarFile.getPath()
-                                                + " as it's already in classloader entries");
+                                        request.getLog().debug("skip adding file " + jarFile.getPath() +
+                                                " as it's already in classloader entries");
                                     }
                                 }
                             }
                         }
-                        File classesDirectory = new File( tmpDir, "WEB-INF/classes" );
-                        if ( classesDirectory.exists() )
-                        {
-                            classLoaderEntries.add( classesDirectory.toURI().toString() );
+                        File classesDirectory = new File(tmpDir, "WEB-INF/classes");
+                        if (classesDirectory.exists()) {
+                            classLoaderEntries.add(classesDirectory.toURI().toString());
                         }
-                    }
-                    catch ( NoSuchArchiverException e )
-                    {
-                        throw new TomcatRunException( e.getMessage(), e );
-                    }
-                    catch ( ArchiverException e )
-                    {
+                    } catch (NoSuchArchiverException e) {
+                        throw new TomcatRunException(e.getMessage(), e);
+                    } catch (ArchiverException e) {
                         request.getLog().error(
-                            "fail to extract war file " + artifact.getFile() + ", reason:" + e.getMessage(), e );
-                        throw new TomcatRunException( e.getMessage(), e );
+                                "fail to extract war file " + artifact.getFile() + ", reason:" + e.getMessage(), e);
+                        throw new TomcatRunException(e.getMessage(), e);
                     }
                 }
             }
         }
 
-        return new ClassLoaderEntriesCalculatorResult( new ArrayList<>( classLoaderEntries ), //
-                                                       tmpDirectories, //
-                                                       buildDirectories );
+        return new ClassLoaderEntriesCalculatorResult(new ArrayList<>(classLoaderEntries), //
+                tmpDirectories, //
+                buildDirectories);
 
     }
 
-    private void deleteDirectory( File directory, Log log )
-        throws TomcatRunException
-    {
-        try
-        {
-            FileUtils.deleteDirectory( directory );
-        }
-        catch ( IOException e )
-        {
-            log.error( "fail to delete directory file " + directory + ", reason:" + e.getMessage(), e );
-            throw new TomcatRunException( e.getMessage(), e );
+    private void deleteDirectory(File directory, Log log) throws TomcatRunException {
+        try {
+            FileUtils.deleteDirectory(directory);
+        } catch (IOException e) {
+            log.error("fail to delete directory file " + directory + ", reason:" + e.getMessage(), e);
+            throw new TomcatRunException(e.getMessage(), e);
         }
     }
 
-    protected boolean isInProjectReferences( Artifact artifact, MavenProject project )
-    {
-        if ( project.getProjectReferences() == null || project.getProjectReferences().isEmpty() )
-        {
+    protected boolean isInProjectReferences(Artifact artifact, MavenProject project) {
+        if (project.getProjectReferences() == null || project.getProjectReferences().isEmpty()) {
             return false;
         }
         Collection<MavenProject> mavenProjects = project.getProjectReferences().values();
-        for ( MavenProject mavenProject : mavenProjects )
-        {
-            if ( mavenProject.getId() != null && mavenProject.getId().equals( artifact.getId() ) )
-            {
+        for (MavenProject mavenProject : mavenProjects) {
+            if (mavenProject.getId() != null && mavenProject.getId().equals(artifact.getId())) {
                 return true;
             }
         }

@@ -64,13 +64,12 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
  * Runs the current project as a dynamic web application using an embedded Tomcat server.
  *
  * @author Olivier Lamy
+ * 
  * @since 2.0
  */
-@Mojo( name = "run", requiresDependencyResolution = ResolutionScope.TEST, threadSafe = true )
-@Execute( phase = LifecyclePhase.PROCESS_CLASSES )
-public class RunMojo
-    extends AbstractRunMojo
-{
+@Mojo(name = "run", requiresDependencyResolution = ResolutionScope.TEST, threadSafe = true)
+@Execute(phase = LifecyclePhase.PROCESS_CLASSES)
+public class RunMojo extends AbstractRunMojo {
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
@@ -79,24 +78,26 @@ public class RunMojo
     /**
      * The set of dependencies for the web application being run.
      */
-    @Parameter( defaultValue = "${project.artifacts}", required = true, readonly = true )
+    @Parameter(defaultValue = "${project.artifacts}", required = true, readonly = true)
     private Set<Artifact> dependencies;
 
     /**
      * The web resources directory for the web application being run.
      */
-    @Parameter( defaultValue = "${basedir}/src/main/webapp", property = "tomcat.warSourceDirectory" )
+    @Parameter(defaultValue = "${basedir}/src/main/webapp", property = "tomcat.warSourceDirectory")
     private File warSourceDirectory;
 
 
     /**
      * Set the "follow standard delegation model" flag used to configure our ClassLoader.
      *
-     * @see <a href="http://tomcat.apache.org/tomcat-9.0-doc/api/org/apache/catalina/loader/WebappLoader.html#setDelegate(boolean)">
-     *      http://tomcat.apache.org/tomcat-9.0-doc/api/org/apache/catalina/loader/WebappLoader.html#setDelegate(boolean)</a>
+     * @see <a href=
+     *          "http://tomcat.apache.org/tomcat-9.0-doc/api/org/apache/catalina/loader/WebappLoader.html#setDelegate(boolean)">
+     *          http://tomcat.apache.org/tomcat-9.0-doc/api/org/apache/catalina/loader/WebappLoader.html#setDelegate(boolean)</a>
+     * 
      * @since 1.0
      */
-    @Parameter( property = "tomcat.delegate", defaultValue = "true" )
+    @Parameter(property = "tomcat.delegate", defaultValue = "true")
     private boolean delegate = true;
 
     /**
@@ -110,7 +111,7 @@ public class RunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.addWarDependenciesInClassloader", defaultValue = "true" )
+    @Parameter(property = "maven.tomcat.addWarDependenciesInClassloader", defaultValue = "true")
     private boolean addWarDependenciesInClassloader;
 
     /**
@@ -118,7 +119,7 @@ public class RunMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.useTestClasspath", defaultValue = "false" )
+    @Parameter(property = "maven.tomcat.useTestClasspath", defaultValue = "false")
     private boolean useTestClasspath;
 
     /**
@@ -126,12 +127,11 @@ public class RunMojo
      *
      * @since 2.0
      */
-    @Parameter( alias = "additionalClassesDirs" )
+    @Parameter(alias = "additionalClassesDirs")
     private List<String> additionalClasspathDirs;
 
 
-    public final File getWarSourceDirectory()
-    {
+    public final File getWarSourceDirectory() {
         return warSourceDirectory;
     }
 
@@ -139,22 +139,16 @@ public class RunMojo
      * {@inheritDoc}
      */
     @Override
-    protected File getDocBase()
-        throws IOException
-    {
+    protected File getDocBase() throws IOException {
         // https://issues.apache.org/jira/browse/MTOMCAT-239
         // when running a jar docBase doesn't exists so create a fake one
-        if ( !warSourceDirectory.exists() )
-        {
+        if (!warSourceDirectory.exists()) {
             // we create a temporary file in build.directory
-            final File tempDocBase = createTempDirectory( new File( project.getBuild().getDirectory() ) );
+            final File tempDocBase = createTempDirectory(new File(project.getBuild().getDirectory()));
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                try
-                {
-                    FileUtils.deleteDirectory( tempDocBase );
-                }
-                catch ( Exception e )
-                {
+                try {
+                    FileUtils.deleteDirectory(tempDocBase);
+                } catch (Exception e) {
                     // we can consider as safe to ignore as it's located in build directory
                 }
             }));
@@ -163,9 +157,7 @@ public class RunMojo
         return warSourceDirectory;
     }
 
-    private static File createTempDirectory( File baseTmpDirectory )
-        throws IOException
-    {
+    private static File createTempDirectory(File baseTmpDirectory) throws IOException {
         return Files.createTempDirectory(baseTmpDirectory.toPath(), "temp" + Long.toString(System.nanoTime())).toFile();
     }
 
@@ -173,80 +165,65 @@ public class RunMojo
      * {@inheritDoc}
      */
     @Override
-    protected File getContextFile()
-        throws MojoExecutionException
-    {
+    protected File getContextFile() throws MojoExecutionException {
         File temporaryContextFile = null;
 
-        //----------------------------------------------------------------------------
+        // ----------------------------------------------------------------------------
         // context attributes backgroundProcessorDelay reloadable cannot be modified at runtime.
         // It looks only values from the file are used
         // so here we create a temporary file with values modified
-        //----------------------------------------------------------------------------
+        // ----------------------------------------------------------------------------
         FileReader fr = null;
         FileWriter fw = null;
         StringWriter sw = new StringWriter();
-        try
-        {
-            temporaryContextFile = File.createTempFile( "tomcat-maven-plugin", "temp-ctx-file" );
+        try {
+            temporaryContextFile = File.createTempFile("tomcat-maven-plugin", "temp-ctx-file");
             temporaryContextFile.deleteOnExit();
 
             // format to modify/create <Context backgroundProcessorDelay="5" reloadable="false">
-            if ( contextFile != null && contextFile.exists() )
-            {
+            if (contextFile != null && contextFile.exists()) {
                 MavenFileFilterRequest mavenFileFilterRequest = new MavenFileFilterRequest();
-                mavenFileFilterRequest.setFrom( contextFile );
-                mavenFileFilterRequest.setTo( temporaryContextFile );
-                mavenFileFilterRequest.setMavenProject( project );
-                mavenFileFilterRequest.setMavenSession( session );
-                mavenFileFilterRequest.setFiltering( true );
+                mavenFileFilterRequest.setFrom(contextFile);
+                mavenFileFilterRequest.setTo(temporaryContextFile);
+                mavenFileFilterRequest.setMavenProject(project);
+                mavenFileFilterRequest.setMavenSession(session);
+                mavenFileFilterRequest.setFiltering(true);
 
-                mavenFileFilter.copyFile( mavenFileFilterRequest );
+                mavenFileFilter.copyFile(mavenFileFilterRequest);
 
-                fr = new FileReader( temporaryContextFile );
-                Xpp3Dom xpp3Dom = Xpp3DomBuilder.build( fr );
-                xpp3Dom.setAttribute( "backgroundProcessorDelay", Integer.toString( backgroundProcessorDelay ) );
-                xpp3Dom.setAttribute( "reloadable", Boolean.toString( isContextReloadable() ) );
-                fw = new FileWriter( temporaryContextFile );
-                Xpp3DomWriter.write( fw, xpp3Dom );
-                Xpp3DomWriter.write( sw, xpp3Dom );
-                getLog().debug( " generated context file " + sw.toString() );
-            }
-            else
-            {
-                if ( contextReloadable )
-                {
+                fr = new FileReader(temporaryContextFile);
+                Xpp3Dom xpp3Dom = Xpp3DomBuilder.build(fr);
+                xpp3Dom.setAttribute("backgroundProcessorDelay", Integer.toString(backgroundProcessorDelay));
+                xpp3Dom.setAttribute("reloadable", Boolean.toString(isContextReloadable()));
+                fw = new FileWriter(temporaryContextFile);
+                Xpp3DomWriter.write(fw, xpp3Dom);
+                Xpp3DomWriter.write(sw, xpp3Dom);
+                getLog().debug(" generated context file " + sw.toString());
+            } else {
+                if (contextReloadable) {
                     // don't care about using a complicated xml api to create one xml line :-)
-                    StringBuilder sb = new StringBuilder("<Context ").append("backgroundProcessorDelay=\"").append(
-                            Integer.toString(backgroundProcessorDelay)).append("\"").append(" reloadable=\"")
+                    StringBuilder sb = new StringBuilder("<Context ").append("backgroundProcessorDelay=\"")
+                            .append(Integer.toString(backgroundProcessorDelay)).append("\"").append(" reloadable=\"")
                             .append(Boolean.toString(isContextReloadable())).append("\"/>");
 
-                    getLog().debug( " generated context file " + sb.toString() );
-                    fw = new FileWriter( temporaryContextFile );
-                    fw.write( sb.toString() );
-                }
-                else
-                {
+                    getLog().debug(" generated context file " + sb.toString());
+                    fw = new FileWriter(temporaryContextFile);
+                    fw.write(sb.toString());
+                } else {
                     // no user context file and contextReloadable false so no need about creating a hack one
                     return null;
                 }
             }
-        }
-        catch (IOException | XmlPullParserException e )
-        {
-            getLog().error( "error creating fake context.xml : " + e.getMessage(), e );
-            throw new MojoExecutionException( "error creating fake context.xml : " + e.getMessage(), e );
-        }
-        catch ( MavenFilteringException e )
-        {
-            getLog().error( "error filtering context.xml : " + e.getMessage(), e );
-            throw new MojoExecutionException( "error filtering context.xml : " + e.getMessage(), e );
-        }
-        finally
-        {
-            IOUtil.close( fw );
-            IOUtil.close( fr );
-            IOUtil.close( sw );
+        } catch (IOException | XmlPullParserException e) {
+            getLog().error("error creating fake context.xml : " + e.getMessage(), e);
+            throw new MojoExecutionException("error creating fake context.xml : " + e.getMessage(), e);
+        } catch (MavenFilteringException e) {
+            getLog().error("error filtering context.xml : " + e.getMessage(), e);
+            throw new MojoExecutionException("error filtering context.xml : " + e.getMessage(), e);
+        } finally {
+            IOUtil.close(fw);
+            IOUtil.close(fr);
+            IOUtil.close(sw);
         }
 
         return temporaryContextFile;
@@ -258,35 +235,29 @@ public class RunMojo
      * @throws MojoExecutionException
      */
     @Override
-    protected WebappLoader createWebappLoader()
-        throws IOException, MojoExecutionException
-    {
+    protected WebappLoader createWebappLoader() throws IOException, MojoExecutionException {
         WebappLoader loader = super.createWebappLoader();
 
-        if ( useSeparateTomcatClassLoader )
-        {
-            loader.setDelegate( delegate );
+        if (useSeparateTomcatClassLoader) {
+            loader.setDelegate(delegate);
         }
 
         return loader;
     }
 
     @Override
-    protected void enhanceContext( final Context context )
-        throws MojoExecutionException
-    {
-        super.enhanceContext( context );
+    protected void enhanceContext(final Context context) throws MojoExecutionException {
+        super.enhanceContext(context);
 
-        try
-        {
+        try {
             ClassLoaderEntriesCalculatorRequest request = new ClassLoaderEntriesCalculatorRequest() //
-                .setDependencies( dependencies ) //
-                .setLog( getLog() ) //
-                .setMavenProject( project ) //
-                .setAddWarDependenciesInClassloader( addWarDependenciesInClassloader ) //
-                .setUseTestClassPath( useTestClasspath );
-            final ClassLoaderEntriesCalculatorResult classLoaderEntriesCalculatorResult =
-                classLoaderEntriesCalculator.calculateClassPathEntries( request );
+                    .setDependencies(dependencies) //
+                    .setLog(getLog()) //
+                    .setMavenProject(project) //
+                    .setAddWarDependenciesInClassloader(addWarDependenciesInClassloader) //
+                    .setUseTestClassPath(useTestClasspath);
+            final ClassLoaderEntriesCalculatorResult classLoaderEntriesCalculatorResult = classLoaderEntriesCalculator
+                    .calculateClassPathEntries(request);
             final List<String> classLoaderEntries = classLoaderEntriesCalculatorResult.getClassPathEntries();
             final List<File> tmpDirectories = classLoaderEntriesCalculatorResult.getTmpDirectories();
 
@@ -295,15 +266,18 @@ public class RunMojo
             context.setResources(new StandardRoot(context));
 
             /* Add jars */
-            final List<String> jarPaths = extractJars( classLoaderEntries );
+            final List<String> jarPaths = extractJars(classLoaderEntries);
             for (String jarPath : jarPaths) {
                 File f = new File(jarPath);
                 if (f.exists()) {
-                    /* We add the jar as a file under /WEB-INF/lib and Tomcat takes care of creating a JarResourceSet for its classes and
-                       for its resources in /META-INF/resources as appropriate. Basically it hooks into Tomcat's usual handling.
+                    /*
+                     * We add the jar as a file under /WEB-INF/lib and Tomcat takes care of creating a JarResourceSet
+                     * for its classes and for its resources in /META-INF/resources as appropriate. Basically it hooks
+                     * into Tomcat's usual handling.
                      */
                     getLog().debug("Adding jar resource: " + f.getAbsolutePath());
-                    FileResourceSet fileResourceSet = new FileResourceSet(context.getResources(), "/WEB-INF/lib/" + f.getName(), f.getAbsolutePath(), "/");
+                    FileResourceSet fileResourceSet = new FileResourceSet(context.getResources(),
+                            "/WEB-INF/lib/" + f.getName(), f.getAbsolutePath(), "/");
                     context.getResources().addPostResources(fileResourceSet);
                 }
             }
@@ -312,25 +286,29 @@ public class RunMojo
             File classesDir = new File(project.getBuild().getOutputDirectory());
             if (classesDir.exists() && classesDir.isDirectory()) {
                 getLog().debug("Adding classes resource: " + classesDir.getAbsolutePath());
-                DirResourceSet webinfClassesResources = new DirResourceSet(context.getResources(), "/WEB-INF/classes", classesDir.getAbsolutePath(), "/") {
+                DirResourceSet webinfClassesResources = new DirResourceSet(context.getResources(), "/WEB-INF/classes",
+                        classesDir.getAbsolutePath(), "/") {
 
                     @Override
                     public WebResource getResource(String path) {
-                        /* We need to juggle with /META-INF/beans.xml as Weld's WebAppBeanArchiveScanner has special handling
-                    for /WEB-INF/classes that doesn't work with this.
-                    That is because it first finds _all_ resources /META-INF/beans.xml and it ends up with the URLs to those
-                    resources, which are all file-system URLs, and then looks for /WEB-INF/classes in the URL, which we don't
-                    have as our files are in the Maven target directory.
+                        /*
+                         * We need to juggle with /META-INF/beans.xml as Weld's WebAppBeanArchiveScanner has special
+                         * handling for /WEB-INF/classes that doesn't work with this. That is because it first finds
+                         * _all_ resources /META-INF/beans.xml and it ends up with the URLs to those resources, which
+                         * are all file-system URLs, and then looks for /WEB-INF/classes in the URL, which we don't have
+                         * as our files are in the Maven target directory.
                          */
                         if ("/WEB-INF/classes/META-INF/beans.xml".equals(path)) {
-                            getLog().info("Rejecting request for /WEB-INF/classes/META-INF/beans.xml for Weld compatibility. beans.xml can be found at /WEB-INF/beans.xml");
+                            getLog().info(
+                                    "Rejecting request for /WEB-INF/classes/META-INF/beans.xml for Weld compatibility. beans.xml can be found at /WEB-INF/beans.xml");
                             return new EmptyResource(getRoot(), path);
                         } else if ("/WEB-INF/beans.xml".equals(path)) {
                             WebResource beans = super.getResource(path);
                             if (!beans.exists()) {
                                 beans = super.getResource("/WEB-INF/classes/META-INF/beans.xml");
                                 if (beans.exists()) {
-                                    getLog().info("Returning /WEB-INF/classes/META-INF/beans.xml for request of /WEB-INF/beans.xml for Weld compatibility");
+                                    getLog().info(
+                                            "Returning /WEB-INF/classes/META-INF/beans.xml for request of /WEB-INF/beans.xml for Weld compatibility");
                                 }
                             }
                             return beans;
@@ -350,12 +328,14 @@ public class RunMojo
 
                 final File buildDirectoryFile = new File(buildDirectory);
                 getLog().debug("Adding additional classes resource: " + buildDirectoryFile.getAbsolutePath());
-                DirResourceSet otherClassesResources = new DirResourceSet(context.getResources(), "/WEB-INF/classes", buildDirectoryFile.getAbsolutePath(), "/");
+                DirResourceSet otherClassesResources = new DirResourceSet(context.getResources(), "/WEB-INF/classes",
+                        buildDirectoryFile.getAbsolutePath(), "/");
                 context.getResources().addPreResources(otherClassesResources);
             }
 
             /* Support the maven-war-plugin's webResources configuration to add resources */
-            final Plugin warPlugin = project.getBuild().getPluginsAsMap().get("org.apache.maven.plugins:maven-war-plugin");
+            final Plugin warPlugin = project.getBuild().getPluginsAsMap()
+                    .get("org.apache.maven.plugins:maven-war-plugin");
             if (warPlugin != null && warPlugin.getConfiguration() instanceof Xpp3Dom) {
                 final Xpp3Dom cfg = (Xpp3Dom) warPlugin.getConfiguration();
                 Xpp3Dom webResources = cfg.getChild("webResources");
@@ -378,33 +358,30 @@ public class RunMojo
                             continue;
                         }
 
-                        File directoryFile = directory.startsWith(File.separator) ? new File(directory) : new File(project.getBasedir(), directory);
-                        DirResourceSet dirResourceSet = new DirResourceSet(context.getResources(), targetPath, directoryFile.getAbsolutePath(), "/");
+                        File directoryFile = directory.startsWith(File.separator) ? new File(directory)
+                                : new File(project.getBasedir(), directory);
+                        DirResourceSet dirResourceSet = new DirResourceSet(context.getResources(), targetPath,
+                                directoryFile.getAbsolutePath(), "/");
                         dirResourceSet.setStaticOnly(true);
                         context.getResources().addPostResources(dirResourceSet);
 
-                        getLog().debug("Adding additional static resources at \"" + targetPath + "\": " + directoryFile.getAbsolutePath());
+                        getLog().debug("Adding additional static resources at \"" + targetPath + "\": " +
+                                directoryFile.getAbsolutePath());
                     }
                 }
             }
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                for ( File tmpDir : tmpDirectories )
-                {
-                    try
-                    {
-                        FileUtils.deleteDirectory( tmpDir );
-                    }
-                    catch ( IOException e )
-                    {
+                for (File tmpDir : tmpDirectories) {
+                    try {
+                        FileUtils.deleteDirectory(tmpDir);
+                    } catch (IOException e) {
                         // ignore
                     }
                 }
             }));
-        }
-        catch ( TomcatRunException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
+        } catch (TomcatRunException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
         }
 
     }
@@ -414,29 +391,23 @@ public class RunMojo
      * extract List of path which are jar files
      *
      * @param classLoaderEntries
+     * 
      * @return
      */
-    private List<String> extractJars( List<String> classLoaderEntries )
-        throws MojoExecutionException
-    {
+    private List<String> extractJars(List<String> classLoaderEntries) throws MojoExecutionException {
 
         List<String> jarPaths = new ArrayList<>();
 
-        try
-        {
-            for ( String classLoaderEntry : classLoaderEntries )
-            {
-                URI uri = new URI( classLoaderEntry );
-                File file = new File( uri );
-                if ( !file.isDirectory() && file.getName().toLowerCase().endsWith( ".jar" ) )
-                {
-                    jarPaths.add( file.getAbsolutePath() );
+        try {
+            for (String classLoaderEntry : classLoaderEntries) {
+                URI uri = new URI(classLoaderEntry);
+                File file = new File(uri);
+                if (!file.isDirectory() && file.getName().toLowerCase().endsWith(".jar")) {
+                    jarPaths.add(file.getAbsolutePath());
                 }
             }
-        }
-        catch ( URISyntaxException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
+        } catch (URISyntaxException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
         }
 
         return jarPaths;

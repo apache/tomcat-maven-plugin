@@ -26,10 +26,10 @@ import java.util.Set;
 
 /**
  * @author Olivier Lamy
+ * 
  * @since 2.0
  */
-public class ClassLoaderEntriesCalculatorRequest
-{
+public class ClassLoaderEntriesCalculatorRequest {
     private MavenProject mavenProject;
 
     private Set<Artifact> dependencies;
@@ -40,58 +40,48 @@ public class ClassLoaderEntriesCalculatorRequest
 
     private boolean useTestClassPath;
 
-    public MavenProject getMavenProject()
-    {
+    public MavenProject getMavenProject() {
         return mavenProject;
     }
 
-    public ClassLoaderEntriesCalculatorRequest setMavenProject( MavenProject mavenProject )
-    {
+    public ClassLoaderEntriesCalculatorRequest setMavenProject(MavenProject mavenProject) {
         this.mavenProject = mavenProject;
         return this;
     }
 
-    public Set<Artifact> getDependencies()
-    {
+    public Set<Artifact> getDependencies() {
         return dependencies;
     }
 
-    public ClassLoaderEntriesCalculatorRequest setDependencies( Set<Artifact> dependencies )
-    {
+    public ClassLoaderEntriesCalculatorRequest setDependencies(Set<Artifact> dependencies) {
         this.dependencies = dependencies;
         return this;
     }
 
-    public Log getLog()
-    {
+    public Log getLog() {
         return log;
     }
 
-    public ClassLoaderEntriesCalculatorRequest setLog( Log log )
-    {
+    public ClassLoaderEntriesCalculatorRequest setLog(Log log) {
         this.log = log;
         return this;
     }
 
-    public boolean isAddWarDependenciesInClassloader()
-    {
+    public boolean isAddWarDependenciesInClassloader() {
         return addWarDependenciesInClassloader;
     }
 
     public ClassLoaderEntriesCalculatorRequest setAddWarDependenciesInClassloader(
-        boolean addWarDependenciesInClassloader )
-    {
+            boolean addWarDependenciesInClassloader) {
         this.addWarDependenciesInClassloader = addWarDependenciesInClassloader;
         return this;
     }
 
-    public boolean isUseTestClassPath()
-    {
+    public boolean isUseTestClassPath() {
         return useTestClassPath;
     }
 
-    public ClassLoaderEntriesCalculatorRequest setUseTestClassPath( boolean useTestClassPath )
-    {
+    public ClassLoaderEntriesCalculatorRequest setUseTestClassPath(boolean useTestClassPath) {
         this.useTestClassPath = useTestClassPath;
         return this;
     }

@@ -29,8 +29,6 @@ import org.apache.maven.plugins.annotations.Mojo;
  */
 @Mojo(name = "deploy", threadSafe = true)
 @Execute(phase = LifecyclePhase.PACKAGE)
-public class DeployMojo
-    extends AbstractDeployWarMojo
-{
+public class DeployMojo extends AbstractDeployWarMojo {
     // no-op : only mojo metadata overriding
 }

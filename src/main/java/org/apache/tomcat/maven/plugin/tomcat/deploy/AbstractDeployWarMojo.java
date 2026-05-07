@@ -28,11 +28,10 @@ import java.io.IOException;
 
 /**
  * @author olamy
+ * 
  * @since 1.0-alpha-2
  */
-public class AbstractDeployWarMojo
-    extends AbstractDeployMojo
-{
+public class AbstractDeployWarMojo extends AbstractDeployMojo {
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
@@ -40,7 +39,7 @@ public class AbstractDeployWarMojo
     /**
      * The path of the WAR file to deploy.
      */
-    @Parameter( defaultValue = "${project.build.directory}/${project.build.finalName}.war", required = true )
+    @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}.war", required = true)
     private File warFile;
 
     // ----------------------------------------------------------------------
@@ -51,8 +50,7 @@ public class AbstractDeployWarMojo
      * {@inheritDoc}
      */
     @Override
-    protected File getWarFile()
-    {
+    protected File getWarFile() {
         return warFile;
     }
 
@@ -60,13 +58,9 @@ public class AbstractDeployWarMojo
      * {@inheritDoc}
      */
     @Override
-    protected void validateWarFile()
-        throws MojoExecutionException
-    {
-        if ( !warFile.exists() || !warFile.isFile() )
-        {
-            throw new MojoExecutionException(
-                messagesProvider.getMessage( "DeployMojo.missingWar", warFile.getPath() ) );
+    protected void validateWarFile() throws MojoExecutionException {
+        if (!warFile.exists() || !warFile.isFile()) {
+            throw new MojoExecutionException(messagesProvider.getMessage("DeployMojo.missingWar", warFile.getPath()));
         }
     }
 
@@ -74,21 +68,19 @@ public class AbstractDeployWarMojo
      * {@inheritDoc}
      */
     @Override
-    protected void deployWar()
-        throws MojoExecutionException, TomcatManagerException, IOException
-    {
+    protected void deployWar() throws MojoExecutionException, TomcatManagerException, IOException {
         validateWarFile();
 
-        getLog().info( messagesProvider.getMessage( "AbstractDeployMojo.deployingWar", getDeployedURL() ) );
+        getLog().info(messagesProvider.getMessage("AbstractDeployMojo.deployingWar", getDeployedURL()));
 
-        TomcatManagerResponse tomcatManagerResponse =
-            getManager().deploy( getPath(), warFile, isUpdate(), getTag(), warFile.length() );
+        TomcatManagerResponse tomcatManagerResponse = getManager().deploy(getPath(), warFile, isUpdate(), getTag(),
+                warFile.length());
 
-        checkTomcatResponse( tomcatManagerResponse );
+        checkTomcatResponse(tomcatManagerResponse);
 
-        getLog().info( "tomcatManager status code:" + tomcatManagerResponse.getStatusCode() + ", ReasonPhrase:"
-                           + tomcatManagerResponse.getReasonPhrase() );
+        getLog().info("tomcatManager status code:" + tomcatManagerResponse.getStatusCode() + ", ReasonPhrase:" +
+                tomcatManagerResponse.getReasonPhrase());
 
-        log( tomcatManagerResponse.getHttpResponseBody() );
+        log(tomcatManagerResponse.getHttpResponseBody());
     }
 }

@@ -34,9 +34,7 @@ import static org.junit.Assert.assertTrue;
  *
  * @author Mark Michaelis
  */
-public abstract class AbstractTomcatRunMultiConfigIT
-    extends AbstractWarProjectIT
-{
+public abstract class AbstractTomcatRunMultiConfigIT extends AbstractWarProjectIT {
 
     private static final String URL_QUERY = "\u3053\u3093\u306b\u3061\u306f";
 
@@ -46,45 +44,37 @@ public abstract class AbstractTomcatRunMultiConfigIT
     private static final String WAR_ARTIFACT_ID = "tomcat-run-multi-config";
 
     @Override
-    protected String getWebappUrl()
-    {
-        try
-        {
-            return new URI(
-                "http://localhost:" + getHttpItPort() + "/multi-config/index.jsp?string=" + URL_QUERY ).toASCIIString();
-        }
-        catch ( URISyntaxException e )
-        {
-            logger.log(Level.SEVERE, "An exception occurred.", e );
+    protected String getWebappUrl() {
+        try {
+            return new URI("http://localhost:" + getHttpItPort() + "/multi-config/index.jsp?string=" + URL_QUERY)
+                    .toASCIIString();
+        } catch (URISyntaxException e) {
+            logger.log(Level.SEVERE, "An exception occurred.", e);
             return "http://localhost:" + getHttpItPort() + "/multi-config";
         }
     }
 
     @Override
-    protected String getWarArtifactId()
-    {
+    protected String getWarArtifactId() {
         return WAR_ARTIFACT_ID;
     }
 
     @Test
-    public void testIt()
-        throws Exception
-    {
+    public void testIt() throws Exception {
         final String responseBody = executeVerifyWithGet();
-        assertNotNull( "Received message body from " + getWebappUrl() + " must not be null.", responseBody );
-        assertContains( "Response from " + getWebappUrl() + " must match expected content.", URL_QUERY, responseBody );
+        assertNotNull("Received message body from " + getWebappUrl() + " must not be null.", responseBody);
+        assertContains("Response from " + getWebappUrl() + " must match expected content.", URL_QUERY, responseBody);
 
-        final File tomcatFolder = new File( webappHome, "target/tc" );
-        final File emptyLocation = new File( tomcatFolder, "conf/empty.txt" );
+        final File tomcatFolder = new File(webappHome, "target/tc");
+        final File emptyLocation = new File(tomcatFolder, "conf/empty.txt");
 
+        assertTrue("Tomcat folder \"" + tomcatFolder.getAbsolutePath() +
+                "\" should exist in target folder of project at " + webappHome, tomcatFolder.exists());
         assertTrue(
-            "Tomcat folder \"" + tomcatFolder.getAbsolutePath() + "\" should exist in target folder of project at "
-                + webappHome, tomcatFolder.exists() );
-        assertTrue(
-            "File \"" + emptyLocation.getAbsolutePath() + "\" should have been copied from tcconf to tomcat/conf",
-            emptyLocation.exists() );
+                "File \"" + emptyLocation.getAbsolutePath() + "\" should have been copied from tcconf to tomcat/conf",
+                emptyLocation.exists());
 
-        logger.info( "Error Free Log check" );
+        logger.info("Error Free Log check");
         verifier.verifyErrorFreeLog();
         verifyConnectorsStarted();
 
@@ -93,7 +83,6 @@ public abstract class AbstractTomcatRunMultiConfigIT
     /**
      * impls check the logs if http/https/apr has been started
      */
-    protected abstract void verifyConnectorsStarted()
-        throws VerificationException;
+    protected abstract void verifyConnectorsStarted() throws VerificationException;
 
 }

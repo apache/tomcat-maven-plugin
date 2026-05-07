@@ -26,9 +26,7 @@ import org.apache.maven.plugins.annotations.Parameter;
  *
  * @author Mark Hobson (markhobson@gmail.com)
  */
-public abstract class AbstractWarCatalinaMojo
-    extends AbstractCatalinaMojo
-{
+public abstract class AbstractWarCatalinaMojo extends AbstractCatalinaMojo {
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
@@ -36,7 +34,7 @@ public abstract class AbstractWarCatalinaMojo
     /**
      * The packaging of the Maven project that this goal operates upon.
      */
-    @Parameter( defaultValue = "${project.packaging}", required = true, readonly = true )
+    @Parameter(defaultValue = "${project.packaging}", required = true, readonly = true)
     private String packaging;
 
     /**
@@ -44,7 +42,7 @@ public abstract class AbstractWarCatalinaMojo
      *
      * @since 1.1
      */
-    @Parameter( property = "tomcat.ignorePackaging", defaultValue = "false" )
+    @Parameter(property = "tomcat.ignorePackaging", defaultValue = "false")
     private boolean ignorePackaging;
 
     // ----------------------------------------------------------------------
@@ -55,12 +53,9 @@ public abstract class AbstractWarCatalinaMojo
      * {@inheritDoc}
      */
     @Override
-    public void execute()
-        throws MojoExecutionException
-    {
-        if ( !isWar() )
-        {
-            getLog().info( messagesProvider.getMessage( "AbstractWarCatalinaMojo.nonWar" ) );
+    public void execute() throws MojoExecutionException {
+        if (!isWar()) {
+            getLog().info(messagesProvider.getMessage("AbstractWarCatalinaMojo.nonWar"));
             return;
         }
 
@@ -76,8 +71,7 @@ public abstract class AbstractWarCatalinaMojo
      *
      * @return whether this project uses WAR packaging
      */
-    protected boolean isWar()
-    {
-        return "war".equals( packaging ) || ignorePackaging;
+    protected boolean isWar() {
+        return "war".equals(packaging) || ignorePackaging;
     }
 }

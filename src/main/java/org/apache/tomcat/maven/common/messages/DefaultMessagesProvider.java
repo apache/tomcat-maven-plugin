@@ -26,12 +26,11 @@ import java.util.ResourceBundle;
 
 /**
  * @author Olivier Lamy
+ * 
  * @since 2.0
  */
-@Component( role = MessagesProvider.class )
-public class DefaultMessagesProvider
-    implements MessagesProvider
-{
+@Component(role = MessagesProvider.class)
+public class DefaultMessagesProvider implements MessagesProvider {
 
     /**
      * plugin messages
@@ -39,15 +38,13 @@ public class DefaultMessagesProvider
     private final ResourceBundle messages;
 
 
-    public DefaultMessagesProvider()
-    {
+    public DefaultMessagesProvider() {
         String packageName = getClass().getPackage().getName();
 
-        messages = ResourceBundle.getBundle( packageName + ".messages" );
+        messages = ResourceBundle.getBundle(packageName + ".messages");
     }
 
-    public ResourceBundle getResourceBundle()
-    {
+    public ResourceBundle getResourceBundle() {
         return this.messages;
     }
 
@@ -55,17 +52,14 @@ public class DefaultMessagesProvider
      * Gets the message for the given key from this packages resource bundle.
      *
      * @param key the key for the required message
+     * 
      * @return the message
      */
     @Override
-    public String getMessage( String key )
-    {
-        try
-        {
-            return getResourceBundle().getString( key );
-        }
-        catch (NullPointerException | MissingResourceException | ClassCastException exception )
-        {
+    public String getMessage(String key) {
+        try {
+            return getResourceBundle().getString(key);
+        } catch (NullPointerException | MissingResourceException | ClassCastException exception) {
             return "???" + key + "???";
         }
     }
@@ -73,14 +67,14 @@ public class DefaultMessagesProvider
     /**
      * Gets the message for the given key from this packages resource bundle and formats it with the given parameter.
      *
-     * @param key   the key for the required message
+     * @param key    the key for the required message
      * @param params the parameters to be used to format the message with
+     * 
      * @return the formatted message
      */
     @Override
-    public String getMessage( String key, Object... params )
-    {
-        return MessageFormat.format( getMessage( key ), params );
+    public String getMessage(String key, Object... params) {
+        return MessageFormat.format(getMessage(key), params);
     }
 
 }

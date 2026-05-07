@@ -20,10 +20,10 @@ package org.apache.tomcat.maven.common.run;
 
 /**
  * @author Olivier Lamy
+ * 
  * @since 2.0
  */
-public interface ClassLoaderEntriesCalculator
-{
-    ClassLoaderEntriesCalculatorResult calculateClassPathEntries( ClassLoaderEntriesCalculatorRequest classLoaderEntriesCalculatorRequest )
-        throws TomcatRunException;
+public interface ClassLoaderEntriesCalculator {
+    ClassLoaderEntriesCalculatorResult calculateClassPathEntries(
+            ClassLoaderEntriesCalculatorRequest classLoaderEntriesCalculatorRequest) throws TomcatRunException;
 }

@@ -31,10 +31,8 @@ import java.io.IOException;
  *
  * @since 3.0
  */
-@Mojo( name = "reload", threadSafe = true )
-public class ReloadMojo
-    extends AbstractCatalinaMojo
-{
+@Mojo(name = "reload", threadSafe = true)
+public class ReloadMojo extends AbstractCatalinaMojo {
     // ----------------------------------------------------------------------
     // Protected Methods
     // ----------------------------------------------------------------------
@@ -43,15 +41,13 @@ public class ReloadMojo
      * {@inheritDoc}
      */
     @Override
-    protected void invokeManager()
-        throws MojoExecutionException, TomcatManagerException, IOException
-    {
-        getLog().info( messagesProvider.getMessage( "ReloadMojo.reloadingApp", getDeployedURL() ) );
+    protected void invokeManager() throws MojoExecutionException, TomcatManagerException, IOException {
+        getLog().info(messagesProvider.getMessage("ReloadMojo.reloadingApp", getDeployedURL()));
 
-        TomcatManagerResponse tomcatResponse = getManager().reload( getPath() );
+        TomcatManagerResponse tomcatResponse = getManager().reload(getPath());
 
-        checkTomcatResponse( tomcatResponse );
+        checkTomcatResponse(tomcatResponse);
 
-        log( tomcatResponse.getHttpResponseBody() );
+        log(tomcatResponse.getHttpResponseBody());
     }
 }

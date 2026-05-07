@@ -30,32 +30,26 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Mark Michaelis
  */
-public abstract class AbstractSimpleWarProjectIT
-    extends AbstractWarProjectIT
-{
+public abstract class AbstractSimpleWarProjectIT extends AbstractWarProjectIT {
 
     @Override
-    protected String getWebappUrl()
-    {
+    protected String getWebappUrl() {
         return "http://localhost:" + getHttpItPort() + "/";
     }
 
     @Override
-    protected String getWarArtifactId()
-    {
+    protected String getWarArtifactId() {
         return "simple-war-project";
     }
 
     @Test
-    public void testIt()
-        throws Exception
-    {
+    public void testIt() throws Exception {
         final String responseBody = executeVerifyWithGet();
-        assertNotNull( "Received message body must not be null.", responseBody );
-        assertContains( "Response must match expected content.", "It works !!", responseBody );
+        assertNotNull("Received message body must not be null.", responseBody);
+        assertContains("Response must match expected content.", "It works !!", responseBody);
 
-        assertTrue( "Tomcat folder should exist in target folder of project at " + webappHome,
-                    new File( webappHome, "target/tomcat" ).exists() );
+        assertTrue("Tomcat folder should exist in target folder of project at " + webappHome,
+                new File(webappHome, "target/tomcat").exists());
 
         verifier.verifyErrorFreeLog();
         verifyConnectorsStarted();
@@ -64,6 +58,5 @@ public abstract class AbstractSimpleWarProjectIT
     /**
      * impls check the logs if http/https/apr has been started
      */
-    protected abstract void verifyConnectorsStarted()
-        throws VerificationException;
+    protected abstract void verifyConnectorsStarted() throws VerificationException;
 }

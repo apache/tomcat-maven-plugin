@@ -23,10 +23,10 @@ import java.util.List;
 
 /**
  * @author Olivier Lamy
+ * 
  * @since 2.0
  */
-public class ClassLoaderEntriesCalculatorResult
-{
+public class ClassLoaderEntriesCalculatorResult {
     /**
      * classpath entries File .toURI().toString()
      */
@@ -44,40 +44,34 @@ public class ClassLoaderEntriesCalculatorResult
     private final List<String> buildDirectories;
 
     /**
-     * @param classPathEntries  Classpath entries File .toURI().toString()
-     * @param tmpDirectories    List of files to cleanup after execution
-     * @param buildDirectories  Directory part of webapp classpath (project.build.directory and reactor projects)
+     * @param classPathEntries Classpath entries File .toURI().toString()
+     * @param tmpDirectories   List of files to cleanup after execution
+     * @param buildDirectories Directory part of webapp classpath (project.build.directory and reactor projects)
      */
-    public ClassLoaderEntriesCalculatorResult( List<String> classPathEntries, List<File> tmpDirectories,
-                                               List<String> buildDirectories )
-    {
+    public ClassLoaderEntriesCalculatorResult(List<String> classPathEntries, List<File> tmpDirectories,
+            List<String> buildDirectories) {
         this.classPathEntries = classPathEntries;
         this.tmpDirectories = tmpDirectories;
         this.buildDirectories = buildDirectories;
     }
 
-    public List<String> getClassPathEntries()
-    {
+    public List<String> getClassPathEntries() {
         return classPathEntries;
     }
 
-    public void setClassPathEntries( List<String> classPathEntries )
-    {
+    public void setClassPathEntries(List<String> classPathEntries) {
         this.classPathEntries = classPathEntries;
     }
 
-    public List<File> getTmpDirectories()
-    {
+    public List<File> getTmpDirectories() {
         return tmpDirectories;
     }
 
-    public void setTmpDirectories( List<File> tmpDirectories )
-    {
+    public void setTmpDirectories(List<File> tmpDirectories) {
         this.tmpDirectories = tmpDirectories;
     }
 
-    public List<String> getBuildDirectories()
-    {
+    public List<String> getBuildDirectories() {
         return buildDirectories;
     }
 }

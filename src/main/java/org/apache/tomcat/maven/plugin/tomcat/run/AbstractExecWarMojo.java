@@ -61,44 +61,42 @@ import org.eclipse.aether.resolution.ArtifactResult;
 
 /**
  * @author Olivier Lamy
+ * 
  * @since 2.0
  */
-public abstract class AbstractExecWarMojo
-    extends AbstractTomcatMojo
-{
+public abstract class AbstractExecWarMojo extends AbstractTomcatMojo {
 
-    @Parameter( defaultValue = "${project.artifact}", required = true, readonly = true )
+    @Parameter(defaultValue = "${project.artifact}", required = true, readonly = true)
     protected Artifact projectArtifact;
 
     /**
      * The maven project.
      */
-    @Parameter( defaultValue = "${project}", required = true, readonly = true )
+    @Parameter(defaultValue = "${project}", required = true, readonly = true)
     protected MavenProject project;
 
-    @Parameter( defaultValue = "${plugin.artifacts}", required = true )
+    @Parameter(defaultValue = "${plugin.artifacts}", required = true)
     protected List<Artifact> pluginArtifacts;
 
-    @Parameter( defaultValue = "${project.build.directory}" )
+    @Parameter(defaultValue = "${project.build.directory}")
     protected File buildDirectory;
 
     /**
      * Path under {@link #buildDirectory} where this mojo may do temporary work.
      */
-    @Parameter( defaultValue = "${project.build.directory}/tomcat-maven-plugin-exec" )
+    @Parameter(defaultValue = "${project.build.directory}/tomcat-maven-plugin-exec")
     private File pluginWorkDirectory;
 
-    @Parameter( property = "maven.tomcat.exec.war.tomcatConf", defaultValue = "src/main/tomcatconf" )
+    @Parameter(property = "maven.tomcat.exec.war.tomcatConf", defaultValue = "src/main/tomcatconf")
     protected File tomcatConfigurationFilesDirectory;
 
-    @Parameter( defaultValue = "src/main/tomcatconf/server.xml", property = "maven.tomcat.exec.war.serverXml" )
+    @Parameter(defaultValue = "src/main/tomcatconf/server.xml", property = "maven.tomcat.exec.war.serverXml")
     protected File serverXml;
 
     /**
      * Name of the generated exec JAR.
      */
-    @Parameter( property = "tomcat.jar.finalName",
-                defaultValue = "${project.artifactId}-${project.version}-war-exec.jar", required = true )
+    @Parameter(property = "tomcat.jar.finalName", defaultValue = "${project.artifactId}-${project.version}-war-exec.jar", required = true)
     protected String finalName;
 
     /**
@@ -106,14 +104,14 @@ public abstract class AbstractExecWarMojo
      *
      * @since 2.2
      */
-    @Parameter( property = "maven.tomcat.skip", defaultValue = "false" )
+    @Parameter(property = "maven.tomcat.skip", defaultValue = "false")
     private boolean skip;
 
     /**
-     * The webapp context path to use for the web application being run.
-     * The name to store webapp in exec jar. Do not use /
+     * The webapp context path to use for the web application being run. The name to store webapp in exec jar. Do not
+     * use /
      */
-    @Parameter( property = "maven.tomcat.path", defaultValue = "${project.artifactId}", required = true )
+    @Parameter(property = "maven.tomcat.path", defaultValue = "${project.artifactId}", required = true)
     protected String path;
 
     @Parameter
@@ -125,16 +123,16 @@ public abstract class AbstractExecWarMojo
     /**
      * Location of the local repository.
      */
-    @Parameter( defaultValue = "${localRepository}", required = true, readonly = true )
+    @Parameter(defaultValue = "${localRepository}", required = true, readonly = true)
     protected ArtifactRepository local;
 
     /**
      * List of Remote Repositories used by the resolver
      */
-    @Parameter( defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true )
+    @Parameter(defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true)
     protected List<ArtifactRepository> remoteRepos;
 
-    @Parameter( defaultValue = "${session}", readonly = true, required = true )
+    @Parameter(defaultValue = "${session}", readonly = true, required = true)
     protected org.apache.maven.execution.MavenSession session;
 
     @Component
@@ -143,40 +141,38 @@ public abstract class AbstractExecWarMojo
     /**
      * Attach or not the generated artifact to the build (use true if you want to install or deploy it)
      */
-    @Parameter( property = "maven.tomcat.exec.war.attachArtifact", defaultValue = "true", required = true )
+    @Parameter(property = "maven.tomcat.exec.war.attachArtifact", defaultValue = "true", required = true)
     protected boolean attachArtifact;
 
 
     /**
      * the classifier to use for the attached/generated artifact
      */
-    @Parameter( property = "maven.tomcat.exec.war.attachArtifactClassifier", defaultValue = "exec-war",
-                required = true )
+    @Parameter(property = "maven.tomcat.exec.war.attachArtifactClassifier", defaultValue = "exec-war", required = true)
     protected String attachArtifactClassifier;
 
 
     /**
      * the type to use for the attached/generated artifact
      */
-    @Parameter( property = "maven.tomcat.exec.war.attachArtifactType", defaultValue = "jar", required = true )
+    @Parameter(property = "maven.tomcat.exec.war.attachArtifactType", defaultValue = "jar", required = true)
     protected String attachArtifactClassifierType;
 
     /**
      * to enable naming when starting tomcat
      */
-    @Parameter( property = "maven.tomcat.exec.war.enableNaming", defaultValue = "false", required = true )
+    @Parameter(property = "maven.tomcat.exec.war.enableNaming", defaultValue = "false", required = true)
     protected boolean enableNaming;
 
     /**
      * see http://tomcat.apache.org/tomcat-9.0-doc/config/valve.html
      */
-    @Parameter( property = "maven.tomcat.exec.war.accessLogValveFormat", defaultValue = "%h %l %u %t %r %s %b %I %D",
-                required = true )
+    @Parameter(property = "maven.tomcat.exec.war.accessLogValveFormat", defaultValue = "%h %l %u %t %r %s %b %I %D", required = true)
     protected String accessLogValveFormat;
 
     /**
-     * list of extra dependencies to add in the standalone tomcat jar: your jdbc driver, mail.jar etc..
-     * <b>Those dependencies will be in root classloader.</b>
+     * list of extra dependencies to add in the standalone tomcat jar: your jdbc driver, mail.jar etc.. <b>Those
+     * dependencies will be in root classloader.</b>
      */
     @Parameter
     protected List<ExtraDependency> extraDependencies;
@@ -190,14 +186,13 @@ public abstract class AbstractExecWarMojo
     /**
      * Main class to use for starting the standalone jar.
      */
-    @Parameter( property = "maven.tomcat.exec.war.mainClass",
-                defaultValue = "org.apache.tomcat.maven.runner.TomcatRunnerCli", required = true )
+    @Parameter(property = "maven.tomcat.exec.war.mainClass", defaultValue = "org.apache.tomcat.maven.runner.TomcatRunnerCli", required = true)
     protected String mainClass;
 
     /**
      * which connector protocol to use HTTP/1.1 or org.apache.coyote.http11.Http11NioProtocol
      */
-    @Parameter( property = "maven.tomcat.exec.war.connectorHttpProtocol", defaultValue = "HTTP/1.1", required = true )
+    @Parameter(property = "maven.tomcat.exec.war.connectorHttpProtocol", defaultValue = "HTTP/1.1", required = true)
     protected String connectorHttpProtocol;
 
     /**
@@ -205,7 +200,7 @@ public abstract class AbstractExecWarMojo
      *
      * @since 2.2
      */
-    @Parameter( property = "maven.tomcat.exec.war.httpPort" )
+    @Parameter(property = "maven.tomcat.exec.war.httpPort")
     protected String httpPort;
 
     /**
@@ -217,22 +212,18 @@ public abstract class AbstractExecWarMojo
     protected String[] excludes;
 
     @Override
-    public void execute()
-        throws MojoExecutionException, MojoFailureException
-    {
-        if ( this.skip )
-        {
-            getLog().info( "skip execution" );
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        if (this.skip) {
+            getLog().info("skip execution");
             return;
         }
-        //project.addAttachedArtifact(  );
-        File warExecFile = new File( buildDirectory, finalName );
-        if ( warExecFile.exists() )
-        {
+        // project.addAttachedArtifact( );
+        File warExecFile = new File(buildDirectory, finalName);
+        if (warExecFile.exists()) {
             warExecFile.delete();
         }
 
-        File execWarJar = new File( buildDirectory, finalName );
+        File execWarJar = new File(buildDirectory, finalName);
 
         FileOutputStream execWarJarOutputStream = null;
         ArchiveOutputStream<JarArchiveEntry> os = null;
@@ -241,257 +232,217 @@ public abstract class AbstractExecWarMojo
         FileOutputStream tmpPropertiesFileOutputStream = null;
         PrintWriter tmpManifestWriter = null;
 
-        try
-        {
+        try {
 
-            tmpPropertiesFile = new File( buildDirectory, "war-exec.properties" );
-            if ( tmpPropertiesFile.exists() )
-            {
+            tmpPropertiesFile = new File(buildDirectory, "war-exec.properties");
+            if (tmpPropertiesFile.exists()) {
                 tmpPropertiesFile.delete();
             }
             tmpPropertiesFile.getParentFile().mkdirs();
 
-            tmpManifestFile = new File( buildDirectory, "war-exec.manifest" );
-            if ( tmpManifestFile.exists() )
-            {
+            tmpManifestFile = new File(buildDirectory, "war-exec.manifest");
+            if (tmpManifestFile.exists()) {
                 tmpManifestFile.delete();
             }
-            tmpPropertiesFileOutputStream = new FileOutputStream( tmpPropertiesFile );
+            tmpPropertiesFileOutputStream = new FileOutputStream(tmpPropertiesFile);
             execWarJar.getParentFile().mkdirs();
             execWarJar.createNewFile();
-            execWarJarOutputStream = new FileOutputStream( execWarJar );
+            execWarJarOutputStream = new FileOutputStream(execWarJar);
 
-            tmpManifestWriter = new PrintWriter( tmpManifestFile );
+            tmpManifestWriter = new PrintWriter(tmpManifestFile);
 
             // store :
-            //* wars in the root: foo.war
-            //* tomcat jars
-            //* file tomcat.standalone.properties with possible values :
-            //   * useServerXml=true/false to use directly the one provided
-            //   * enableNaming=true/false
-            //   * wars=foo.war|contextpath;bar.war  ( |contextpath is optionnal if empty use the war name )
-            //   * accessLogValveFormat=
-            //   * connectorhttpProtocol: HTTP/1.1 or org.apache.coyote.http11.Http11NioProtocol
-            //* optionnal: conf/ with usual tomcat configuration files
-            //* MANIFEST with Main-Class
+            // * wars in the root: foo.war
+            // * tomcat jars
+            // * file tomcat.standalone.properties with possible values :
+            // * useServerXml=true/false to use directly the one provided
+            // * enableNaming=true/false
+            // * wars=foo.war|contextpath;bar.war ( |contextpath is optionnal if empty use the war name )
+            // * accessLogValveFormat=
+            // * connectorhttpProtocol: HTTP/1.1 or org.apache.coyote.http11.Http11NioProtocol
+            // * optionnal: conf/ with usual tomcat configuration files
+            // * MANIFEST with Main-Class
 
             Properties properties = new Properties();
 
-            properties.put( TomcatRunner.ARCHIVE_GENERATION_TIMESTAMP_KEY,
-                            Long.toString( System.currentTimeMillis() ) );
-            properties.put( TomcatRunner.ENABLE_NAMING_KEY, Boolean.toString( enableNaming ) );
-            properties.put( TomcatRunner.ACCESS_LOG_VALVE_FORMAT_KEY, accessLogValveFormat );
-            properties.put( TomcatRunner.HTTP_PROTOCOL_KEY, connectorHttpProtocol );
+            properties.put(TomcatRunner.ARCHIVE_GENERATION_TIMESTAMP_KEY, Long.toString(System.currentTimeMillis()));
+            properties.put(TomcatRunner.ENABLE_NAMING_KEY, Boolean.toString(enableNaming));
+            properties.put(TomcatRunner.ACCESS_LOG_VALVE_FORMAT_KEY, accessLogValveFormat);
+            properties.put(TomcatRunner.HTTP_PROTOCOL_KEY, connectorHttpProtocol);
 
-            if ( httpPort != null )
-            {
-                properties.put( TomcatRunner.HTTP_PORT_KEY, httpPort );
+            if (httpPort != null) {
+                properties.put(TomcatRunner.HTTP_PORT_KEY, httpPort);
             }
 
-            os = new ArchiveStreamFactory().createArchiveOutputStream( ArchiveStreamFactory.JAR,
-                                                                       execWarJarOutputStream );
+            os = new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.JAR, execWarJarOutputStream);
 
-            if ( "war".equals( project.getPackaging() ) )
-            {
+            if ("war".equals(project.getPackaging())) {
 
-                String pathWithoutSlash = path.startsWith( "/" ) ? path.substring( 1 ) : path;
-                os.putArchiveEntry( new JarArchiveEntry( pathWithoutSlash + ".war" ) );
-                IOUtils.copy( new FileInputStream( projectArtifact.getFile() ), os );
+                String pathWithoutSlash = path.startsWith("/") ? path.substring(1) : path;
+                os.putArchiveEntry(new JarArchiveEntry(pathWithoutSlash + ".war"));
+                IOUtils.copy(new FileInputStream(projectArtifact.getFile()), os);
                 os.closeArchiveEntry();
 
-                properties.put( TomcatRunner.WARS_KEY, pathWithoutSlash + ".war|" + path );
-            }
-            else if ( warRunDependencies != null && !warRunDependencies.isEmpty() )
-            {
-                for ( WarRunDependency warRunDependency : warRunDependencies )
-                {
-                    if ( warRunDependency.dependency != null )
-                    {
+                properties.put(TomcatRunner.WARS_KEY, pathWithoutSlash + ".war|" + path);
+            } else if (warRunDependencies != null && !warRunDependencies.isEmpty()) {
+                for (WarRunDependency warRunDependency : warRunDependencies) {
+                    if (warRunDependency.dependency != null) {
                         Dependency dependency = warRunDependency.dependency;
                         String version = dependency.getVersion();
-                        if ( version == null || version.isEmpty() )
-                        {
-                            version = findArtifactVersion( dependency );
+                        if (version == null || version.isEmpty()) {
+                            version = findArtifactVersion(dependency);
                         }
 
-                        if ( version == null || version.isEmpty() )
-                        {
-                            throw new MojoExecutionException(
-                                "Dependency '" + dependency.getGroupId() + "':'" + dependency.getArtifactId()
-                                    + "' does not have version specified" );
+                        if (version == null || version.isEmpty()) {
+                            throw new MojoExecutionException("Dependency '" + dependency.getGroupId() + "':'" +
+                                    dependency.getArtifactId() + "' does not have version specified");
                         }
-                       Artifact artifact = toMavenArtifact( dependency.getGroupId(), dependency.getArtifactId(), version, dependency.getType(), dependency.getClassifier() );
+                        Artifact artifact = toMavenArtifact(dependency.getGroupId(), dependency.getArtifactId(),
+                                version, dependency.getType(), dependency.getClassifier());
 
-                        File warFileToBundle = new File( resolvePluginWorkDir(), artifact.getFile().getName() );
-                        FileUtils.copyFile( artifact.getFile(), warFileToBundle );
+                        File warFileToBundle = new File(resolvePluginWorkDir(), artifact.getFile().getName());
+                        FileUtils.copyFile(artifact.getFile(), warFileToBundle);
 
-                        if ( warRunDependency.contextXml != null )
-                        {
-                            warFileToBundle = addContextXmlToWar( warRunDependency.contextXml, warFileToBundle );
+                        if (warRunDependency.contextXml != null) {
+                            warFileToBundle = addContextXmlToWar(warRunDependency.contextXml, warFileToBundle);
                         }
                         final String warFileName = artifact.getFile().getName();
-                        os.putArchiveEntry( new JarArchiveEntry( warFileName ) );
-                        IOUtils.copy( new FileInputStream( warFileToBundle ), os );
+                        os.putArchiveEntry(new JarArchiveEntry(warFileName));
+                        IOUtils.copy(new FileInputStream(warFileToBundle), os);
                         os.closeArchiveEntry();
-                        String propertyWarValue = properties.getProperty( TomcatRunner.WARS_KEY );
-                        String contextPath =
-                            warRunDependency.contextPath == null || warRunDependency.contextPath.isEmpty() ? "/" : warRunDependency.contextPath;
-                        if ( propertyWarValue != null )
-                        {
-                            properties.put( TomcatRunner.WARS_KEY,
-                                            propertyWarValue + ";" + warFileName + "|" + contextPath );
-                        }
-                        else
-                        {
-                            properties.put( TomcatRunner.WARS_KEY, warFileName + "|" + contextPath );
+                        String propertyWarValue = properties.getProperty(TomcatRunner.WARS_KEY);
+                        String contextPath = warRunDependency.contextPath == null ||
+                                warRunDependency.contextPath.isEmpty() ? "/" : warRunDependency.contextPath;
+                        if (propertyWarValue != null) {
+                            properties.put(TomcatRunner.WARS_KEY,
+                                    propertyWarValue + ";" + warFileName + "|" + contextPath);
+                        } else {
+                            properties.put(TomcatRunner.WARS_KEY, warFileName + "|" + contextPath);
                         }
                     }
                 }
             }
 
-            if ( serverXml != null && serverXml.exists() )
-            {
-                os.putArchiveEntry( new JarArchiveEntry( "conf/server.xml" ) );
-                IOUtils.copy( new FileInputStream( serverXml ), os );
+            if (serverXml != null && serverXml.exists()) {
+                os.putArchiveEntry(new JarArchiveEntry("conf/server.xml"));
+                IOUtils.copy(new FileInputStream(serverXml), os);
                 os.closeArchiveEntry();
-                properties.put( TomcatRunner.USE_SERVER_XML_KEY, Boolean.TRUE.toString() );
-            }
-            else
-            {
-                properties.put( TomcatRunner.USE_SERVER_XML_KEY, Boolean.FALSE.toString() );
+                properties.put(TomcatRunner.USE_SERVER_XML_KEY, Boolean.TRUE.toString());
+            } else {
+                properties.put(TomcatRunner.USE_SERVER_XML_KEY, Boolean.FALSE.toString());
             }
 
-            os.putArchiveEntry( new JarArchiveEntry( "conf/web.xml" ) );
-            IOUtils.copy( getClass().getResourceAsStream( "/conf/web.xml" ), os );
+            os.putArchiveEntry(new JarArchiveEntry("conf/web.xml"));
+            IOUtils.copy(getClass().getResourceAsStream("/conf/web.xml"), os);
             os.closeArchiveEntry();
 
-            properties.store( tmpPropertiesFileOutputStream, "created by Apache Tomcat Maven plugin" );
+            properties.store(tmpPropertiesFileOutputStream, "created by Apache Tomcat Maven plugin");
 
             tmpPropertiesFileOutputStream.flush();
             tmpPropertiesFileOutputStream.close();
 
-            os.putArchiveEntry( new JarArchiveEntry( TomcatRunnerCli.STAND_ALONE_PROPERTIES_FILENAME ) );
-            IOUtils.copy( new FileInputStream( tmpPropertiesFile ), os );
+            os.putArchiveEntry(new JarArchiveEntry(TomcatRunnerCli.STAND_ALONE_PROPERTIES_FILENAME));
+            IOUtils.copy(new FileInputStream(tmpPropertiesFile), os);
             os.closeArchiveEntry();
 
             // add tomcat classes
-            for ( Artifact pluginArtifact : pluginArtifacts )
-            {
+            for (Artifact pluginArtifact : pluginArtifacts) {
                 if ("org.apache.tomcat".equals(pluginArtifact.getGroupId()) //
                         || "org.apache.tomcat.embed".equals(pluginArtifact.getGroupId()) //
                         || "org.eclipse.jdt".equals(pluginArtifact.getGroupId()) //
                         || "commons-cli".equals(pluginArtifact.getArtifactId()) //
-                        || "tomcat-maven-plugin".equals(pluginArtifact.getArtifactId()))                {
-                    JarFile jarFile = new JarFile( pluginArtifact.getFile() );
-                    extractJarToArchive( jarFile, os, null );
+                        || "tomcat-maven-plugin".equals(pluginArtifact.getArtifactId())) {
+                    JarFile jarFile = new JarFile(pluginArtifact.getFile());
+                    extractJarToArchive(jarFile, os, null);
                 }
             }
 
             // add extra dependencies
-            if ( extraDependencies != null && !extraDependencies.isEmpty() )
-            {
-                for ( Dependency dependency : extraDependencies )
-                {
+            if (extraDependencies != null && !extraDependencies.isEmpty()) {
+                for (Dependency dependency : extraDependencies) {
                     String version = dependency.getVersion();
-                    if ( version == null || version.isEmpty() )
-                    {
-                        version = findArtifactVersion( dependency );
+                    if (version == null || version.isEmpty()) {
+                        version = findArtifactVersion(dependency);
                     }
 
-                    if ( version == null || version.isEmpty() )
-                    {
-                        throw new MojoExecutionException(
-                            "Dependency '" + dependency.getGroupId() + "':'" + dependency.getArtifactId()
-                                + "' does not have version specified" );
+                    if (version == null || version.isEmpty()) {
+                        throw new MojoExecutionException("Dependency '" + dependency.getGroupId() + "':'" +
+                                dependency.getArtifactId() + "' does not have version specified");
                     }
 
-                    Artifact artifact = toMavenArtifact( dependency.getGroupId(), dependency.getArtifactId(), version, dependency.getType(), null );
-                    JarFile jarFile = new JarFile( artifact.getFile() );
-                    extractJarToArchive( jarFile, os, this.excludes );
+                    Artifact artifact = toMavenArtifact(dependency.getGroupId(), dependency.getArtifactId(), version,
+                            dependency.getType(), null);
+                    JarFile jarFile = new JarFile(artifact.getFile());
+                    extractJarToArchive(jarFile, os, this.excludes);
                 }
             }
 
             Manifest manifest = new Manifest();
 
             Manifest.Attribute mainClassAtt = new Manifest.Attribute();
-            mainClassAtt.setName( "Main-Class" );
-            mainClassAtt.setValue( mainClass );
-            manifest.addConfiguredAttribute( mainClassAtt );
+            mainClassAtt.setName("Main-Class");
+            mainClassAtt.setValue(mainClass);
+            manifest.addConfiguredAttribute(mainClassAtt);
 
-            manifest.write( tmpManifestWriter );
+            manifest.write(tmpManifestWriter);
             tmpManifestWriter.flush();
             tmpManifestWriter.close();
 
-            os.putArchiveEntry( new JarArchiveEntry( "META-INF/MANIFEST.MF" ) );
-            IOUtils.copy( new FileInputStream( tmpManifestFile ), os );
+            os.putArchiveEntry(new JarArchiveEntry("META-INF/MANIFEST.MF"));
+            IOUtils.copy(new FileInputStream(tmpManifestFile), os);
             os.closeArchiveEntry();
 
-            if ( attachArtifact )
-            {
-                //MavenProject project, String artifactType, String artifactClassifier, File artifactFile
-                projectHelper.attachArtifact( project, attachArtifactClassifierType, attachArtifactClassifier,
-                                              execWarJar );
+            if (attachArtifact) {
+                // MavenProject project, String artifactType, String artifactClassifier, File artifactFile
+                projectHelper.attachArtifact(project, attachArtifactClassifierType, attachArtifactClassifier,
+                        execWarJar);
             }
 
-            if ( extraResources != null )
-            {
-                for ( ExtraResource extraResource : extraResources )
-                {
+            if (extraResources != null) {
+                for (ExtraResource extraResource : extraResources) {
 
                     DirectoryScanner directoryScanner = new DirectoryScanner();
-                    directoryScanner.setBasedir( extraResource.getDirectory() );
+                    directoryScanner.setBasedir(extraResource.getDirectory());
                     directoryScanner.addDefaultExcludes();
-                    directoryScanner.setExcludes( toStringArray( extraResource.getExcludes() ) );
-                    directoryScanner.setIncludes( toStringArray( extraResource.getIncludes() ) );
+                    directoryScanner.setExcludes(toStringArray(extraResource.getExcludes()));
+                    directoryScanner.setIncludes(toStringArray(extraResource.getIncludes()));
                     directoryScanner.scan();
-                    for ( String includeFile : directoryScanner.getIncludedFiles() )
-                    {
-                        getLog().debug( "include file:" + includeFile );
-                        os.putArchiveEntry( new JarArchiveEntry( includeFile ) );
-                        IOUtils.copy( new FileInputStream( new File( extraResource.getDirectory(), includeFile ) ),
-                                      os );
+                    for (String includeFile : directoryScanner.getIncludedFiles()) {
+                        getLog().debug("include file:" + includeFile);
+                        os.putArchiveEntry(new JarArchiveEntry(includeFile));
+                        IOUtils.copy(new FileInputStream(new File(extraResource.getDirectory(), includeFile)), os);
                         os.closeArchiveEntry();
                     }
                 }
             }
 
-            if ( tomcatConfigurationFilesDirectory != null && tomcatConfigurationFilesDirectory.exists() )
-            {
+            if (tomcatConfigurationFilesDirectory != null && tomcatConfigurationFilesDirectory.exists()) {
                 // Because its the tomcat default dir for configs
                 String aConfigOutputDir = "conf/";
-                copyDirectoryContentIntoArchive( tomcatConfigurationFilesDirectory, aConfigOutputDir, os );
+                copyDirectoryContentIntoArchive(tomcatConfigurationFilesDirectory, aConfigOutputDir, os);
             }
 
-        }
-        catch (ManifestException | IOException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
-        }
-        finally
-        {
-            IOUtils.closeQuietly( os );
-            IOUtils.closeQuietly( tmpManifestWriter );
-            IOUtils.closeQuietly( execWarJarOutputStream );
-            IOUtils.closeQuietly( tmpPropertiesFileOutputStream );
+        } catch (ManifestException | IOException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
+        } finally {
+            IOUtils.closeQuietly(os);
+            IOUtils.closeQuietly(tmpManifestWriter);
+            IOUtils.closeQuietly(execWarJarOutputStream);
+            IOUtils.closeQuietly(tmpPropertiesFileOutputStream);
         }
     }
 
-    protected String findArtifactVersion( Dependency dependency )
-    {
+    protected String findArtifactVersion(Dependency dependency) {
         // search in project.dependencies
-        for ( Dependency projectDependency : (List<Dependency>) this.project.getDependencies() )
-        {
-            if ( sameDependencyWithoutVersion( dependency, projectDependency ) )
-            {
+        for (Dependency projectDependency : (List<Dependency>) this.project.getDependencies()) {
+            if (sameDependencyWithoutVersion(dependency, projectDependency)) {
                 return projectDependency.getVersion();
             }
         }
 
         // search in project.dependencies
-        for ( Dependency projectDependency : this.project.getDependencyManagement().getDependencies() )
-        {
-            if ( sameDependencyWithoutVersion( dependency, projectDependency ) )
-            {
+        for (Dependency projectDependency : this.project.getDependencyManagement().getDependencies()) {
+            if (sameDependencyWithoutVersion(dependency, projectDependency)) {
                 return projectDependency.getVersion();
             }
         }
@@ -499,41 +450,34 @@ public abstract class AbstractExecWarMojo
         return null;
     }
 
-    protected boolean sameDependencyWithoutVersion( Dependency that, Dependency dependency )
-    {
+    protected boolean sameDependencyWithoutVersion(Dependency that, Dependency dependency) {
         return that.getGroupId() != null && that.getGroupId().equals(dependency.getGroupId()) &&
                 that.getArtifactId() != null && that.getArtifactId().equals(dependency.getArtifactId());
     }
 
-    protected void copyDirectoryContentIntoArchive( File sourceFolder, String destinationPath,
-                                                    ArchiveOutputStream<JarArchiveEntry> archiveOutputStream )
-        throws IOException
-    {
+    protected void copyDirectoryContentIntoArchive(File sourceFolder, String destinationPath,
+            ArchiveOutputStream<JarArchiveEntry> archiveOutputStream) throws IOException {
 
         // Scan the directory
         DirectoryScanner directoryScanner = new DirectoryScanner();
-        directoryScanner.setBasedir( sourceFolder );
+        directoryScanner.setBasedir(sourceFolder);
         directoryScanner.addDefaultExcludes();
         directoryScanner.scan();
 
         // Each File
-        for ( String includeFileName : directoryScanner.getIncludedFiles() )
-        {
-            getLog().debug( "include configuration file : " + destinationPath + includeFileName );
-            File inputFile = new File( sourceFolder, includeFileName );
+        for (String includeFileName : directoryScanner.getIncludedFiles()) {
+            getLog().debug("include configuration file : " + destinationPath + includeFileName);
+            File inputFile = new File(sourceFolder, includeFileName);
 
             FileInputStream sourceFileInputStream = null;
-            try
-            {
-                sourceFileInputStream = new FileInputStream( inputFile );
+            try {
+                sourceFileInputStream = new FileInputStream(inputFile);
 
-                archiveOutputStream.putArchiveEntry( new JarArchiveEntry( destinationPath + includeFileName ) );
-                IOUtils.copy( sourceFileInputStream, archiveOutputStream );
+                archiveOutputStream.putArchiveEntry(new JarArchiveEntry(destinationPath + includeFileName));
+                IOUtils.copy(sourceFileInputStream, archiveOutputStream);
                 archiveOutputStream.closeArchiveEntry();
-            }
-            finally
-            {
-                IOUtils.closeQuietly( sourceFileInputStream );
+            } finally {
+                IOUtils.closeQuietly(sourceFileInputStream);
             }
         }
 
@@ -543,64 +487,54 @@ public abstract class AbstractExecWarMojo
      * Resolves the plugin work dir as a sub directory of {@link #buildDirectory}, creating it if it does not exist.
      *
      * @return File representing the resolved plugin work dir
+     * 
      * @throws MojoExecutionException if the plugin work dir cannot be created
      */
-    protected File resolvePluginWorkDir()
-        throws MojoExecutionException
-    {
-        if ( !pluginWorkDirectory.exists() && !pluginWorkDirectory.mkdirs() )
-        {
+    protected File resolvePluginWorkDir() throws MojoExecutionException {
+        if (!pluginWorkDirectory.exists() && !pluginWorkDirectory.mkdirs()) {
             throw new MojoExecutionException(
-                "Could not create plugin work directory at " + pluginWorkDirectory.getAbsolutePath() );
+                    "Could not create plugin work directory at " + pluginWorkDirectory.getAbsolutePath());
         }
 
         return pluginWorkDirectory;
 
     }
 
-    protected String[] toStringArray( List<String> list )
-    {
-        if ( list == null || list.isEmpty() )
-        {
+    protected String[] toStringArray(List<String> list) {
+        if (list == null || list.isEmpty()) {
             return new String[0];
         }
-        List<String> res = new ArrayList<>( list.size() );
+        List<String> res = new ArrayList<>(list.size());
 
-        for ( String s : list )
-        {
-            res.add( s );
+        for (String s : list) {
+            res.add(s);
         }
-        return res.toArray( new String[res.size()] );
+        return res.toArray(new String[res.size()]);
     }
 
 
     /**
      * return file can be deleted
      */
-    protected File addContextXmlToWar( File contextXmlFile, File warFile )
-        throws IOException, ArchiveException
-    {
+    protected File addContextXmlToWar(File contextXmlFile, File warFile) throws IOException, ArchiveException {
         ArchiveOutputStream<JarArchiveEntry> os = null;
         OutputStream warOutputStream = null;
-        File tmpWar = Files.createTempFile( "tomcat", "war-exec" ).toFile();
+        File tmpWar = Files.createTempFile("tomcat", "war-exec").toFile();
         tmpWar.deleteOnExit();
 
-        try
-        {
-            warOutputStream = new FileOutputStream( tmpWar );
-            os = new ArchiveStreamFactory().createArchiveOutputStream( ArchiveStreamFactory.JAR, warOutputStream );
-            os.putArchiveEntry( new JarArchiveEntry( "META-INF/context.xml" ) );
-            IOUtils.copy( new FileInputStream( contextXmlFile ), os );
+        try {
+            warOutputStream = new FileOutputStream(tmpWar);
+            os = new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.JAR, warOutputStream);
+            os.putArchiveEntry(new JarArchiveEntry("META-INF/context.xml"));
+            IOUtils.copy(new FileInputStream(contextXmlFile), os);
             os.closeArchiveEntry();
 
-            JarFile jarFile = new JarFile( warFile );
-            extractJarToArchive( jarFile, os, null );
+            JarFile jarFile = new JarFile(warFile);
+            extractJarToArchive(jarFile, os, null);
             os.flush();
-        }
-        finally
-        {
-            IOUtils.closeQuietly( os );
-            IOUtils.closeQuietly( warOutputStream );
+        } finally {
+            IOUtils.closeQuietly(os);
+            IOUtils.closeQuietly(warOutputStream);
         }
         return tmpWar;
     }
@@ -610,86 +544,64 @@ public abstract class AbstractExecWarMojo
      *
      * @param file The input jar file
      * @param os   The output archive
+     * 
      * @throws IOException
      */
-    protected void extractJarToArchive( JarFile file, ArchiveOutputStream<JarArchiveEntry> os, String[] excludes )
-        throws IOException
-    {
+    protected void extractJarToArchive(JarFile file, ArchiveOutputStream<JarArchiveEntry> os, String[] excludes)
+            throws IOException {
         Enumeration<? extends JarEntry> entries = file.entries();
-        while ( entries.hasMoreElements() )
-        {
+        while (entries.hasMoreElements()) {
             JarEntry j = entries.nextElement();
 
-            if (excludes != null)
-            {
-                for ( String exclude : excludes )
-                {
-                    if ( SelectorUtils.match( exclude, j.getName() ) )
-                    {
+            if (excludes != null) {
+                for (String exclude : excludes) {
+                    if (SelectorUtils.match(exclude, j.getName())) {
                         continue;
                     }
                 }
             }
 
-            if ( "META-INF/MANIFEST.MF".equalsIgnoreCase( j.getName() ) )
-            {
+            if ("META-INF/MANIFEST.MF".equalsIgnoreCase(j.getName())) {
                 continue;
             }
             if (j.getName().startsWith("META-INF/") &&
                     (j.getName().endsWith(".SF") || j.getName().endsWith(".DSA") || j.getName().endsWith(".RSA"))) {
                 continue;
             }
-            os.putArchiveEntry( new JarArchiveEntry( j.getName() ) );
-            IOUtils.copy( file.getInputStream( j ), os );
+            os.putArchiveEntry(new JarArchiveEntry(j.getName()));
+            IOUtils.copy(file.getInputStream(j), os);
             os.closeArchiveEntry();
         }
         file.close();
     }
 
-    private Artifact toMavenArtifact( String groupId, String artifactId, String version, String type, String classifier )
-        throws MojoExecutionException
-    {
-        try
-        {
-            org.eclipse.aether.artifact.Artifact aetherArtifact = new DefaultArtifact(
-                    groupId,
-                    artifactId,
-                    classifier != null && !classifier.isEmpty() ? classifier : type,
-                    type,
-                    version
-            );
+    private Artifact toMavenArtifact(String groupId, String artifactId, String version, String type, String classifier)
+            throws MojoExecutionException {
+        try {
+            org.eclipse.aether.artifact.Artifact aetherArtifact = new DefaultArtifact(groupId, artifactId,
+                    classifier != null && !classifier.isEmpty() ? classifier : type, type, version);
 
             ArtifactRequest req = new ArtifactRequest();
-            req.setArtifact( aetherArtifact );
+            req.setArtifact(aetherArtifact);
 
             List<org.eclipse.aether.repository.RemoteRepository> aetherRepos = new ArrayList<>();
-            for ( ArtifactRepository repo : remoteRepos )
-            {
+            for (ArtifactRepository repo : remoteRepos) {
                 org.eclipse.aether.repository.RemoteRepository aetherRepo = new org.eclipse.aether.repository.RemoteRepository.Builder(
-                        repo.getId(), "default", repo.getUrl() )
-                        .build();
-                aetherRepos.add( aetherRepo );
+                        repo.getId(), "default", repo.getUrl()).build();
+                aetherRepos.add(aetherRepo);
             }
-            req.setRepositories( aetherRepos );
+            req.setRepositories(aetherRepos);
 
-            ArtifactResult result = repositorySystem.resolveArtifact( session.getRepositorySession(), req );
+            ArtifactResult result = repositorySystem.resolveArtifact(session.getRepositorySession(), req);
             org.eclipse.aether.artifact.Artifact resolved = result.getArtifact();
 
-            Artifact mavenArtifact = new org.apache.maven.artifact.DefaultArtifact(
-                    groupId,
-                    artifactId,
-                    version,
-                    Artifact.SCOPE_COMPILE,
-                    type,
-                    classifier != null && !classifier.isEmpty() ? classifier : "",
-                    new org.apache.maven.artifact.handler.DefaultArtifactHandler( type )
-            );
-            mavenArtifact.setFile( resolved.getFile() );
+            Artifact mavenArtifact = new org.apache.maven.artifact.DefaultArtifact(groupId, artifactId, version,
+                    Artifact.SCOPE_COMPILE, type, classifier != null && !classifier.isEmpty() ? classifier : "",
+                    new org.apache.maven.artifact.handler.DefaultArtifactHandler(type));
+            mavenArtifact.setFile(resolved.getFile());
             return mavenArtifact;
-        }
-        catch ( Exception e )
-        {
-            throw new MojoExecutionException( "Unable to resolve artifact: " + e.getMessage(), e );
+        } catch (Exception e) {
+            throw new MojoExecutionException("Unable to resolve artifact: " + e.getMessage(), e);
         }
     }
 }

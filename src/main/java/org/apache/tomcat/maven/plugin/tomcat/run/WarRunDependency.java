@@ -24,10 +24,10 @@ import java.io.File;
 
 /**
  * @author Olivier Lamy
+ * 
  * @since 2.0
  */
-public class WarRunDependency
-{
+public class WarRunDependency {
 
     public Dependency dependency;
 
@@ -35,8 +35,7 @@ public class WarRunDependency
 
     public File contextXml;
 
-    public WarRunDependency()
-    {
+    public WarRunDependency() {
         // no op
     }
 

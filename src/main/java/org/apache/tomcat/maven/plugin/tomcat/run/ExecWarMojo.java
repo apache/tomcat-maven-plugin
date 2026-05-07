@@ -23,18 +23,16 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
 /**
- * Create a self executable jar file containing all necessary Apache Tomcat classes. 
- * This allows for using just <code>java -jar mywebapp.jar</code> to run your webapp without 
- * needing to install a Tomcat instance.
- * More details <a href="http://tomcat.apache.org/maven-plugin-2.0/executable-war-jar.html">here</a>.
+ * Create a self executable jar file containing all necessary Apache Tomcat classes. This allows for using just
+ * <code>java -jar mywebapp.jar</code> to run your webapp without needing to install a Tomcat instance. More details
+ * <a href="http://tomcat.apache.org/maven-plugin-2.0/executable-war-jar.html">here</a>.
  *
  * @author Olivier Lamy
+ * 
  * @since 2.0
  */
-@Mojo( name = "exec-war", threadSafe = true )
-@Execute( phase = LifecyclePhase.PACKAGE )
-public class ExecWarMojo
-    extends AbstractExecWarMojo
-{
+@Mojo(name = "exec-war", threadSafe = true)
+@Execute(phase = LifecyclePhase.PACKAGE)
+public class ExecWarMojo extends AbstractExecWarMojo {
     // no op only mojo metadatas
 }

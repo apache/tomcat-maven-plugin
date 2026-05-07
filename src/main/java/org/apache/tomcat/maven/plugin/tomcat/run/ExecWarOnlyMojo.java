@@ -24,11 +24,10 @@ import org.apache.maven.plugins.annotations.Mojo;
  * Same as exec-war goal without forking the package lifecycle.
  *
  * @author Olivier Lamy
+ * 
  * @since 2.0
  */
-@Mojo( name = "exec-war-only", threadSafe = true )
-public class ExecWarOnlyMojo
-    extends AbstractExecWarMojo
-{
+@Mojo(name = "exec-war-only", threadSafe = true)
+public class ExecWarOnlyMojo extends AbstractExecWarMojo {
     // no op only mojo metadatas to not fork a lifecycle
 }

@@ -27,26 +27,23 @@ import java.io.File;
 
 /**
  * @author Olivier Lamy
+ * 
  * @since 2.0
  */
-public class ExtendedTomcat
-    extends Tomcat
-{
+public class ExtendedTomcat extends Tomcat {
 
     private File configurationDir;
 
-    public ExtendedTomcat( File configurationDir )
-    {
+    public ExtendedTomcat(File configurationDir) {
         super();
         this.configurationDir = configurationDir;
     }
 
     @Override
-    public Context addWebapp( Host host, String contextPath, String docBase )
-    {
+    public Context addWebapp(Host host, String contextPath, String docBase) {
         setAddDefaultWebXmlToWebapp(false);
         ContextConfig ctxCfg = new ContextConfig();
-        ctxCfg.setDefaultWebXml( new File( configurationDir, "conf/web.xml" ).getAbsolutePath() );
+        ctxCfg.setDefaultWebXml(new File(configurationDir, "conf/web.xml").getAbsolutePath());
         return addWebapp(host, contextPath, docBase, ctxCfg);
     }
 }

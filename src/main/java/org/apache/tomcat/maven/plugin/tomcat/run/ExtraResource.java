@@ -23,9 +23,7 @@ import org.apache.maven.model.Resource;
 /**
  * @author Olivier Lamy
  */
-public class ExtraResource
-    extends Resource
-{
+public class ExtraResource extends Resource {
 
     private static final long serialVersionUID = 1L;
     // no op just here to support for maven 2.x

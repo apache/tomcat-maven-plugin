@@ -26,9 +26,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  *
  * @author vlatombe
  */
-@Mojo( name = "run-war-only", requiresDependencyResolution = ResolutionScope.RUNTIME, threadSafe = true )
-public class RunWarOnlyMojo
-    extends AbstractRunWarMojo
-{
+@Mojo(name = "run-war-only", requiresDependencyResolution = ResolutionScope.RUNTIME, threadSafe = true)
+public class RunWarOnlyMojo extends AbstractRunWarMojo {
     // no-op : only mojo metadata overriding
 }

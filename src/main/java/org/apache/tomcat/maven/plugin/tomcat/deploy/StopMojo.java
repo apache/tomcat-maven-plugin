@@ -31,10 +31,8 @@ import java.io.IOException;
  *
  * @since 3.0
  */
-@Mojo( name = "stop", threadSafe = true )
-public class StopMojo
-    extends AbstractCatalinaMojo
-{
+@Mojo(name = "stop", threadSafe = true)
+public class StopMojo extends AbstractCatalinaMojo {
     // ----------------------------------------------------------------------
     // Protected Methods
     // ----------------------------------------------------------------------
@@ -43,15 +41,13 @@ public class StopMojo
      * {@inheritDoc}
      */
     @Override
-    protected void invokeManager()
-        throws MojoExecutionException, TomcatManagerException, IOException
-    {
-        getLog().info( messagesProvider.getMessage( "StopMojo.stoppingApp", getDeployedURL() ) );
+    protected void invokeManager() throws MojoExecutionException, TomcatManagerException, IOException {
+        getLog().info(messagesProvider.getMessage("StopMojo.stoppingApp", getDeployedURL()));
 
-        TomcatManagerResponse tomcatResponse = getManager().stop( getPath() );
+        TomcatManagerResponse tomcatResponse = getManager().stop(getPath());
 
-        checkTomcatResponse( tomcatResponse );
+        checkTomcatResponse(tomcatResponse);
 
-        log( tomcatResponse.getHttpResponseBody() );
+        log(tomcatResponse.getHttpResponseBody());
     }
 }
