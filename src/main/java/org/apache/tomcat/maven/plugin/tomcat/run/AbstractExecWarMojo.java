@@ -60,12 +60,23 @@ import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResult;
 
 /**
+ * Abstract Mojo for building executable WAR/JAR files with embedded Tomcat.
+ * Bundles Tomcat classes and webapp into a self-contained executable archive.
+ *
  * @author Olivier Lamy
- * 
  * @since 2.0
  */
 public abstract class AbstractExecWarMojo extends AbstractTomcatMojo {
+    /**
+     * Creates an instance of AbstractExecWarMojo.
+     */
+    protected AbstractExecWarMojo() {
+        // default constructor
+    }
 
+    /**
+     * The project artifact.
+     */
     @Parameter(defaultValue = "${project.artifact}", required = true, readonly = true)
     protected Artifact projectArtifact;
 
@@ -75,9 +86,15 @@ public abstract class AbstractExecWarMojo extends AbstractTomcatMojo {
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
     protected MavenProject project;
 
+    /**
+     * The plugin artifacts.
+     */
     @Parameter(defaultValue = "${plugin.artifacts}", required = true)
     protected List<Artifact> pluginArtifacts;
 
+    /**
+     * The build directory.
+     */
     @Parameter(defaultValue = "${project.build.directory}")
     protected File buildDirectory;
 
@@ -87,9 +104,15 @@ public abstract class AbstractExecWarMojo extends AbstractTomcatMojo {
     @Parameter(defaultValue = "${project.build.directory}/tomcat-maven-plugin-exec")
     private File pluginWorkDirectory;
 
+    /**
+     * Directory containing Tomcat configuration files.
+     */
     @Parameter(property = "maven.tomcat.exec.war.tomcatConf", defaultValue = "src/main/tomcatconf")
     protected File tomcatConfigurationFilesDirectory;
 
+    /**
+     * Path to the server.xml configuration file.
+     */
     @Parameter(defaultValue = "src/main/tomcatconf/server.xml", property = "maven.tomcat.exec.war.serverXml")
     protected File serverXml;
 
@@ -114,9 +137,15 @@ public abstract class AbstractExecWarMojo extends AbstractTomcatMojo {
     @Parameter(property = "maven.tomcat.path", defaultValue = "${project.artifactId}", required = true)
     protected String path;
 
+    /**
+     * List of WAR dependencies to embed.
+     */
     @Parameter
     protected List<WarRunDependency> warRunDependencies;
 
+    /**
+     * Aether repository system for artifact resolution.
+     */
     @Component
     protected RepositorySystem repositorySystem;
 
@@ -132,9 +161,15 @@ public abstract class AbstractExecWarMojo extends AbstractTomcatMojo {
     @Parameter(defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true)
     protected List<ArtifactRepository> remoteRepos;
 
+    /**
+     * Maven session.
+     */
     @Parameter(defaultValue = "${session}", readonly = true, required = true)
     protected org.apache.maven.execution.MavenSession session;
 
+    /**
+     * Maven project helper for attaching artifacts.
+     */
     @Component
     protected MavenProjectHelper projectHelper;
 
@@ -432,6 +467,11 @@ public abstract class AbstractExecWarMojo extends AbstractTomcatMojo {
         }
     }
 
+    /**
+     * Finds the version for a dependency by searching project dependencies and dependency management.
+     * @param dependency the dependency to find the version for
+     * @return the version string, or null if not found
+     */
     protected String findArtifactVersion(Dependency dependency) {
         // search in project.dependencies
         for (Dependency projectDependency : (List<Dependency>) this.project.getDependencies()) {
@@ -450,11 +490,24 @@ public abstract class AbstractExecWarMojo extends AbstractTomcatMojo {
         return null;
     }
 
+    /**
+     * Checks if two dependencies are the same (ignoring version).
+     * @param that the first dependency
+     * @param dependency the second dependency
+     * @return true if groupId and artifactId match
+     */
     protected boolean sameDependencyWithoutVersion(Dependency that, Dependency dependency) {
         return that.getGroupId() != null && that.getGroupId().equals(dependency.getGroupId()) &&
                 that.getArtifactId() != null && that.getArtifactId().equals(dependency.getArtifactId());
     }
 
+    /**
+     * Copies all files from a directory into the archive.
+     * @param sourceFolder the source directory
+     * @param destinationPath the destination path within the archive
+     * @param archiveOutputStream the archive output stream
+     * @throws IOException if an I/O error occurs
+     */
     protected void copyDirectoryContentIntoArchive(File sourceFolder, String destinationPath,
             ArchiveOutputStream<JarArchiveEntry> archiveOutputStream) throws IOException {
 
@@ -500,6 +553,11 @@ public abstract class AbstractExecWarMojo extends AbstractTomcatMojo {
 
     }
 
+    /**
+     * Converts a list to a string array.
+     * @param list the list to convert
+     * @return the string array, or empty array if the list is null/empty
+     */
     protected String[] toStringArray(List<String> list) {
         if (list == null || list.isEmpty()) {
             return new String[0];
@@ -514,7 +572,12 @@ public abstract class AbstractExecWarMojo extends AbstractTomcatMojo {
 
 
     /**
-     * return file can be deleted
+     * Adds a context.xml file to a WAR archive.
+     * @param contextXmlFile the context XML file to add
+     * @param warFile the source WAR file
+     * @return the new WAR file with the context.xml added
+     * @throws IOException if an I/O error occurs
+     * @throws ArchiveException if an archive error occurs
      */
     protected File addContextXmlToWar(File contextXmlFile, File warFile) throws IOException, ArchiveException {
         ArchiveOutputStream<JarArchiveEntry> os = null;
@@ -544,8 +607,8 @@ public abstract class AbstractExecWarMojo extends AbstractTomcatMojo {
      *
      * @param file The input jar file
      * @param os   The output archive
-     * 
-     * @throws IOException
+     * @param excludes file patterns to exclude
+     * @throws IOException if an I/O error occurs
      */
     protected void extractJarToArchive(JarFile file, ArchiveOutputStream<JarArchiveEntry> os, String[] excludes)
             throws IOException {

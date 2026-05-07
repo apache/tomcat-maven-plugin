@@ -30,5 +30,10 @@ import org.apache.maven.plugins.annotations.Mojo;
 @Mojo(name = "standalone-war", threadSafe = true)
 @Execute(phase = LifecyclePhase.PACKAGE)
 public class StandaloneWarMojo extends AbstractStandaloneWarMojo {
-    // no op
+    /**
+     * Creates an instance of StandaloneWarMojo.
+     */
+    public StandaloneWarMojo() {
+        // default constructor
+    }
 }

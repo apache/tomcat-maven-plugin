@@ -29,11 +29,17 @@ import java.io.IOException;
 import java.net.URL;
 
 /**
- * Deploy a WAR to Tomcat.
+ * Abstract base for deploy goals. Supports WAR, context XML, or both deployment modes.
  *
  * @author Mark Hobson (markhobson@gmail.com)
  */
 public abstract class AbstractDeployMojo extends AbstractWarCatalinaMojo {
+    /**
+     * Creates an instance of AbstractDeployMojo.
+     */
+    protected AbstractDeployMojo() {
+        // default constructor
+    }
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------

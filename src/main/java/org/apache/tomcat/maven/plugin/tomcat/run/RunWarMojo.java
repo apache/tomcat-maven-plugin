@@ -31,5 +31,10 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 @Mojo(name = "run-war", requiresDependencyResolution = ResolutionScope.RUNTIME, threadSafe = true)
 @Execute(phase = LifecyclePhase.PACKAGE)
 public class RunWarMojo extends AbstractRunWarMojo {
-    // no-op : only mojo metadata overriding
+    /**
+     * Creates an instance of RunWarMojo.
+     */
+    public RunWarMojo() {
+        // default constructor
+    }
 }

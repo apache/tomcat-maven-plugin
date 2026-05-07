@@ -57,18 +57,34 @@ import org.apache.tomcat.util.http.fileupload.FileUtils;
  * @since 2.0
  */
 public class TomcatRunner {
-    // true/false to use the server.xml located in the jar /conf/server.xml
+    /**
+     * Property key to enable/disable server.xml usage.
+     */
     public static final String USE_SERVER_XML_KEY = "useServerXml";
 
-    // contains war name wars=foo.war,bar.war
+    /**
+     * Property key for WAR names.
+     */
     public static final String WARS_KEY = "wars";
 
+    /**
+     * Property key for archive generation timestamp.
+     */
     public static final String ARCHIVE_GENERATION_TIMESTAMP_KEY = "generationTimestamp";
 
+    /**
+     * Property key to enable/disable naming.
+     */
     public static final String ENABLE_NAMING_KEY = "enableNaming";
 
+    /**
+     * Property key for access log valve format.
+     */
     public static final String ACCESS_LOG_VALVE_FORMAT_KEY = "accessLogValveFormat";
 
+    /**
+     * Property key for code source context path.
+     */
     public static final String CODE_SOURCE_CONTEXT_PATH = "codeSourceContextPath";
 
     /**
@@ -82,36 +98,84 @@ public class TomcatRunner {
     public static final String HTTP_PORT_KEY = "httpPort";
 
 
+    /**
+     * HTTP port number.
+     */
     public int httpPort;
 
+    /**
+     * HTTPS port number.
+     */
     public int httpsPort;
 
+    /**
+     * Maximum POST size in bytes.
+     */
     public int maxPostSize = 2097152;
 
+    /**
+     * AJP port number.
+     */
     public int ajpPort;
 
+    /**
+     * Path to the server.xml configuration file.
+     */
     public String serverXmlPath;
 
+    /**
+     * Runtime properties loaded from the standalone properties file.
+     */
     public Properties runtimeProperties;
 
+    /**
+     * Whether to reset the extraction directory on startup.
+     */
     public boolean resetExtract;
 
+    /**
+     * Whether debug mode is enabled.
+     */
     public boolean debug = false;
 
+    /**
+     * Client authentication setting for HTTPS.
+     */
     public String clientAuth = "false";
 
+    /**
+     * Key alias for SSL keystore.
+     */
     public String keyAlias = null;
 
+    /**
+     * HTTP connector protocol.
+     */
     public String httpProtocol;
 
+    /**
+     * Directory name for extracted archive contents.
+     */
     public String extractDirectory = ".extract";
 
+    /**
+     * File reference to the extraction directory.
+     */
     public File extractDirectoryFile;
 
+    /**
+     * Context path for the code source WAR.
+     */
     public String codeSourceContextPath = null;
 
+    /**
+     * WAR file from which the code was loaded.
+     */
     public File codeSourceWar = null;
 
+    /**
+     * Logger name.
+     */
     public String loggerName;
 
     Catalina container;
@@ -125,10 +189,17 @@ public class TomcatRunner {
      */
     Map<String, String> webappWarPerContext = new HashMap<>();
 
+    /**
+     * Creates an instance of TomcatRunner.
+     */
     public TomcatRunner() {
         // no op
     }
 
+    /**
+     * Starts the embedded Tomcat server and waits indefinitely.
+     * @throws Exception if the server fails to start
+     */
     public void run() throws Exception {
 
         PasswordUtil.deobfuscateSystemProps();
@@ -350,8 +421,14 @@ public class TomcatRunner {
 
     }
 
+    /**
+     * Shutdown hook that stops the embedded Tomcat server on JVM exit.
+     */
     protected class TomcatShutdownHook extends Thread {
 
+        /**
+         * Creates an instance of TomcatShutdownHook.
+         */
         protected TomcatShutdownHook() {
             // no op
         }
@@ -420,6 +497,10 @@ public class TomcatRunner {
         }
     }
 
+    /**
+     * Stops the embedded Tomcat server.
+     * @throws Exception if the server fails to stop
+     */
     public void stop() throws Exception {
         if (container != null) {
             container.stop();
@@ -429,6 +510,10 @@ public class TomcatRunner {
         }
     }
 
+    /**
+     * Extracts archive contents to the extraction directory.
+     * @throws Exception if extraction fails
+     */
     protected void extract() throws Exception {
 
         if (extractDirectoryFile.exists()) {
@@ -578,11 +663,19 @@ public class TomcatRunner {
         // Ignore
     }
 
+    /**
+     * Returns whether the server.xml configuration should be used.
+     * @return true if server.xml should be used
+     */
     public boolean useServerXml() {
         return Boolean.parseBoolean(runtimeProperties.getProperty(USE_SERVER_XML_KEY, Boolean.FALSE.toString()));
     }
 
 
+    /**
+     * Prints a debug message if debug mode is enabled.
+     * @param message the message to print
+     */
     public void debugMessage(String message) {
         if (debug) {
             System.out.println(message);
@@ -590,6 +683,10 @@ public class TomcatRunner {
     }
 
 
+    /**
+     * Returns whether naming support is enabled.
+     * @return true if naming support is enabled
+     */
     public boolean enableNaming() {
         return Boolean.parseBoolean(runtimeProperties.getProperty(ENABLE_NAMING_KEY, Boolean.FALSE.toString()));
     }

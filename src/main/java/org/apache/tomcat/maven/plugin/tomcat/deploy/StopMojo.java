@@ -33,6 +33,12 @@ import java.io.IOException;
  */
 @Mojo(name = "stop", threadSafe = true)
 public class StopMojo extends AbstractCatalinaMojo {
+    /**
+     * Creates an instance of StopMojo.
+     */
+    public StopMojo() {
+        // default constructor
+    }
     // ----------------------------------------------------------------------
     // Protected Methods
     // ----------------------------------------------------------------------

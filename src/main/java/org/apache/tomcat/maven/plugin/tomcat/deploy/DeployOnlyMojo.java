@@ -22,12 +22,17 @@ import org.apache.maven.plugins.annotations.Mojo;
 
 /**
  * Deploy a WAR to Tomcat without forking the package lifecycle.
+ * Use this goal when the WAR is already built and you only want to deploy.
  *
  * @author olamy
- * 
  * @since 1.0-alpha-2
  */
 @Mojo(name = "deploy-only", threadSafe = true)
 public class DeployOnlyMojo extends AbstractDeployWarMojo {
-    // no-op : only mojo metadata overriding
+    /**
+     * Creates an instance of DeployOnlyMojo.
+     */
+    public DeployOnlyMojo() {
+        // default constructor
+    }
 }

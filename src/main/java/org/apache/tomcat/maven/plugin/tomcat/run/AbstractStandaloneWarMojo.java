@@ -50,11 +50,18 @@ import org.codehaus.plexus.archiver.jar.ManifestException;
 import org.codehaus.plexus.util.DirectoryScanner;
 
 /**
- * Abstract Mojo for building deployable and executable war files
+ * Abstract Mojo for building deployable and executable standalone WAR files.
+ * Creates a self-contained WAR with embedded Tomcat that runs with {@code java -jar}.
  *
  * @since 2.1
  */
 public abstract class AbstractStandaloneWarMojo extends AbstractExecWarMojo {
+    /**
+     * Creates an instance of AbstractStandaloneWarMojo.
+     */
+    protected AbstractStandaloneWarMojo() {
+        // default constructor
+    }
 
     /**
      * Name of the generated WAR.
@@ -256,6 +263,17 @@ public abstract class AbstractStandaloneWarMojo extends AbstractExecWarMojo {
 
     }
 
+    /**
+     * Resolves a dependency artifact from remote repositories.
+     * @param groupId the artifact group ID
+     * @param artifactId the artifact ID
+     * @param version the artifact version
+     * @param type the artifact type
+     * @param classifier the artifact classifier
+     * @return the resolved Maven artifact
+     * @throws ArtifactResolutionException if the artifact cannot be resolved
+     * @throws IOException if an I/O error occurs
+     */
     protected Artifact resolveDependencyArtifact(String groupId, String artifactId, String version, String type,
             String classifier) throws ArtifactResolutionException, IOException {
         org.eclipse.aether.artifact.Artifact aetherArtifact = new DefaultArtifact(groupId, artifactId,

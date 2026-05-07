@@ -32,6 +32,12 @@ import java.io.IOException;
  */
 @Mojo(name = "serverinfo", threadSafe = true)
 public class ServerInfoMojo extends AbstractCatalinaMojo {
+    /**
+     * Creates an instance of ServerInfoMojo.
+     */
+    public ServerInfoMojo() {
+        // default constructor
+    }
     // ----------------------------------------------------------------------
     // Protected Methods
     // ----------------------------------------------------------------------

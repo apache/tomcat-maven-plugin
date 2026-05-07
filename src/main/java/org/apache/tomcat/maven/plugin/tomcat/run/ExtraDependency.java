@@ -21,12 +21,20 @@ package org.apache.tomcat.maven.plugin.tomcat.run;
 import org.apache.maven.model.Dependency;
 
 /**
+ * Extra dependency to include in the standalone Tomcat JAR.
+ * Used for JDBC drivers, mail.jar, and other root classloader dependencies.
+ *
  * @author Olivier Lamy
- * 
  * @since 2.0
  */
 public class ExtraDependency extends Dependency {
 
     private static final long serialVersionUID = 1L;
-    // no op just here to support for maven 2.x
+
+    /**
+     * Creates an instance of ExtraDependency.
+     */
+    public ExtraDependency() {
+        // default constructor
+    }
 }

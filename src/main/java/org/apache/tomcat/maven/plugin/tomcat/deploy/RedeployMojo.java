@@ -26,12 +26,19 @@ import org.apache.maven.plugins.annotations.Mojo;
  * Redeploy a WAR in Tomcat. (Alias for the deploy goal with its update parameter set to true.)
  *
  * @author Olivier Lamy
- * 
+ *
  * @since 2.1
  */
 @Mojo(name = "redeploy", threadSafe = true)
 @Execute(phase = LifecyclePhase.PACKAGE)
 public class RedeployMojo extends DeployMojo {
+    /**
+     * Creates an instance of RedeployMojo.
+     */
+    public RedeployMojo() {
+        // default constructor
+    }
+
     @Override
     protected boolean isUpdate() {
         return true;

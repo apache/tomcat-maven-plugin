@@ -36,6 +36,12 @@ import java.util.concurrent.TimeUnit;
  */
 @Mojo(name = "wait", threadSafe = true)
 public class WaitMojo extends AbstractCatalinaMojo {
+    /**
+     * Creates an instance of WaitMojo.
+     */
+    public WaitMojo() {
+        // default constructor
+    }
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------

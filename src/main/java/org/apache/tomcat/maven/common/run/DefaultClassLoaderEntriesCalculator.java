@@ -41,12 +41,20 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * Default implementation of {@link ClassLoaderEntriesCalculator} that calculates classpath entries
+ * from Maven project dependencies.
+ *
  * @author Olivier Lamy
- * 
  * @since 2.0
  */
 @Component(role = ClassLoaderEntriesCalculator.class)
 public class DefaultClassLoaderEntriesCalculator implements ClassLoaderEntriesCalculator {
+    /**
+     * Creates an instance of DefaultClassLoaderEntriesCalculator.
+     */
+    public DefaultClassLoaderEntriesCalculator() {
+        // default constructor
+    }
 
     @Requirement
     private ArchiverManager archiverManager;
@@ -204,6 +212,12 @@ public class DefaultClassLoaderEntriesCalculator implements ClassLoaderEntriesCa
         }
     }
 
+    /**
+     * Checks if the given artifact is referenced by the project's reactor projects.
+     * @param artifact the artifact to check
+     * @param project the Maven project
+     * @return true if the artifact is in the project references
+     */
     protected boolean isInProjectReferences(Artifact artifact, MavenProject project) {
         if (project.getProjectReferences() == null || project.getProjectReferences().isEmpty()) {
             return false;

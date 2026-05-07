@@ -32,6 +32,12 @@ import java.io.IOException;
  */
 @Mojo(name = "sessions", threadSafe = true)
 public class SessionsMojo extends AbstractCatalinaMojo {
+    /**
+     * Creates an instance of SessionsMojo.
+     */
+    public SessionsMojo() {
+        // default constructor
+    }
     // ----------------------------------------------------------------------
     // Protected Methods
     // ----------------------------------------------------------------------

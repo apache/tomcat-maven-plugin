@@ -26,14 +26,20 @@ import org.apache.catalina.startup.Tomcat;
 import java.io.File;
 
 /**
+ * Extended Tomcat embedding that customizes webapp configuration.
+ * Disables default web.xml and uses a custom web.xml from the configuration directory.
+ *
  * @author Olivier Lamy
- * 
  * @since 2.0
  */
 public class ExtendedTomcat extends Tomcat {
 
     private File configurationDir;
 
+    /**
+     * Creates an extended Tomcat instance with the given configuration directory.
+     * @param configurationDir the Tomcat configuration directory
+     */
     public ExtendedTomcat(File configurationDir) {
         super();
         this.configurationDir = configurationDir;

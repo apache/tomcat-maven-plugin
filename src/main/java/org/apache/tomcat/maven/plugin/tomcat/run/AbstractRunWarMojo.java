@@ -24,10 +24,17 @@ import java.io.File;
 
 /**
  * Runs the current project as a packaged web application using an embedded Tomcat server.
+ * Configures the docbase from the WAR directory and context file.
  *
  * @author Mark Hobson (markhobson@gmail.com)
  */
 public abstract class AbstractRunWarMojo extends AbstractRunMojo {
+    /**
+     * Creates an instance of AbstractRunWarMojo.
+     */
+    protected AbstractRunWarMojo() {
+        // default constructor
+    }
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------

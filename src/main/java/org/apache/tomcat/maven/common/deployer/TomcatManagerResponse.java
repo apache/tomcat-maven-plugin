@@ -19,8 +19,9 @@
 package org.apache.tomcat.maven.common.deployer;
 
 /**
+ * Response object for Tomcat manager operations.
+ *
  * @author Olivier Lamy
- * 
  * @since 2.0
  */
 public class TomcatManagerResponse {
@@ -30,32 +31,62 @@ public class TomcatManagerResponse {
 
     private String httpResponseBody;
 
+    /**
+     * Creates an instance of TomcatManagerResponse.
+     */
     public TomcatManagerResponse() {
         // no op
     }
 
+    /**
+     * Returns the HTTP status code.
+     * @return the status code
+     */
     public int getStatusCode() {
         return statusCode;
     }
 
+    /**
+     * Sets the HTTP status code.
+     * @param statusCode the status code
+     * @return this response for chaining
+     */
     public TomcatManagerResponse setStatusCode(int statusCode) {
         this.statusCode = statusCode;
         return this;
     }
 
+    /**
+     * Returns the HTTP reason phrase.
+     * @return the reason phrase
+     */
     public String getReasonPhrase() {
         return reasonPhrase;
     }
 
+    /**
+     * Sets the HTTP reason phrase.
+     * @param reasonPhrase the reason phrase
+     * @return this response for chaining
+     */
     public TomcatManagerResponse setReasonPhrase(String reasonPhrase) {
         this.reasonPhrase = reasonPhrase;
         return this;
     }
 
+    /**
+     * Returns the HTTP response body.
+     * @return the response body
+     */
     public String getHttpResponseBody() {
         return httpResponseBody;
     }
 
+    /**
+     * Sets the HTTP response body.
+     * @param httpResponseBody the response body
+     * @return this response for chaining
+     */
     public TomcatManagerResponse setHttpResponseBody(String httpResponseBody) {
         this.httpResponseBody = httpResponseBody;
         return this;

@@ -27,14 +27,27 @@ import org.apache.tomcat.maven.common.deployer.TomcatManagerResponse;
 import org.apache.tomcat.maven.common.messages.MessagesProvider;
 
 /**
+ * Abstract base Mojo for Tomcat plugin goals.
+ *
  * @author Olivier Lamy
- * 
  * @since 2.0
  */
 public abstract class AbstractTomcatMojo extends AbstractMojo {
+    /**
+     * Creates an instance of AbstractTomcatMojo.
+     */
+    protected AbstractTomcatMojo() {
+        // default constructor
+    }
+    /**
+     * Maven settings.
+     */
     @Parameter(defaultValue = "${settings}", readonly = true)
     protected Settings settings;
 
+    /**
+     * Provider for localized messages.
+     */
     @Component
     protected MessagesProvider messagesProvider;
 
@@ -50,6 +63,10 @@ public abstract class AbstractTomcatMojo extends AbstractMojo {
     protected String path;
 
 
+    /**
+     * Returns the webapp context path.
+     * @return the context path
+     */
     protected String getPath() {
         return path;
     }

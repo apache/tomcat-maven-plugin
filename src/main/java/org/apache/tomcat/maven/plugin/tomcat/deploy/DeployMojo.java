@@ -23,12 +23,17 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
 /**
- * Deploy a WAR to Tomcat.
+ * Deploy a WAR to Tomcat. Executes after the package phase.
  *
  * @author Mark Hobson (markhobson@gmail.com)
  */
 @Mojo(name = "deploy", threadSafe = true)
 @Execute(phase = LifecyclePhase.PACKAGE)
 public class DeployMojo extends AbstractDeployWarMojo {
-    // no-op : only mojo metadata overriding
+    /**
+     * Creates an instance of DeployMojo.
+     */
+    public DeployMojo() {
+        // default constructor
+    }
 }

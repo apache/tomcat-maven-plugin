@@ -19,13 +19,19 @@
 package org.apache.tomcat.maven.common.run;
 
 /**
+ * Exception thrown during Tomcat run operations.
+ *
  * @author Olivier Lamy
- * 
  * @since 2.0
  */
 public class TomcatRunException extends Exception {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Creates an instance of TomcatRunException.
+     * @param s the detail message
+     * @param throwable the cause
+     */
     public TomcatRunException(String s, Throwable throwable) {
         super(s, throwable);
     }

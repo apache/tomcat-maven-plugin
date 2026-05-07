@@ -22,12 +22,17 @@ import org.apache.maven.plugins.annotations.Mojo;
 
 /**
  * Same as exec-war goal without forking the package lifecycle.
+ * Use this goal when the WAR is already built and you only want to create the executable JAR.
  *
  * @author Olivier Lamy
- * 
  * @since 2.0
  */
 @Mojo(name = "exec-war-only", threadSafe = true)
 public class ExecWarOnlyMojo extends AbstractExecWarMojo {
-    // no op only mojo metadatas to not fork a lifecycle
+    /**
+     * Creates an instance of ExecWarOnlyMojo.
+     */
+    public ExecWarOnlyMojo() {
+        // default constructor
+    }
 }

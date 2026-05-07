@@ -27,11 +27,18 @@ import java.io.File;
 import java.io.IOException;
 
 /**
+ * Abstract deploy goal that deploys a WAR file to Tomcat.
+ *
  * @author olamy
- * 
  * @since 1.0-alpha-2
  */
 public class AbstractDeployWarMojo extends AbstractDeployMojo {
+    /**
+     * Creates an instance of AbstractDeployWarMojo.
+     */
+    public AbstractDeployWarMojo() {
+        // default constructor
+    }
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------

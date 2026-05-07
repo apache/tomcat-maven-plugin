@@ -34,6 +34,12 @@ import java.io.IOException;
  */
 @Mojo(name = "undeploy", threadSafe = true)
 public class UndeployMojo extends AbstractWarCatalinaMojo {
+    /**
+     * Creates an instance of UndeployMojo.
+     */
+    public UndeployMojo() {
+        // default constructor
+    }
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------

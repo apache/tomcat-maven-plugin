@@ -26,8 +26,19 @@ package org.apache.tomcat.maven.common.messages;
  * @since 2.0
  */
 public interface MessagesProvider {
+    /**
+     * Returns the message for the given key.
+     * @param key the message key
+     * @return the message string
+     */
     String getMessage(String key);
 
+    /**
+     * Returns the formatted message for the given key with the specified parameters.
+     * @param key the message key
+     * @param param1 the formatting parameters
+     * @return the formatted message string
+     */
     String getMessage(String key, Object... param1);
 
 }

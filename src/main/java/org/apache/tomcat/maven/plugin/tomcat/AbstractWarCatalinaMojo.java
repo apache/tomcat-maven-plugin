@@ -22,11 +22,18 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 
 /**
- * Abstract goal that provides common configuration for Catalina-based goals.
+ * Abstract goal that provides common configuration for WAR-based Catalina goals.
+ * Adds packaging validation for WAR projects.
  *
  * @author Mark Hobson (markhobson@gmail.com)
  */
 public abstract class AbstractWarCatalinaMojo extends AbstractCatalinaMojo {
+    /**
+     * Creates an instance of AbstractWarCatalinaMojo.
+     */
+    protected AbstractWarCatalinaMojo() {
+        // default constructor
+    }
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------

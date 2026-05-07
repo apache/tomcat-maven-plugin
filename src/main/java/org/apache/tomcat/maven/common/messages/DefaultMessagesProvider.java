@@ -25,8 +25,9 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
+ * Default implementation of {@link MessagesProvider} that loads messages from a ResourceBundle.
+ *
  * @author Olivier Lamy
- * 
  * @since 2.0
  */
 @Component(role = MessagesProvider.class)
@@ -38,12 +39,19 @@ public class DefaultMessagesProvider implements MessagesProvider {
     private final ResourceBundle messages;
 
 
+    /**
+     * Creates a new instance and loads the message bundle.
+     */
     public DefaultMessagesProvider() {
         String packageName = getClass().getPackage().getName();
 
         messages = ResourceBundle.getBundle(packageName + ".messages");
     }
 
+    /**
+     * Returns the underlying resource bundle.
+     * @return the resource bundle
+     */
     public ResourceBundle getResourceBundle() {
         return this.messages;
     }

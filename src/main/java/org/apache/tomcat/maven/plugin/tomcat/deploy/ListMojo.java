@@ -27,11 +27,18 @@ import java.io.IOException;
 
 /**
  * List all web applications currently running in Tomcat.
+ * Connects to the Tomcat manager and lists all deployed applications with their status.
  *
  * @since 3.0
  */
 @Mojo(name = "list", threadSafe = true)
 public class ListMojo extends AbstractCatalinaMojo {
+    /**
+     * Creates an instance of ListMojo.
+     */
+    public ListMojo() {
+        // default constructor
+    }
     // ----------------------------------------------------------------------
     // Protected Methods
     // ----------------------------------------------------------------------

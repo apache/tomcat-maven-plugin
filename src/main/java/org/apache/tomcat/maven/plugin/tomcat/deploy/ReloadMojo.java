@@ -33,6 +33,12 @@ import java.io.IOException;
  */
 @Mojo(name = "reload", threadSafe = true)
 public class ReloadMojo extends AbstractCatalinaMojo {
+    /**
+     * Creates an instance of ReloadMojo.
+     */
+    public ReloadMojo() {
+        // default constructor
+    }
     // ----------------------------------------------------------------------
     // Protected Methods
     // ----------------------------------------------------------------------

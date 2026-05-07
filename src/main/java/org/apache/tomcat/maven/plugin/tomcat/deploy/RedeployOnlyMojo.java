@@ -28,6 +28,13 @@ import org.apache.maven.plugins.annotations.Mojo;
  */
 @Mojo(name = "redeploy-only", threadSafe = true)
 public class RedeployOnlyMojo extends DeployOnlyMojo {
+    /**
+     * Creates an instance of RedeployOnlyMojo.
+     */
+    public RedeployOnlyMojo() {
+        // default constructor
+    }
+
     @Override
     protected boolean isUpdate() {
         return true;

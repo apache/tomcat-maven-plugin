@@ -41,9 +41,23 @@ import java.util.Properties;
  * @since 2.0
  */
 public class PasswordUtil {
+    /**
+     * Prefix for obfuscated passwords.
+     */
     public static final String __OBFUSCATE = "OBF:";
 
-    /* ------------------------------------------------------------ */
+    /**
+     * Creates an instance of PasswordUtil.
+     */
+    public PasswordUtil() {
+        // default constructor
+    }
+
+    /**
+     * Obfuscates the given password string.
+     * @param s the password to obfuscate
+     * @return the obfuscated password string
+     */
     public static String obfuscate(String s) {
         StringBuilder buf = new StringBuilder();
         byte[] b = s.getBytes();
@@ -72,7 +86,11 @@ public class PasswordUtil {
 
     }
 
-    /* ------------------------------------------------------------ */
+    /**
+     * Deobfuscates the given obfuscated password string.
+     * @param s the obfuscated password string
+     * @return the deobfuscated password string, or the original if not obfuscated
+     */
     public static String deobfuscate(String s) {
         if (s.startsWith(__OBFUSCATE)) {
             s = s.substring(__OBFUSCATE.length());
@@ -93,6 +111,9 @@ public class PasswordUtil {
 
     }
 
+    /**
+     * Deobfuscates all system properties that start with the obfuscation prefix.
+     */
     public static void deobfuscateSystemProps() {
         Properties props = System.getProperties();
         for (Object obj : props.keySet()) {
@@ -106,6 +127,10 @@ public class PasswordUtil {
         }
     }
 
+    /**
+     * Main entry point for command-line password obfuscation/deobfuscation.
+     * @param args command-line arguments
+     */
     public static void main(String[] args) {
         if (args[0].startsWith(__OBFUSCATE)) {
             System.out.println(PasswordUtil.deobfuscate(args[1]));

@@ -76,10 +76,17 @@ public class Webapp {
     private File contextFile;
     private boolean asWebapp = false;
 
+    /**
+     * Creates an instance of Webapp.
+     */
     public Webapp() {
         // default constructor
     }
 
+    /**
+     * Creates a Webapp from the given Maven artifact.
+     * @param artifact the Maven artifact
+     */
     public Webapp(Artifact artifact) {
         this.setArtifact(artifact);
         this.setGroupId(artifact.getGroupId());
@@ -89,46 +96,90 @@ public class Webapp {
         this.setType(artifact.getType());
     }
 
+    /**
+     * Returns the Maven group ID.
+     * @return the group ID
+     */
     public String getGroupId() {
         return groupId;
     }
 
+    /**
+     * Sets the Maven group ID.
+     * @param groupId the group ID
+     */
     public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
 
+    /**
+     * Returns the Maven artifact ID.
+     * @return the artifact ID
+     */
     public String getArtifactId() {
         return artifactId;
     }
 
+    /**
+     * Sets the Maven artifact ID.
+     * @param artifactId the artifact ID
+     */
     public void setArtifactId(String artifactId) {
         this.artifactId = artifactId;
     }
 
+    /**
+     * Returns the artifact version.
+     * @return the version
+     */
     public String getVersion() {
         return version;
     }
 
+    /**
+     * Sets the artifact version.
+     * @param version the version
+     */
     public void setVersion(String version) {
         this.version = version;
     }
 
+    /**
+     * Returns the artifact type.
+     * @return the type
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * Sets the artifact type.
+     * @param type the type
+     */
     public void setType(String type) {
         this.type = type;
     }
 
+    /**
+     * Returns the artifact classifier.
+     * @return the classifier
+     */
     public String getClassifier() {
         return classifier;
     }
 
+    /**
+     * Sets the artifact classifier.
+     * @param classifier the classifier
+     */
     public void setClassifier(String classifier) {
         this.classifier = classifier;
     }
 
+    /**
+     * Returns the context path for the webapp.
+     * @return the context path
+     */
     public String getContextPath() {
         if (contextPath == null || contextPath.isEmpty()) {
             return this.artifactId;
@@ -136,30 +187,58 @@ public class Webapp {
         return contextPath;
     }
 
+    /**
+     * Sets the context path for the webapp.
+     * @param contextPath the context path
+     */
     public void setContextPath(String contextPath) {
         this.contextPath = contextPath;
     }
 
+    /**
+     * Returns the resolved Maven artifact.
+     * @return the artifact
+     */
     public Artifact getArtifact() {
         return artifact;
     }
 
+    /**
+     * Sets the resolved Maven artifact.
+     * @param artifact the Maven artifact
+     */
     public void setArtifact(Artifact artifact) {
         this.artifact = artifact;
     }
 
+    /**
+     * Sets the context XML file.
+     * @param contextFile the context file
+     */
     public void setContextFile(File contextFile) {
         this.contextFile = contextFile;
     }
 
+    /**
+     * Returns the context XML file.
+     * @return the context file
+     */
     public File getContextFile() {
         return contextFile;
     }
 
+    /**
+     * Returns whether the webapp should be added as a webapp context.
+     * @return true if added as a webapp
+     */
     public boolean isAsWebapp() {
         return asWebapp;
     }
 
+    /**
+     * Sets whether the webapp should be added as a webapp context.
+     * @param asWebapp true if added as a webapp
+     */
     public void setAsWebapp(boolean asWebapp) {
         this.asWebapp = asWebapp;
     }

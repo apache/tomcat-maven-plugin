@@ -94,11 +94,19 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 /**
+ * Abstract Mojo for running a web application with embedded Tomcat.
+ * Provides configuration for ports, SSL, connectors, and context management.
+ *
  * @author Olivier Lamy
- * 
  * @since 2.0
  */
 public abstract class AbstractRunMojo extends AbstractTomcatMojo {
+    /**
+     * Creates an instance of AbstractRunMojo.
+     */
+    protected AbstractRunMojo() {
+        // default constructor
+    }
     // ---------------------------------------------------------------------
     // Mojo Components
     // ---------------------------------------------------------------------
@@ -109,6 +117,9 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
     @Parameter(defaultValue = "${localRepository}", required = true, readonly = true)
     private ArtifactRepository local;
 
+    /**
+     * Aether repository system for artifact resolution.
+     */
     @Component
     protected RepositorySystem repositorySystem;
 
@@ -441,6 +452,9 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
     @Parameter
     protected String classLoaderClass;
 
+    /**
+     * Maven session.
+     */
     @Parameter(defaultValue = "${session}", readonly = true, required = true)
     protected MavenSession session;
 
@@ -476,6 +490,9 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
     @Parameter(property = "maven.tomcat.https.clientAuth", defaultValue = "false")
     protected String clientAuth = "false";
 
+    /**
+     * Maven file filter for resource filtering.
+     */
     @Component(role = MavenFileFilter.class, hint = "default")
     protected MavenFileFilter mavenFileFilter;
 
@@ -490,48 +507,56 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
     protected boolean jarScanAllDirectories = true;
 
     /**
+     * Use body encoding for URI decoding.
      * @since 2.2
      */
     @Parameter(property = "maven.tomcat.useBodyEncodingForURI", defaultValue = "false")
     protected boolean useBodyEncodingForURI;
 
     /**
+     * Trust manager class name for SSL.
      * @since 2.2
      */
     @Parameter
     protected String trustManagerClassName;
 
     /**
+     * Maximum certificate chain length for SSL.
      * @since 2.2
      */
     @Parameter
     protected String trustMaxCertLength;
 
     /**
+     * Truststore algorithm for SSL.
      * @since 2.2
      */
     @Parameter
     protected String truststoreAlgorithm;
 
     /**
+     * Truststore file path for SSL.
      * @since 2.2
      */
     @Parameter
     protected String truststoreFile;
 
     /**
+     * Truststore password for SSL.
      * @since 2.2
      */
     @Parameter
     protected String truststorePass;
 
     /**
+     * Truststore provider for SSL.
      * @since 2.2
      */
     @Parameter
     protected String truststoreProvider;
 
     /**
+     * Truststore type for SSL.
      * @since 2.2
      */
     @Parameter
@@ -542,6 +567,7 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
     // ----------------------------------------------------------------------
 
     /**
+     * Separate classloader realm for Tomcat.
      * @since 1.0
      */
     private ClassRealm tomcatRealm;
@@ -611,6 +637,11 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
         }
     }
 
+    /**
+     * Enhances the Tomcat context with additional configuration. Override to customize context setup.
+     * @param context the Tomcat context to enhance
+     * @throws MojoExecutionException if enhancement fails
+     */
     protected void enhanceContext(final Context context) throws MojoExecutionException {
         // no op
     }
@@ -694,6 +725,12 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
 
     }
 
+    /**
+     * Parses a context XML file to extract path and docBase attributes.
+     * @param file the context XML file
+     * @return the parsed StandardContext
+     * @throws MojoExecutionException if parsing fails
+     */
     protected StandardContext parseContextFile(File file) throws MojoExecutionException {
         try {
             StandardContext standardContext = new StandardContext();
@@ -743,6 +780,12 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
      *
      * @return false by default, true if reloadable="true" in context.xml.
      */
+    /**
+     * Determine whether the passed context.xml file declares the context as reloadable or not.
+     *
+     * @return false by default, true if reloadable="true" in context.xml.
+     * @throws MojoExecutionException if an error occurs
+     */
     protected boolean isContextReloadable() throws MojoExecutionException {
         if (contextReloadable || backgroundProcessorDelay > 0) {
             return true;
@@ -778,12 +821,18 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
      *
      * @return the webapp directory
      */
+    /**
+     * Gets the webapp directory to run.
+     * @return the webapp directory
+     * @throws IOException if an I/O error occurs
+     */
     protected abstract File getDocBase() throws IOException;
 
     /**
      * Gets the Tomcat context XML file to use.
      *
      * @return the context XML file
+     * @throws MojoExecutionException if an error occurs
      */
     protected abstract File getContextFile() throws MojoExecutionException;
 
@@ -1149,6 +1198,11 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
         return webapps;
     }
 
+    /**
+     * Gets or creates the Tomcat classloader realm.
+     * @return the classloader realm
+     * @throws MojoExecutionException if the classloader cannot be created
+     */
     protected ClassRealm getTomcatClassLoader() throws MojoExecutionException {
         if (this.tomcatRealm != null) {
             return tomcatRealm;
@@ -1173,6 +1227,10 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
         }
     }
 
+    /**
+     * Gets the project artifacts.
+     * @return the set of project artifacts
+     */
     public Set<Artifact> getProjectArtifacts() {
         return project.getArtifacts();
     }

@@ -677,9 +677,10 @@ public class TomcatManager {
      *
      * @param path the Tomcat manager command to invoke
      * @param data file to deploy
-     * 
+     * @param length the size of the data file to deploy
+     *
      * @return the Tomcat manager response
-     * 
+     *
      * @throws TomcatManagerException if the Tomcat manager request fails
      * @throws IOException            if an i/o error occurs
      */
@@ -766,6 +767,11 @@ public class TomcatManager {
                 .setHttpResponseBody(responseBody);
     }
 
+    /**
+     * Calculates the relocated URL from the HTTP response Location header.
+     * @param connection the HTTP connection
+     * @return the relocated URL
+     */
     protected String calculateRelocatedUrl(HttpURLConnection connection) {
         String locationField = connection.getHeaderField("Location");
         // is it a relative Location or a full ?

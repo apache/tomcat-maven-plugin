@@ -64,12 +64,18 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
  * Runs the current project as a dynamic web application using an embedded Tomcat server.
  *
  * @author Olivier Lamy
- * 
+ *
  * @since 2.0
  */
 @Mojo(name = "run", requiresDependencyResolution = ResolutionScope.TEST, threadSafe = true)
 @Execute(phase = LifecyclePhase.PROCESS_CLASSES)
 public class RunMojo extends AbstractRunMojo {
+    /**
+     * Creates an instance of RunMojo.
+     */
+    public RunMojo() {
+        // default constructor
+    }
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
@@ -131,6 +137,10 @@ public class RunMojo extends AbstractRunMojo {
     private List<String> additionalClasspathDirs;
 
 
+    /**
+     * Returns the web resources directory for the web application being run.
+     * @return the web resources directory
+     */
     public final File getWarSourceDirectory() {
         return warSourceDirectory;
     }
@@ -232,7 +242,7 @@ public class RunMojo extends AbstractRunMojo {
     /**
      * {@inheritDoc}
      *
-     * @throws MojoExecutionException
+     * @throws MojoExecutionException if the webapp loader could not be created
      */
     @Override
     protected WebappLoader createWebappLoader() throws IOException, MojoExecutionException {

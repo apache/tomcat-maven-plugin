@@ -37,6 +37,12 @@ import java.util.StringTokenizer;
  * @author Mark Hobson (markhobson@gmail.com)
  */
 public abstract class AbstractCatalinaMojo extends AbstractTomcatMojo {
+    /**
+     * Creates an instance of AbstractCatalinaMojo.
+     */
+    protected AbstractCatalinaMojo() {
+        // default constructor
+    }
     // ----------------------------------------------------------------------
     // Constants
     // ----------------------------------------------------------------------

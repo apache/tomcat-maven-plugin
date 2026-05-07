@@ -23,18 +23,31 @@ import org.apache.maven.model.Dependency;
 import java.io.File;
 
 /**
+ * Configuration for a WAR dependency to embed in an executable JAR.
+ *
  * @author Olivier Lamy
- * 
  * @since 2.0
  */
 public class WarRunDependency {
 
+    /**
+     * The dependency descriptor.
+     */
     public Dependency dependency;
 
+    /**
+     * The context path for the WAR.
+     */
     public String contextPath;
 
+    /**
+     * The context XML file for the WAR.
+     */
     public File contextXml;
 
+    /**
+     * Creates an instance of WarRunDependency.
+     */
     public WarRunDependency() {
         // no op
     }

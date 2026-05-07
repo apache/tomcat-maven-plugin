@@ -27,5 +27,10 @@ import org.apache.maven.plugins.annotations.Mojo;
  */
 @Mojo(name = "standalone-war-only", threadSafe = true)
 public class StandaloneWarOnlyMojo extends AbstractStandaloneWarMojo {
-    // no op
+    /**
+     * Creates an instance of StandaloneWarOnlyMojo.
+     */
+    public StandaloneWarOnlyMojo() {
+        // default constructor
+    }
 }

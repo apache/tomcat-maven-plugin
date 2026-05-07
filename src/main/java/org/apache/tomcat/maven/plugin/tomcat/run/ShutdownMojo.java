@@ -36,11 +36,17 @@ import org.apache.tomcat.maven.plugin.tomcat.AbstractTomcatMojo;
  * </p>
  *
  * @author Mark Michaelis
- * 
+ *
  * @since 2.0
  */
 @Mojo(name = "shutdown", requiresDependencyResolution = ResolutionScope.RUNTIME, threadSafe = true)
 public class ShutdownMojo extends AbstractTomcatMojo {
+    /**
+     * Creates an instance of ShutdownMojo.
+     */
+    public ShutdownMojo() {
+        // default constructor
+    }
 
     /**
      * Ignore error when shutdown

@@ -32,12 +32,23 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
+ * Command-line interface for running standalone Tomcat executable WARs.
+ * Parses command-line options and configures the embedded Tomcat runner.
+ *
  * @author Olivier Lamy
- * 
  * @since 2.0
  */
 public class TomcatRunnerCli {
+    /**
+     * Creates an instance of TomcatRunnerCli.
+     */
+    public TomcatRunnerCli() {
+        // default constructor
+    }
 
+    /**
+     * Filename of the standalone properties file embedded in the archive.
+     */
     public static final String STAND_ALONE_PROPERTIES_FILENAME = "tomcat.standalone.properties";
 
     static final Option HTTP_PORT = Option.builder().longOpt("httpPort").hasArg().argName("httpPort")
@@ -93,6 +104,11 @@ public class TomcatRunnerCli {
     }
 
 
+    /**
+     * Main entry point for running standalone Tomcat executable WARs.
+     * @param args command-line arguments
+     * @throws Exception if an error occurs
+     */
     public static void main(String[] args) throws Exception {
         CommandLineParser parser = new DefaultParser();
         CommandLine line = null;
@@ -193,6 +209,10 @@ public class TomcatRunnerCli {
         return properties;
     }
 
+    /**
+     * Returns the command-line usage syntax string.
+     * @return the command-line syntax
+     */
     public static String getCmdLineSyntax() {
         return "java -jar [path to your exec war jar]";
     }

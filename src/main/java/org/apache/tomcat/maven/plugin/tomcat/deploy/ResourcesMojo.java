@@ -33,6 +33,12 @@ import java.io.IOException;
  */
 @Mojo(name = "resources", threadSafe = true)
 public class ResourcesMojo extends AbstractCatalinaMojo {
+    /**
+     * Creates an instance of ResourcesMojo.
+     */
+    public ResourcesMojo() {
+        // default constructor
+    }
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------

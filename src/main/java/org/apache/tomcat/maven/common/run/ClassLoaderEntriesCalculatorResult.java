@@ -22,8 +22,9 @@ import java.io.File;
 import java.util.List;
 
 /**
+ * Result object for classloader entries calculation.
+ *
  * @author Olivier Lamy
- * 
  * @since 2.0
  */
 public class ClassLoaderEntriesCalculatorResult {
@@ -44,9 +45,10 @@ public class ClassLoaderEntriesCalculatorResult {
     private final List<String> buildDirectories;
 
     /**
-     * @param classPathEntries Classpath entries File .toURI().toString()
-     * @param tmpDirectories   List of files to cleanup after execution
-     * @param buildDirectories Directory part of webapp classpath (project.build.directory and reactor projects)
+     * Creates a new result with the given classpath entries, temporary directories, and build directories.
+     * @param classPathEntries classpath entries as File.toURI().toString() values
+     * @param tmpDirectories list of files to cleanup after execution
+     * @param buildDirectories directory part of webapp classpath (project.build.directory and reactor projects)
      */
     public ClassLoaderEntriesCalculatorResult(List<String> classPathEntries, List<File> tmpDirectories,
             List<String> buildDirectories) {
@@ -55,22 +57,42 @@ public class ClassLoaderEntriesCalculatorResult {
         this.buildDirectories = buildDirectories;
     }
 
+    /**
+     * Returns the classpath entries.
+     * @return the classpath entries
+     */
     public List<String> getClassPathEntries() {
         return classPathEntries;
     }
 
+    /**
+     * Sets the classpath entries.
+     * @param classPathEntries the classpath entries
+     */
     public void setClassPathEntries(List<String> classPathEntries) {
         this.classPathEntries = classPathEntries;
     }
 
+    /**
+     * Returns the temporary directories to clean up.
+     * @return the temporary directories
+     */
     public List<File> getTmpDirectories() {
         return tmpDirectories;
     }
 
+    /**
+     * Sets the temporary directories.
+     * @param tmpDirectories the temporary directories
+     */
     public void setTmpDirectories(List<File> tmpDirectories) {
         this.tmpDirectories = tmpDirectories;
     }
 
+    /**
+     * Returns the build directories.
+     * @return the build directories
+     */
     public List<String> getBuildDirectories() {
         return buildDirectories;
     }

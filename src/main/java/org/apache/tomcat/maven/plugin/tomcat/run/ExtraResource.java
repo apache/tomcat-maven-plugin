@@ -21,11 +21,20 @@ package org.apache.tomcat.maven.plugin.tomcat.run;
 import org.apache.maven.model.Resource;
 
 /**
+ * Extra resource to include in the standalone Tomcat JAR.
+ * Used for logger configuration and other resource files.
+ *
  * @author Olivier Lamy
  */
 public class ExtraResource extends Resource {
 
     private static final long serialVersionUID = 1L;
-    // no op just here to support for maven 2.x
+
+    /**
+     * Creates an instance of ExtraResource.
+     */
+    public ExtraResource() {
+        // default constructor
+    }
 }
 

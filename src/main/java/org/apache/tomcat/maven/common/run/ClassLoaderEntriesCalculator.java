@@ -19,11 +19,18 @@
 package org.apache.tomcat.maven.common.run;
 
 /**
+ * Calculator for determining classpath entries for the Tomcat webapp classloader.
+ *
  * @author Olivier Lamy
- * 
  * @since 2.0
  */
 public interface ClassLoaderEntriesCalculator {
+    /**
+     * Calculates the classpath entries for the classloader.
+     * @param classLoaderEntriesCalculatorRequest the request containing project and dependency information
+     * @return the result with classpath entries, temporary directories, and build directories
+     * @throws TomcatRunException if calculation fails
+     */
     ClassLoaderEntriesCalculatorResult calculateClassPathEntries(
             ClassLoaderEntriesCalculatorRequest classLoaderEntriesCalculatorRequest) throws TomcatRunException;
 }
