@@ -442,6 +442,7 @@
                             <inputExclude>DEPENDENCIES</inputExclude>
                             <inputExclude>README.txt</inputExclude>
                             <inputExclude>*.sh</inputExclude>
+                            <inputExclude>.asf.yaml</inputExclude>
                             <inputExclude>.git/**</inputExclude>
                             <inputExclude>.idea/**</inputExclude>
                             <inputExclude>out/**</inputExclude>
