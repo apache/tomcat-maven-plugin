@@ -149,7 +149,7 @@ public class DefaultClassLoaderEntriesCalculator implements ClassLoaderEntriesCa
                         }
                     }
 
-                    // All directories must be added, this is not for cleanup
+                    // Add all directories for cleanup on shutdown
                     tmpDirectories.add(tmpDir);
 
                     try {

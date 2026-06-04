@@ -192,7 +192,7 @@ public abstract class AbstractExecWarMojo extends AbstractTomcatMojo {
      * the type to use for the attached/generated artifact
      */
     @Parameter(property = "maven.tomcat.exec.war.attachArtifactType", defaultValue = "jar", required = true)
-    protected String attachArtifactClassifierType;
+    protected String attachArtifactType;
 
     /**
      * to enable naming when starting tomcat
@@ -439,7 +439,7 @@ public abstract class AbstractExecWarMojo extends AbstractTomcatMojo {
 
             if (attachArtifact) {
                 // MavenProject project, String artifactType, String artifactClassifier, File artifactFile
-                projectHelper.attachArtifact(project, attachArtifactClassifierType, attachArtifactClassifier,
+                projectHelper.attachArtifact(project, attachArtifactType, attachArtifactClassifier,
                         execWarJar);
             }
 

@@ -734,7 +734,12 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
     protected StandardContext parseContextFile(File file) throws MojoExecutionException {
         try (FileInputStream fis = new FileInputStream(file)) {
             StandardContext standardContext = new StandardContext();
-            XMLStreamReader reader = XMLInputFactory.newFactory().createXMLStreamReader(fis);
+            XMLInputFactory factory = XMLInputFactory.newFactory();
+            factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+            factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+            factory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false);
+            factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+            XMLStreamReader reader = factory.createXMLStreamReader(fis);
 
             int tag = reader.next();
 
@@ -1226,6 +1231,7 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
 
     /**
      * Causes the current thread to wait indefinitely. This method does not return.
+     * This allows Tomcat to run until it receives a command to shutdown the JVM.
      */
     private void waitIndefinitely() {
         Object lock = new Object();
@@ -1313,11 +1319,11 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
                 // Extract the module
                 unArchiver.extract();
             } catch (NoSuchArchiverException | ArchiverException e) {
-                getLog().error(e);
-                return;
+                getLog().error("Failed to extract WAR: " + artifact.getFile(), e);
+                throw new MojoExecutionException("Failed to extract WAR artifact: " + artifact.getFile(), e);
             }
         }
-        // TODO make that configurable ?
+
         WebappLoader webappLoader = createWebappLoader();
         Context context = null;
         if (asWebApp) {
@@ -1339,7 +1345,6 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
         }
 
         contexts.add(context);
-        // container.getHost().addChild(context);
     }
 
     private void createStaticContext(final Tomcat container, Context context, Host host) {
@@ -1351,8 +1356,6 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
             servlet.setName("staticContent");
             staticContext.addChild(servlet);
             staticContext.addServletMappingDecoded("/", "staticContent");
-            // see https://issues.apache.org/jira/browse/MTOMCAT-238
-            // host.addChild( staticContext );
         }
     }
 

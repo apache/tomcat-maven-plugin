@@ -175,7 +175,7 @@ public abstract class AbstractDeployMojo extends AbstractWarCatalinaMojo {
         getLog().info(messagesProvider.getMessage("AbstractDeployMojo.deployingContext", getDeployedURL()));
 
         URL contextURL = getContextFile().toURI().toURL();
-        TomcatManagerResponse tomcatResponse = getManager().deploy(getPath(), contextURL, isUpdate(), getTag());
+        TomcatManagerResponse tomcatResponse = getManager().deployContext(getPath(), contextURL, isUpdate(), getTag());
         checkTomcatResponse(tomcatResponse);
         log(tomcatResponse.getHttpResponseBody());
     }

@@ -20,7 +20,6 @@ package org.apache.tomcat.maven.common.run;
 
 import org.apache.maven.plugin.logging.Log;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Set;
@@ -46,13 +45,17 @@ public final class EmbeddedRegistry {
      * Don't instantiate - use the instance through {@link #getInstance()}.
      */
     private EmbeddedRegistry() {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                getInstance().shutdownAll(null);
-            } catch (Exception e) {
-                // ignore, the exception should already have been reported
-            }
-        }));
+        try {
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    getInstance().shutdownAll(null);
+                } catch (Exception e) {
+                    // ignore
+                }
+            }));
+        } catch (IllegalStateException e) {
+            // VM is already shutting down; skip hook registration
+        }
     }
 
     /**
@@ -91,29 +94,13 @@ public final class EmbeddedRegistry {
                 Method method = embedded.getClass().getMethod("stop");
                 method.invoke(embedded);
                 iterator.remove();
-            } catch (NoSuchMethodException e) {
+            } catch (Exception e) {
                 if (firstException == null) {
                     firstException = e;
-                    error(log, e, "no stop/destroy method in class " + embedded.getClass().getName());
                 } else {
-                    error(log, e, "Error while shutting down embedded Tomcat.");
+                    firstException.addSuppressed(e);
                 }
-            } catch (IllegalAccessException e) {
-                if (firstException == null) {
-                    firstException = e;
-                    error(log, e,
-                            "IllegalAccessException for stop/destroy method in class " + embedded.getClass().getName());
-                } else {
-                    error(log, e, "Error while shutting down embedded Tomcat.");
-                }
-            } catch (InvocationTargetException e) {
-                if (firstException == null) {
-                    firstException = e;
-                    error(log, e,
-                            "InvocationTargetException for stop/destroy method in class " + embedded.getClass().getName());
-                } else {
-                    error(log, e, "Error while shutting down embedded Tomcat.");
-                }
+                error(log, e, "Error while shutting down embedded Tomcat: " + embedded.getClass().getName());
             }
         }
         if (firstException != null) {

@@ -118,7 +118,7 @@ public class TomcatRunner {
     public int ajpPort;
 
     /**
-     * AJP port number.
+     * AJP secret.
      */
     public String ajpSecret;
 
@@ -222,14 +222,18 @@ public class TomcatRunner {
         if (timestampFile.exists()) {
             String timestampValue = timestampProps.getProperty(TomcatRunner.ARCHIVE_GENERATION_TIMESTAMP_KEY);
             if (timestampValue != null) {
-                long timestamp = Long.parseLong(timestampValue);
-                archiveTimestampChanged = Long.parseLong(
-                        runtimeProperties.getProperty(TomcatRunner.ARCHIVE_GENERATION_TIMESTAMP_KEY)) > timestamp;
-
-                debugMessage("read timestamp from file " + timestampValue + ", archiveTimestampChanged: " +
-                        archiveTimestampChanged);
+                try {
+                    long timestamp = Long.parseLong(timestampValue);
+                    long currentTimestamp = Long.parseLong(
+                            runtimeProperties.getProperty(TomcatRunner.ARCHIVE_GENERATION_TIMESTAMP_KEY));
+                    archiveTimestampChanged = currentTimestamp > timestamp;
+                    debugMessage("read timestamp from file " + timestampValue + ", archiveTimestampChanged: " +
+                            archiveTimestampChanged);
+                } catch (NumberFormatException e) {
+                    debugMessage("ERROR: Invalid timestamp value, forcing re-extraction: " + timestampValue);
+                    archiveTimestampChanged = true;
+                }
             }
-
         }
 
         codeSourceContextPath = runtimeProperties.getProperty(CODE_SOURCE_CONTEXT_PATH);
@@ -671,7 +675,6 @@ public class TomcatRunner {
                 output.write(buffer, 0, n);
             }
         }
-        // Ignore
     }
 
     /**

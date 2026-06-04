@@ -82,10 +82,10 @@ public class TomcatRunnerCli {
     static final Option CLIENT_AUTH = Option.builder().longOpt("clientAuth")
             .desc("enable client authentication for https").get();
 
-    static final Option KEY_ALIAS = Option.builder().longOpt("keyAlias").hasArgs()
+    static final Option KEY_ALIAS = Option.builder().longOpt("keyAlias").hasArg()
             .argName("alias from keystore for ssl").get();
 
-    static final Option OBFUSCATE = Option.builder().longOpt("obfuscate").hasArgs().argName("password")
+    static final Option OBFUSCATE = Option.builder().longOpt("obfuscate").hasArg().argName("password")
             .desc("obfuscate the password and exit").get();
 
     static final Option HTTP_PROTOCOL = Option.builder().longOpt("httpProtocol").hasArg().argName("httpProtocol")
@@ -153,7 +153,6 @@ public class TomcatRunnerCli {
             } catch (NumberFormatException e) {
                 System.err.println("Invalid value for " + HTTP_PORT.getArgName() + " '" +
                         port + "'. Must be an integer.");
-                System.exit(1);
                 System.exit(1);
             }
         }
@@ -237,11 +236,12 @@ public class TomcatRunnerCli {
     }
 
     private static Properties buildStandaloneProperties() throws IOException {
-        InputStream is = Thread.currentThread().getContextClassLoader()
-                .getResourceAsStream(STAND_ALONE_PROPERTIES_FILENAME);
         Properties properties = new Properties();
-        if (is != null) {
-            properties.load(is);
+        try (InputStream is = Thread.currentThread().getContextClassLoader()
+                .getResourceAsStream(STAND_ALONE_PROPERTIES_FILENAME)) {
+            if (is != null) {
+                properties.load(is);
+            }
         }
         return properties;
     }

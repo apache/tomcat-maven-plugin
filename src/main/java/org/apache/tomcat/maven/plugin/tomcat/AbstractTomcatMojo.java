@@ -89,6 +89,7 @@ public abstract class AbstractTomcatMojo extends AbstractMojo {
                             ": " + tomcatResponse.getHttpResponseBody());
         } else if (!tomcatResponse.getHttpResponseBody().startsWith("OK -")) {
             // Tomcat Manager and Host Manager will always use "OK -" and "FAIL -" prefixes for their text endpoints
+            // There is no other way to process the Tomcat manager responses, and this has to be kept in sync with Tomcat
             getLog().error(messagesProvider.getMessage("tomcatHttpBodyError", tomcatResponse.getHttpResponseBody()));
             throw new MojoExecutionException(
                     messagesProvider.getMessage("tomcatHttpBodyError", tomcatResponse.getHttpResponseBody()));

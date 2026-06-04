@@ -108,27 +108,6 @@ public class TomcatManager {
     // ----------------------------------------------------------------------
 
     /**
-     * Creates a Tomcat manager wrapper for the specified URL that uses a username of <code>admin</code>, an empty
-     * password and ISO-8859-1 URL encoding.
-     *
-     * @param url the full URL of the Tomcat manager instance to use
-     */
-    public TomcatManager(URL url) {
-        this(url, "admin");
-    }
-
-    /**
-     * Creates a Tomcat manager wrapper for the specified URL and username that uses an empty password and ISO-8859-1
-     * URL encoding.
-     *
-     * @param url      the full URL of the Tomcat manager instance to use
-     * @param username the username to use when authenticating with Tomcat manager
-     */
-    public TomcatManager(URL url, String username) {
-        this(url, username, "");
-    }
-
-    /**
      * Creates a Tomcat manager wrapper for the specified URL, username and password that uses ISO-8859-1 URL encoding.
      *
      * @param url      the full URL of the Tomcat manager instance to use
@@ -778,8 +757,11 @@ public class TomcatManager {
         } catch (URISyntaxException e) {
             throw new MalformedURLException(e.getMessage());
         }
-        java.net.Proxy netProxy = java.net.Proxy.NO_PROXY;
+        if (!"https".equalsIgnoreCase(url.getProtocol()) && log != null) {
+            log.warn("Sending credentials over non-HTTPS connection to " + url.getHost());
+        }
 
+        java.net.Proxy netProxy = java.net.Proxy.NO_PROXY;
         if (proxySettings != null) {
             ProxyInfo proxyInfo = new ProxyInfo();
             proxyInfo.setNonProxyHosts(proxySettings.getNonProxyHosts());
