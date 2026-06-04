@@ -110,10 +110,11 @@ public class DefaultClassLoaderEntriesCalculator implements ClassLoaderEntriesCa
                     // install/package phase
                     // so artifact.getFile is a file not a directory and not added when iterate on
                     // project.classPathElements
-                    if (!isInProjectReferences(artifact, request.getMavenProject()) || artifact.getFile().isFile()) {
-                        String fileName = artifact.getGroupId() + "-" + artifact.getFile().getName();
+                    File artifactFile = artifact.getFile();
+                    if (artifactFile != null && (!isInProjectReferences(artifact, request.getMavenProject()) || artifactFile.isFile())) {
+                        String fileName = artifact.getGroupId() + "-" + artifactFile.getName();
                         if (!fileInClassLoaderEntries.contains(fileName)) {
-                            classLoaderEntries.add(artifact.getFile().toURI().toString());
+                            classLoaderEntries.add(artifactFile.toURI().toString());
                             fileInClassLoaderEntries.add(fileName);
                         }
                     } else {
@@ -133,7 +134,7 @@ public class DefaultClassLoaderEntriesCalculator implements ClassLoaderEntriesCa
                     if (existed) {
                         // check timestamp to see if artifact is newer than extracted directory
                         long dirLastMod = tmpDir.lastModified();
-                        long warLastMod = artifact.getFile().lastModified();
+                        long warLastMod = artifact.getFile() != null ? artifact.getFile().lastModified() : 0L;
 
                         if (warLastMod == 0L || warLastMod > dirLastMod) {
                             request.getLog()

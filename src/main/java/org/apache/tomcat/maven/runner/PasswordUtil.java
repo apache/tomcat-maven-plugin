@@ -96,7 +96,7 @@ public class PasswordUtil {
             if (s.length() % 4 != 0) {
                 throw new IllegalArgumentException("Invalid obfuscated password: length must be a multiple of 4");
             }
-            byte[] b = new byte[s.length() / 2];
+            byte[] b = new byte[s.length() / 4];
             int l = 0;
             for (int i = 0; i < s.length(); i += 4) {
                 String x = s.substring(i, i + 4);

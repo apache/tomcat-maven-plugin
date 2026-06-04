@@ -63,7 +63,7 @@ public class ClassLoaderEntriesCalculatorResult {
      * @return the classpath entries
      */
     public List<String> getClassPathEntries() {
-        return classPathEntries;
+        return Collections.unmodifiableList(classPathEntries);
     }
 
     /**
@@ -79,7 +79,7 @@ public class ClassLoaderEntriesCalculatorResult {
      * @return the temporary directories
      */
     public List<File> getTmpDirectories() {
-        return tmpDirectories;
+        return Collections.unmodifiableList(tmpDirectories);
     }
 
     /**
@@ -95,6 +95,6 @@ public class ClassLoaderEntriesCalculatorResult {
      * @return the build directories
      */
     public List<String> getBuildDirectories() {
-        return buildDirectories;
+        return Collections.unmodifiableList(buildDirectories);
     }
 }

@@ -184,15 +184,6 @@ public class TomcatManager {
     }
 
     /**
-     * Gets the password to use when authenticating with Tomcat manager.
-     *
-     * @return the password to use when authenticating with Tomcat manager
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
      * Gets the URL encoding charset to use when communicating with Tomcat manager.
      *
      * @return the URL encoding charset to use when communicating with Tomcat manager
@@ -288,7 +279,7 @@ public class TomcatManager {
      * Deploys the specified WAR as a HTTP PUT to the specified context path.
      *
      * @param path the webapp context path to deploy to
-     * @param war  an input stream to the WAR to deploy
+     * @param war  the WAR file to deploy
      * 
      * @return the Tomcat manager response
      * 
@@ -304,7 +295,7 @@ public class TomcatManager {
      * already exists.
      *
      * @param path   the webapp context path to deploy to
-     * @param war    an input stream to the WAR to deploy
+     * @param war  the WAR file to deploy
      * @param update whether to first undeploy the webapp if it already exists
      * 
      * @return the Tomcat manager response
@@ -322,7 +313,7 @@ public class TomcatManager {
      * already exists and using the specified tag name.
      *
      * @param path   the webapp context path to deploy to
-     * @param war    an input stream to the WAR to deploy
+     * @param war  the WAR file to deploy
      * @param update whether to first undeploy the webapp if it already exists
      * @param tag    the tag name to use
      * 
@@ -341,7 +332,7 @@ public class TomcatManager {
      * already exists and using the specified tag name.
      *
      * @param path   the webapp context path to deploy to
-     * @param war    an input stream to the WAR to deploy
+     * @param war  the WAR file to deploy
      * @param update whether to first undeploy the webapp if it already exists
      * @param tag    the tag name to use
      * @param length the size of the war deployed
@@ -677,7 +668,11 @@ public class TomcatManager {
      */
     protected TomcatManagerResponse invoke(String path, File data, long length)
             throws TomcatManagerException, IOException {
-        HttpURLConnection connection = openConnection(url + path);
+        String urlString = url.toString();
+        if (urlString.endsWith("/") && path.startsWith("/")) {
+            urlString = urlString.substring(0, urlString.length() - 1);
+        }
+        HttpURLConnection connection = openConnection(urlString + path);
 
         if (data == null) {
             connection.setRequestMethod("GET");
@@ -719,8 +714,6 @@ public class TomcatManager {
                     }
                 }
                 transferSucceeded(completed, startTime);
-            } finally {
-                System.out.println();
             }
         }
 
@@ -732,8 +725,13 @@ public class TomcatManager {
             } catch (IOException e) {
                 is = connection.getErrorStream();
             }
-            return new TomcatManagerResponse(statusCode, connection.getResponseMessage(),
-                    is != null ? IOUtils.toString(is, StandardCharsets.UTF_8) : "");
+            String body = "";
+            if (is != null) {
+                try (InputStream urlIs = is) {
+                    body = IOUtils.toString(is, StandardCharsets.UTF_8);
+                }
+            }
+            return new TomcatManagerResponse(statusCode, connection.getResponseMessage(), body);
         } finally {
             connection.disconnect();
         }

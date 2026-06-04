@@ -590,24 +590,19 @@ public abstract class AbstractExecWarMojo extends AbstractTomcatMojo {
      * @throws ArchiveException if an archive error occurs
      */
     protected File addContextXmlToWar(File contextXmlFile, File warFile) throws IOException, ArchiveException {
-        ArchiveOutputStream<JarArchiveEntry> os = null;
-        OutputStream warOutputStream = null;
         File tmpWar = Files.createTempFile("tomcat", "war-exec").toFile();
         tmpWar.deleteOnExit();
 
-        try {
-            warOutputStream = new FileOutputStream(tmpWar);
-            os = new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.JAR, warOutputStream);
+        try (InputStream is = new FileInputStream(contextXmlFile);
+                OutputStream warOutputStream = new FileOutputStream(tmpWar);
+                ArchiveOutputStream<JarArchiveEntry> os = new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.JAR, warOutputStream)) {
             os.putArchiveEntry(new JarArchiveEntry("META-INF/context.xml"));
-            IOUtils.copy(new FileInputStream(contextXmlFile), os);
+            IOUtils.copy(is, os);
             os.closeArchiveEntry();
 
             JarFile jarFile = new JarFile(warFile);
             extractJarToArchive(jarFile, os, null);
             os.flush();
-        } finally {
-            IOUtils.closeQuietly(os);
-            IOUtils.closeQuietly(warOutputStream);
         }
         return tmpWar;
     }

@@ -47,9 +47,7 @@ public class SessionsMojo extends AbstractCatalinaMojo {
     @Override
     protected void invokeManager() throws MojoExecutionException, TomcatManagerException, IOException {
         getLog().info(messagesProvider.getMessage("SessionsMojo.listSessions", getURL()));
-
         String responseBody = getManager().getSessions(getPath()).getHttpResponseBody();
-
         log(responseBody);
     }
 }

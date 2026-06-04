@@ -44,7 +44,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.catalina.Context;
-import org.apache.catalina.Host;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.connector.Connector;
@@ -155,6 +154,13 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
     private String address;
 
     /**
+     * The AJP secret. Will be exposed as System props and session.executionProperties with key
+     * tomcat.maven.ajp.secret
+     */
+    @Parameter(property = "maven.tomcat.ajp.secret")
+    private String ajpSecret;
+
+    /**
      * The AJP port to run the Tomcat server on. By default it's 0 this means won't be started. The ajp connector will
      * be started only for value > 0. Will be exposed as System props and session.executionProperties with key
      * tomcat.maven.ajp.port
@@ -257,8 +263,10 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
      * To preserve backward compatibility it's false by default.
      *
      * @since 1.0
-     * 
-     * @deprecated use webapps instead
+     *
+     * @deprecated use {@link #webapps} instead. Example migration: Replace
+     *                 {@code <addContextWarDependencies>true</addContextWarDependencies>} with explicit
+     *                 {@code <webapps>} configuration entries.
      */
     @Parameter(property = "maven.tomcat.addContextWarDependencies", defaultValue = "false")
     private boolean addContextWarDependencies;
@@ -735,30 +743,33 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
         try (FileInputStream fis = new FileInputStream(file)) {
             StandardContext standardContext = new StandardContext();
             XMLInputFactory factory = XMLInputFactory.newFactory();
-            factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
             factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
             factory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false);
             factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
             XMLStreamReader reader = factory.createXMLStreamReader(fis);
 
-            int tag = reader.next();
+            try {
+                int tag = reader.next();
 
-            while (true) {
-                if (tag == XMLStreamConstants.START_ELEMENT && "Context".equals(reader.getLocalName())) {
-                    String path = reader.getAttributeValue(null, "path");
-                    if (path != null && !path.isEmpty()) {
-                        standardContext.setPath(path);
-                    }
+                while (true) {
+                    if (tag == XMLStreamConstants.START_ELEMENT && "Context".equals(reader.getLocalName())) {
+                        String path = reader.getAttributeValue(null, "path");
+                        if (path != null && !path.isEmpty()) {
+                            standardContext.setPath(path);
+                        }
 
-                    String docBase = reader.getAttributeValue(null, "docBase");
-                    if (docBase != null && !docBase.isEmpty()) {
-                        standardContext.setDocBase(docBase);
+                        String docBase = reader.getAttributeValue(null, "docBase");
+                        if (docBase != null && !docBase.isEmpty()) {
+                            standardContext.setDocBase(docBase);
+                        }
                     }
+                    if (!reader.hasNext()) {
+                        break;
+                    }
+                    tag = reader.next();
                 }
-                if (!reader.hasNext()) {
-                    break;
-                }
-                tag = reader.next();
+            } finally {
+                reader.close();
             }
 
             return standardContext;
@@ -1023,7 +1034,7 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
                 }
 
             }
-            createStaticContext(embeddedTomcat, ctx, embeddedTomcat.getHost());
+            createStaticContext(embeddedTomcat);
 
             Connector connector = new Connector(protocol);
             connector.setPort(port);
@@ -1130,7 +1141,11 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
                 if (address != null) {
                     ajpConnector.setProperty("address", address);
                 }
-                ajpConnector.setProperty("secretRequired", "false");
+                if (ajpSecret != null) {
+                    ajpConnector.setProperty("secret", ajpSecret);
+                } else {
+                    ajpConnector.setProperty("secretRequired", "false");
+                }
                 embeddedTomcat.getEngine().getService().addConnector(ajpConnector);
             }
 
@@ -1347,11 +1362,11 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
         contexts.add(context);
     }
 
-    private void createStaticContext(final Tomcat container, Context context, Host host) {
+    private void createStaticContext(final Tomcat container) {
         if (staticContextDocbase != null) {
             Context staticContext = container.addContext(staticContextPath, staticContextDocbase);
             staticContext.setPrivileged(true);
-            Wrapper servlet = context.createWrapper();
+            Wrapper servlet = staticContext.createWrapper();
             servlet.setServletClass(DefaultServlet.class.getName());
             servlet.setName("staticContent");
             staticContext.addChild(servlet);

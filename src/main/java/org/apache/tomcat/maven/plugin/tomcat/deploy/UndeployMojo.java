@@ -40,6 +40,7 @@ public class UndeployMojo extends AbstractWarCatalinaMojo {
     public UndeployMojo() {
         // default constructor
     }
+
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
@@ -62,18 +63,13 @@ public class UndeployMojo extends AbstractWarCatalinaMojo {
         getLog().info(messagesProvider.getMessage("UndeployMojo.undeployingApp", getDeployedURL()));
 
         try {
-
             TomcatManagerResponse tomcatResponse = getManager().undeploy(getPath());
-
             checkTomcatResponse(tomcatResponse);
-
             log(tomcatResponse.getHttpResponseBody());
-
-        } catch (TomcatManagerException e) {
+        } catch (MojoExecutionException e) {
             if (failOnError) {
                 throw e;
             }
-
             getLog().warn(messagesProvider.getMessage("UndeployMojo.undeployError", e.getMessage()));
         }
     }

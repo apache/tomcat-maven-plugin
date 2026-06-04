@@ -199,9 +199,7 @@ public abstract class AbstractCatalinaMojo extends AbstractTomcatMojo {
             // if userName/password are defined in the mojo or the cli they override
             if (this.username != null && !this.username.isEmpty()) {
                 userName = this.username;
-                if (this.password != null) {
-                    password = this.password;
-                }
+                password = this.password != null ? this.password : DEFAULT_PASSWORD;
             }
 
             manager = new TomcatManager(url, userName, password, charset, settings.isInteractiveMode());

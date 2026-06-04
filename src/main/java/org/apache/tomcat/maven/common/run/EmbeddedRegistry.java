@@ -83,8 +83,9 @@ public final class EmbeddedRegistry {
      * registry.
      *
      * @param log the log to write possible shutdown exceptions to
-     * 
-     * @throws Exception the first exception which occurred will be rethrown
+     *
+     * @throws Exception the first exception that occurred during shutdown. Additional exceptions are attached as
+     *                       suppressed exceptions.
      */
     public synchronized void shutdownAll(final Log log) throws Exception {
         Exception firstException = null;
