@@ -51,9 +51,7 @@ public class StopMojo extends AbstractCatalinaMojo {
         getLog().info(messagesProvider.getMessage("StopMojo.stoppingApp", getDeployedURL()));
 
         TomcatManagerResponse tomcatResponse = getManager().stop(getPath());
-
         checkTomcatResponse(tomcatResponse);
-
         log(tomcatResponse.getHttpResponseBody());
     }
 }

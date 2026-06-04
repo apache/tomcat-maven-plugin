@@ -51,9 +51,7 @@ public class StartMojo extends AbstractCatalinaMojo {
         getLog().info(messagesProvider.getMessage("StartMojo.startingApp", getDeployedURL()));
 
         TomcatManagerResponse tomcatResponse = getManager().start(getPath());
-
         checkTomcatResponse(tomcatResponse);
-
         log(tomcatResponse.getHttpResponseBody());
     }
 }

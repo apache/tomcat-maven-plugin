@@ -21,6 +21,7 @@ package org.apache.tomcat.maven.plugin.tomcat.deploy;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
+import org.apache.tomcat.maven.common.deployer.TomcatManagerResponse;
 import org.apache.tomcat.maven.plugin.tomcat.AbstractCatalinaMojo;
 
 import java.io.IOException;
@@ -47,7 +48,8 @@ public class SessionsMojo extends AbstractCatalinaMojo {
     @Override
     protected void invokeManager() throws MojoExecutionException, TomcatManagerException, IOException {
         getLog().info(messagesProvider.getMessage("SessionsMojo.listSessions", getURL()));
-        String responseBody = getManager().getSessions(getPath()).getHttpResponseBody();
-        log(responseBody);
+        TomcatManagerResponse tomcatResponse = getManager().getSessions(getPath());
+        checkTomcatResponse(tomcatResponse);
+        log(tomcatResponse.getHttpResponseBody());
     }
 }

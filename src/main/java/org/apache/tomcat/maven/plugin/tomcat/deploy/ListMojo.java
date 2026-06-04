@@ -21,6 +21,7 @@ package org.apache.tomcat.maven.plugin.tomcat.deploy;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
+import org.apache.tomcat.maven.common.deployer.TomcatManagerResponse;
 import org.apache.tomcat.maven.plugin.tomcat.AbstractCatalinaMojo;
 
 import java.io.IOException;
@@ -50,8 +51,8 @@ public class ListMojo extends AbstractCatalinaMojo {
     protected void invokeManager() throws MojoExecutionException, TomcatManagerException, IOException {
         getLog().info(messagesProvider.getMessage("ListMojo.listApps", getURL()));
 
-        String responseBody = getManager().list().getHttpResponseBody();
-
-        log(responseBody);
+        TomcatManagerResponse tomcatResponse = getManager().list();
+        checkTomcatResponse(tomcatResponse);
+        log(tomcatResponse.getHttpResponseBody());
     }
 }

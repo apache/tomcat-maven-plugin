@@ -22,6 +22,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
+import org.apache.tomcat.maven.common.deployer.TomcatManagerResponse;
 import org.apache.tomcat.maven.plugin.tomcat.AbstractCatalinaMojo;
 
 import java.io.IOException;
@@ -64,8 +65,8 @@ public class ResourcesMojo extends AbstractCatalinaMojo {
             getLog().info(messagesProvider.getMessage("ResourcesMojo.listTypedResources", type, getURL()));
         }
 
-        String responseBody = getManager().getResources(type).getHttpResponseBody();
-
-        log(responseBody);
+        TomcatManagerResponse tomcatResponse = getManager().getResources(type);
+        checkTomcatResponse(tomcatResponse);
+        log(tomcatResponse.getHttpResponseBody());
     }
 }

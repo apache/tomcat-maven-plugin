@@ -51,9 +51,7 @@ public class ReloadMojo extends AbstractCatalinaMojo {
         getLog().info(messagesProvider.getMessage("ReloadMojo.reloadingApp", getDeployedURL()));
 
         TomcatManagerResponse tomcatResponse = getManager().reload(getPath());
-
         checkTomcatResponse(tomcatResponse);
-
         log(tomcatResponse.getHttpResponseBody());
     }
 }
