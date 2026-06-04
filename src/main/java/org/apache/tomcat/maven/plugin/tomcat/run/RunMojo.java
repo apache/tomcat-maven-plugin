@@ -187,11 +187,11 @@ public class RunMojo extends AbstractRunMojo {
         FileWriter fw = null;
         StringWriter sw = new StringWriter();
         try {
-            temporaryContextFile = File.createTempFile("tomcat-maven-plugin", "temp-ctx-file");
-            temporaryContextFile.deleteOnExit();
-
             // format to modify/create <Context backgroundProcessorDelay="5" reloadable="false">
             if (contextFile != null && contextFile.exists()) {
+                temporaryContextFile = File.createTempFile("tomcat-maven-plugin", "temp-ctx-file");
+                temporaryContextFile.deleteOnExit();
+
                 MavenFileFilterRequest mavenFileFilterRequest = new MavenFileFilterRequest();
                 mavenFileFilterRequest.setFrom(contextFile);
                 mavenFileFilterRequest.setTo(temporaryContextFile);
@@ -205,12 +205,16 @@ public class RunMojo extends AbstractRunMojo {
                 Xpp3Dom xpp3Dom = Xpp3DomBuilder.build(fr);
                 xpp3Dom.setAttribute("backgroundProcessorDelay", Integer.toString(backgroundProcessorDelay));
                 xpp3Dom.setAttribute("reloadable", Boolean.toString(isContextReloadable()));
+                IOUtil.close(fr);
                 fw = new FileWriter(temporaryContextFile);
                 Xpp3DomWriter.write(fw, xpp3Dom);
                 Xpp3DomWriter.write(sw, xpp3Dom);
                 getLog().debug(" generated context file " + sw.toString());
             } else {
                 if (contextReloadable) {
+                    temporaryContextFile = File.createTempFile("tomcat-maven-plugin", "temp-ctx-file");
+                    temporaryContextFile.deleteOnExit();
+
                     // don't care about using a complicated xml api to create one xml line :-)
                     StringBuilder sb = new StringBuilder("<Context ").append("backgroundProcessorDelay=\"")
                             .append(Integer.toString(backgroundProcessorDelay)).append("\"").append(" reloadable=\"")

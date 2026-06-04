@@ -22,9 +22,9 @@ import org.apache.maven.plugin.logging.Log;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Registry which collects all embedded Tomcat Servers so that they will be shutdown through a shutdown hook when the
@@ -35,15 +35,24 @@ import java.util.Set;
  * @since 1.1
  */
 public final class EmbeddedRegistry {
-    private static EmbeddedRegistry instance;
 
-    private final Set<Object> containers = new HashSet<>(1);
+    private static class Holder {
+        static final EmbeddedRegistry INSTANCE = new EmbeddedRegistry();
+    }
+
+    private final Set<Object> containers = ConcurrentHashMap.newKeySet(1);
 
     /**
      * Don't instantiate - use the instance through {@link #getInstance()}.
      */
     private EmbeddedRegistry() {
-        // no op
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                getInstance().shutdownAll(null);
+            } catch (Exception e) {
+                // ignore, the exception should already have been reported
+            }
+        }));
     }
 
     /**
@@ -52,17 +61,7 @@ public final class EmbeddedRegistry {
      * @return singleton instance of the registry
      */
     public static EmbeddedRegistry getInstance() {
-        if (instance == null) {
-            instance = new EmbeddedRegistry();
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                try {
-                    getInstance().shutdownAll(null);
-                } catch (Exception e) {
-                    // ignore, the exception should already have been reported
-                }
-            }));
-        }
-        return instance;
+        return Holder.INSTANCE;
     }
 
     /**
@@ -108,11 +107,10 @@ public final class EmbeddedRegistry {
                     error(log, e, "Error while shutting down embedded Tomcat.");
                 }
             } catch (InvocationTargetException e) {
-
                 if (firstException == null) {
                     firstException = e;
                     error(log, e,
-                            "IllegalAccessException for stop/destroy method in class " + embedded.getClass().getName());
+                            "InvocationTargetException for stop/destroy method in class " + embedded.getClass().getName());
                 } else {
                     error(log, e, "Error while shutting down embedded Tomcat.");
                 }

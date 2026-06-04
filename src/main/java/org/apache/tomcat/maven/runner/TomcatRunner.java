@@ -49,8 +49,7 @@ import org.apache.tomcat.util.ExceptionUtils;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 
 /**
- * FIXME add junit for that but when https://issues.apache.org/bugzilla/show_bug.cgi?id=52028 fixed Main class used to
- * run the standalone wars in a Apache Tomcat instance.
+ * Main class used to run the standalone wars in a Apache Tomcat instance.
  *
  * @author Olivier Lamy
  * 
@@ -119,6 +118,11 @@ public class TomcatRunner {
     public int ajpPort;
 
     /**
+     * AJP port number.
+     */
+    public String ajpSecret;
+
+    /**
      * Path to the server.xml configuration file.
      */
     public String serverXmlPath;
@@ -126,7 +130,7 @@ public class TomcatRunner {
     /**
      * Runtime properties loaded from the standalone properties file.
      */
-    public Properties runtimeProperties;
+    public Properties runtimeProperties = new Properties();
 
     /**
      * Whether to reset the extraction directory on startup.
@@ -380,7 +384,11 @@ public class TomcatRunner {
                 Connector ajpConnector = new Connector("org.apache.coyote.ajp.AjpProtocol");
                 ajpConnector.setPort(ajpPort);
                 ajpConnector.setURIEncoding(uriEncoding);
-                ajpConnector.setProperty("secretRequired", "false");
+                if (ajpSecret != null) {
+                    ajpConnector.setProperty("secret", ajpSecret);
+                } else {
+                    ajpConnector.setProperty("secretRequired", "false");
+                }
                 tomcat.getService().addConnector(ajpConnector);
             }
 
@@ -563,6 +571,9 @@ public class TomcatRunner {
                     throw new Exception("FATAL: impossible to create directories:" + parentFile);
                 }
 
+                if (inputStream == null) {
+                    throw new IOException("War resource not found on classpath: " + entry.getValue());
+                }
                 expand(inputStream, expandFile);
 
             } finally {
@@ -613,7 +624,7 @@ public class TomcatRunner {
     }
 
     /**
-     * @param warsValue we can value in format: wars=foo.war|contextpath;bar.war ( |contextpath is optionnal if empty
+     * @param warsValue we can value in format: wars=foo.war|contextpath;bar.war ( |contextpath is optional if empty
      *                      use the war name) so here we return war file name and populate webappWarPerContext
      */
     private void populateWebAppWarPerContext(String warsValue) {
@@ -631,9 +642,9 @@ public class TomcatRunner {
             if (separatorIndex >= 0) {
                 warFileName = warValue.substring(0, separatorIndex);
                 contextValue = warValue.substring(separatorIndex + 1);
-
             } else {
-                warFileName = contextValue;
+                warFileName = warValue;
+                contextValue = warValue;
             }
             debugMessage("populateWebAppWarPerContext contextValue/warFileName:" + contextValue + "/" + warFileName);
             this.webappWarPerContext.put(contextValue, warFileName);

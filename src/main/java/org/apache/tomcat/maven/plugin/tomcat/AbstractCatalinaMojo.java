@@ -111,7 +111,7 @@ public abstract class AbstractCatalinaMojo extends AbstractTomcatMojo {
     /**
      * The Tomcat manager wrapper object.
      */
-    private TomcatManager manager;
+    private volatile TomcatManager manager;
 
     // ----------------------------------------------------------------------
     // Mojo Implementation
@@ -155,6 +155,14 @@ public abstract class AbstractCatalinaMojo extends AbstractTomcatMojo {
      *                                                            details
      */
     protected TomcatManager getManager() throws MojoExecutionException {
+        TomcatManager manager = this.manager;
+        if (manager == null) {
+            manager = getManagerInternal();
+        }
+        return manager;
+    }
+
+    protected synchronized TomcatManager getManagerInternal() throws MojoExecutionException {
         // lazily instantiate when config values have been injected
         if (manager == null) {
             String userName;
@@ -195,6 +203,7 @@ public abstract class AbstractCatalinaMojo extends AbstractTomcatMojo {
             }
 
             manager = new TomcatManager(url, userName, password, charset, settings.isInteractiveMode());
+            manager.setLog(getLog());
             manager.setUserAgent(name + "/" + version);
         }
 

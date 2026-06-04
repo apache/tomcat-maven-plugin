@@ -26,7 +26,8 @@ import org.apache.tomcat.maven.plugin.tomcat.AbstractCatalinaMojo;
 import java.io.IOException;
 
 /**
- * List session information for a web application.
+ * List session information for a web application. Session information
+ * can be sensitive material, so exercise caution when using this goal.
  *
  * @since 3.0
  */
@@ -38,13 +39,11 @@ public class SessionsMojo extends AbstractCatalinaMojo {
     public SessionsMojo() {
         // default constructor
     }
+
     // ----------------------------------------------------------------------
     // Protected Methods
     // ----------------------------------------------------------------------
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void invokeManager() throws MojoExecutionException, TomcatManagerException, IOException {
         getLog().info(messagesProvider.getMessage("SessionsMojo.listSessions", getURL()));

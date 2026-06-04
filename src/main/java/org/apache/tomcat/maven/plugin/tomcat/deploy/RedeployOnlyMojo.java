@@ -21,8 +21,8 @@ package org.apache.tomcat.maven.plugin.tomcat.deploy;
 import org.apache.maven.plugins.annotations.Mojo;
 
 /**
- * Redeploy a WAR in Tomcat without forking the package lifecycle. (Alias for the deploy-only goal with its update
- * parameter set to true.)
+ * Redeploy a WAR in Tomcat without forking the package lifecycle. Alias for the deploy-only
+ * goal with its update parameter set to true, so this goal always undeploys any existing web application.
  *
  * @since 2.1
  */

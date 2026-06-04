@@ -42,6 +42,9 @@ public class ExtendedTomcat extends Tomcat {
      */
     public ExtendedTomcat(File configurationDir) {
         super();
+        if (configurationDir == null || !configurationDir.exists() || !configurationDir.isDirectory()) {
+            throw new IllegalArgumentException("configurationDir must not be null and must exist");
+        }
         this.configurationDir = configurationDir;
     }
 

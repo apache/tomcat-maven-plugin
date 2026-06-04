@@ -37,6 +37,7 @@ import java.util.Locale;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.settings.Proxy;
 import org.apache.maven.wagon.proxy.ProxyInfo;
 import org.apache.maven.wagon.proxy.ProxyUtils;
@@ -47,18 +48,12 @@ import org.apache.maven.wagon.proxy.ProxyUtils;
  * @author Mark Hobson (markhobson@gmail.com)
  */
 public class TomcatManager {
+
     // ----------------------------------------------------------------------
     // Constants
     // ----------------------------------------------------------------------
 
     private static final int BUFFER_SIZE = 2048;
-
-    private static final int SC_OK = 200;
-    private static final int SC_CREATED = 201;
-    private static final int SC_ACCEPTED = 202;
-    private static final int SC_MOVED_PERMANENTLY = 301;
-    private static final int SC_MOVED_TEMPORARILY = 302;
-    private static final int SC_SEE_OTHER = 303;
 
     // ----------------------------------------------------------------------
     // Fields
@@ -67,7 +62,7 @@ public class TomcatManager {
     /**
      * The full URL of the Tomcat manager instance to use.
      */
-    private URL url;
+    private final URL url;
 
     /**
      * The username to use when authenticating with Tomcat manager.
@@ -100,6 +95,13 @@ public class TomcatManager {
     private final boolean verbose;
 
     private Proxy proxySettings;
+
+    /**
+     * The Maven log instance for output.
+     *
+     * @since 2.2
+     */
+    private Log log;
 
     // ----------------------------------------------------------------------
     // Constructors
@@ -181,6 +183,16 @@ public class TomcatManager {
      */
     public URL getURL() {
         return url;
+    }
+
+    /**
+     * Sets the Maven log instance for output.
+     *
+     * @param log the Maven log instance
+     * @since 2.2
+     */
+    public void setLog(Log log) {
+        this.log = log;
     }
 
     /**
@@ -717,14 +729,13 @@ public class TomcatManager {
                     long remaining = length;
                     while (remaining > 0) {
                         int transferSize = (int) Math.min(BUFFER_SIZE, remaining);
-                        completed += transferSize;
-                        int l = stream.read(buffer, 0, transferSize);
-                        if (l == -1) {
+                        int nRead = stream.read(buffer, 0, transferSize);
+                        if (nRead < 0) {
                             break;
                         }
-
-                        os.write(buffer, 0, l);
-                        remaining -= l;
+                        completed += nRead;
+                        os.write(buffer, 0, nRead);
+                        remaining -= nRead;
                         transferProgressed(completed, length);
                     }
                 }
@@ -735,36 +746,18 @@ public class TomcatManager {
         }
 
         int statusCode = connection.getResponseCode();
-
-        String relocateUrl = null;
-        switch (statusCode) {
-            // Success Codes
-            case SC_OK: // 200
-            case SC_CREATED: // 201
-            case SC_ACCEPTED: // 202
-                break;
-            // handle all redirect even if http specs says " the user agent MUST NOT automatically redirect the request
-            // unless it can be confirmed by the user"
-            case SC_MOVED_PERMANENTLY: // 301
-            case SC_MOVED_TEMPORARILY: // 302
-            case SC_SEE_OTHER: // 303
-                relocateUrl = calculateRelocatedUrl(connection);
-                try {
-                    this.url = new URI(relocateUrl).toURL();
-                } catch (URISyntaxException e) {
-                    throw new MalformedURLException(e.getMessage());
-                }
-                return invoke(path, data, length);
+        try {
+            InputStream is;
+            try {
+                is = connection.getInputStream();
+            } catch (IOException e) {
+                is = connection.getErrorStream();
+            }
+            return new TomcatManagerResponse(statusCode, connection.getResponseMessage(),
+                    is != null ? IOUtils.toString(is, StandardCharsets.UTF_8) : "");
+        } finally {
+            connection.disconnect();
         }
-
-        String responseBody;
-        try (InputStream is = connection.getInputStream() != null ? connection.getInputStream()
-                : connection.getErrorStream()) {
-            responseBody = IOUtils.toString(is, StandardCharsets.UTF_8);
-        }
-
-        return new TomcatManagerResponse().setStatusCode(statusCode).setReasonPhrase(connection.getResponseMessage())
-                .setHttpResponseBody(responseBody);
     }
 
     /**
@@ -835,30 +828,25 @@ public class TomcatManager {
         if (password != null) {
             buffer.append(password);
         }
-        return "Basic " + new String(Base64.encodeBase64(buffer.toString().getBytes()));
+        return "Basic " + new String(Base64.encodeBase64(buffer.toString().getBytes(StandardCharsets.UTF_8), false));
     }
 
     private void transferInitiated(String targetUrl) {
-        String message = "Uploading";
-
-        System.out.println(message + ": " + targetUrl);
+        if (log != null) {
+            log.info("Uploading: " + targetUrl);
+        }
     }
 
     private void transferProgressed(long completedSize, long totalSize) {
-        if (!verbose) {
+        if (!verbose || log == null) {
             return;
         }
 
-        StringBuilder buffer = new StringBuilder(64);
-
-        buffer.append(getStatus(completedSize, totalSize)).append("  ");
-        buffer.append('\r');
-
-        System.out.print(buffer);
+        log.info(getStatus(completedSize, totalSize));
     }
 
     private void transferSucceeded(long contentLength, long startTime) {
-        if (contentLength >= 0) {
+        if (contentLength >= 0 && log != null) {
             String type = "Uploaded";
             String len = contentLength >= 1024 ? toKB(contentLength) + " KB" : contentLength + " B";
 
@@ -870,7 +858,7 @@ public class TomcatManager {
                 throughput = " at " + format.format(kbPerSec) + " KB/sec";
             }
 
-            System.out.println(type + ": " + url + " (" + len + throughput + ")");
+            log.info(type + ": " + url + " (" + len + throughput + ")");
         }
     }
 

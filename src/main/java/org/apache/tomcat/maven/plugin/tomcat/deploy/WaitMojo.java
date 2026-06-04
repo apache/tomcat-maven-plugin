@@ -56,7 +56,7 @@ public class WaitMojo extends AbstractCatalinaMojo {
      * The interval between checks, in milliseconds.
      */
     @Parameter(property = "maven.tomcat.wait.interval", defaultValue = "1000")
-    private long interval = 1000;
+    private int interval = 1000;
 
     /**
      * The HTTP status code to wait for.
@@ -113,8 +113,8 @@ public class WaitMojo extends AbstractCatalinaMojo {
      */
     private boolean isServerResponsive(URL url) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setConnectTimeout((int) interval);
-        connection.setReadTimeout((int) interval);
+        connection.setConnectTimeout(interval);
+        connection.setReadTimeout(interval);
         connection.setRequestMethod("HEAD");
 
         try {

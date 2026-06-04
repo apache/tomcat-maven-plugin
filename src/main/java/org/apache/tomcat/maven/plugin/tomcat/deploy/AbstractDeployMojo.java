@@ -77,7 +77,7 @@ public abstract class AbstractDeployMojo extends AbstractWarCatalinaMojo {
      * {@inheritDoc}
      */
     @Override
-    public void invokeManager() throws MojoExecutionException, TomcatManagerException, IOException {
+    protected void invokeManager() throws MojoExecutionException, TomcatManagerException, IOException {
         if ("war".equals(mode)) {
             deployWar();
         } else if ("context".equals(mode)) {

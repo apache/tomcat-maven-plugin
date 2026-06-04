@@ -63,6 +63,9 @@ public class TomcatRunnerCli {
     static final Option AJP_PORT = Option.builder().longOpt("ajpPort").hasArg().argName("ajpPort")
             .desc("ajp port to use").get();
 
+    static final Option AJP_SECRET = Option.builder().longOpt("ajpSecret").hasArg().argName("ajpSecret")
+            .desc("ajp secret to use").get();
+
     static final Option SERVER_XML_PATH = Option.builder().longOpt("serverXmlPath").hasArg().argName("serverXmlPath")
             .desc("server.xml to use, optional").get();
 
@@ -97,7 +100,7 @@ public class TomcatRunnerCli {
     static final Options OPTIONS = new Options();
 
     static {
-        OPTIONS.addOption(HTTP_PORT).addOption(HTTPS_PORT).addOption(AJP_PORT).addOption(MAX_POST_SIZE)
+        OPTIONS.addOption(HTTP_PORT).addOption(HTTPS_PORT).addOption(AJP_PORT).addOption(AJP_SECRET).addOption(MAX_POST_SIZE)
                 .addOption(SERVER_XML_PATH).addOption(RESET_EXTRACT).addOption(HELP).addOption(DEBUG)
                 .addOption(SYS_PROPS).addOption(HTTP_PROTOCOL).addOption(CLIENT_AUTH).addOption(KEY_ALIAS)
                 .addOption(OBFUSCATE).addOption(EXTRACT_DIRECTORY).addOption(URI_ENCODING);
@@ -145,23 +148,55 @@ public class TomcatRunnerCli {
 
         String port = tomcatRunner.runtimeProperties.getProperty(TomcatRunner.HTTP_PORT_KEY);
         if (port != null) {
-            tomcatRunner.httpPort = Integer.parseInt(port);
+            try {
+                tomcatRunner.httpPort = Integer.parseInt(port);
+            } catch (NumberFormatException e) {
+                System.err.println("Invalid value for " + HTTP_PORT.getArgName() + " '" +
+                        port + "'. Must be an integer.");
+                System.exit(1);
+                System.exit(1);
+            }
         }
 
         // cli win for the port
         if (line.hasOption(HTTP_PORT)) {
-            tomcatRunner.httpPort = Integer.parseInt(line.getOptionValue(HTTP_PORT));
+            try {
+                tomcatRunner.httpPort = Integer.parseInt(line.getOptionValue(HTTP_PORT));
+            } catch (NumberFormatException e) {
+                System.err.println("Invalid value for " + HTTP_PORT.getArgName() + " '" +
+                        line.getOptionValue(HTTP_PORT) + "'. Must be an integer.");
+                System.exit(1);
+            }
         }
-
         if (line.hasOption(MAX_POST_SIZE)) {
-            tomcatRunner.maxPostSize = Integer.parseInt(line.getOptionValue(MAX_POST_SIZE));
+            try {
+                tomcatRunner.maxPostSize = Integer.parseInt(line.getOptionValue(MAX_POST_SIZE));
+            } catch (NumberFormatException e) {
+                System.err.println("Invalid value for " + MAX_POST_SIZE.getArgName() + " '" +
+                        line.getOptionValue(MAX_POST_SIZE) + "'. Must be an integer.");
+                System.exit(1);
+            }
         }
-
         if (line.hasOption(HTTPS_PORT)) {
-            tomcatRunner.httpsPort = Integer.parseInt(line.getOptionValue(HTTPS_PORT));
+            try {
+                tomcatRunner.httpsPort = Integer.parseInt(line.getOptionValue(HTTPS_PORT));
+            } catch (NumberFormatException e) {
+                System.err.println("Invalid value for " + HTTPS_PORT.getArgName() + " '" +
+                        line.getOptionValue(HTTPS_PORT) + "'. Must be an integer.");
+                System.exit(1);
+            }
         }
         if (line.hasOption(AJP_PORT)) {
-            tomcatRunner.ajpPort = Integer.parseInt(line.getOptionValue(AJP_PORT));
+            try {
+                tomcatRunner.ajpPort = Integer.parseInt(line.getOptionValue(AJP_PORT));
+            } catch (NumberFormatException e) {
+                System.err.println("Invalid value for " + AJP_PORT.getArgName() + " '" +
+                        line.getOptionValue(AJP_PORT) + "'. Must be an integer.");
+                System.exit(1);
+            }
+        }
+        if (line.hasOption(AJP_SECRET)) {
+            tomcatRunner.ajpSecret = line.getOptionValue(AJP_SECRET);
         }
         if (line.hasOption(RESET_EXTRACT)) {
             tomcatRunner.resetExtract = true;
@@ -205,7 +240,9 @@ public class TomcatRunnerCli {
         InputStream is = Thread.currentThread().getContextClassLoader()
                 .getResourceAsStream(STAND_ALONE_PROPERTIES_FILENAME);
         Properties properties = new Properties();
-        properties.load(is);
+        if (is != null) {
+            properties.load(is);
+        }
         return properties;
     }
 

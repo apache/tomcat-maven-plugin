@@ -732,9 +732,9 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
      * @throws MojoExecutionException if parsing fails
      */
     protected StandardContext parseContextFile(File file) throws MojoExecutionException {
-        try {
+        try (FileInputStream fis = new FileInputStream(file)) {
             StandardContext standardContext = new StandardContext();
-            XMLStreamReader reader = XMLInputFactory.newFactory().createXMLStreamReader(new FileInputStream(file));
+            XMLStreamReader reader = XMLInputFactory.newFactory().createXMLStreamReader(fis);
 
             int tag = reader.next();
 
@@ -757,7 +757,7 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
             }
 
             return standardContext;
-        } catch (XMLStreamException | FileNotFoundException e) {
+        } catch (XMLStreamException | IOException e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }
     }
@@ -779,11 +779,6 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
      * Determine whether the passed context.xml file declares the context as reloadable or not.
      *
      * @return false by default, true if reloadable="true" in context.xml.
-     */
-    /**
-     * Determine whether the passed context.xml file declares the context as reloadable or not.
-     *
-     * @return false by default, true if reloadable="true" in context.xml.
      * @throws MojoExecutionException if an error occurs
      */
     protected boolean isContextReloadable() throws MojoExecutionException {
@@ -795,6 +790,9 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
         try {
             if (contextFile != null && contextFile.exists()) {
                 DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+                builderFactory.setFeature(javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING, true);
+                builderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+                builderFactory.setExpandEntityReferences(false);
                 DocumentBuilder builder = builderFactory.newDocumentBuilder();
                 Document contextDoc = builder.parse(contextFile);
                 contextDoc.getDocumentElement().normalize();
@@ -816,11 +814,6 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
     }
 
 
-    /**
-     * Gets the webapp directory to run.
-     *
-     * @return the webapp directory
-     */
     /**
      * Gets the webapp directory to run.
      * @return the webapp directory
@@ -922,7 +915,7 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
                 String[] files = scanner.getIncludedFiles();
 
                 if (files != null && files.length > 0) {
-                    getLog().info("Coping additional tomcat config files");
+                    getLog().info("Copying additional tomcat config files");
 
                     for (int i = 0; i < files.length; i++) {
                         File file = new File(additionalConfigFilesDir, files[i]);
@@ -962,233 +955,229 @@ public abstract class AbstractRunMojo extends AbstractTomcatMojo {
      * @throws MojoExecutionException if the server could not be configured
      */
     private void startContainer() throws IOException, LifecycleException, MojoExecutionException, Exception {
-        String previousCatalinaBase = System.getProperty("catalina.base");
 
-        try {
+        // Set the system properties
+        setupSystemProperties();
 
-            // Set the system properties
-            setupSystemProperties();
+        System.setProperty("catalina.base", configurationDir.getAbsolutePath());
 
-            System.setProperty("catalina.base", configurationDir.getAbsolutePath());
+        if (serverXml != null) {
+            if (!serverXml.exists()) {
+                throw new MojoExecutionException(serverXml.getPath() + " not exists");
+            }
 
-            if (serverXml != null) {
-                if (!serverXml.exists()) {
-                    throw new MojoExecutionException(serverXml.getPath() + " not exists");
+            Catalina container = new Catalina();
+
+            if (useSeparateTomcatClassLoader) {
+                Thread.currentThread().setContextClassLoader(getTomcatClassLoader());
+                container.setParentClassLoader(getTomcatClassLoader());
+            }
+
+            container.setUseNaming(this.useNaming);
+            container.setConfigFile(serverXml.getAbsolutePath());
+            container.start();
+            EmbeddedRegistry.getInstance().register(container);
+        } else {
+
+            System.setProperty("java.util.logging.manager", "org.apache.juli.ClassLoaderLogManager");
+            System.setProperty("java.util.logging.config.file",
+                    new File(configurationDir, "conf/logging.properties").toString());
+
+            // Trigger loading of catalina.properties
+            CatalinaProperties.getProperty("foo");
+
+            Tomcat embeddedTomcat = new ExtendedTomcat(configurationDir);
+
+            embeddedTomcat.setBaseDir(configurationDir.getAbsolutePath());
+            MemoryRealm memoryRealm = new MemoryRealm();
+
+            if (tomcatUsers != null) {
+                if (!tomcatUsers.exists()) {
+                    throw new MojoExecutionException(" tomcatUsers " + tomcatUsers.getPath() + " not exists");
+                }
+                getLog().info("use tomcat-users.xml from " + tomcatUsers.getAbsolutePath());
+                memoryRealm.setPathname(tomcatUsers.getAbsolutePath());
+            }
+
+            embeddedTomcat.getEngine().setRealm(memoryRealm);
+
+            Context ctx = createContext(embeddedTomcat);
+
+            if (useNaming) {
+                embeddedTomcat.enableNaming();
+            }
+
+            embeddedTomcat.getHost().setAppBase(new File(configurationDir, "webapps").getAbsolutePath());
+
+            if (hostName != null) {
+                embeddedTomcat.getHost().setName(hostName);
+            }
+            if (aliases != null) {
+                for (String alias : aliases) {
+                    embeddedTomcat.getHost().addAlias(alias);
                 }
 
-                Catalina container = new Catalina();
+            }
+            createStaticContext(embeddedTomcat, ctx, embeddedTomcat.getHost());
 
-                if (useSeparateTomcatClassLoader) {
-                    Thread.currentThread().setContextClassLoader(getTomcatClassLoader());
-                    container.setParentClassLoader(getTomcatClassLoader());
+            Connector connector = new Connector(protocol);
+            connector.setPort(port);
+            connector.setMaxPostSize(maxPostSize);
+
+            if (httpsPort > 0) {
+                connector.setRedirectPort(httpsPort);
+            }
+
+            if (address != null) {
+                connector.setProperty("address", address);
+            }
+
+            connector.setURIEncoding(uriEncoding);
+
+            connector.setUseBodyEncodingForURI(this.useBodyEncodingForURI);
+
+            embeddedTomcat.getService().addConnector(connector);
+
+            embeddedTomcat.setConnector(connector);
+
+            AccessLogValve alv = new AccessLogValve();
+            alv.setDirectory(new File(configurationDir, "logs").getAbsolutePath());
+            alv.setPattern("%h %l %u %t \"%r\" %s %b %I %D");
+            embeddedTomcat.getHost().getPipeline().addValve(alv);
+
+            // create https connector
+            Connector httpsConnector = null;
+            if (httpsPort > 0) {
+                httpsConnector = new Connector(protocol);
+                httpsConnector.setPort(httpsPort);
+                httpsConnector.setMaxPostSize(maxPostSize);
+                httpsConnector.setSecure(true);
+                httpsConnector.setProperty("SSLEnabled", "true");
+                httpsConnector.setURIEncoding(uriEncoding);
+                httpsConnector.setUseBodyEncodingForURI(this.useBodyEncodingForURI);
+
+                SSLHostConfig hostConfig = new SSLHostConfig();
+                SSLHostConfigCertificate certificate = new SSLHostConfigCertificate(hostConfig,
+                        SSLHostConfigCertificate.DEFAULT_TYPE);
+
+                if (keystoreFile != null) {
+                    certificate.setCertificateKeystoreFile(keystoreFile);
+                }
+                if (keystorePass != null) {
+                    certificate.setCertificateKeystorePassword(keystorePass);
+                    httpsConnector.setProperty("keystorePass", keystorePass);
+                }
+                if (keystoreType != null) {
+                    certificate.setCertificateKeystoreType(keystoreType);
                 }
 
-                container.setUseNaming(this.useNaming);
-                container.setConfigFile(serverXml.getAbsolutePath());
-                container.start();
-                EmbeddedRegistry.getInstance().register(container);
-            } else {
+                if (trustManagerClassName != null) {
+                    hostConfig.setTrustManagerClassName(trustManagerClassName);
+                }
 
-                System.setProperty("java.util.logging.manager", "org.apache.juli.ClassLoaderLogManager");
-                System.setProperty("java.util.logging.config.file",
-                        new File(configurationDir, "conf/logging.properties").toString());
-
-                // Trigger loading of catalina.properties
-                CatalinaProperties.getProperty("foo");
-
-                Tomcat embeddedTomcat = new ExtendedTomcat(configurationDir);
-
-                embeddedTomcat.setBaseDir(configurationDir.getAbsolutePath());
-                MemoryRealm memoryRealm = new MemoryRealm();
-
-                if (tomcatUsers != null) {
-                    if (!tomcatUsers.exists()) {
-                        throw new MojoExecutionException(" tomcatUsers " + tomcatUsers.getPath() + " not exists");
+                if (trustMaxCertLength != null) {
+                    try {
+                        hostConfig.setCertificateVerificationDepth(Integer.parseInt(trustMaxCertLength));
+                    } catch (NumberFormatException e) {
+                        throw new MojoExecutionException("Invalid value for trustMaxCertLength: '" +
+                                trustMaxCertLength + "'. Must be an integer.", e);
                     }
-                    getLog().info("use tomcat-users.xml from " + tomcatUsers.getAbsolutePath());
-                    memoryRealm.setPathname(tomcatUsers.getAbsolutePath());
                 }
 
-                embeddedTomcat.getEngine().setRealm(memoryRealm);
-
-                Context ctx = createContext(embeddedTomcat);
-
-                if (useNaming) {
-                    embeddedTomcat.enableNaming();
+                if (truststoreAlgorithm != null) {
+                    hostConfig.setTruststoreAlgorithm(truststoreAlgorithm);
                 }
 
-                embeddedTomcat.getHost().setAppBase(new File(configurationDir, "webapps").getAbsolutePath());
-
-                if (hostName != null) {
-                    embeddedTomcat.getHost().setName(hostName);
+                if (truststoreFile != null) {
+                    hostConfig.setTruststoreFile(truststoreFile);
                 }
-                if (aliases != null) {
-                    for (String alias : aliases) {
-                        embeddedTomcat.getHost().addAlias(alias);
-                    }
 
+                if (truststorePass != null) {
+                    hostConfig.setTruststorePassword(truststorePass);
                 }
-                createStaticContext(embeddedTomcat, ctx, embeddedTomcat.getHost());
 
-                Connector connector = new Connector(protocol);
-                connector.setPort(port);
-                connector.setMaxPostSize(maxPostSize);
-
-                if (httpsPort > 0) {
-                    connector.setRedirectPort(httpsPort);
+                if (truststoreProvider != null) {
+                    hostConfig.setTruststoreProvider(truststoreProvider);
                 }
+
+                if (truststoreType != null) {
+                    hostConfig.setTruststoreType(truststoreType);
+                }
+                hostConfig.setCertificateVerificationAsString(clientAuth);
 
                 if (address != null) {
-                    connector.setProperty("address", address);
+                    httpsConnector.setProperty("address", address);
                 }
+                hostConfig.addCertificate(certificate);
+                httpsConnector.addSslHostConfig(hostConfig);
 
-                connector.setURIEncoding(uriEncoding);
-
-                connector.setUseBodyEncodingForURI(this.useBodyEncodingForURI);
-
-                embeddedTomcat.getService().addConnector(connector);
-
-                embeddedTomcat.setConnector(connector);
-
-                AccessLogValve alv = new AccessLogValve();
-                alv.setDirectory(new File(configurationDir, "logs").getAbsolutePath());
-                alv.setPattern("%h %l %u %t \"%r\" %s %b %I %D");
-                embeddedTomcat.getHost().getPipeline().addValve(alv);
-
-                // create https connector
-                Connector httpsConnector = null;
-                if (httpsPort > 0) {
-                    httpsConnector = new Connector(protocol);
-                    httpsConnector.setPort(httpsPort);
-                    httpsConnector.setMaxPostSize(maxPostSize);
-                    httpsConnector.setSecure(true);
-                    httpsConnector.setProperty("SSLEnabled", "true");
-                    httpsConnector.setURIEncoding(uriEncoding);
-                    httpsConnector.setUseBodyEncodingForURI(this.useBodyEncodingForURI);
-
-                    SSLHostConfig hostConfig = new SSLHostConfig();
-                    SSLHostConfigCertificate certificate = new SSLHostConfigCertificate(hostConfig,
-                            SSLHostConfigCertificate.DEFAULT_TYPE);
-
-                    if (keystoreFile != null) {
-                        certificate.setCertificateKeystoreFile(keystoreFile);
-                    }
-                    if (keystorePass != null) {
-                        certificate.setCertificateKeystorePassword(keystorePass);
-                        httpsConnector.setProperty("keystorePass", keystorePass);
-                    }
-                    if (keystoreType != null) {
-                        certificate.setCertificateKeystoreType(keystoreType);
-                    }
-
-                    if (trustManagerClassName != null) {
-                        hostConfig.setTrustManagerClassName(trustManagerClassName);
-                    }
-
-                    if (trustMaxCertLength != null) {
-                        hostConfig.setCertificateVerificationDepth(Integer.parseInt(trustMaxCertLength));
-                    }
-
-                    if (truststoreAlgorithm != null) {
-                        hostConfig.setTruststoreAlgorithm(truststoreAlgorithm);
-                    }
-
-                    if (truststoreFile != null) {
-                        hostConfig.setTruststoreFile(truststoreFile);
-                    }
-
-                    if (truststorePass != null) {
-                        hostConfig.setTruststorePassword(truststorePass);
-                    }
-
-                    if (truststoreProvider != null) {
-                        hostConfig.setTruststoreProvider(truststoreProvider);
-                    }
-
-                    if (truststoreType != null) {
-                        hostConfig.setTruststoreType(truststoreType);
-                    }
-                    hostConfig.setCertificateVerificationAsString(clientAuth);
-
-                    if (address != null) {
-                        httpsConnector.setProperty("address", address);
-                    }
-                    hostConfig.addCertificate(certificate);
-                    httpsConnector.addSslHostConfig(hostConfig);
-
-                    embeddedTomcat.getEngine().getService().addConnector(httpsConnector);
-
-                }
-
-                // create ajp connector
-                Connector ajpConnector = null;
-                if (ajpPort > 0) {
-                    ajpConnector = new Connector(ajpProtocol);
-                    ajpConnector.setPort(ajpPort);
-                    ajpConnector.setURIEncoding(uriEncoding);
-                    ajpConnector.setUseBodyEncodingForURI(this.useBodyEncodingForURI);
-                    if (address != null) {
-                        ajpConnector.setProperty("address", address);
-                    }
-                    ajpConnector.setProperty("secretRequired", "false");
-                    embeddedTomcat.getEngine().getService().addConnector(ajpConnector);
-                }
-
-                if (addContextWarDependencies || !getAdditionalWebapps().isEmpty()) {
-                    createDependencyContexts(embeddedTomcat);
-                }
-
-                if (useSeparateTomcatClassLoader) {
-                    Thread.currentThread().setContextClassLoader(getTomcatClassLoader());
-                    embeddedTomcat.getEngine().setParentClassLoader(getTomcatClassLoader());
-                }
-
-                embeddedTomcat.start();
-
-                Properties portProperties = new Properties();
-
-                portProperties.put("tomcat.maven.http.port", Integer.toString(connector.getLocalPort()));
-
-                session.getUserProperties().setProperty("tomcat.maven.http.port",
-                        Integer.toString(connector.getLocalPort()));
-                System.setProperty("tomcat.maven.http.port", Integer.toString(connector.getLocalPort()));
-
-                if (httpsConnector != null) {
-                    session.getUserProperties().setProperty("tomcat.maven.https.port",
-                            Integer.toString(httpsConnector.getLocalPort()));
-                    portProperties.put("tomcat.maven.https.port", Integer.toString(httpsConnector.getLocalPort()));
-                    System.setProperty("tomcat.maven.https.port", Integer.toString(httpsConnector.getLocalPort()));
-                }
-
-                if (ajpConnector != null) {
-                    session.getUserProperties().setProperty("tomcat.maven.ajp.port",
-                            Integer.toString(ajpConnector.getLocalPort()));
-                    portProperties.put("tomcat.maven.ajp.port", Integer.toString(ajpConnector.getLocalPort()));
-                    System.setProperty("tomcat.maven.ajp.port", Integer.toString(ajpConnector.getLocalPort()));
-                }
-                if (propertiesPortFilePath != null) {
-                    File propertiesPortsFile = new File(propertiesPortFilePath);
-                    if (propertiesPortsFile.exists()) {
-                        propertiesPortsFile.delete();
-                    }
-                    FileOutputStream fileOutputStream = new FileOutputStream(propertiesPortsFile);
-                    try {
-                        portProperties.store(fileOutputStream, "Apache Tomcat Maven plugin port used");
-                    } finally {
-                        IOUtils.closeQuietly(fileOutputStream);
-                    }
-                }
-
-                EmbeddedRegistry.getInstance().register(embeddedTomcat);
+                embeddedTomcat.getEngine().getService().addConnector(httpsConnector);
 
             }
 
-
-        } finally {
-            if (previousCatalinaBase != null) {
-                System.setProperty("catalina.base", previousCatalinaBase);
+            // create ajp connector
+            Connector ajpConnector = null;
+            if (ajpPort > 0) {
+                ajpConnector = new Connector(ajpProtocol);
+                ajpConnector.setPort(ajpPort);
+                ajpConnector.setURIEncoding(uriEncoding);
+                ajpConnector.setUseBodyEncodingForURI(this.useBodyEncodingForURI);
+                if (address != null) {
+                    ajpConnector.setProperty("address", address);
+                }
+                ajpConnector.setProperty("secretRequired", "false");
+                embeddedTomcat.getEngine().getService().addConnector(ajpConnector);
             }
+
+            if (addContextWarDependencies || !getAdditionalWebapps().isEmpty()) {
+                createDependencyContexts(embeddedTomcat);
+            }
+
+            if (useSeparateTomcatClassLoader) {
+                Thread.currentThread().setContextClassLoader(getTomcatClassLoader());
+                embeddedTomcat.getEngine().setParentClassLoader(getTomcatClassLoader());
+            }
+
+            embeddedTomcat.start();
+
+            Properties portProperties = new Properties();
+
+            portProperties.put("tomcat.maven.http.port", Integer.toString(connector.getLocalPort()));
+
+            session.getUserProperties().setProperty("tomcat.maven.http.port",
+                    Integer.toString(connector.getLocalPort()));
+            System.setProperty("tomcat.maven.http.port", Integer.toString(connector.getLocalPort()));
+
+            if (httpsConnector != null) {
+                session.getUserProperties().setProperty("tomcat.maven.https.port",
+                        Integer.toString(httpsConnector.getLocalPort()));
+                portProperties.put("tomcat.maven.https.port", Integer.toString(httpsConnector.getLocalPort()));
+                System.setProperty("tomcat.maven.https.port", Integer.toString(httpsConnector.getLocalPort()));
+            }
+
+            if (ajpConnector != null) {
+                session.getUserProperties().setProperty("tomcat.maven.ajp.port",
+                        Integer.toString(ajpConnector.getLocalPort()));
+                portProperties.put("tomcat.maven.ajp.port", Integer.toString(ajpConnector.getLocalPort()));
+                System.setProperty("tomcat.maven.ajp.port", Integer.toString(ajpConnector.getLocalPort()));
+            }
+            if (propertiesPortFilePath != null) {
+                File propertiesPortsFile = new File(propertiesPortFilePath);
+                if (propertiesPortsFile.exists()) {
+                    propertiesPortsFile.delete();
+                }
+                FileOutputStream fileOutputStream = new FileOutputStream(propertiesPortsFile);
+                try {
+                    portProperties.store(fileOutputStream, "Apache Tomcat Maven plugin port used");
+                } finally {
+                    IOUtils.closeQuietly(fileOutputStream);
+                }
+            }
+
+            EmbeddedRegistry.getInstance().register(embeddedTomcat);
+
         }
+
     }
 
     private List<Webapp> getAdditionalWebapps() {

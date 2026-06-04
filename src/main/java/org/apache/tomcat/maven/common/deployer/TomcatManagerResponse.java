@@ -25,17 +25,24 @@ package org.apache.tomcat.maven.common.deployer;
  * @since 2.0
  */
 public class TomcatManagerResponse {
-    private int statusCode;
 
-    private String reasonPhrase;
+    private final int statusCode;
 
-    private String httpResponseBody;
+    private final String reasonPhrase;
+
+    private final String httpResponseBody;
 
     /**
      * Creates an instance of TomcatManagerResponse.
+     *
+     * @param statusCode the HTTP status code
+     * @param reasonPhrase the HTTP reason phrase
+     * @param httpResponseBody the HTTP response body
      */
-    public TomcatManagerResponse() {
-        // no op
+    public TomcatManagerResponse(int statusCode, String reasonPhrase, String httpResponseBody) {
+        this.statusCode = statusCode;
+        this.reasonPhrase = reasonPhrase;
+        this.httpResponseBody = httpResponseBody;
     }
 
     /**
@@ -47,31 +54,11 @@ public class TomcatManagerResponse {
     }
 
     /**
-     * Sets the HTTP status code.
-     * @param statusCode the status code
-     * @return this response for chaining
-     */
-    public TomcatManagerResponse setStatusCode(int statusCode) {
-        this.statusCode = statusCode;
-        return this;
-    }
-
-    /**
      * Returns the HTTP reason phrase.
      * @return the reason phrase
      */
     public String getReasonPhrase() {
         return reasonPhrase;
-    }
-
-    /**
-     * Sets the HTTP reason phrase.
-     * @param reasonPhrase the reason phrase
-     * @return this response for chaining
-     */
-    public TomcatManagerResponse setReasonPhrase(String reasonPhrase) {
-        this.reasonPhrase = reasonPhrase;
-        return this;
     }
 
     /**
@@ -82,13 +69,4 @@ public class TomcatManagerResponse {
         return httpResponseBody;
     }
 
-    /**
-     * Sets the HTTP response body.
-     * @param httpResponseBody the response body
-     * @return this response for chaining
-     */
-    public TomcatManagerResponse setHttpResponseBody(String httpResponseBody) {
-        this.httpResponseBody = httpResponseBody;
-        return this;
-    }
 }

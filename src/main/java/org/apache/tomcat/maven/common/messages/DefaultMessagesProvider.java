@@ -34,7 +34,7 @@ import java.util.ResourceBundle;
 public class DefaultMessagesProvider implements MessagesProvider {
 
     /**
-     * plugin messages
+     * Plugin messages
      */
     private final ResourceBundle messages;
 
@@ -43,9 +43,11 @@ public class DefaultMessagesProvider implements MessagesProvider {
      * Creates a new instance and loads the message bundle.
      */
     public DefaultMessagesProvider() {
-        String packageName = getClass().getPackage().getName();
-
-        messages = ResourceBundle.getBundle(packageName + ".messages");
+        try {
+            messages = ResourceBundle.getBundle(getClass().getPackage().getName() + ".messages");
+        } catch (MissingResourceException e) {
+            throw new IllegalStateException("Required message bundle 'messages' not found on classpath", e);
+        }
     }
 
     /**
@@ -56,13 +58,6 @@ public class DefaultMessagesProvider implements MessagesProvider {
         return this.messages;
     }
 
-    /**
-     * Gets the message for the given key from this packages resource bundle.
-     *
-     * @param key the key for the required message
-     * 
-     * @return the message
-     */
     @Override
     public String getMessage(String key) {
         try {
@@ -72,17 +67,16 @@ public class DefaultMessagesProvider implements MessagesProvider {
         }
     }
 
-    /**
-     * Gets the message for the given key from this packages resource bundle and formats it with the given parameter.
-     *
-     * @param key    the key for the required message
-     * @param params the parameters to be used to format the message with
-     * 
-     * @return the formatted message
-     */
     @Override
     public String getMessage(String key, Object... params) {
-        return MessageFormat.format(getMessage(key), params);
+        String template = getMessage(key);
+        if (params == null || params.length == 0) {
+            return template;
+        }
+        try {
+            return MessageFormat.format(template, params);
+        } catch (IllegalArgumentException e) {
+            return template + " [formatting error: " + e.getMessage() + "]";
+        }
     }
-
 }

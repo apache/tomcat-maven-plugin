@@ -36,9 +36,9 @@ public interface MessagesProvider {
     /**
      * Returns the formatted message for the given key with the specified parameters.
      * @param key the message key
-     * @param param1 the formatting parameters
+     * @param params the formatting parameters
      * @return the formatted message string
      */
-    String getMessage(String key, Object... param1);
+    String getMessage(String key, Object... params);
 
 }

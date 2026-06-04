@@ -28,7 +28,7 @@ import org.apache.tomcat.maven.plugin.tomcat.AbstractTomcatMojo;
 /**
  * <p>
  * Shuts down all possibly started embedded Tomcat servers. This will be automatically done through a shutdown hook or
- * you may call this Mojo to shut them down explictly.
+ * you may call this Mojo to shut them down explicitly.
  * </p>
  * <p>
  * By default the <code>shutdown</code> goal is not bound to any phase. For integration tests you might want to bind it

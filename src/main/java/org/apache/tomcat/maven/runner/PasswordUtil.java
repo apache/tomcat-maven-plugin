@@ -18,6 +18,9 @@
  */
 package org.apache.tomcat.maven.runner;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 
@@ -34,10 +37,6 @@ import java.util.Properties;
  * They are not secure, but prevent casual observation.
  * </p>
  *
- * @see <a href=
- *          "http://grepcode.com/file_/repo1.maven.org/maven2/org.mortbay.jetty/jetty/6.1.11/org/mortbay/jetty/security/Password.java/?v=source"
- *          >Jetty Source org.mortbay.jetty.security.Password</a>
- * 
  * @since 2.0
  */
 public class PasswordUtil {
@@ -60,7 +59,7 @@ public class PasswordUtil {
      */
     public static String obfuscate(String s) {
         StringBuilder buf = new StringBuilder();
-        byte[] b = s.getBytes();
+        byte[] b = s.getBytes(StandardCharsets.UTF_8);
 
         buf.append(__OBFUSCATE);
         for (int i = 0; i < b.length; i++) {
@@ -94,7 +93,9 @@ public class PasswordUtil {
     public static String deobfuscate(String s) {
         if (s.startsWith(__OBFUSCATE)) {
             s = s.substring(__OBFUSCATE.length());
-
+            if (s.length() % 4 != 0) {
+                throw new IllegalArgumentException("Invalid obfuscated password: length must be a multiple of 4");
+            }
             byte[] b = new byte[s.length() / 2];
             int l = 0;
             for (int i = 0; i < s.length(); i += 4) {
@@ -104,7 +105,7 @@ public class PasswordUtil {
                 int i2 = (i0 % 256);
                 b[l++] = (byte) ((i1 + i2 - 254) / 2);
             }
-            return new String(b, 0, l);
+            return new String(b, 0, l, StandardCharsets.UTF_8);
         } else {
             return s;
         }
@@ -116,14 +117,18 @@ public class PasswordUtil {
      */
     public static void deobfuscateSystemProps() {
         Properties props = System.getProperties();
+        List<String> keysToModify = new ArrayList<>();
         for (Object obj : props.keySet()) {
             if (obj instanceof String) {
                 String key = (String) obj;
                 String value = props.getProperty(key);
                 if (value != null && value.startsWith(__OBFUSCATE)) {
-                    System.setProperty(key, deobfuscate(value));
+                    keysToModify.add(key);
                 }
             }
+        }
+        for (String key : keysToModify) {
+            System.setProperty(key, deobfuscate(System.getProperty(key)));
         }
     }
 
@@ -132,10 +137,14 @@ public class PasswordUtil {
      * @param args command-line arguments
      */
     public static void main(String[] args) {
-        if (args[0].startsWith(__OBFUSCATE)) {
-            System.out.println(PasswordUtil.deobfuscate(args[1]));
-        } else {
-            System.out.println(PasswordUtil.obfuscate(args[1]));
+        if (args.length < 1) {
+            System.err.println("Usage: PasswordUtil <password>");
+            System.exit(1);
         }
-    }
-}
+        String input = args[0];
+        if (input.startsWith(__OBFUSCATE)) {
+            System.out.println(deobfuscate(input));
+        } else {
+            System.out.println(obfuscate(input));
+        }
+    }}

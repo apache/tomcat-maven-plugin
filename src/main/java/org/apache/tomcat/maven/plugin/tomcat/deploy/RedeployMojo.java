@@ -23,7 +23,8 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
 /**
- * Redeploy a WAR in Tomcat. (Alias for the deploy goal with its update parameter set to true.)
+ * Redeploy a WAR in Tomcat. Alias for the deploy goal with its update parameter set to true, so
+ * this goal always undeploys any existing web application.
  *
  * @author Olivier Lamy
  *

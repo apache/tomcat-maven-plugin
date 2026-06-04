@@ -19,6 +19,7 @@
 package org.apache.tomcat.maven.common.run;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -54,7 +55,7 @@ public class ClassLoaderEntriesCalculatorResult {
             List<String> buildDirectories) {
         this.classPathEntries = classPathEntries;
         this.tmpDirectories = tmpDirectories;
-        this.buildDirectories = buildDirectories;
+        this.buildDirectories = Collections.unmodifiableList(buildDirectories);
     }
 
     /**

@@ -81,12 +81,12 @@ public abstract class AbstractStandaloneWarMojo extends AbstractExecWarMojo {
      * @since 2.2
      */
     @Parameter(property = "maven.tomcat.exec.war.attachArtifactType", defaultValue = "war", required = true)
-    protected String attachArtifactClassifierType;
+    protected String attachArtifactType;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (!"war".equals(project.getPackaging())) {
-            throw new MojoFailureException("Pacakaging must be of type war for standalone-war goal.");
+            throw new MojoFailureException("Packaging must be of type war for standalone-war goal.");
         }
 
         File warExecFile = new File(buildDirectory, finalName);
@@ -221,7 +221,7 @@ public abstract class AbstractStandaloneWarMojo extends AbstractExecWarMojo {
 
             if (attachArtifact) {
                 // MavenProject project, String artifactType, String artifactClassifier, File artifactFile
-                projectHelper.attachArtifact(project, attachArtifactClassifierType, attachArtifactClassifier,
+                projectHelper.attachArtifact(project, attachArtifactType, attachArtifactClassifier,
                         execWarJar);
             }
 
@@ -259,6 +259,12 @@ public abstract class AbstractStandaloneWarMojo extends AbstractExecWarMojo {
             IOUtils.closeQuietly(tmpManifestWriter);
             IOUtils.closeQuietly(execWarJarOutputStream);
             IOUtils.closeQuietly(tmpPropertiesFileOutputStream);
+            if (tmpPropertiesFile != null) {
+                tmpPropertiesFile.delete();
+            }
+            if (tmpManifestFile != null) {
+                tmpManifestFile.delete();
+            }
         }
 
     }

@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -292,10 +293,10 @@ public abstract class AbstractExecWarMojo extends AbstractTomcatMojo {
             // * file tomcat.standalone.properties with possible values :
             // * useServerXml=true/false to use directly the one provided
             // * enableNaming=true/false
-            // * wars=foo.war|contextpath;bar.war ( |contextpath is optionnal if empty use the war name )
+            // * wars=foo.war|contextpath;bar.war ( |contextpath is optional if empty use the war name )
             // * accessLogValveFormat=
             // * connectorhttpProtocol: HTTP/1.1 or org.apache.coyote.http11.Http11NioProtocol
-            // * optionnal: conf/ with usual tomcat configuration files
+            // * optional: conf/ with usual tomcat configuration files
             // * MANIFEST with Main-Class
 
             Properties properties = new Properties();
@@ -313,12 +314,17 @@ public abstract class AbstractExecWarMojo extends AbstractTomcatMojo {
 
             if ("war".equals(project.getPackaging())) {
 
-                String pathWithoutSlash = path.startsWith("/") ? path.substring(1) : path;
-                os.putArchiveEntry(new JarArchiveEntry(pathWithoutSlash + ".war"));
-                IOUtils.copy(new FileInputStream(projectArtifact.getFile()), os);
-                os.closeArchiveEntry();
+                if (projectArtifact.getFile() != null) {
+                    String pathWithoutSlash = path.startsWith("/") ? path.substring(1) : path;
+                    os.putArchiveEntry(new JarArchiveEntry(pathWithoutSlash + ".war"));
+                    IOUtils.copy(new FileInputStream(projectArtifact.getFile()), os);
+                    os.closeArchiveEntry();
 
-                properties.put(TomcatRunner.WARS_KEY, pathWithoutSlash + ".war|" + path);
+                    properties.put(TomcatRunner.WARS_KEY, pathWithoutSlash + ".war|" + path);
+                } else {
+                    throw new MojoExecutionException("No project artifact found");
+                }
+
             } else if (warRunDependencies != null && !warRunDependencies.isEmpty()) {
                 for (WarRunDependency warRunDependency : warRunDependencies) {
                     if (warRunDependency.dependency != null) {
@@ -335,6 +341,10 @@ public abstract class AbstractExecWarMojo extends AbstractTomcatMojo {
                         Artifact artifact = toMavenArtifact(dependency.getGroupId(), dependency.getArtifactId(),
                                 version, dependency.getType(), dependency.getClassifier());
 
+                        if (artifact.getFile() == null) {
+                            throw new MojoExecutionException("Dependency '" + dependency.getGroupId() + "':'" +
+                                    dependency.getArtifactId() + "' not found");
+                        }
                         File warFileToBundle = new File(resolvePluginWorkDir(), artifact.getFile().getName());
                         FileUtils.copyFile(artifact.getFile(), warFileToBundle);
 
@@ -603,7 +613,7 @@ public abstract class AbstractExecWarMojo extends AbstractTomcatMojo {
     }
 
     /**
-     * Copy the contents of a jar file to another archive
+     * Copy the contents of a jar file to another archive, then close it.
      *
      * @param file The input jar file
      * @param os   The output archive
@@ -612,30 +622,42 @@ public abstract class AbstractExecWarMojo extends AbstractTomcatMojo {
      */
     protected void extractJarToArchive(JarFile file, ArchiveOutputStream<JarArchiveEntry> os, String[] excludes)
             throws IOException {
-        Enumeration<? extends JarEntry> entries = file.entries();
-        while (entries.hasMoreElements()) {
-            JarEntry j = entries.nextElement();
+        try {
+            Enumeration<? extends JarEntry> entries = file.entries();
+            while (entries.hasMoreElements()) {
+                JarEntry j = entries.nextElement();
 
-            if (excludes != null) {
-                for (String exclude : excludes) {
-                    if (SelectorUtils.match(exclude, j.getName())) {
+                if (excludes != null) {
+                    boolean excluded = false;
+                    for (String exclude : excludes) {
+                        if (SelectorUtils.match(exclude, j.getName())) {
+                            excluded = true;
+                            break;
+                        }
+                    }
+                    if (excluded) {
                         continue;
                     }
                 }
-            }
 
-            if ("META-INF/MANIFEST.MF".equalsIgnoreCase(j.getName())) {
-                continue;
+                if ("META-INF/MANIFEST.MF".equalsIgnoreCase(j.getName())) {
+                    continue;
+                }
+                if (j.getName().startsWith("META-INF/") &&
+                        (j.getName().endsWith(".SF") || j.getName().endsWith(".DSA") || j.getName().endsWith(".RSA"))) {
+                    continue;
+                }
+                os.putArchiveEntry(new JarArchiveEntry(j.getName()));
+                if (!j.isDirectory()) {
+                    try (InputStream is = file.getInputStream(j)) {
+                        IOUtils.copy(is, os);
+                    }
+                }
+                os.closeArchiveEntry();
             }
-            if (j.getName().startsWith("META-INF/") &&
-                    (j.getName().endsWith(".SF") || j.getName().endsWith(".DSA") || j.getName().endsWith(".RSA"))) {
-                continue;
-            }
-            os.putArchiveEntry(new JarArchiveEntry(j.getName()));
-            IOUtils.copy(file.getInputStream(j), os);
-            os.closeArchiveEntry();
+        } finally {
+            file.close();
         }
-        file.close();
     }
 
     private Artifact toMavenArtifact(String groupId, String artifactId, String version, String type, String classifier)

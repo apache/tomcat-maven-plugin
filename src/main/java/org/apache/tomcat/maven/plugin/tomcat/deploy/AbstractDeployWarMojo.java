@@ -66,7 +66,7 @@ public class AbstractDeployWarMojo extends AbstractDeployMojo {
      */
     @Override
     protected void validateWarFile() throws MojoExecutionException {
-        if (!warFile.exists() || !warFile.isFile()) {
+        if (!warFile.exists() || !warFile.isFile() || !warFile.canRead()) {
             throw new MojoExecutionException(messagesProvider.getMessage("DeployMojo.missingWar", warFile.getPath()));
         }
     }
