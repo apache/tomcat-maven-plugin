@@ -20,7 +20,6 @@ package org.apache.tomcat.maven.plugin.tomcat.deploy;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerResponse;
 
 import java.io.File;
@@ -75,7 +74,7 @@ public class AbstractDeployWarMojo extends AbstractDeployMojo {
      * {@inheritDoc}
      */
     @Override
-    protected void deployWar() throws MojoExecutionException, TomcatManagerException, IOException {
+    protected void deployWar() throws MojoExecutionException, IOException {
         validateWarFile();
 
         getLog().info(messagesProvider.getMessage("AbstractDeployMojo.deployingWar", getDeployedURL()));

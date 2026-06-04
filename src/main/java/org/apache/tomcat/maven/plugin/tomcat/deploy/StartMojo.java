@@ -20,7 +20,6 @@ package org.apache.tomcat.maven.plugin.tomcat.deploy;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerResponse;
 import org.apache.tomcat.maven.plugin.tomcat.AbstractCatalinaMojo;
 
@@ -47,7 +46,7 @@ public class StartMojo extends AbstractCatalinaMojo {
      * {@inheritDoc}
      */
     @Override
-    protected void invokeManager() throws MojoExecutionException, TomcatManagerException, IOException {
+    protected void invokeManager() throws MojoExecutionException, IOException {
         getLog().info(messagesProvider.getMessage("StartMojo.startingApp", getDeployedURL()));
 
         TomcatManagerResponse tomcatResponse = getManager().start(getPath());

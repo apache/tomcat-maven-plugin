@@ -20,7 +20,6 @@ package org.apache.tomcat.maven.plugin.tomcat.deploy;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerResponse;
 import org.apache.tomcat.maven.plugin.tomcat.AbstractWarCatalinaMojo;
 
@@ -77,7 +76,7 @@ public abstract class AbstractDeployMojo extends AbstractWarCatalinaMojo {
      * {@inheritDoc}
      */
     @Override
-    protected void invokeManager() throws MojoExecutionException, TomcatManagerException, IOException {
+    protected void invokeManager() throws MojoExecutionException, IOException {
         if ("war".equals(mode)) {
             deployWar();
         } else if ("context".equals(mode)) {
@@ -146,11 +145,10 @@ public abstract class AbstractDeployMojo extends AbstractWarCatalinaMojo {
     /**
      * Deploys the WAR to Tomcat.
      *
-     * @throws org.apache.maven.plugin.MojoExecutionException                 if there was a problem locating the WAR
-     * @throws org.apache.tomcat.maven.common.deployer.TomcatManagerException if the Tomcat manager request fails
-     * @throws java.io.IOException                                            if an i/o error occurs
+     * @throws org.apache.maven.plugin.MojoExecutionException if there was a problem locating the WAR
+     * @throws java.io.IOException                            if an i/o error occurs
      */
-    protected void deployWar() throws MojoExecutionException, TomcatManagerException, IOException {
+    protected void deployWar() throws MojoExecutionException, IOException {
         validateWarFile();
 
         getLog().info(messagesProvider.getMessage("AbstractDeployMojo.deployingWar", getDeployedURL()));
@@ -164,12 +162,10 @@ public abstract class AbstractDeployMojo extends AbstractWarCatalinaMojo {
     /**
      * Deploys the context XML file to Tomcat.
      *
-     * @throws org.apache.maven.plugin.MojoExecutionException                 if there was a problem locating the
-     *                                                                            context XML file
-     * @throws org.apache.tomcat.maven.common.deployer.TomcatManagerException if the Tomcat manager request fails
-     * @throws java.io.IOException                                            if an i/o error occurs
+     * @throws org.apache.maven.plugin.MojoExecutionException if there was a problem locating the context XML file
+     * @throws java.io.IOException                            if an i/o error occurs
      */
-    protected void deployContext() throws MojoExecutionException, TomcatManagerException, IOException {
+    protected void deployContext() throws MojoExecutionException, IOException {
         validateContextFile();
 
         getLog().info(messagesProvider.getMessage("AbstractDeployMojo.deployingContext", getDeployedURL()));
@@ -183,12 +179,10 @@ public abstract class AbstractDeployMojo extends AbstractWarCatalinaMojo {
     /**
      * Deploys the WAR and context XML file to Tomcat.
      *
-     * @throws org.apache.maven.plugin.MojoExecutionException                 if there was a problem locating either the
-     *                                                                            WAR or the context XML file
-     * @throws org.apache.tomcat.maven.common.deployer.TomcatManagerException if the Tomcat manager request fails
-     * @throws java.io.IOException                                            if an i/o error occurs
+     * @throws org.apache.maven.plugin.MojoExecutionException if there was a problem locating either the WAR or the context XML file
+     * @throws java.io.IOException                            if an i/o error occurs
      */
-    protected void deployWarAndContext() throws MojoExecutionException, TomcatManagerException, IOException {
+    protected void deployWarAndContext() throws MojoExecutionException, IOException {
         validateWarFile();
         validateContextFile();
 

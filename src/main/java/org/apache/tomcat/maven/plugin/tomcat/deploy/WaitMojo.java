@@ -21,7 +21,6 @@ package org.apache.tomcat.maven.plugin.tomcat.deploy;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
 import org.apache.tomcat.maven.plugin.tomcat.AbstractCatalinaMojo;
 
 import java.io.IOException;
@@ -72,7 +71,7 @@ public class WaitMojo extends AbstractCatalinaMojo {
      * {@inheritDoc}
      */
     @Override
-    protected void invokeManager() throws MojoExecutionException, TomcatManagerException, IOException {
+    protected void invokeManager() throws MojoExecutionException, IOException {
         URL deployedURL = getDeployedURL();
 
         getLog().info(messagesProvider.getMessage("WaitMojo.waitingForApp", deployedURL, timeout));

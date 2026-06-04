@@ -22,7 +22,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.settings.Server;
 import org.apache.tomcat.maven.common.deployer.TomcatManager;
-import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
 
 
 import java.io.IOException;
@@ -124,9 +123,6 @@ public abstract class AbstractCatalinaMojo extends AbstractTomcatMojo {
     public void execute() throws MojoExecutionException {
         try {
             invokeManager();
-        } catch (TomcatManagerException exception) {
-            throw new MojoExecutionException(
-                    messagesProvider.getMessage("AbstractCatalinaMojo.managerError", exception.getMessage()));
         } catch (IOException exception) {
             throw new MojoExecutionException(messagesProvider.getMessage("AbstractCatalinaMojo.managerIOError"),
                     exception);
@@ -140,11 +136,10 @@ public abstract class AbstractCatalinaMojo extends AbstractTomcatMojo {
     /**
      * Invokes Tomcat manager when this Mojo is executed.
      *
-     * @throws org.apache.maven.plugin.MojoExecutionException                 if there was a problem executing this goal
-     * @throws org.apache.tomcat.maven.common.deployer.TomcatManagerException if the Tomcat manager request fails
-     * @throws java.io.IOException                                            if an i/o error occurs
+     * @throws org.apache.maven.plugin.MojoExecutionException if there was a problem executing this goal
+     * @throws java.io.IOException                            if an i/o error occurs
      */
-    protected abstract void invokeManager() throws MojoExecutionException, TomcatManagerException, IOException;
+    protected abstract void invokeManager() throws MojoExecutionException, IOException;
 
     /**
      * Gets the Tomcat manager wrapper object configured for this goal.

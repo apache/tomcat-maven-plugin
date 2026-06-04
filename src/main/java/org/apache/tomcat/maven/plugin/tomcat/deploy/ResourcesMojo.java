@@ -21,7 +21,6 @@ package org.apache.tomcat.maven.plugin.tomcat.deploy;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.tomcat.maven.common.deployer.TomcatManagerException;
 import org.apache.tomcat.maven.common.deployer.TomcatManagerResponse;
 import org.apache.tomcat.maven.plugin.tomcat.AbstractCatalinaMojo;
 
@@ -58,7 +57,7 @@ public class ResourcesMojo extends AbstractCatalinaMojo {
      * {@inheritDoc}
      */
     @Override
-    protected void invokeManager() throws MojoExecutionException, TomcatManagerException, IOException {
+    protected void invokeManager() throws MojoExecutionException, IOException {
         if (type == null) {
             getLog().info(messagesProvider.getMessage("ResourcesMojo.listAllResources", getURL()));
         } else {

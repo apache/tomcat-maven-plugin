@@ -231,10 +231,9 @@ public class TomcatManager {
      * 
      * @return the Tomcat manager response
      * 
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      */
-    public TomcatManagerResponse deploy(String path, URL war) throws TomcatManagerException, IOException {
+    public TomcatManagerResponse deploy(String path, URL war) throws IOException {
         return deploy(path, war, false);
     }
 
@@ -248,11 +247,10 @@ public class TomcatManager {
      * 
      * @return the Tomcat manager response
      * 
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      */
     public TomcatManagerResponse deploy(String path, URL war, boolean update)
-            throws TomcatManagerException, IOException {
+            throws IOException {
         return deploy(path, war, update, null);
     }
 
@@ -267,11 +265,10 @@ public class TomcatManager {
      * 
      * @return the Tomcat manager response
      * 
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      */
     public TomcatManagerResponse deploy(String path, URL war, boolean update, String tag)
-            throws TomcatManagerException, IOException {
+            throws IOException {
         return deployImpl(path, null, war, null, update, tag);
     }
 
@@ -283,10 +280,9 @@ public class TomcatManager {
      * 
      * @return the Tomcat manager response
      * 
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      */
-    public TomcatManagerResponse deploy(String path, File war) throws TomcatManagerException, IOException {
+    public TomcatManagerResponse deploy(String path, File war) throws IOException {
         return deploy(path, war, false);
     }
 
@@ -300,11 +296,10 @@ public class TomcatManager {
      * 
      * @return the Tomcat manager response
      * 
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      */
     public TomcatManagerResponse deploy(String path, File war, boolean update)
-            throws TomcatManagerException, IOException {
+            throws IOException {
         return deploy(path, war, update, null);
     }
 
@@ -319,11 +314,10 @@ public class TomcatManager {
      * 
      * @return the Tomcat manager response
      * 
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      */
     public TomcatManagerResponse deploy(String path, File war, boolean update, String tag)
-            throws TomcatManagerException, IOException {
+            throws IOException {
         return deployImpl(path, null, null, war, update, tag);
     }
 
@@ -339,13 +333,12 @@ public class TomcatManager {
      * 
      * @return the Tomcat manager response
      * 
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      * 
      * @since 2.0
      */
     public TomcatManagerResponse deploy(String path, File war, boolean update, String tag, long length)
-            throws TomcatManagerException, IOException {
+            throws IOException {
         return deployImpl(path, null, null, war, update, tag, length);
     }
 
@@ -357,10 +350,9 @@ public class TomcatManager {
      * 
      * @return the Tomcat manager response
      * 
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      */
-    public TomcatManagerResponse deployContext(String path, URL config) throws TomcatManagerException, IOException {
+    public TomcatManagerResponse deployContext(String path, URL config) throws IOException {
         return deployContext(path, config, false);
     }
 
@@ -374,11 +366,10 @@ public class TomcatManager {
      * 
      * @return the Tomcat manager response
      * 
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      */
     public TomcatManagerResponse deployContext(String path, URL config, boolean update)
-            throws TomcatManagerException, IOException {
+            throws IOException {
         return deployContext(path, config, update, null);
     }
 
@@ -393,11 +384,10 @@ public class TomcatManager {
      * 
      * @return the Tomcat manager response
      * 
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      */
     public TomcatManagerResponse deployContext(String path, URL config, boolean update, String tag)
-            throws TomcatManagerException, IOException {
+            throws IOException {
         return deployContext(path, config, null, update, tag);
     }
 
@@ -410,11 +400,10 @@ public class TomcatManager {
      * 
      * @return the Tomcat manager response
      * 
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      */
     public TomcatManagerResponse deployContext(String path, URL config, URL war)
-            throws TomcatManagerException, IOException {
+            throws IOException {
         return deployContext(path, config, war, false);
     }
 
@@ -429,11 +418,10 @@ public class TomcatManager {
      * 
      * @return the Tomcat manager response
      * 
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      */
     public TomcatManagerResponse deployContext(String path, URL config, URL war, boolean update)
-            throws TomcatManagerException, IOException {
+            throws IOException {
         return deployContext(path, config, war, update, null);
     }
 
@@ -449,11 +437,10 @@ public class TomcatManager {
      * 
      * @return the Tomcat manager response
      * 
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      */
     public TomcatManagerResponse deployContext(String path, URL config, URL war, boolean update, String tag)
-            throws TomcatManagerException, IOException {
+            throws IOException {
         return deployImpl(path, config, war, null, update, tag);
     }
 
@@ -468,10 +455,9 @@ public class TomcatManager {
      * 
      * @return the Tomcat manager response
      * 
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      */
-    public TomcatManagerResponse undeploy(String path) throws TomcatManagerException, IOException {
+    public TomcatManagerResponse undeploy(String path) throws IOException {
         return invoke("/undeploy?path=" + URLEncoder.encode(path, charset));
     }
 
@@ -482,10 +468,9 @@ public class TomcatManager {
      * 
      * @return the Tomcat manager response
      * 
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      */
-    public TomcatManagerResponse reload(String path) throws TomcatManagerException, IOException {
+    public TomcatManagerResponse reload(String path) throws IOException {
         return invoke("/reload?path=" + URLEncoder.encode(path, charset));
     }
 
@@ -496,10 +481,9 @@ public class TomcatManager {
      * 
      * @return the Tomcat manager response
      * 
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      */
-    public TomcatManagerResponse start(String path) throws TomcatManagerException, IOException {
+    public TomcatManagerResponse start(String path) throws IOException {
         return invoke("/start?path=" + URLEncoder.encode(path, charset));
     }
 
@@ -510,10 +494,9 @@ public class TomcatManager {
      * 
      * @return the Tomcat manager response
      * 
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      */
-    public TomcatManagerResponse stop(String path) throws TomcatManagerException, IOException {
+    public TomcatManagerResponse stop(String path) throws IOException {
         return invoke("/stop?path=" + URLEncoder.encode(path, charset));
     }
 
@@ -522,10 +505,9 @@ public class TomcatManager {
      *
      * @return the list of currently deployed applications
      * 
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      */
-    public TomcatManagerResponse list() throws TomcatManagerException, IOException {
+    public TomcatManagerResponse list() throws IOException {
         return invoke("/list");
     }
 
@@ -534,10 +516,9 @@ public class TomcatManager {
      *
      * @return the server information
      * 
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      */
-    public TomcatManagerResponse getServerInfo() throws TomcatManagerException, IOException {
+    public TomcatManagerResponse getServerInfo() throws IOException {
         return invoke("/serverinfo");
     }
 
@@ -546,10 +527,9 @@ public class TomcatManager {
      *
      * @return the list of all global JNDI resources
      * 
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      */
-    public TomcatManagerResponse getResources() throws TomcatManagerException, IOException {
+    public TomcatManagerResponse getResources() throws IOException {
         return getResources(null);
     }
 
@@ -560,10 +540,9 @@ public class TomcatManager {
      * 
      * @return the list of global JNDI resources of the given type
      * 
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      */
-    public TomcatManagerResponse getResources(String type) throws TomcatManagerException, IOException {
+    public TomcatManagerResponse getResources(String type) throws IOException {
         StringBuilder buffer = new StringBuilder();
         buffer.append("/resources");
 
@@ -580,10 +559,9 @@ public class TomcatManager {
      * 
      * @return the default session timeout and the number of currently active sessions
      * 
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      */
-    public TomcatManagerResponse getSessions(String path) throws TomcatManagerException, IOException {
+    public TomcatManagerResponse getSessions(String path) throws IOException {
         return invoke("/sessions?path=" + URLEncoder.encode(path, charset));
     }
 
@@ -598,10 +576,9 @@ public class TomcatManager {
      * 
      * @return the Tomcat manager response
      * 
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      */
-    protected TomcatManagerResponse invoke(String path) throws TomcatManagerException, IOException {
+    protected TomcatManagerResponse invoke(String path) throws IOException {
         return invoke(path, null, -1);
     }
 
@@ -610,7 +587,7 @@ public class TomcatManager {
     // ----------------------------------------------------------------------
 
     private TomcatManagerResponse deployImpl(String path, URL config, URL war, File data, boolean update, String tag)
-            throws TomcatManagerException, IOException {
+            throws IOException {
         return deployImpl(path, config, war, data, update, tag, -1);
     }
 
@@ -626,11 +603,10 @@ public class TomcatManager {
      * 
      * @return the Tomcat manager response
      * 
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      */
     private TomcatManagerResponse deployImpl(String path, URL config, URL war, File data, boolean update, String tag,
-            long length) throws TomcatManagerException, IOException {
+            long length) throws IOException {
         StringBuilder buffer = new StringBuilder("/deploy");
         buffer.append("?path=").append(URLEncoder.encode(path, charset));
 
@@ -663,11 +639,10 @@ public class TomcatManager {
      *
      * @return the Tomcat manager response
      *
-     * @throws TomcatManagerException if the Tomcat manager request fails
-     * @throws IOException            if an i/o error occurs
+     * @throws IOException if an i/o error occurs
      */
     protected TomcatManagerResponse invoke(String path, File data, long length)
-            throws TomcatManagerException, IOException {
+            throws IOException {
         String urlString = url.toString();
         if (urlString.endsWith("/") && path.startsWith("/")) {
             urlString = urlString.substring(0, urlString.length() - 1);
