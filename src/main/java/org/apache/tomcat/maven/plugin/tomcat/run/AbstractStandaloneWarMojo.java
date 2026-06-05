@@ -89,12 +89,10 @@ public abstract class AbstractStandaloneWarMojo extends AbstractExecWarMojo {
             throw new MojoFailureException("Packaging must be of type war for standalone-war goal.");
         }
 
-        File warExecFile = new File(buildDirectory, finalName);
-        if (warExecFile.exists()) {
-            warExecFile.delete();
-        }
-
         File execWarJar = new File(buildDirectory, finalName);
+        if (execWarJar.exists()) {
+            execWarJar.delete();
+        }
 
         FileOutputStream execWarJarOutputStream = null;
         ArchiveOutputStream<JarArchiveEntry> os = null;

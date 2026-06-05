@@ -254,12 +254,10 @@ public abstract class AbstractExecWarMojo extends AbstractTomcatMojo {
             return;
         }
         // project.addAttachedArtifact( );
-        File warExecFile = new File(buildDirectory, finalName);
-        if (warExecFile.exists()) {
-            warExecFile.delete();
-        }
-
         File execWarJar = new File(buildDirectory, finalName);
+        if (execWarJar.exists()) {
+            execWarJar.delete();
+        }
 
         FileOutputStream execWarJarOutputStream = null;
         ArchiveOutputStream<JarArchiveEntry> os = null;
@@ -474,6 +472,12 @@ public abstract class AbstractExecWarMojo extends AbstractTomcatMojo {
             IOUtils.closeQuietly(tmpManifestWriter);
             IOUtils.closeQuietly(execWarJarOutputStream);
             IOUtils.closeQuietly(tmpPropertiesFileOutputStream);
+            if (tmpPropertiesFile != null) {
+                tmpPropertiesFile.delete();
+            }
+            if (tmpManifestFile != null) {
+                tmpManifestFile.delete();
+            }
         }
     }
 

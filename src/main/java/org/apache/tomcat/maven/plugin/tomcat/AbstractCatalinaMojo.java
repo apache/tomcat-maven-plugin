@@ -150,9 +150,8 @@ public abstract class AbstractCatalinaMojo extends AbstractTomcatMojo {
      *                                                            details
      */
     protected TomcatManager getManager() throws MojoExecutionException {
-        TomcatManager manager = this.manager;
         if (manager == null) {
-            manager = getManagerInternal();
+            getManagerInternal();
         }
         return manager;
     }

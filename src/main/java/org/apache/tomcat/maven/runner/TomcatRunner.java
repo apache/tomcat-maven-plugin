@@ -385,7 +385,7 @@ public class TomcatRunner {
 
             // create ajp connector
             if (ajpPort > 0) {
-                Connector ajpConnector = new Connector("org.apache.coyote.ajp.AjpProtocol");
+                Connector ajpConnector = new Connector("AJP/1.3");
                 ajpConnector.setPort(ajpPort);
                 ajpConnector.setURIEncoding(uriEncoding);
                 if (ajpSecret != null) {
