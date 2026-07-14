@@ -45,7 +45,7 @@
     <properties>
 
         <!-- Tomcat version derives from the plugin version -->
-        <tomcatVersion>${project.version}</tomcatVersion>
+        <tomcatVersion>11.0.24</tomcatVersion>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
