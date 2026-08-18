@@ -34,7 +34,7 @@
     <packaging>maven-plugin</packaging>
     <name>Apache Tomcat Maven Plugin</name>
     <!-- Tomcat 9, 10 and 11 are supported -->
-    <version>9.0.117</version>
+    <version>9.0.121</version>
     <description>The Tomcat Maven Plugin provides goals to manipulate WAR
         projects within the Tomcat servlet
         container.
