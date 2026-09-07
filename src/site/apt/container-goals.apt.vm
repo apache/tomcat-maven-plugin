@@ -69,5 +69,5 @@ mvn tomcat:resources
 mvn -Dmaven.tomcat.type=my.class.name tomcat:resources
 +--
 
-  Note: For detailed information about container management, please refer to the
-  Tomcat documentation at http://tomcat.apache.org/tomcat-10.0-doc/manager-howto.html
+   Note: For detailed information about container management, please refer to the
+   Tomcat documentation at http://tomcat.apache.org/tomcat-9.0-doc/manager-howto.html
